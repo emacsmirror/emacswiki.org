@@ -36,17 +36,40 @@ Welcome to the Emacs shell
 No hostname specified
 }}} 
 
-===Troubleshooting==
+If you get the following error:
 
 ##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
 
-If you're getting this warning, add the following to your init file:
+Add the following to your init file:
 
 {{{
 (setq gnutls-min-prime-bits 1024)
 }}}
 
-==rcirc add-ons and commands==
+== Commands ==
+
+Common keybindings:
+
+* ##C-h m## -- List keybindings.
+* ##C-c C-j## -- Join a channel
+* ##C-c RET## -- Send a ##/msg##
+* ##C-c Cn## -- List users in channel
+* ##C-c C-r## -- Change nick
+* ##C-c C-b## -- Open URL under point.
+
+Common IRC commands (tab-completable):
+
+* ##/help [command]## -- Describe a command.
+* ##/info## -- Display server info
+* ##/part## -- Leave channel.
+* ##/join## -- Join a channel.
+* ##/time## -- Display server's local time.
+* ##/motd## -- Display the Message of the Day.
+* ##/whois## -- More info about a nick.
+* ##/away## -- Tell users you aren't available.
+* <code>/topic #guile</code> -- Display topic string
+
+== Addons ==
 
 * [[rcircColoredNicks]]: ##/color## -- Color each nick seperately.
 * [[rcircColoredNickClasses]]: Color nicks by group, like ##pals## and ##bots##.
@@ -79,7 +102,7 @@ If you're getting this warning, add the following to your init file:
 * [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
 
 
-==Related stuff that might be of interest==
+==Related Stuff==
 
 * [[rcirc for bs-show]]: A configuration for `M-x bs-show' users
 * [[rcirc and iswitchb]]: Hiding IRC buffers from iswitchb
@@ -92,6 +115,13 @@ If you're getting this warning, add the following to your init file:
 * [[rcircQueryInNewFrame]]: I want query windows to pop up a new frame
 * [[rcircForDiscordBridge]]: When someone is running a Discord bridge in your channel
 * [[rcircNormalJoin]]: Join one channel. Normally.
+* [[rcircToDocument]]: A todo list for manual maintainers
+* [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
+* [[rcircDbusNotification]]: use the dbus bindings for notifications
+* [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
+* [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
+* [[rcircRandomNames]]: change all the nicks to random names
+* [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
 
 rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
 <pre>
@@ -102,14 +132,6 @@ rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to
 		
 (setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
 </pre>
-
-* [[rcircToDocument]]: A todo list for manual maintainers
-* [[rcircThinklight]]: Make irc blink the Thinkpad light twice when someone talks to you.
-* [[rcircDbusNotification]]: use the dbus bindings for notifications
-* [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
-* [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
-* [[rcircRandomNames]]: change all the nicks to random names
-* [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
 
 rcirc can highlight the channels in the mode line only when your nick is mentioned in them. Use the following code snippet:
 
@@ -130,23 +152,6 @@ rcirc can highlight the channels in the mode line only when your nick is mention
 
 (add-hook 'rcirc-print-functions 'neale/rcirc-print-function)
 }}}
-
-==Questions & Answers==
-
-[new]
-[[VincentFoley]] asks: could anyone describe the differences between rcirc and ERC from an end-user point of view?
-
-[new]
-: AlexSchroeder replies: For beginners, there should be no significant differences. After all, both claim to be easy-to-use IRC clients. The differences begin when customizing or hacking it. Neither of the two has introduced radical changes to the user interface.
-
-[new]
-: WeakishJiang replies: I have not used ERC. But I found this piece on [[InternetRelayChat|this page]]:
-
-:: I used ERC for a while, but I was not very fond of the 20 odd files required in 
-:: my elisp directory, so I switched to rcirc and haven’t looked back since. It does
-:: everything I need, the (very clean) code is contained in a single file, I’m very happy! 
-:: – VincentFoley
-: Hope it helps.
 
 ----
 CategoryChatClient
