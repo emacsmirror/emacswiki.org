@@ -136,7 +136,7 @@ Here are some common keybindings:
 === Composing Mail ===
 
 When you use a *Compose* key (say, ##m##), you'll enter a new buffer.
-Fill out the ##Subject:## header and enter your post body below ##--text follows this line--#. You may add additional headers above this line (e.g. ##X-Drunk-as-a-lord: yes##).
+Fill out the ##Subject:## header and enter your post body below ##--text follows this line--##. You may add additional headers above this line (e.g. ##X-Drunk-as-a-lord: yes##).
 
 You likely want automatic word-wrapping. Add the following
 lines in ##~/.gnus##:
