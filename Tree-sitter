@@ -54,7 +54,7 @@ When a major mode powered by Tree-sitter is selected, Emacs will try to load the
 
 == Running Hooks ==
 [new:Mahmoud Adam:2023-12-19 14:50 UTC]
-To run the default hooks, I came up with this, which is either really stupid or really cool. -- MahmoudAdam
+To run the default hooks, I came up with this, which is either really stupid or really cool.
 <pre>
 (defun run-non-ts-hooks ()
   (let ((major-name (symbol-name major-mode)))
@@ -63,7 +63,11 @@ To run the default hooks, I came up with this, which is either really stupid or 
 
 (add-hook 'prog-mode-hook 'run-non-ts-hooks)
 </pre>
-this checks if it's a ts mode then runs their counterparts
+this checks if it's a ts mode then runs their counterparts.
+
+This is needed if you have packages that hooks itself to the major mode hook, In my opinion this hack should not be permanently used, packages should work to support this new ts-modes since it's included in Emacs 29 and later
+
+-- MahmoudAdam
 == History ==
 
 Historically, Emacs, like many editors, has used heuristics (often [https://www.emacswiki.org/emacs/RegularExpression/ regular expressions]) for approximating the parse of a language to do syntax highlighting and code navigation in order to do it quickly.
