@@ -58,13 +58,13 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 
 == External Links ==
 
-* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html The eshell manual] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
-* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell eshell source code] (Can be viewed with `M-x find-library eshell RET')
-* [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Eshell: mastering Eshell]
+* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html The Eshell manual] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
+* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell Source code] (`M-x find-library eshell RET')
+* [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Mastering Eshell]
+* [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
 * [http://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/ Eshell completion for git, bzr, and hg]
 * [http://www.howardism.org/Technical/Emacs/eshell-present.html Presenting Eshell]
-* [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
-* [https://ambrevar.xyz/emacs-eshell/ Eshell as a main shell]
+* [https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/ Eshell is my main shell
 * [http://oneliner-elisp.sourceforge.net/ OneLiner] - Integrate the UNIX shell with Emacs
 
 ----
