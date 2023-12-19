@@ -53,6 +53,7 @@ You may also need *TLS certificates*, as explained in [http://xn--9dbdkw.se/diar
 == Related Pages ==
 
 * [[Bookmark+]] -- Advanced bookmarking features.
+* [[HtmlRendering|SHR]] -- The HTML renderer used by eww.
 * [[eww-lnum]] -- Follow numeric link shortcuts in eww.
 * [[eww-syntax-highlighting]] -- Highlight code snippets in eww.
 * [[emacs-w3m]] -- An Emacs interface to W3M
