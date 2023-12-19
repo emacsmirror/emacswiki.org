@@ -1,11 +1,26 @@
-== Simple HTML Renderer (SHR) ==
+[http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el shr.el] is an HTML renderer in Emacs as of 24.4 
 
-[http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el shr.el] is an HTML renderer in Emacs as of version 24.4 (based on libxml2, it was originally a part of [[Gnus]]). It's the basis of the web browser [[eww]].
+== Customization ==
 
-== HTMLR ==
+SHR is very customizable; here are several examples:
 
-There is some code to render HTML available at Lisp:htmlr.el in case you want to look at an alternative.
-It is used by the EmacsWebBrowser (EWB).
+{{{
+(setq 
+shr-image-animate nil    ;  Disable animation
+shr-use-fonts nil        ;  Don't use custom fonts
+shr-width     70         ;  Word wrap at 70 chars
+shr-bullet    "• "       ;  Character for an <li> list item
+shr-hr-line   "—"        ;  Character for an <hr/> line
+shr-indentation 2        ;  Left margin
+shr-cookie-policy t)     ;  Always accept cookies
+}}}
+
+== Notes == 
+
+* shr was originally part of [[Gnus]].
+* shr is the basis of the [[eww]] web browser.
+* shr is based on ##libxml2##
+* [[Lisp:htmlr.el|htmlr.el]] is an alternative renderer used by [[EmacsWebBrowser|EWB]]
 
 ----
 CategoryHypermedia
