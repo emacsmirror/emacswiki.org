@@ -4,19 +4,18 @@ rcirc is part of GNU Emacs since release 22.0.
 
 == Quickstart ==
 
-Start rcirc with ##M-x irc##. By default it connects to <code>#rcirc</code> on ##libera.chat##. Change this in your InitFile:
+Add a server in your InitFile, then Start rcirc with ##M-x irc##:
 
 {{{
-(global-set-key (kbd "C-c I") 'irc) ; Keybinding to easily start IRC
+(global-set-key (kbd "C-c I") 'irc)
 
 (setq rcirc-server-alist
       '(("irc.libera.chat" ; Hostname
        :port 6697          ; Standard port for secure IRC
+       :nick "linen"       ; Your nickname
        :encryption tls     ; Specify to use encryption
        :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
-
-
 
 To get started, see also:
 
