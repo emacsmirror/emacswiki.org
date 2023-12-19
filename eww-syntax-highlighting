@@ -1,5 +1,7 @@
-You can use the [https://melpa.org/#/language-detection language-detection package] (available on [[MELPA]]) to activate automatic syntax highlighting of code snippets in <pre> tags while browsing the web with eww.
+The [https://melpa.org/#/language-detection language-detection] package adds syntax highlighting to code snippets in ##<pre>## tags in [[eww]].
 
-* https://github.com/andreasjansson/language-detection.el#eww-syntax-highlighting
+To activate it, install ##language-detection## from [[MELPA]] and follow [[https://github.com/andreasjansson/language-detection.el#eww-syntax-highlighting these instructions]]
+
+----
 
 [[CategoryWebBrowser]]
