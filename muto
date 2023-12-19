@@ -93,7 +93,15 @@ Links to pages here on the Wiki that I feel need additional editing or care, but
 * [[Eglot]] -- Needs a page ;-;
 * GnusTutorial -- Done for now.
 * [[Gnus]] -- Done for now.
-
+* [[Eshell]] -- Needs a page with sections like
+** Short intro to Eshell
+** Aliases
+** Functions
+** Scripting
+** Examples
+** Globbing, smart-scroll, syntax
+** See Also
+** External Links
 
 == Links 🌏 ==
 * [[https://www.emacswiki.org/emacs/Melonesque I maintain the Melonesque wiki theme.]]
