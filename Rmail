@@ -143,27 +143,20 @@ email addresses, so you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
 
-== Attachments & non-ASCII mail ==
+== Non-ASCII Mail ==
 
-You can display attachments using RmailMime.
+Emacs comes with ##rfc2047.el## to parse RFC 2047 encoded words:
 
-Non-ASCII mails often use "encoded-words" as specified in RFC 2047.
-Here's how to use rfc2047.el that comes with Emacs:
+{{{
+;; Should decode the entire message buffer on load
+;; Untested (note to self: pls test this, uwu)
 
-<pre>
-(autoload 'rfc2047-decode-string "rfc2047")
-(autoload 'rfc2047-decode-region "rfc2047")
-(setq rmail-message-filter
-      (lambda ()
-        (save-excursion
-          (when (search-forward "\n\n" nil t)
+(add-hook 'rmail-show-message-hook
+	  (lambda ()
             (rfc2047-decode-region
-              (point-min) (match-beginning 0)))))
-      rmail-summary-line-decoder
-      (function rfc2047-decode-string))
-</pre>
-
-[MDL: The above only works for summary lines in Emacs 23 because rmail-message-filter is no longer used.  Anyone have a fix for this?]
+	     (point-min)
+	     (point-max) t)))
+}}}
 
 == Editing message text and headers ==
 
@@ -171,8 +164,9 @@ Pressing `e' in an rmail buffer puts you in editing mode.  If you
 accidentally got there, press `C-c C-]' to abort.  Otherwise, make your changes,
 then press `C-c C-c' to save them and return to reading mode.
 
-== Helpful Libraries ==
+== Extensions ==
 
+* You can display attachments using RmailMime.
 * Lisp:rmail-extras.el - Read mail from remote inboxes using ange-ftp
 * [http://ftp.ccs.neu.edu/pub/people/ratinox/emacs-lisp/trmail.el trmail] - Threads in rmail
 * RmailConversationSummary - conversation view à la Gmail (no threading)
@@ -196,8 +190,7 @@ Prior to Emacs 23, rmail used the //babyl// file format. Rmail will automaticall
 
 == Encryption ==
 
-=== TLS Encryption ===
-You can enable TLS encryption by setting `rmail-movemail-flags':
+You can enable TLS encryption with `rmail-movemail-flags':
 
 <pre>
 (setq rmail-movemail-flags "--tls")
@@ -207,17 +200,15 @@ Another possible method is by using Stunnel.
 
 === Encrypting Emails ===
 
-While writing an email, you can use `M-x mml-secure-message-sign-encrypt' (or `C-c C-m C-e') to mark the email for encryption.
+While writing an email, use `M-x mml-secure-message-sign-encrypt' (`C-c C-m C-e') to mark the email for encryption.
 
-When you send the email, it will be encrypted based on the recipient's email address, if it's linked to a PGP key.
+When sent, it will be encrypted *based on the recipient's email address*, if it's linked to their PGP key.
 
 === Decrypting Emails ===
 
 While reading an encrypted email, you can use `M-x rmail-epa-decrypt' to decrypt the email.
 
-More:
-
-* [[Decrypting an email in Rmail that itself contains a multipart MIME message]]
+More: [[Decrypting an email in Rmail that itself contains a multipart MIME message|Decrypting a multipart MIME mail]]
 
 == Using an External MRA ==
 
