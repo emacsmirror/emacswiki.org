@@ -2,3 +2,230 @@ I suddenly found company-mode popping up a suggestion for nearly every word I ty
 
 -- Anonymous 2020-12-16 21:35 UTC
 
+
+----
+
+: Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required?
+
+No need to: iterating through backends that don't apply to the current buffer is pretty fast.
+
+But the user can have different `'company-backends' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain backends only in certain modes, like `company-dabbrev' and `company-ispell', which would generally apply to almost any buffer and thus block all backends after them.
+
+{{{
+  (add-hook 'css-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-css))))
+}}}
+
+----
+
+: Can I complete by typing a key instead of waiting for the delay timer?
+
+Yes, just bind `company-manual-begin', `company-complete-common', `company-complete', `company-select-next' to a key in the global map.
+
+{{{
+  (global-set-key "\t" 'company-complete-common)
+}}}
+
+Alternatively, you can set `company-idle-delay' to 0, to always complete immediately.
+
+: I don't like the default colors!
+
+Contributions welcome.
+
+Meanwhile, you can [https://github.com/search?q=deftheme+company-tooltip&type=Code look for a theme that customizes the Company faces].
+
+Or customize them yourself. If you're using a theme with a dark background, here's another quick option:
+
+{{{
+  (require 'color)
+  
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
+}}}
+
+(Borrowed from [https://github.com/noprompt/matilde/blob/master/emacs.d/noprompt-auto-complete.el#L18-L24 Joel Holdbrooks's init directory]).
+
+----
+
+: How do I get substring completion?
+
+Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each backend. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
+
+Any other backend would need to support non-prefix matching explicitly.
+
+When non-prefix matching is used, `company-preview-if-just-one-frontend' isn't displayed instead of `company-pseudo-tooltip-unless-just-one-frontend', as would be usual. Even if there's just one candidate, as long as it doesn't start with the input, you get a popup menu.
+
+----
+
+[new]
+<...> I want to complete `eval-when-compile' and I know there are several functions beginning with `eval', but there are fewer which have `when' in their names.  So I type `when' and company lists `eval-when-compile' too among others with `when' in the name.
+
+Similarly to iswitchb.  Iswitchb is great, because I don't have to type the beginning of the buffer name, I can type any part of it.
+
+<...> Better yet: obey `completion-styles', so the user can choose between `prefix', `substring', `partial-completion', or any other style she likes.
+
+[new:DmitryGutov:2014-02-26 04:01 UTC]
+: Note that `completion-styles' begins with `basic' by default, and all styles are tried in turn. So unless you customize this variable, if you just type `when', you won't get `eval-when-compile' among the candidates. You'll have to input a prefix that doesn't have any matches when using the `basic' style.
+
+[new]
+The search feature was actually inspired by the way I use iswitchb.  You can start completion with an empty prefix, type C-s, search for "when", and press C-o to limit the search. --  [[nschum]]
+
+[new]
+I've written another command named `company-filter-candidates' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
+
+----
+
+: How do I disable the down-case feature of the dabbrev backend?
+
+Customize `company-dabbrev-downcase'.
+
+----
+
+: I want to have completion and indent bound to tab key (as it is done and works fine in Ca2+), how can i achieve that?
+
+[new]
+Depending on the emphasis, one of these:
+
+{{{
+  (defun complete-or-indent ()
+    (interactive)
+    (if (company-manual-begin)
+        (company-complete-common)
+      (indent-according-to-mode)))
+
+  (defun indent-or-complete ()
+    (interactive)
+    (if (looking-at "\\_>")
+        (company-complete-common)
+      (indent-according-to-mode)))
+}}}
+
+----
+
+[new]
+One option is the following:
+
+{{{
+    (global-company-mode)
+    (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+}}}
+
+From: https://github.com/company-mode/company-mode/issues/94#issuecomment-365701801
+
+
+== Yasnippet integration ==
+
+If the two fixes below don't work for you, you can try: https://gist.github.com/sebastiencs/a16ea58b2d23e2ea52f62fcce70f4073
+
+Company interferes with Yasnippet's native behaviour.
+Here's a quick fix: http://gist.github.com/265010
+
+[new]
+Another code for solving conflicts in Company and Yasnippet.
+
+{{{
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+          (backward-char 1)
+          (if (looking-at "->") t nil)))))
+
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (if (minibufferp)
+        (minibuffer-complete)
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand)))
+          (if (check-expansion)
+              (company-complete-common)
+            (indent-for-tab-command)))))
+
+  (global-set-key [tab] 'tab-indent-or-complete)
+}}}
+
+-- YoungtaekOh
+
+
+[new:aksharvarma:2023-04-19 15:50 UTC]
+The above was not working for me, so after searching around a bit, I put together the following solution:
+
+1. It adds yasnippet keys in the completion list that company mode shows. As described in: https://emacs.stackexchange.com/a/10520
+
+2. It adds behavior such that pressing TAB on a valid yasnippet triggering key would perform yas-expand and if you are not on a snippet key then it is as if you are in vanilla company-completion. As described in: https://stackoverflow.com/a/28510968
+
+{{{
+
+  ;; From here. Dated 2015, tested 2023. Based on PR accepted into spacemacs
+  ;; https://stackoverflow.com/a/28510968.
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backends)
+    (if (or (not company-mode/enable-yas) (and (listp backends) (member 'company-yasnippet backends)))
+	backends
+      (append (if (consp backends) backends (list backends))
+              '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  ;; From here. Dated 2015, tested 2023. API use confirmed by author of yasnippet
+  ;; https://stackoverflow.com/a/28510968
+  ;; Try yas-expand and on failure to company-completion
+  (defun company-yasnippet-or-completion ()
+    (interactive)
+    (let ((yas-fallback-behavior nil))
+      (unless (yas-expand)
+	(call-interactively #'company-complete-common))))
+
+  (add-hook 'company-mode-hook (lambda ()
+				 (substitute-key-definition 'company-complete-common
+							    'company-yasnippet-or-completion
+							    company-active-map)))
+
+}}}
+
+-- AksharVarma
+
+== Discussion ==
+
+How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
+[new:AndyStewart:2009-02-11 23:13 UTC]
+: See also the discussion at AutoComplete. -- AndyStewart
+
+[new]
+It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and backends that can be easily swapped and loaded.
+
+----
+
+[new:YHWong:]
+IMHO, the loading mechanism of company-mode needs to be changed. Instead of asking the user to autoload directly from their .emacs, company-mode can provide a feature file, which looks at company-backends, and automatically adds hooks to company mode to the modes declared in the elements in the backend list? This will of course, makes naming any backend "company-<major-mode>.el a convention that affects real functionality. Company mode can still be autoloaded, but from the feature file instead. This way company mode can load faster and the user won't have to do anything besides requiring the company feature.
+
+[new:Dmitry Gutov:2014-02-25 13:03 UTC]
+I don't think so. This logic has too much magic, and it doesn't really solve any big problems.
+
+  (require 'company-foo)
+
+in a user's config isn't much better than
+
+  (push 'company-foo company-backends)
+
+----
+
+All text above this line was moved from the main page to here.
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-19 02:40 UTC
+
