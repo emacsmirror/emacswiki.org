@@ -71,11 +71,9 @@ Some helpful keys:
 * <code>l</code> - Filter inbox by label
 * <code>M-s</code> - Search all mail (also see [[MairixSearch]])
 
-
-
 == Reading mail ==
 
-* The `h' key makes a list of messages (summary) appear.
+* The `h' key makes a message list (*summary*) appear.
 * Select the next/previous message with `n' and `p'.
 * Use `Spacebar' and `Backspace' to scroll through the current message.
 
@@ -109,9 +107,9 @@ this by setting the `mail-user-agent' variable:
 
 == Sending Mail ==
 
-When writing a message in mail mode, you can send it with ##C-c C-s##.
+While composing a message, *send* it with ##C-c C-s##.
 
-If you want to use ##msmtp## (or another MTA) to handle sending, you can set the following variables like so:
+You can use a different MTA (like ##msmtp##) to handle sending:
 
 {{{
 (setq
@@ -123,22 +121,22 @@ If you want to use ##msmtp## (or another MTA) to handle sending, you can set the
 
 The two major sorting methods in rmail are '''labels''' and '''files'''.
 
-=== Labels (tags) ===
+=== Labels ===
 
-You can add one or more labels to a message. You can also filter your inbox to only display certain labels.
+You can add one or more *labels* to a message. You can *filter* your inbox to only display certain labels.
 
 * `a' - Add a label, or multiple separated by a comma
 * `k' - Remove label
 * `l' - Sort by label
 
-=== Output files ===
+=== Mbox Files ===
 
-You can move your mail from the inbox into different mbox files (like "family", "work", etc). These mbox files behave exactly the same as the inbox. 
+You can move your mail from the *inbox* to different *mbox files* (like ##family##, ##work##, etc). These mbox files behave *exactly the same* as the inbox. 
 
 * `o' - Output message to an mbox file
 * `i' - Visit an mbox file
 
-The variable `rmail-output-file-alist' lets you set default files for specified
+`rmail-output-file-alist' lets you set default files for specified
 email addresses, so you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
@@ -158,9 +156,9 @@ Emacs comes with ##rfc2047.el## to parse RFC 2047 encoded words:
 	     (point-max) t)))
 }}}
 
-== Editing message text and headers ==
+== Editing Messages ==
 
-Pressing `e' in an rmail buffer puts you in editing mode.  If you
+Pressing `e' in an rmail buffer puts you in *editing mode*.  If you
 accidentally got there, press `C-c C-]' to abort.  Otherwise, make your changes,
 then press `C-c C-c' to save them and return to reading mode.
 
@@ -212,7 +210,7 @@ More: [[Decrypting an email in Rmail that itself contains a multipart MIME messa
 
 == Using an External MRA ==
 
-You can use a Mail Retrieval Agent (MRA) other than `movemail' by simply creating a function that calls the command of your choice. This example uses `mpop':
+You can use a *Mail Retrieval Agent* (MRA) other than `movemail' by simply creating a function that calls the command of your choice. This example uses `mpop':
 
 {{{
 (defun rmail-my-mra ()
