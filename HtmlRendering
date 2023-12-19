@@ -6,13 +6,13 @@ SHR is very customizable; here are several examples:
 
 {{{
 (setq 
-shr-image-animate nil    ;  Disable animation
-shr-use-fonts nil        ;  Don't use custom fonts
-shr-width     70         ;  Word wrap at 70 chars
-shr-bullet    "• "       ;  Character for an <li> list item
-shr-hr-line   "—"        ;  Character for an <hr/> line
-shr-indentation 2        ;  Left margin
-shr-cookie-policy t)     ;  Always accept cookies
+  shr-image-animate nil    ;  Disable animation
+  shr-use-fonts nil        ;  Don't use custom fonts
+  shr-width     70         ;  Word wrap at 70 chars
+  shr-bullet    "• "       ;  Character for an <li> list item
+  shr-hr-line   "—"        ;  Character for an <hr/> line
+  shr-indentation 2        ;  Left margin
+  shr-cookie-policy t)     ;  Always accept cookies
 }}}
 
 == Notes == 
