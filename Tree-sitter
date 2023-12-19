@@ -63,9 +63,7 @@ To run the default hooks, I came up with this, which is either really stupid or 
 
 (add-hook 'prog-mode-hook 'run-non-ts-hooks)
 </pre>
-this checks if it's a ts mode then runs their counterparts.
-
-This is needed if you have packages that hooks itself to the major mode hook, In my opinion this hack should not be permanently used, packages should work to support this new ts-modes since it's included in Emacs 29 and later
+this checks if it's a ts mode then runs their counterparts. 
 
 -- MahmoudAdam
 == History ==
