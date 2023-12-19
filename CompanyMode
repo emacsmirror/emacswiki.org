@@ -1,8 +1,6 @@
-Company stands for "complete anything" and is a modular in-buffer completion mechanism.
+Company stands for "*complete anything*" and is a modular in-buffer completion mechanism.
 
-http://company-mode.github.io/
-
-[img]http://company-mode.github.io/images/company-elisp.png[/img]
+[[http://company-mode.github.io/ Official Website]]
 
 == Backends ==
 Backends are single functions, they look like this:
