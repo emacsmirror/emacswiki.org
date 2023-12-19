@@ -16,3 +16,23 @@ I have added the above web archive link as an alternative to Muto's rmail articl
 
 -- [https://www.emacswiki.org/emacs/shrysr shrysr] 2022-05-26 03:15 UTC
 
+
+----
+
+This code was the original solution to "Decoding Non ASCII mail in Rmail". Since ##rmail-message-filter## has since been removed, I've replaced this code in the main article with an *untested* replacement (look I'm lazy. I'll make sure it works soon)
+
+<pre>
+(autoload 'rfc2047-decode-string "rfc2047")
+(autoload 'rfc2047-decode-region "rfc2047")
+(setq rmail-message-filter
+      (lambda ()
+        (save-excursion
+          (when (search-forward "\n\n" nil t)
+            (rfc2047-decode-region
+              (point-min) (match-beginning 0)))))
+      rmail-summary-line-decoder
+      (function rfc2047-decode-string))
+</pre>
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-19 04:31 UTC
+
