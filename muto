@@ -17,6 +17,8 @@ C-h b    - List *all* keybindings
 M-m      - First non-whitespace character
 }}}
 
+* ##M-x telnet## doesn't work on Windows :(
+
 == Email 💌 ==
 
 I '''LOVE''' rmail. rmail is small, and simple. it uses emacs' built-in sendmail-mode for composition, and emacs' bulilt-in SMTP facility. But...:
