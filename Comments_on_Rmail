@@ -34,11 +34,6 @@ This code was the original solution to "Decoding Non ASCII mail in Rmail". Since
       (function rfc2047-decode-string))
 </pre>
 
--- [https://www.emacswiki.org/emacs/muto muto] 2023-12-19 04:31 UTC
-
-
-----
-
 Also yes, my old website *muto.ca* is gone. I was poor for a while and couldn't afford it, haha!
 
 I no longer update it, but I keep a [[https://mutoshack.gitlab.io/ static version up on Gitlab]]
