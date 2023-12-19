@@ -228,3 +228,14 @@ I don't think so, if you really mean that it's seen only while you edit. What's 
 
 -- Anonymous 2023-12-19 14:45 UTC
 
+
+----
+
+I'd like to be able to describe a certain design choice to other editors, or the ability to hide a section temporarily without it getting buried under revisions.
+
+Also just making sure that TextFormattingRules is complete.
+
+We don't need it, of course. Thank you for the response ^_^
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-19 14:59 UTC
+
