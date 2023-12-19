@@ -388,6 +388,8 @@ To solve the problem, we have to start the service after the graphical environme
 
 === KDE/Plasma ===
 
+WARNING: Using this drop-in can make your theme buggy. See https://bbs.archlinux.org/viewtopic.php?id=291168 and https://bugs.kde.org/show_bug.cgi?id=478021 , So if your theme suddenly breaks just remove this drop-in :), and you wouldn't suffer trying to debug the root cause like me.
+
 Add
 <pre>
 Requires=plasma-kwin_wayland.service
