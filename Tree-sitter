@@ -52,6 +52,18 @@ It's worth consulting `auto-mode-alist' to know which major mode to remap, as it
 
 When a major mode powered by Tree-sitter is selected, Emacs will try to load the (native) library for that language, and will give an error if it is not available. In UNIX/Linux this would be a .so file, and in Windows a .dll.
 
+== Running Hooks ==
+[new:Mahmoud Adam:2023-12-19 14:50 UTC]
+To run the default hooks, I came up with this, which is either really stupid or really cool. -- MahmoudAdam
+<pre>
+(defun run-non-ts-hooks ()
+  (let ((major-name (symbol-name major-mode)))
+    (when (string-match-p ".*-ts-mode" major-name)
+      (run-hooks (intern (concat (replace-regexp-in-string "-ts" "" major-name) "-hook"))))))
+
+(add-hook 'prog-mode-hook 'run-non-ts-hooks)
+</pre>
+this checks if it's a ts mode then runs their counterparts
 == History ==
 
 Historically, Emacs, like many editors, has used heuristics (often [https://www.emacswiki.org/emacs/RegularExpression/ regular expressions]) for approximating the parse of a language to do syntax highlighting and code navigation in order to do it quickly.
