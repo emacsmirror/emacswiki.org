@@ -28,7 +28,7 @@ A simple ##use-package## declaration may look like:
   :config
   (setq
    dired-x-hands-off-my-keys nil
-   ls-lisp-dirs-first t ;sort dirs first
+   ls-lisp-dirs-first t
    ls-lisp-use-insert-directory-program nil))
 }}}
 
