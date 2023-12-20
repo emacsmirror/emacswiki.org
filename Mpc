@@ -2,13 +2,13 @@
 
 Mpc first appeared in Emacs 23.2.
 
-== Usage ==
+== MPD ==
 
 You will need to install `mpd' on your computer and configure it like so:
 
 {{{
-# inside ~/.config/mpd/mpd.conf
-# This example is for PulseAudio
+# ~/.config/mpd/mpd.conf
+# Example for PulseAudio
 
  bind_to_address "127.0.0.1"
  music_directory "~/music"
@@ -28,7 +28,7 @@ audio_output {
 }
 }}}
 
-Then you can run it with the `mpd' command, and from then you can run `M-x mpc' from inside Emacs.
+Run it with the `mpd' command, then run `M-x mpc' from in Emacs.
 
 == Configuration ==
 
@@ -37,9 +37,73 @@ You can use <code>M-x customize-group <RET> mpc </code> to customize the client.
 {{{
 (setq
   mpc-browser-tags '(Artist Album)
-  mpc-songs-format "%-5{Time} %25{Title} %20{Album} %20{Artist}"
+  mpc-songs-format "%-5{Time} %25{Title} %20{Album} %20{Artist}")
+}}}
+
+##mpc## is *lacking in keybindings* currently, but not in functionality; you may wish to bind keys yourself:
+
+{{{
+(add-hook 'mpc-mode-hook
+ (lambda ()
+   (local-set-key (kbd "M-p")        'windmove-up)
+   (local-set-key (kbd "M-n")        'windmove-down)
+   (local-set-key (kbd "M-b")        'windmove-left)
+   (local-set-key (kbd "M-f")        'windmove-right)
+   (local-set-key (kbd "C-<return>") 'mpc-play-at-point)
+   (local-set-key (kbd "<SPC>")      'mpc-toggle-play)
+   (local-set-key "s"                'mpc-toggle-shuffle)
+   (local-set-key "n"                'next-line)
+   (local-set-key "p"                'previous-line)
+   (local-set-key "f"                'mpc-next)
+   (local-set-key "b"                'mpc-prev)))
+}}}
+
+This will bind the following keys:
+
+* ##M-(pnbf)## -- Select window frame.
+* ##C-RET## -- Add a song to the playlist
+* ##n/p## -- Down / Up
+* ##f/b## -- Next / Previous song
+* ##SPC## -- Play / Pause
+
+== Usage ==
+
+# Use ##n/p## to find an artist you like.
+# Press ##RET## to expand their album list.
+# Use ##M-f## to go to the Albums window.
+# Press ##C-RET## to play the album
+
+Use ##Space## to play/pause.
+
+== MPD on Windows ==
+
+If you're on Windows like poor old [[muto]], your ##mpd.conf## can be stored anywhere; just run ##mpd mpd.conf## in its directory.
+
+Your config may look something like:
+
+{{{
+music_directory     "C:/Users/emily/Music"
+log_file            "C:/Users/emily/Music/mpd/mpd.log"
+db_file             "C:/Users/emily/Music/mpd/mpd.db"
+playlist_directory  "C:/Users/emily/Music/playlists"
+bind_to_address     "127.0.0.1"
+    
+audio_output {
+    type   "winmm"
+    name   "MyPhones"
+}
+
+audio_output {
+    type      "httpd"
+    name      "My HTTP Stream"
+    encoder   "vorbis"
+    port      "8000"
+    bitrate   "128"
+    format    "44100:16:1"
+}
 }}}
 
 == External Links == 
 
 * [https://www.musicpd.org/ MPD's homepage]
+* [[https://github.com/jorenvo/simple-mpc Simple MPC]] -- A clean frontend to MPC
