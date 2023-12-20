@@ -1,11 +1,9 @@
 [[ja:イーマックス_マルチメディア_システム]]
-== Overview ==
 
-EMMS is the Emacs Multi-Media System. It tries to be a clean and
-small
+EMMS (Emacs Multi-Media System) is a clean and small
 application to play multimedia files from Emacs using external
-players. Many of its ideas are derived from MpthreePlayer, but it
-tries to be more general and cleaner. It is comparable to [[Bongo]]. See
+players. It is inspired by MpthreePlayer, but it
+tries to be cleaner. It is comparable to [[Bongo]]. See
 MusicPlayers for other packages. 
 
 http://www.gnu.org/software/emms/
@@ -32,24 +30,18 @@ which spits out the data, so we can process it in a filter?
 === Missing ===
 
 * '''emms-lang.el''' - [[i18n]] support
-
--- Which of the many internationalization issues are we talking about here? - yrk
-* '''emms-remote.el''' - Popup window/frame with widgets for the
-main functions
+** Which of the many internationalization issues are we talking about here? - yrk
+* '''emms-remote.el''' - Popup window/frame with widgets for the main functions
 ** Maybe a popup window like CEDET's browser with the playlist would 
-be also interesting. For the main functions I have global keys (previous, 
-next, pause...) in four consecutive keys.
+   be also interesting. For the main functions I have global keys (previous, 
+   next, pause...) in four consecutive keys.
 * '''emms-podcast.el''' - A podcast downloader & manager
-
--- There are already RSS readers for Emacs, how would this be different? - yrk
+** There are already RSS readers for Emacs, how would this be different? - yrk
 * '''emms-sound-mixer.el''' - A generic sound device interface/controller frontend, in the key of alsamixer
 * '''emms-audio-converter.el''' - A frontend to multiple services, such as gstreamer or ffmpeg -- which provides a common interface to convert a file to another file type. Say Flac to Ogg.
-
 * Some more player files (xmms, xine, a guile-gnome based gstreamer one)
-
-(simple players like 'play' are trivial to implement with
+** (simple players like 'play' are trivial to implement with
 emms-player-simple - info is in the manual)
-
 * Add multiple entry editing, to the tag editor. Like be able to highlight a region of a playlist and edit the Artist entry of the tag at each one at once.
 
 -- This works in Emms and is documented in the manual - yrk
