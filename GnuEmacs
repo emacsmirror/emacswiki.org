@@ -18,20 +18,7 @@ See EmacsHistory for its history.
 The latest release of GNU Emacs is version [[https://www.gnu.org/software/emacs/news/NEWS.29.1 29.1]] (2023), 
 and is licensed under the [[GnuGeneralPublicLicense|GPLv3]].
 
-FSF Emacs or GNU Emacs?
-
-: <kbd>M</kbd>-<kbd>x</kbd> <kbd>version</kbd> <kbd>RET</kbd>
-
-says
-
-{{{
-GNU Emacs 24.3.1 (i686-apple-darwin, NS apple-appkit-1038.36) of 2013-03-13 on bob.porkrind.org
-}}}
-
-So now you know.
-
-* Emacs vs XEmacs: EmacsSchism has a summary of what went down those
-  days.
+* Emacs vs XEmacs: EmacsSchism has a summary of what went down those days.
 * EmacsLisp vs Scheme: See GuileEmacs.
 
 Also see: CategoryBuilding
