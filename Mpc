@@ -103,7 +103,16 @@ audio_output {
 }
 }}}
 
+== See Also ==
+
+* MusicPlayer -- Other music players in Emacs.
+* [[EMMS]] -- A clean alternative to MPC.
+
 == External Links == 
 
 * [https://www.musicpd.org/ MPD's homepage]
 * [[https://github.com/jorenvo/simple-mpc Simple MPC]] -- A clean frontend to MPC
+
+----
+
+MultimediaModes CategoryModes CategoryInterface 
