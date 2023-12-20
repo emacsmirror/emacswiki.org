@@ -1,19 +1,18 @@
-*Note:* The repository has had significant availability problems for years (and it [[https://github.com/nicferrier/elmarmalade/issues/158#issuecomment-858226196 seems to be down since 2021]]), so package users/authors may wish to look at [[ELPA]], NonGNU ELPA and [[MELPA]] in addition to (or instead of) Marmalade.
+: *Note:* The repository has [[https://github.com/nicferrier/elmarmalade/issues/158#issuecomment-858226196 been down since 2021]]. Consider using [[ELPA]] and [[MELPA]] instead of Marmalade.
 
-----
-
-[https://marmalade-repo.org/ Marmalade] (HTTP only) is an [[ELPA]] compatible package repository that allows users to upload their own packages. Package maintainers don't have to be the same as the maintainers of the original code. This is somewhat like major GNU/Linux distributions. 
+[http://marmalade-repo.org/ Marmalade] is an [[ELPA]] compatible package repository that allows users to upload their own packages. Package maintainers don't have to be the same as the maintainers of the original code. This is somewhat like major GNU/Linux distributions. 
 
 == About Marmalade ==
 
-Marmalade endeavours to deliver stable releases. This means some
-packages are considered stale. 
+Marmalade endeavours to deliver *stable* releases, so some packages are out of date.
 
-The repository is now managed by NicFerrier who says he is slowly fixing things.  A recent edit to this page incorrectly identified the project as discontinued; however, as of [[https://twitter.com/nicferrier/status/1322566510578159616 a 2020-10-31 twitter conversation]], Nic is still interested in learning of new outages/breakage.  Issues are tracked on the project's [[https://github.com/nicferrier/elmarmalade/issues github repository]].
+The repository is now managed by NicFerrier who says he is slowly fixing things.
+
+Marmalade has a [[https://github.com/nicferrier/elmarmalade GitHub repository]]
 
 == Marmalade vs ELPA vs MELPA ==
 
-Unlike [[MELPA]], but like GnuELPA, Marmalade is restricted to only free software packages. Unlike GnuELPA, but like MELPA, Marmalade requires no signing of FSF
+Unlike [[MELPA]], but like GnuELPA, Marmalade is restricted to *only free software* packages. Unlike GnuELPA, but like MELPA, Marmalade requires no signing of FSF
 Copyright papers. Marmalade uses an [[http://marmalade-repo.org/packages/marmalade-client Emacs client]] to upload and download packages.
 
 Marmalade is a fully EmacsLisp project. There is an [[Elnode]] web application by NicFerrier in [[http://github.com/nicferrier/elmarmalade|github]].
