@@ -13,13 +13,10 @@ See EmacsHistory for its history.
 
 * [https://www.gnu.org/software/emacs/ Homepage]
 * [https://www.gnu.org/software/emacs/download.html Download]
-* WikiPedia:Emacs -- extensive overview, with historical description and
-  up-to-date reference links
+* WikiPedia:Emacs -- Extensive overview, with historical description
 
-The latest release of GNU Emacs is version 28.2
-([https://lists.gnu.org/archive/html/emacs-devel/2022-09/msg00730.html
-announced 12 September 2022]).  GNU Emacs is licensed under version 3 of
-the GnuGeneralPublicLicense or any later version published by the FSF.
+The latest release of GNU Emacs is version [[https://www.gnu.org/software/emacs/news/NEWS.29.1 29.1]] (2023), 
+and is licensed under the [[GnuGeneralPublicLicense|GPLv3]].
 
 FSF Emacs or GNU Emacs?
 
@@ -33,9 +30,9 @@ GNU Emacs 24.3.1 (i686-apple-darwin, NS apple-appkit-1038.36) of 2013-03-13 on b
 
 So now you know.
 
-; Emacs vs XEmacs: EmacsSchism has a summary of what went down those
+* Emacs vs XEmacs: EmacsSchism has a summary of what went down those
   days.
-; EmacsLisp or Scheme: See GuileEmacs.
+* EmacsLisp vs Scheme: See GuileEmacs.
 
 Also see: CategoryBuilding
 
