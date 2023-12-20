@@ -32,4 +32,8 @@ There is a collection of nifty hacks at BongoHacks.
 
 == Last.fm ==
 
-'''As of November 11, 2006, the Last.fm functionality is enabled by default''' if the `lastfmsubmit' executable can be found (if it's not in your `exec-path', please customize `lastfmsubmit-program-name').  To toggle Bongo Last.fm mode for individual playlist buffers, use `bongo-lastfm-mode'.  To toggle it for all playlist buffers, use or customize `bongo-global-lastfm-mode'.  (The file bongo-lastfm.el has been merged into bongo.el, and if you use Custom it is no longer necessary to put anything in your <code>~/.emacs</code>.)
+: *2006/11/11* -- The Last.fm feature is enabled by default. If the ##lastfmsubmit## binary isn't in your ##exec-path##, customize ##lastfmsubmit-program-name##.
+
+To toggle Last.fm mode for *individual* playlist buffers, use ##bongo-lastfm-mode##. To toggle it for *all* playlist buffers, customize ##bongo-global-lastfm-mode##
+
+: ##bongo-lastfm.el## was merged into Bongo, so if you use Custom, it is no longer necessary to put anything in your <code>~/.emacs</code>
