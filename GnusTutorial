@@ -261,23 +261,15 @@ nnchoke-active-file parameter.
 
 === Fetching and Sending ===
 
-The previous section has explained how Gnus fetches mail to read.
-But the question is, how does the mail actually get to
-your local disk in the first place? For many people, the answer is
-*POP* ([b]P[/b]ost [b]O[/b]ffice [b]P[/b]rotocol). Gnus can connect
-to a POP server, which is a remote location holding your mail.
+Gnus can can connect to a *POP* ([b]P[/b]ost [b]O[/b]ffice [b]P[/b]rotocol)
+server, which is a remote location holding your mail. See [[https://www.gnu.org/software/emacs/manual/html_node/gnus/Mail-Source-Specifiers.html The manual page]] for more options.
 
-##mail-sources## can store several places for getting new mail 
-for getting new mail. See Mail Source Specifiers (Gnus), which contains
-a great section about this variable. In this tutorial, suffice it to
-provide a template for POP users, that will deal with the lion's share
-of the cases.
+Specify a POP server with ##mail-source-specifiers##
 
      (setq mail-sources '((pop :server "mail.example.com"
                                :user   "jrl@example.com"
                                :password "passw0rd")))
-
-Without ##:password##, Gnus will ask for your password every time.
+    ;; Without :password, gnus will ask for a password every time.
 
 You can also have several servers:
 
@@ -286,10 +278,9 @@ You can also have several servers:
 
 For *sending* mail, you'll likely use SMTP:
 
-     (setq send-mail-function 'smtpmail-send-it)             ; Not for Gnus
-     (setq message-send-mail-function 'smtpmail-send-it)     ; For Gnus
+     (setq send-mail-function 'smtpmail-send-it)             ; Send mail with SMTP
      (setq smtpmail-default-smtp-server "mail.example.com")  ; SMTP server that you'll send from.
-     (setq smtpmail-debug-info t)                            ; only to debug problems
+     (setq smtpmail-debug-info t)                            ; Only to debug problems
 
 Say ##C-h v message-send-mail-function## for more details on sending mail.
 
