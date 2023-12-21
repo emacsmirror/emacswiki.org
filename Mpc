@@ -45,17 +45,17 @@ You can use <code>M-x customize-group <RET> mpc </code> to customize the client.
 {{{
 (add-hook 'mpc-mode-hook
  (lambda ()
-   (local-set-key (kbd "M-p")        'windmove-up)
-   (local-set-key (kbd "M-n")        'windmove-down)
-   (local-set-key (kbd "M-b")        'windmove-left)
-   (local-set-key (kbd "M-f")        'windmove-right)
-   (local-set-key (kbd "C-<return>") 'mpc-play-at-point)
-   (local-set-key (kbd "<SPC>")      'mpc-toggle-play)
-   (local-set-key "s"                'mpc-toggle-shuffle)
-   (local-set-key "n"                'next-line)
-   (local-set-key "p"                'previous-line)
-   (local-set-key "f"                'mpc-next)
-   (local-set-key "b"                'mpc-prev)))
+   (keymap-local-set "M-p"        'windmove-up)
+   (keymap-local-set "M-n"        'windmove-down)
+   (keymap-local-set "M-b"        'windmove-left)
+   (keymap-local-set "M-f"        'windmove-right)
+   (keymap-local-set "C-<return>" 'mpc-play-at-point)
+   (keymap-local-set "<SPC>"      'mpc-toggle-play)
+   (keymap-local-set "s"          'mpc-toggle-shuffle)
+   (keymap-local-set "n"          'next-line)
+   (keymap-local-set "p"          'previous-line)
+   (keymap-local-set "f"          'mpc-next)
+   (keymap-local-set "b"          'mpc-prev)))
 }}}
 
 This will bind the following keys:
