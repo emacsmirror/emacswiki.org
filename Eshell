@@ -1,36 +1,117 @@
-Eshell is a _shell written in _elisp. 
+Eshell is a [[CategoryShell|shell]] written in [[EmacsLisp elisp]].
 
-_Manual
-_source code
-_canegoryenhell
+Eshell is included as of Emacs 21.
 
+* [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html Manual]]
+* [[https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell Source code]]
+* [[CategoryEshell|Category Page]]
 
-== Owerview? ==
+== Overview ==
 
-== Aliases
+Eshell is a shell that has its own syntax, but it can also run elisp code. It's more than just an [[InferiorEmacsLispMode|elisp REPL]].
+
+* Start Eshell with ##M-x eshell##.
+* Lines that begin with ##~$## are Eshell *inputs*
+* Lines that begin with ##>## are Eshell *outputs*
+* List keybindings with ##C-h m##.
+
+== Aliases ==
+
+You can create an alias (a short nickname for a longer command) in Eshell with the ##alias## command (##alias## on its own lists your aliases):
+
+{{{
+~$ alias e  'eshell-source-file $1'
+~$ alias o  'find-file $1'
+~$ alias oo 'find-file-other-window $1'
+~$ alias l  'ls'
+~$
+~$ alias
+> alias e eshell-source-file $1
+> alias o find-file $1
+> alias oo find-file-other-window $1
+> alias l ls
+}}}
+
+Or you can define them in your InitFile
+
+{{{
+(use-package em-alias
+  :config
+  (eshell/alias  "e"  "eshell-source-file $1")
+  (eshell/alias  "o"  "find-file $1")  
+  (eshell/alias  "l"  "ls"))
+}}}
+
+Aliases are saved automatically. 
 
 See EshellAlias
 
-== Functions
+== Functions ==
+
+You can write functions in Eshell just as you would in elisp:
+
+{{{
+~$ (defun square (x) (* x x))
+~$ square 3
+9
+}}}
+
+(You do not need ##(## parentheses ##)## around functions when you call them from eshell.
+
+To make a function available in eshell from your InitFile, use the ##eshell/## prefix:
+
+{{{
+(defun eshell/square (x)
+  (* x x))
+}}}
 
 see EshellFunctions
 
-== Shell Scripting 
+== Shell Scripting ==
 
+A shell script (commonly with an ##.esh## extension) is a file where eshell evaluates each line as if it were an eshell input.
 
+Run a script with ##eshell-source-file file.esh##
 
-== Customization
+{{{
+# A hash is a comment in an Eshell script
+echo "uwu, meow!" > file.txt
+cat file.txt > file2.txt
+cat *2.txt
 
-to include various 'setq' details and general init.el commands.
+(defun square (x)
+  (* x x))
 
-== see also
+square 2
+}}}
 
-not sure what to put here
+Which outputs:
 
-== external links
+{{{
+~$ eshell-source-file test.esh
+> uwu, meow!
+> square
+> 4
+}}}
 
-I found a few articles that were usefully, I'll put them here
+== Customization ==
+
+Standard I/O works well in eshell, but ncurses interfaces like ##htop## and ##nano## won't run in it; we can tell eshell to run such commands in AnsiTerm instead, which is a full emulated VT100 terminal.
+
+{{{
+(append '("htop" "vim" "ssh") eshell-visual-commands)
+}}}
+
+== see also ==
+
+[[AnsiTerm]] -- VT100 emulator in Emacs
+
+== external links ==
+
+* [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell Mastering Eshell]]
+* [[http://xahlee.info/emacs/emacs/eshell.html Xah Lee's Eshell page]]
+* [[https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org Howard's Eshell notes]]
 
 --------------
 
-CategoryEshell
+CategoryEshell CategoryShell
