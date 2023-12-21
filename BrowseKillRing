@@ -31,10 +31,6 @@ Similar to browse-kill-ring -- makes it easy to access and yank text from the ki
 ** You can toggle the display style (new command and key binding).
 ** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
 
-This package not work on emacs 29 build with --with-pgtk.
-
->> emacs could not assert ownership over selection: SECONDARY
-
 === Helm ===
 
 [[Helm]] has build-in support for browsing the kill-ring when `helm-mode` is enabled.
