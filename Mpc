@@ -110,6 +110,7 @@ audio_output {
 
 == External Links == 
 
+* [[https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/mpc.el MPC's source code]]
 * [https://www.musicpd.org/ MPD's homepage]
 * [[https://github.com/jorenvo/simple-mpc Simple MPC]] -- A clean frontend to MPC
 
