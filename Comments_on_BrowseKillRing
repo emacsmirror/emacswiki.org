@@ -21,12 +21,12 @@ https://github.com/browse-kill-ring/browse-kill-ring
 ----
 
 [new:DrewAdams:2023-12-21 16:30 UTC]
-User [[xw963]] edited the page to add this:
+User [[zw963]] edited the page to add this:
 
     This package not work on emacs 29 build with --with-pgtk.
     emacs could not assert ownership over selection: SECONDARY
 
-No explanation or recipe.  I can't test with that option, but you need to provide much more info wrt what "not work" means.
+No explanation or recipe.  I can't test with that option, but you need to provide much more info wrt what "not work" means. Since the error complains about the secondary selection, the first thing to try is to see if ##--with-pgtk## supports a secondary selection at all. If not, this isn't a problem with `browse-kill-ring+.el'. 
 
 -- DrewAdams 2023-12-21 16:30 UTC
 
