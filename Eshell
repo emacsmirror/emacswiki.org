@@ -1,0 +1,36 @@
+Eshell is a _shell written in _elisp. 
+
+_Manual
+_source code
+_canegoryenhell
+
+
+== Owerview? ==
+
+== Aliases
+
+See EshellAlias
+
+== Functions
+
+see EshellFunctions
+
+== Shell Scripting 
+
+
+
+== Customization
+
+to include various 'setq' details and general init.el commands.
+
+== see also
+
+not sure what to put here
+
+== external links
+
+I found a few articles that were usefully, I'll put them here
+
+--------------
+
+CategoryEshell
