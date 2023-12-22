@@ -1,20 +1,39 @@
-: Question: Is anything like this available for Windows? -- ZwaX
+: Question: Is anything like this available for Windows?
 
-:: Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
+----
 
-: Question: ?
+-- ZwaX 2023-12-22 03:37 UTC
 
-:: Answer:
-:: With a little help from #emacs on irc.openprojects.net, I found out that you should export the varibale DTK_TCL like this; 
-:: export DTK_TCL=/usr/bin/eflite
-::Assuming that you're running the bash shell, and that your eflite is located in /usr/bin/ -- lurwas
+Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
 
-: Question: Can this be used with festival (http://festvox.org/festival)? --DavidMcCabe
+-- Anonymous 2023-12-22 03:37 UTC
 
-:: Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use sudo emacspeakconfig and pick eflite.  Then run emacspeak via the alsa-oss package "oss emacspeak".  You may have to install the alsa-oss package.
+----
 
-:: Answer:
-:: This is what I get on my Debian:
+ With a little help from <code>#emacs</code> on ##irc.openprojects.net##, I found out that you should export the varibale ##DTK_TCL## like this: 
+{{{
+export DTK_TCL=/usr/bin/eflite
+}}}
+
+Assuming that you're running the *bash shell*, and that your eflite is located in ##/usr/bin/## -- lurwas
+
+-- lurwas 2023-12-22 03:37 UTC
+
+----
+
+: Question: Can this be used with [[http://festvox.org/festival festival]]? --DavidMcCabe
+
+-- DavidMcCabe 2023-12-22 03:37 UTC
+
+----
+
+Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use ##sudo emacspeakconfig## and pick ##eflite##.  Then run emacspeak via the ##alsa-oss## package "oss emacspeak".  You may have to install the alsa-oss package.
+
+-- Anonymous 2023-12-22 03:37 UTC
+
+----
+
+This is what I get on my Debian:
 
 {{{
  /home/alex# dpkg-reconfigure emacspeak      
@@ -40,10 +59,14 @@ More issues:
 
 * strange noises at the end of each letter
 * after saying the current sentence, it can be heard a bit of other past sentences
+
 How to solve them?
 
-== External Links ==
-* http://gnu.manticore.es -- For Spanish speaking users (deadlink)
+-- Anonymous 2023-12-22 03:37 UTC
 
--- [https://www.emacswiki.org/emacs/muto muto] 2023-12-22 03:37 UTC
+----
+
+I just moved stuff over here from the main wiki page. These comments are much older than the timestamped ##2023-12-22##.
+
+-- [https://www.emacswiki.org/emacs/muto muto] 
 
