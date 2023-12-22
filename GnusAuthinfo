@@ -10,7 +10,7 @@ If you use this file for passwords elsewhere, you might be interested in [[authi
 
 == GPG ==
 
-GPG (GNU Privacy Guard) is a *keypair* encryption tool. Your *public* key locks stuff (give it to everyone), and your *private* key opens it (keep it secret).
+[[GnuPG|GPG]] (GNU Privacy Guard) is a *keypair* encryption tool. Your *public* key locks stuff (give it to everyone), and your *private* key opens it (keep it secret).
 
 Install the ##gpg## package on your system, then run:
 
