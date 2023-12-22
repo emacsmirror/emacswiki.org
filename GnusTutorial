@@ -32,6 +32,8 @@ machine mail.example.com login laura@example.com password passw0rd port 993
 machine mail.example.com login laura@example.com password passw0rd port 587
 }}}
 
+For encrypting, see GnusAuthinfo
+
 == General Usage ==
 
 Start Gnus with ##M-x gnus##.
