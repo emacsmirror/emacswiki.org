@@ -1,18 +1,14 @@
 [[es:EmacsHabla(Emacspeak)]]
-EmacSpeak is a complete audio desktop environment for Emacs.
+EmacSpeak is a *text-to-speech* environment for Emacs. It uses modern techniques
+to read the contents of the buffer using a *speech synthesizer*. It is helpful
+for visually-impaired users.
 
-What does this mean? Basically, Emacspeak implements many modern techniques
-to read the content of Emacs buffer via a speech synthesizer to
-a blind or visually impaired user.
+[[https://emacspeak.sourceforge.net/ Homepage]]
 
-The very nice Emacs philosophy of only working with text comes
-very handy here- Emacspeak can (and does) implement special voice enabling features
-for nearly every widespread major and minor mode. Look at the
-homepage for more information (especially the application list).
+== Overview ==
 
-The homepage of Emacspeak can be found at
-https://github.com/tvraman/emacspeak and http://emacspeak.sf.net
-for Spanish-speaking users, this package has support at http://gnu.manticore.es
+Emacspeak implements special features for nearly every widespread mode.
+See the [[https://tvraman.github.io/emacspeak/applications.html Applications List]] for details.
 
 But this one is not limited to the blind. At least I think it
 could be useful for ordinary hardcore emacs users too. You can 
@@ -20,7 +16,7 @@ install Emacspeak and get a gratis binary only version of viavoice
 from IBM to use it as a software speech synthesizer on your i386 linux
 box. At least a 200mhz pentium or above is recommended.
 
-== Installation Instructions ==
+== Installation ==
 
 Getting Emacspeak:
 Either from emacspeak.sf.net, the CVS, or on debian systems with
@@ -70,24 +66,27 @@ Hope this helps, please add questions to this wiki if you didn't understand some
 
 Have fun
 
-Question: Is anything like this available for Windows? -- ZwaX
+== Discussion ==
 
-Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
+: Question: Is anything like this available for Windows? -- ZwaX
 
-Question: ?
+:: Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
 
-Answer:
-With a little help from #emacs on irc.openprojects.net, I found out that you should export the varibale DTK_TCL like this; 
-export DTK_TCL=/usr/bin/eflite
-Assuming that you're running the bash shell, and that your eflite is located in /usr/bin/ -- lurwas
+: Question: ?
 
-Question: Can this be used with festival (http://festvox.org/festival)? --DavidMcCabe
+:: Answer:
+:: With a little help from #emacs on irc.openprojects.net, I found out that you should export the varibale DTK_TCL like this; 
+:: export DTK_TCL=/usr/bin/eflite
+::Assuming that you're running the bash shell, and that your eflite is located in /usr/bin/ -- lurwas
 
-Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use sudo emacspeakconfig and pick eflite.  Then run emacspeak via the alsa-oss package "oss emacspeak".  You may have to install the alsa-oss package.
+: Question: Can this be used with festival (http://festvox.org/festival)? --DavidMcCabe
 
-Answer:
-This is what I get on my Debian:
+:: Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use sudo emacspeakconfig and pick eflite.  Then run emacspeak via the alsa-oss package "oss emacspeak".  You may have to install the alsa-oss package.
 
+:: Answer:
+:: This is what I get on my Debian:
+
+{{{
  /home/alex# dpkg-reconfigure emacspeak      
  Please enter the number of your choice:                                          
    1  DECtalk Express
@@ -100,16 +99,21 @@ This is what I get on my Debian:
    a  abort, and restart configuration after
       installation of another speech server package
  Number [5]: 
+}}}
 
 Run "emacspeak" to open emacs with voice. In case of problems:
 * check that your user is on the group "audio"
 * check that you have rights to read and write /tmp/es.socket
 * check that it can open /dev/dsp; if you don't have it, use the OSS emulation from ALSA, for instance with "aoss emacspeak"
 
-Other problems:
+More issues: 
+
 * strange noises at the end of each letter
 * after saying the current sentence, it can be heard a bit of other past sentences
 How to solve them?
+
+== External Links ==
+* http://gnu.manticore.es -- For Spanish speaking users (deadlink)
 
 ----
 TextToSpeech
