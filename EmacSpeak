@@ -10,39 +10,62 @@ for visually-impaired users.
 Emacspeak implements special features for nearly every widespread mode.
 See the [[https://tvraman.github.io/emacspeak/applications.html Applications List]] for details.
 
-But this one is not limited to the blind. At least I think it
-could be useful for ordinary hardcore emacs users too. You can 
-install Emacspeak and get a gratis binary only version of viavoice
-from IBM to use it as a software speech synthesizer on your i386 linux
-box. At least a 200mhz pentium or above is recommended.
-
 == Installation ==
 
-Getting Emacspeak:
-Either from emacspeak.sf.net, the CVS, or on debian systems with
- apt-get install emacspeak
+An alternative guide is available in [[http://tvraman.github.io/emacspeak/manual/Quick-Installation.html the manual]].
 
-Getting / Installing <nowiki>ViaVoice</nowiki>:
+* A computer running Linux (no Windows support)
+* The Emacspeak package
+* A Voice Synthesizer ([[https://espeak.sourceforge.net/ Espeak]] or [[https://voxin.oralux.net/prices.php Voxin]])
+
+
+
+=== Installing Espeak ===
+
+If ##espeak## isn't available from your package manager, download it from [[https://espeak.sourceforge.net/ the espeak website]].
+
+In your Emacspeak directory, you'll need to build the espeak server
+
+{{{
+cd servers/native-espeak
+make
+
+=== Installing Emacspeak ===
+
+* Your package manager may have an ##emacspeak## package.
+* You can get the source code from [[https://emacspeak.sourceforge.net/ the website]]
+
+To build from source, enter the downloaded directory and write
+
+{{{
+make config && make
+}}}
+
+=== Installing ViaVoice ===
+
+: 13 Dec 2002:  The IBM website does not appear to be offering Linux any more....
+
 You need the IBM <nowiki>ViaVoice</nowiki> TTS Runtime-kit.
-You previously could get it [http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html here], but that link is broken. Try searching for "Download the <nowiki>ViaVoice</nowiki> TTS SDK and TTS Run Time Kit for Linux" from there. Note, you'll have to register, but the software itself is gratis as long as you use it non-commercially. Anyway, be sure to read the license.
-You'll need the file viavoice_tts_rtk.tar, getting the sdk.tar file isn't necessary, but could be fun for you. So maybe get both.
-Those tar-files contain .rpm files, which you can install on RH and maybe <nowiki>SuSE</nowiki>.
-13 Dec 2002  The IBM website does not appear to be offering Linux any more....
-Use
- alien --to-deb filename.rpm
-to generate your .deb files for Debian distributions.
-Now install those files.
-Or you can use 
- alien -i filename.rpm 
-to do the conversion and installation in one go and clean up the generated .deb file.
 
-Setting up the speech server:
-Required: tclx, so on debian, maybe apt-get install tclx8.3 tclx8.3-dev first.
+[[http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html The original download link]] is broken. Try searching for [b]"Download the <nowiki>ViaVoice</nowiki> TTS SDK and TTS Run Time Kit for Linux"[/b]. Note, you'll have to register, but the software itself is gratis as long as you use it non-commercially.
+
+You'll need the file ##viavoice_tts_rtk.tar##, getting the ##sdk.tar## file isn't necessary, but could be fun for you. So maybe get both.
+Those tar-files contain ##.rpm## files, which you can install on RH and maybe <nowiki>SuSE</nowiki>.
+
+Use ##alien --to-deb filename.rpm## to generate your ##.deb## files for Debian distributions.
+
+Or use ##alien -i filename.rpm## to do the conversion *and* installation in one go and clean up the generated .deb file.
+
+==== The Outloud Speech Server ====
+
+Required: ##tclx##, so on Debian, ##apt-get install tclx8.3 tclx8.3-dev## first.
+
 The outloud speech server for Emacspeak (thats the component which makes <nowiki>ViaVoice</nowiki> TTS useable to Emacspeak)
-is in /usr/share/emacs/site-lisp/emacspeak/servers/linux-outloud
-There is a NOTES file in this directory which describes the compilation process.
-Basicly, you will have to change the -ltcl option in the Makefile to something like -ltcl8.3.
-And you may have to add a include path so that tcl.h gets found, or edit the tcleci.cpp file to make the #include <tcl.h> line fit to your systems needs. e.g. on my system, I put tcl8.3/tcl.h there.
+is in ##/usr/share/emacs/site-lisp/emacspeak/servers/linux-outloud##.
+There is a ##NOTES## file in this directory which describes the compilation process.
+Change the ##-ltcl## option in the Makefile to something like ##-ltcl8.3##.
+
+You may have to add an include path so that ##tcl.h## gets found, or edit the ##tcleci.cpp## file to make the <code>#include <tcl.h></code> line fit to your systems needs. e.g. on my system, I put ##tcl8.3/tcl.h## there.
 Make and install the speech server.
 
 You should now be able to invoke emacspeak -o (the -o is to choose the outloud speech server).
@@ -61,59 +84,26 @@ Be careful, it may be necessary that you use the CVS version of Emacspeak for th
    (emacspeak-toggle-auditory-icons 1))
 
 
-Hope this helps, please add questions to this wiki if you didn't understand something or something didn't work. I wrote this much out of memory, so there may be errors, as usual.
+== Emacspeak on Windows ==
 
+There are several packages that aim to port Emacspeak to Windows.
 
-Have fun
+* [[https://sourceforge.net/projects/emacspeakwin emacspeakwin]] -- At Sourceforge
+* [[https://github.com/serezlan/emacspeak4windows emacspeak4windows]] -- At Github
+
+(Documentation here needed)
+
+== For Seeing Users ==
+
+Emacspeak is not limited to the blind. it
+could be useful for all users, too. You can 
+install Emacspeak and get a gratis binary only version of *viavoice*
+from IBM to use it as a software speech synthesizer on your i386 linux
+box. At least a *200mhz pentium* or above is recommended.
 
 == Discussion ==
 
-: Question: Is anything like this available for Windows? -- ZwaX
-
-:: Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
-
-: Question: ?
-
-:: Answer:
-:: With a little help from #emacs on irc.openprojects.net, I found out that you should export the varibale DTK_TCL like this; 
-:: export DTK_TCL=/usr/bin/eflite
-::Assuming that you're running the bash shell, and that your eflite is located in /usr/bin/ -- lurwas
-
-: Question: Can this be used with festival (http://festvox.org/festival)? --DavidMcCabe
-
-:: Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use sudo emacspeakconfig and pick eflite.  Then run emacspeak via the alsa-oss package "oss emacspeak".  You may have to install the alsa-oss package.
-
-:: Answer:
-:: This is what I get on my Debian:
-
-{{{
- /home/alex# dpkg-reconfigure emacspeak      
- Please enter the number of your choice:                                          
-   1  DECtalk Express
-   2  DECtalk Multivoice
-   3  DECtalk 3
-   4  Software DECtalk
-   5  eflite
-   6  ViaVoice Outloud
-   o  other.  I can provide the filename
-   a  abort, and restart configuration after
-      installation of another speech server package
- Number [5]: 
-}}}
-
-Run "emacspeak" to open emacs with voice. In case of problems:
-* check that your user is on the group "audio"
-* check that you have rights to read and write /tmp/es.socket
-* check that it can open /dev/dsp; if you don't have it, use the OSS emulation from ALSA, for instance with "aoss emacspeak"
-
-More issues: 
-
-* strange noises at the end of each letter
-* after saying the current sentence, it can be heard a bit of other past sentences
-How to solve them?
-
-== External Links ==
-* http://gnu.manticore.es -- For Spanish speaking users (deadlink)
+Moved to the [[Comments_on_EmacSpeak|Talk]] page.
 
 ----
 TextToSpeech
