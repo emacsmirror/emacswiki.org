@@ -1,22 +1,25 @@
-Delete Selection mode lets you treat an Emacs [[region]] much like a typical text selection outside of Emacs: You can replace the [[active region]] just by typing text, and you can delete the selected text just by hitting the Backspace key (`DEL').
+With ##delete-selection-mode## enabled, pressing Backspace while [[region|selecting text]] will delete the selected region.
 
-According to the Emacs manual,
+According to the [[https://www.gnu.org/software/emacs/manual/html_node/efaq/Replacing-highlighted-text.html manual page]]:
 
-: ''If you enable Delete Selection mode, a minor mode, then inserting
+: If you enable Delete Selection mode, a minor mode, then inserting
 text while the mark is active causes the selected text to be deleted
 first.  This also deactivates the mark.  Many graphical applications
-follow this convention, but Emacs does not.''
+follow this convention, but Emacs does not.
 
 Put the following in your [[init file]]: ##(delete-selection-mode 1)##
 
-(Emacs calls this `delete-selection-mode'. [[XEmacs]] calls it `pending-delete-mode'.  Each has an alias for the other name, however, so the name doesn't really matter.)
+== See Also == 
 
-'''See also:''' TransientMarkMode. Transient Mark mode is enabled in Delete Selection mode.
+* TransientMarkMode -- Transient Mark mode is enabled in Delete Selection mode.
+* [[delsel.el]] -- A modification by DrewAdams which is more compatible with ##completion-mode##.
+
+== Footnotes ==
 
 As an EmacsLisp programmer, if you want to adapt commands in your own code (e.g. some mode of yours) to `delete-selection-mode', then see this description of the use of [[symbol]] property `delete-selection':
 http://lists.gnu.org/archive/html/emacs-devel/2012-05/msg00515.html
 
-DrewAdams has slightly modified Delete Selection mode (standard library ##delsel.el##) to be more compatible with Completion mode (standard library ##completion.el##) -- see [[delsel.el]] (on EmacsWiki).
+In [[XEmacs]], delete-selection-mode may be called ##pending-delete-mode##
 
 ----
 CategoryRegion
