@@ -6,27 +6,23 @@ This is a step-by-step guide to using [[Gnus]], an Emacs package for reading [b]
 Gnus needs to know some details first. In ##~/.gnus.el##, write:
 
 {{{
-;; As shown on the 'From:' header.
-(setq user-mail-address  "laura@example.com"  ; $EMAIL
-      user-full-name     "Laura Smith")       ; $NAME
+(setq 
+  user-mail-address    "laura@example.com"   ; $EMAIL
+  user-full-name       "Laura Smith")        ; $NAME
+  smtpmail-smtp-server "mail.example.com"    ; $SMTPSERVER
+  send-mail-function   'smtpmail-send-it     ;
+  smtpmail-smtp-service 587                  ; SMTP port
+  gnus-select-method '(nntp "foo.bar.com"))  ; Connect to an NNTP server
 
-;; Primary server and two additional servers.
-(setq
-  gnus-select-method '(nntp "foo.bar.com")
-  gnus-secondary-select-methods '((nnspool "localhost")
-                                  (nnml    "")))
+;; A list of additional servers
+(add-to-list gnus-secondary-select-methods
+             '((nnspool "localhost")
+               (nnml "")))
 
-;; 'nnml' looks here for credentials
+;; nnml gets credentials here.
 (setq mail-sources
       '((pop :server   "mail.example.com"   
-             :user     "Laura@example.com"
-             :password "passw0rd")))
-
-;; SMTP -- for sending mail.
-(setq 
-  send-mail-function   'smtpmail-send-it
-  smtpmail-smtp-server "mail.example.com" ; $SMTPSERVER
-  smtpmail-smtp-service 587)
+             :user     "Laura@example.com"))
 }}}
 
 To avoid a username and password prompt every time, add this to ##~/.authinfo##
