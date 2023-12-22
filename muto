@@ -50,13 +50,10 @@ Emacs has *no* built-in ##rust-mode##. This approach requires:
 * [CompanyMode Company] -- Provides *auto-complete* suggestions.
 
 {{{
-;; First we tell Emacs to open .rs files in Rust mode:
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
-
-(add-hook 'rust-ts-mode-hook ; Activates when we open a Rust file.
-	  (lambda ()
-	    (eglot-ensure)   ; Start the language server.
-	    (company-mode))) ; Start the autocomplete process
+(use-package rust-ts-mode
+  :mode ("\\.rs\\'" . rust-ts-mode)    ; Detect .rs files
+  :hook (rust-ts-mode . eglot-ensure)  ; LSP client
+  :hook (rust-ts-mode . company-mode)) ; Auto-complete
 }}}
 
 * Once installed, there's no need to run ##rust-analyzer## externally.
