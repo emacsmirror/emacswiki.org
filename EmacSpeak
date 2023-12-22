@@ -113,8 +113,14 @@ box. At least a *200mhz pentium* or above is recommended.
 
 Moved to the [[Comments_on_EmacSpeak|Talk]] page.
 
+== See Also ==
+
+* [[FestivalSpeechSynthesisSystem|Festival]] -- Another TTS option for Emacs.
+
+
 == External Links ==
 * http://gnu.manticore.es -- For Spanish speaking users (deadlink)
+* [[https://github.com/gromnitsky/read-aloud.el read-aloud]] -- An Emacs TTS option (very outdated)
 
 ----
 TextToSpeech
