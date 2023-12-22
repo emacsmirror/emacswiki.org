@@ -44,35 +44,43 @@ make config && make
 
 === Installing ViaVoice ===
 
-: 13 Dec 2002:  The IBM website does not appear to be offering Linux any more....
+: Note: IBM no longer distributes [[http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html Viavoice]]. Use espeak or voxin.
 
-You need the IBM <nowiki>ViaVoice</nowiki> TTS Runtime-kit.
+Some requirements for this setup:
 
-[[http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html The original download link]] is broken. Try searching for [b]"Download the <nowiki>ViaVoice</nowiki> TTS SDK and TTS Run Time Kit for Linux"[/b]. Note, you'll have to register, but the software itself is gratis as long as you use it non-commercially.
+* The [b]IBM <nowiki>ViaVoice</nowiki> TTS Runtime-kit for Linux[/b]
+* The [b]IBM <nowiki>ViaVoice</nowiki> TTS SDK for Linux[/b]
+*  -- For conv
 
-You'll need the file ##viavoice_tts_rtk.tar##, getting the ##sdk.tar## file isn't necessary, but could be fun for you. So maybe get both.
-Those tar-files contain ##.rpm## files, which you can install on RH and maybe <nowiki>SuSE</nowiki>.
+You may try searching the Web for the above two packages.
 
-Use ##alien --to-deb filename.rpm## to generate your ##.deb## files for Debian distributions.
+From them, you'll need ##viavoice_tts_rtk.tar##. Getting the ##sdk.tar## file isn't necessary.
 
-Or use ##alien -i filename.rpm## to do the conversion *and* installation in one go and clean up the generated .deb file.
+They contain ##.rpm## files, which you can install on RedHat or use [[https://wiki.debian.org/Alien Debian Alien]] to convert them to ##.deb##s:
+
+{{{
+# Perform RPM -> DEB file conversion + installation.
+alien -i filename.rpm
+}}}
 
 ==== The Outloud Speech Server ====
 
 Required: ##tclx##, so on Debian, ##apt-get install tclx8.3 tclx8.3-dev## first.
 
-The outloud speech server for Emacspeak (thats the component which makes <nowiki>ViaVoice</nowiki> TTS useable to Emacspeak)
-is in ##/usr/share/emacs/site-lisp/emacspeak/servers/linux-outloud##.
-There is a ##NOTES## file in this directory which describes the compilation process.
-Change the ##-ltcl## option in the Makefile to something like ##-ltcl8.3##.
+The Emacspeak *Outloud speech server* allows Emacspeak to interface with <nowiki>ViaVoice</nowiki>. It
+is in the ##servers/linux-outloud## folder in Emacspeak. The ##NOTES## file in this directory describes compilation.
 
-You may have to add an include path so that ##tcl.h## gets found, or edit the ##tcleci.cpp## file to make the <code>#include <tcl.h></code> line fit to your systems needs. e.g. on my system, I put ##tcl8.3/tcl.h## there.
+: You may need to change the ##-ltcl## option in the Makefile to something like ##-ltcl8.3##.
+
+You may have to add an *include path* so that ##tcl.h## gets found, or edit the ##tcleci.cpp## file to make the <code>#include <tcl.h></code> line fit to your systems needs. (e.g. on my system, I put ##tcl8.3/tcl.h## there).
+
 Make and install the speech server.
 
-You should now be able to invoke emacspeak -o (the -o is to choose the outloud speech server).
-Look at the emacspeak script to see how this works; basicly setting DTK_PROGRAM=outloud in your shells environment should do the trick too.
+You should now be able to invoke ##emacspeak -o## (##-o## calls the Outloud speech server).
+Look at the emacspeak script to see how this works; basicly setting ##DTK_PROGRAM=outloud## in your shells environment should do the trick too.
 
 Getting Auditory Icons working:
+
 You may have noticed that the outloud speech server tries to use a /usr/bin/stdiosynth to generate auditory icons.
 This will work on some systems which have /dev/synth0. My sblive doesn't have that, and so stdiosynth doesn't work.
 But my sblive is multichannel capable. So I can use /dev/dsp concurrently. Here is my .emacs setup to make this work.
