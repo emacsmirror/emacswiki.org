@@ -33,9 +33,7 @@ To avoid a username and password prompt every time, add this to ##~/.authinfo##
 
 {{{
 machine mail.example.com login laura@example.com password passw0rd port 993
-machine mail.example.com login laura@example.com password passw0rd port 587 force yes 
-    
-# 'force yes' forces a username connection over anonymous.
+machine mail.example.com login laura@example.com password passw0rd port 587
 }}}
 
 == General Usage ==
