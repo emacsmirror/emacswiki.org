@@ -29,6 +29,7 @@ In your Emacspeak directory, you'll need to build the espeak server
 {{{
 cd servers/native-espeak
 make
+}}}
 
 === Installing Emacspeak ===
 
