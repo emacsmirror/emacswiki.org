@@ -32,3 +32,18 @@ I'm trying to keep some of the funnier jokes, but for the most part I've taken i
 
 -- [https://www.emacswiki.org/emacs/muto muto] 2023-12-18 16:45 UTC
 
+
+----
+
+I can't find ##force yes## anywhere else on the Web, regarding ##~/.authinfo##, as per:
+
+{{{
+machine mail.example.com login laura@example.com password passw0rd port 587 force yes
+
+# 'force yes' forces a username connection over anonymous.
+}}}
+
+The word "force" doesn't show up in the auth-source manual, or in ##auth-source.el##. I'm going to remove it for the time being, but I'm keeping a comment if I/we need to add it back.
+
+-- [https://www.emacswiki.org/emacs/muto muto] 2023-12-22 05:55 UTC
+
