@@ -50,7 +50,6 @@ Some requirements for this setup:
 
 * The [b]IBM <nowiki>ViaVoice</nowiki> TTS Runtime-kit for Linux[/b]
 * The [b]IBM <nowiki>ViaVoice</nowiki> TTS SDK for Linux[/b]
-*  -- For conv
 
 You may try searching the Web for the above two packages.
 
