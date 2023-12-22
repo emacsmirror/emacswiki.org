@@ -1,21 +1,30 @@
 To connect to password protected servers you need to store authentication information in one of these files:
 
-; ##~/.authinfo.gpg##: encrypted (use this!)
-; ##~/.authinfo##: not encrypted
-; ##~/.netrc##: the old format
+* ##~/.authinfo.gpg## -- Encrypted (use this!)
+* ##~/.authinfo## -- Not encrypted
+* ##~/.netrc##: The old format
 
-Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
+Simply save your information in ##~/.authinfo.gpg## and you're done.
 
 If you use this file for passwords elsewhere, you might be interested in [[authinfo-copy-password]].
 
 == GPG ==
 
-Ideally you already have GPG set up on your system.
-Emacs will ask you to select the recipients for encryption.
-Pick your own name from the list. This will allow you to save the file without any hassles.
-If no one is selected, symmetric encryption will be performed.
-This means that you will have to provide and confirm the password every time you save the file.
-Don't do it.
+GPG (GNU Privacy Guard) is a *keypair* encryption tool. Your *public* key locks stuff (give it to everyone), and your *private* key opens it (keep it secret).
+
+Install the ##gpg## package on your system, then run:
+
+{{{
+gpg --quick-generate-key "My Name <my@email.address>"
+}}}
+
+Run ##M-x epa-encrypt-file##, input your ##~/.authinfo## and choose your key. ##.authinfo.gpg## will be generated and the original file can be deleted.
+
+You may also opt to lock the file with a password:
+
+{{{
+gpg -c ~/.authinfo
+}}}
 
 == Permissions ==
 
@@ -64,6 +73,10 @@ This is deprecated as of 24.1, ~/.authinfo (or ~/.authinfo.gpg) is used by defau
 Using the nnimap backend you can connect to another box by giving the domain, username and boxname explicitly:
 
     machine <mailserver> login "<domain>/<username>/<boxname>" password "secret"
+
+== Links ==
+
+* [[https://gnupg.org/ GnuPG Homepage]]
 
 ----
 CategoryGnus
