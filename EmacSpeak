@@ -94,12 +94,12 @@ Be careful, it may be necessary that you use the CVS version of Emacspeak for th
 
 == Emacspeak on Windows ==
 
-There are several packages that aim to port Emacspeak to Windows.
+There are several packages that aim to port Emacspeak to Windows. Notes included are for ##Emacs 29## on ##Windows 11##
 
-* [[https://sourceforge.net/projects/emacspeakwin emacspeakwin]] -- At Sourceforge
-* [[https://github.com/serezlan/emacspeak4windows emacspeak4windows]] -- At Github
+* [[https://sourceforge.net/projects/emacspeakwin emacspeakwin]] -- Throws the error ##Emacs does not seem to be working##
+* [[https://github.com/serezlan/emacspeak4windows emacspeak4windows]] -- Throws the error ##No such file emacspeak-loaddefs.el##
 
-(Documentation here needed)
+(Further documentation needed but it's past 10PM. goodnight :3)
 
 == For Seeing Users ==
 
