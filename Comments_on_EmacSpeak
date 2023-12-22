@@ -1,8 +1,8 @@
 : Question: Is anything like this available for Windows?
 
-----
-
 -- ZwaX 2023-12-22 03:37 UTC
+
+----
 
 Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
 
