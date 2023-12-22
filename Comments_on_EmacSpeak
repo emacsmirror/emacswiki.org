@@ -1,16 +1,16 @@
-: Question: Is anything like this available for Windows?
+*Question:* Is anything like this available for Windows?
 
 -- ZwaX 2023-12-22 03:37 UTC
 
 ----
 
-Answer: Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
+*Answer:* Yes, in 2013 Emacspeak port for Windows was released. See the project [https://sourceforge.net/projects/emacspeakwin emascpeakwin at sourceforge].
 
 -- Anonymous 2023-12-22 03:37 UTC
 
 ----
 
- With a little help from <code>#emacs</code> on ##irc.openprojects.net##, I found out that you should export the varibale ##DTK_TCL## like this: 
+With a little help from <code>#emacs</code> on ##irc.openprojects.net##, I found out that you should export the varibale ##DTK_TCL## like this: 
 {{{
 export DTK_TCL=/usr/bin/eflite
 }}}
@@ -21,13 +21,13 @@ Assuming that you're running the *bash shell*, and that your eflite is located i
 
 ----
 
-: Question: Can this be used with [[http://festvox.org/festival festival]]? --DavidMcCabe
+*Question:* Can this be used with [[http://festvox.org/festival festival]]?
 
 -- DavidMcCabe 2023-12-22 03:37 UTC
 
 ----
 
-Answer: I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use ##sudo emacspeakconfig## and pick ##eflite##.  Then run emacspeak via the ##alsa-oss## package "oss emacspeak".  You may have to install the alsa-oss package.
+*Answer:* I have successfully managed to emacspeak up and running Ubuntu gutsy gibbon by using the eflite package.  Install eflite flite emacspeak.  To configure the speech server to be used, use ##sudo emacspeakconfig## and pick ##eflite##.  Then run emacspeak via the ##alsa-oss## package "oss emacspeak".  You may have to install the alsa-oss package.
 
 -- Anonymous 2023-12-22 03:37 UTC
 
