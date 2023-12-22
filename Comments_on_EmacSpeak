@@ -15,7 +15,7 @@ With a little help from <code>#emacs</code> on ##irc.openprojects.net##, I found
 export DTK_TCL=/usr/bin/eflite
 }}}
 
-Assuming that you're running the *bash shell*, and that your eflite is located in ##/usr/bin/## -- lurwas
+Assuming that you're running the *bash shell*, and that your eflite is located in ##/usr/bin/##
 
 -- lurwas 2023-12-22 03:37 UTC
 
