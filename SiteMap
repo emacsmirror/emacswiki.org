@@ -20,7 +20,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * HowToNavigate -- how to find what you're looking for 
 * HowToEdit -- how you can contribute to the site
 * ElispArea -- upload and download EmacsLisp source code
-* [EmacsWiki:CSS Appearance] -- how to change the way the site appears to you
+* [[CSS|Appearance]] -- how to change the way the site appears to you
 * WikiDownload -- how to get copies of the site
 * EmacsWikiAdministrators -- handling vandalism and spam on this site
 
@@ -51,8 +51,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
 ** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
-** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
-** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]] or a text terminal)
+** [[CategoryFrames|Frames]] -- [[frame|frames]] (what the OS would usually call "windows")
+** [[CategoryWindows|Windows]] -- Emacs [[window|windows]] (panes within a [[frame]] or a text terminal)
 * [[CategoryEditing|Editing]] -- general information about text editing, including
 ** [[CategoryAlignment|Alignment]] -- aligning text, columns, comments or other programming-language constructs
 ** [[CategoryIndentation|Indentation]] -- indenting text, including source code
@@ -131,7 +131,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to run EmacsLisp code at startup.
 * [[CategoryPackaging|Packages]] -- Emacs package management
 * [[CategoryWThirtyTwo|Emacs on Windows]] -- configuring Emacs for MS Windows
-* [[https://www.emacswiki.org/emacs/StarterKits Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
+* [[StarterKits|Starter Kits]] -- get Emacs going quickly with an existing custom configuration.
 
 
 [:ProgrammingEmacs]
