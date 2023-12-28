@@ -10,7 +10,10 @@ Load Xscheme with ##M-x load-library xscheme##
 
 Run the scheme interpreter: ##M-x start-scheme##. If desired, select a buffer that will be interacting with the scheme interpreter. By default, it creates a new buffer called ##*scheme*##.
 
-Edit your file, and press ##C-x C-e## to evaluate the previous expression. If you are loading a previously created file, you may need to use this key combination after every expression in the file, if you are counting on expressions to be defined. If anybody knows how to evaluate the whole buffer, feel free to add this information.
+* ##C-x C-e## evaluates the previous expression.
+* ##\ei## (##<ESC>## + ##i##) evaluates the entire buffer.
+
+----
 
 Put this function in in your InitFile to load xscheme in the current buffer with only one command:
 
