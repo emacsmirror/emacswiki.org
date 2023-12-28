@@ -68,6 +68,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * [https://www.youtube.com/c/SystemCrafters System Crafters] have playlists related to Org mode
 * [https://www.youtube.com/playlist?list=PLSxeivFT4JIrx6rwQB8VpSs3YeyTFuSwk Straightforward Emacs - OrgMode playlist] - Covers topics like exporting, foot notes and citations and more
 * [https://www.youtube.com/watch?v=BAFZ-vTnfSo Mike Hamrick talk on Literate Programming SeaGL 2023]
+* [https://protesilaos.com/emacs/dotemacs Org mode based literate configuration by Protesilaos]
 
 [:publish]
 == Publishing ==
