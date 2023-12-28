@@ -3,3 +3,13 @@ The scheme.el package included with Emacs provides a major mode for editing [[Sc
 See QuackPackage for extensions to SchemeMode.
 
 See GuileIde on using SchemeMode and other tools for developing in [[Guile]].
+
+== Usage ==
+
+Start Scheme mode with ##M-x scheme-mode## or visiting a ##.scm## file. Emacs will attempt to open an inferior Scheme process (a REPL). Emacs will communicate with this process while you work.
+
+* ##C-h m## will list keybindings for the current mode.
+* ##C-c C-z## -- Switch to the REPL
+* ##C-c C-l## -- Load a Scheme file
+* ##C-c C-t## -- Trace procedure
+* more :3
