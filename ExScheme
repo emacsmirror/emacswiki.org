@@ -1,6 +1,8 @@
-xscheme.el can be used to interact with an inferior *MIT scheme* process (meaning it won't work with Guile or other scheme interpreters). See SchemeMode for alternatives.
+xscheme.el can be used to interact with an inferior [[MitSlashGnuScheme|MIT scheme]] process (meaning it won't work with Guile or other scheme interpreters). See SchemeMode for alternatives.
 
-* [[https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/progmodes/xscheme.el Source Code]]
+xscheme is included as of emacs <= 19
+
+[[https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/progmodes/xscheme.el Source Code]]
 
 == Getting started ==
 
