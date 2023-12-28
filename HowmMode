@@ -5,6 +5,8 @@ It has hyperlinks and full-text search like EmacsWikiMode.
 It is a minor mode and can be combined with other modes.
 
 * https://github.com/kaorahi/howm
+* https://github.com/Emacs101/howm-manual : A recently created manual that covers how to use howm mode in great detail
+
 
 There is no distinction between pages - each record can be arbitrarily
 timestamped, hyperlinked, and displayed with other related pages in
