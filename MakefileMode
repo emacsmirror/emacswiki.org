@@ -41,5 +41,9 @@ And finally for convenience I add the ''.mak'' suffix to the ''auto-mode-alist''
 
 -- RolfUnger
 
+== Edit mode for Plan9 Mk ==
+
+Lisp:mkfile-mode.el
+
 ----
 CategoryModes
