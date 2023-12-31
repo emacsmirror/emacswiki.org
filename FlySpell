@@ -1,8 +1,7 @@
-"Flyspell enables on-the-fly spell checking in Emacs by the means of a minor mode. It is called Flyspell. This facility is hardly intrusive. It requires no help. Flyspell highlights incorrect words as soon as they are completed or as soon as the TextCursor hits a new word."
+Flyspell is a minor mode that enables *on-the-fly spell checking* in Emacs. It is hardly intrusive. Flyspell highlights incorrect words as soon as they are completed or as soon as the TextCursor hits a new word.
 
-Flyspell can be found at http://www-sop.inria.fr/mimosa/Manuel.Serrano/flyspell/flyspell.html
+Flyspell is included as of Emacs 20.3; It also has a [[http://www-sop.inria.fr/mimosa/Manuel.Serrano/flyspell/flyspell.html Homepage]]
 
-It is also part of Emacs.
 See also FlyspellWithoutColors.
 
 See FlyspellXmlLang to switch to the appropriate language indicated in the XML document and see FlyspellBabel to switch language as indicated by LaTeX Babel commands.
