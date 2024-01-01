@@ -52,7 +52,7 @@ In Windows you can prevent the distracting visual effect by either:
 (set-frame-position nil 0 0)
 (set-frame-size nil (display-pixel-width) (display-pixel-height) t)
 }}}
-The ##set*## lines are responsible to prevent the distracting visual effect.
+The ##set*## lines are responsible to prevent the distracting visual effect in .emacs. However, they have no impace when used in early-init.el, but it does not matter because `(push '(fullscreen . maximized) default-frame-alist)` is sufficient to prevent the distracting visual effect in early-init.el
 
 * Solution 3: Add an ‘Emacs.Geometry’ entry to the Windows Registry settings. (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows). Not completely documented yet.
 
