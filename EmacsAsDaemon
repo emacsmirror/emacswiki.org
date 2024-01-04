@@ -388,11 +388,8 @@ To solve the problem, we have to start the service after the graphical environme
 
 === KDE/Plasma ===
 
-WARNING: Using this drop-in can make your theme buggy. See https://bbs.archlinux.org/viewtopic.php?id=291168 and https://bugs.kde.org/show_bug.cgi?id=478021 , So if your theme suddenly breaks just remove this drop-in :), and you wouldn't suffer trying to debug the root cause like me.
-
 Add
 <pre>
-Requires=plasma-kwin_wayland.service
 After=plasma-kwin_wayland.service
 </pre>
 to the <code>[Unit]</code> section. The <code>emacs.service</code> file would now look like:
@@ -401,7 +398,6 @@ to the <code>[Unit]</code> section. The <code>emacs.service</code> file would no
 [Unit]
 Description=Emacs text editor
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
-Requires=plasma-kwin_wayland.service
 After=plasma-kwin_wayland.service
 
 
@@ -419,7 +415,6 @@ Note that since modern emacs installations already ship a systemd --user service
 
 {{{
 [Unit]
-Requires=plasma-kwin_wayland.service
 After=plasma-kwin_wayland.service
 }}}
 
@@ -431,6 +426,8 @@ systemctl --user enable --now emacs
 }}}
 
 and you should be set to go.
+
+
 
 === GNOME ===
 
