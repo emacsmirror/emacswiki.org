@@ -93,6 +93,16 @@ If Tramp hangs with Solaris at the local end, try using "scpx" as your default t
 
 If you're using SVN or DARCS (or likely other things) with VC, see below for problem descriptions.
 
+[new:ScottBurson:2024-01-04 00:02 UTC]
+With SUSE Linux at the remote end, Tramp may hang trying to open the connection.  Doing this fixed it for me:
+
+{{{
+(setq tramp-rsh-end-of-line "\r")
+}}}
+
+I don't know how likely this is to cause problems with other remotes.
+--ScottBurson
+
 === Tramp hangs #2 ===
 
 If you are a victim of the following:
