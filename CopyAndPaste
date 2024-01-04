@@ -52,7 +52,8 @@ Although Emacs 29 has an option to build with pure GTK and therefore is supposed
     (setq wl-copy-process (make-process :name "wl-copy"
                                         :buffer nil
                                         :command '("wl-copy" "-f" "-n")
-                                        :connection-type 'pipe))
+                                        :connection-type 'pipe
+                                        :noquery t))
     (process-send-string wl-copy-process text)
     (process-send-eof wl-copy-process))
   (defun wl-paste ()
