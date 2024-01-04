@@ -121,7 +121,7 @@ Here's an incomplete list of rules and factoids related to the NL parser. The li
     <msp>: You should read up on ,,init
 
 
-Here msp is replying to rk1, while also but commanding fsbot to output the notes for the term ##init##. As far as fsbot is concerned, msp has typed ##fsbot: (describe "init")##. Therefore, following msp's reply to rk1, fsbot spits out its notes for ##,init##.
+Here msp is replying to rk1, while also simultaneously commanding fsbot to output the notes for the term ##init##. As far as fsbot is concerned, msp has typed ##fsbot: (describe "init")##. Therefore, following msp's reply to rk1, fsbot spits out its notes for ##,init##.
 
 * A second double-comma ends the fsbot-invocation. Example, msp might have responded to rk1 by saying:
 
