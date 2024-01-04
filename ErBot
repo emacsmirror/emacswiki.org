@@ -102,7 +102,7 @@ In some contexts, however, quoted expressions should *NOT* be prefixed with `fs-
 While the lisp parser is pretty stable and reliable, the english parser is anything but. The latter is heavily context-dependent. For example, 
 ##,describe foo## gets parsed as ##,([fs-]describe "foo")##  but ##,foo is bar## gets parsed as ##,(set-term 'foo 'bar)##. Furthermore, the latter would get parsed as ##(foo 'is 'bar)## if a user-function foo existed. The English parser also evolves with time, at the whim of the author, to try to make fsbot more DWIM-my. This context-dependence is regarded by the author as a feature, not a bug. If that is a problem, please try using the lisp syntax instead. English sucks as a programming language. That's why you also have lisp at your disposal.
 
-Here's a (very) incomplete list of rules and factoids related to the NL parser. The list below is mostly in chronological order. That is, the parser essentially goes down [a longer version of] this list, till something matches.
+Here's an incomplete list of rules and factoids related to the NL parser. The list below is mostly in chronological order. That is, the parser essentially goes down (a much longer version of) this list, till something matches.
 
 * As you have already seen, a leading comma is equivalent to addressing and invoking fsbot. Thus, these two are equivalent: ##fsbot: tell me about Emacs## and ##, tell me about Emacs##.
 
