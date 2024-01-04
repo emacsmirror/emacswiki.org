@@ -86,7 +86,7 @@ Since you have access to `fs-defun' and `fs-setq', you can define your own `fs-'
 === Context-dependent parse of NL syntax ==
 
 
-While the lisp parser is pretty stable and reliable, the english parser is anything but. The latter is heavily context-dependent. For example, 
+While the lisp parser is pretty stable and reliable, the English parser is anything but. The latter is heavily context-dependent. For example, 
 ##,describe foo## gets parsed as ##,([fs-]describe "foo")##  but ##,foo is bar## gets parsed as ##,(set-term 'foo 'bar)##. Furthermore, the latter would get parsed as ##(foo 'is 'bar)## if a user-function foo existed. The English parser also evolves with time, at the whim of the author, to try to make fsbot more DWIM-my. This context-dependence is regarded by the author as a feature, not a bug. If that is a problem, please try using the lisp syntax instead. English sucks as a programming language. That's why you also have lisp at your disposal.
 
 Here's an incomplete list of rules and factoids related to the NL parser. The list below is mostly in chronological order. That is, the parser essentially goes down (a much longer version of) this list, till something matches.
@@ -120,6 +120,9 @@ Again, fsbot sees this as simply ##,(describe "init")##, and follows msp's reply
 * In some channels such as #emacs, an automatic invocation of fsbot can happen under certain conditions even when it's not explicitly requested. If someone says ##timtowdi?## or variants such as ##What is timtowdi?##, notice that they haven't invoked fsbot. Yet, if a term timtowdi exists, fsbot will chime in anyway. It will parse this as ##fsbot: (describe "timtowdi")## and reply: ##There Is More Than One Way To Do It##.
 
 * In such channels, any sentence ending in ##??## again invokes fsbot, and is parsed as ##,(m8b)##, which invokes magic 8-ball. 
+
+
+=== `fs-' namespace ===
 
 Here’s another reminder that everything you do is actually happening in the ‘fs-’ space. When you ,(defun increment (myvar) (+ 1 (apply 'myfun myvar))), it first internally gets parsed as ,(fs-defun fs-increment (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar))). That works because ‘fs-defun’, ‘fs-apply’, and `fs-+' are functions/macros that are provided to you in the core functionality, and because you hopefully already ‘defun’d a ‘fs-myfun’ prior to this. Notice how the parser figures out that it needs to prefix the quoted expression as well. It converts ‘myfun’ to ‘fs-myfun’. (If it didn’t, you would be able to jailbreak to access things like 'shell-command).
 
