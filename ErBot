@@ -114,7 +114,9 @@ Here's an incomplete list of factoids related to the NL parser. The list below i
 
 * When nothing else matches, ##,foo## is parsed as ##,(describe "foo")##. That is, it tries to look up the notes for a term foo. If a term ##foo## exist, that command also searches for ##*foo*##. Several niceties are built in within that. Example: ##,foo bar-baz flu## will search for, among other things, .*foo.*bar.*baz.*flu. ##,foo.*baz## is understood to be a regexp search. If fsbot doesn't find a matching term, then, it also searches the notes of the terms. That is, it invokes the equivalent of ##(search ..)## and ##(search-wide ..)##.
 
-* To invoke fsbot mid-sentence, use a double-comma. Example: 
+* To invoke fsbot mid-sentence, use a double-comma. Example:
+
+
     <rk1>: How do I customize my Emacs starting behavior? 
     <msp>: You should read up on ,,init
 
@@ -123,14 +125,9 @@ Here msp is replying to rk1, while also but commanding fsbot to output the notes
 
 * A second double-comma ends the fsbot-invocation. Example, msp might have responded to rk1 by saying:
 
-    <msp>: Why don't you read up on ,,init,, and then get back to us? ##
+    <msp>: Why don't you read up a bit on ,,init,, and get back to us?
 
-Again, fsbot sees ##,(describe "init")##, and follows msp's reply with the description of ##init##.
-
-
-
-
-
+Again, fsbot sees this as simply ##,(describe "init")##, and follows msp's reply with the description of ##init##.
 
   
 
