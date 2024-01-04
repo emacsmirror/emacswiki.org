@@ -129,7 +129,11 @@ Here msp is replying to rk1, while also but commanding fsbot to output the notes
 
 Again, fsbot sees this as simply ##,(describe "init")##, and follows msp's reply with the description of ##init##.
 
-  
+
+* In some channels such as #emacs, an automatic invocation of fsbot happens even when it's not explicitly requested. If someone says ##timtowdi?## or variants such as ##What is timtowdi?##, notice that they haven't invoked fsbot. Yet, if a term timtowdi exists, fsbot will chime in anyway. It will parse this as ##fsbot: (describe "timtowdi")## and reply: ##There Is More Than One Way To Do It##.
+
+* In some channels such as #emacs, any sentence ending in ##??## again invokes fsbot, and is parsed as ##,(m8b)##, which invokes magic 8-ball. 
+
 
 
 === `fs-' stripping ===
@@ -240,7 +244,7 @@ Notice that the second request returned no results.
 
 erbot has many other features developed over 20+ years of irc usage. New ones come and go. Some fall into disuse. The best way to learn them is to just start using fsbot and see how people use them on #emacs. Here's a partial list.
 
-* redirect terms
+* redirect terms. Modifiers within terms such as noecho, directonly.
 * tell foo about bar
 * karma
 * praise
