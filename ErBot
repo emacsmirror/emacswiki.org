@@ -130,9 +130,9 @@ Here msp is replying to rk1, while also simultaneously commanding fsbot to outpu
 Again, fsbot sees this as simply ##,(describe "init")##, and follows msp's reply with the description of ##init##.
 
 
-* In some channels such as #emacs, an automatic invocation of fsbot happens even when it's not explicitly requested. If someone says ##timtowdi?## or variants such as ##What is timtowdi?##, notice that they haven't invoked fsbot. Yet, if a term timtowdi exists, fsbot will chime in anyway. It will parse this as ##fsbot: (describe "timtowdi")## and reply: ##There Is More Than One Way To Do It##.
+* In some channels such as #emacs, an automatic invocation of fsbot can happen under certain conditions even when it's not explicitly requested. If someone says ##timtowdi?## or variants such as ##What is timtowdi?##, notice that they haven't invoked fsbot. Yet, if a term timtowdi exists, fsbot will chime in anyway. It will parse this as ##fsbot: (describe "timtowdi")## and reply: ##There Is More Than One Way To Do It##.
 
-* In some channels such as #emacs, any sentence ending in ##??## again invokes fsbot, and is parsed as ##,(m8b)##, which invokes magic 8-ball. 
+* In such channels, any sentence ending in ##??## again invokes fsbot, and is parsed as ##,(m8b)##, which invokes magic 8-ball. 
 
 
 
