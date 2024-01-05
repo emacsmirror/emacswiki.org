@@ -19,12 +19,12 @@ emacs --fg-daemon
 
 [http://www.freedesktop.org/wiki/Software/systemd Systemd] is the supported method of running applications at startup on most Linux distributions. 
 
-If the emacs service file is properly installed, all you need to is run:
+If the emacs service file is properly installed, you can simply run:
 {{{
 systemctl --user enable --now emacs
 }}}
 
-If you don't have the user server unit installed, you first need to do is copy this to <tt>~/.config/systemd/user/emacs.service</tt> (which was included in prior versions of emacs):
+If you don't have the user server unit installed, you first need to copy this to <tt>~/.config/systemd/user/emacs.service</tt> (which was included in prior versions of emacs):
 
 {{{
 [Unit]
