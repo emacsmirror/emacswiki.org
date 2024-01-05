@@ -261,7 +261,7 @@ be prompted."
       (let((inhibit-quit t))
              ; Save buffers
 	(with-local-quit
-	  (save-some-buffers)) ching all of the kde grap
+	  (save-some-buffers))
 	      
 	(if quit-flag
 	  (setq quit-flag nil)  
