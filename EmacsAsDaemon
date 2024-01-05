@@ -24,7 +24,7 @@ If the emacs service file is properly installed, you can simply run:
 systemctl --user enable --now emacs
 }}}
 
-If you don't have the user server unit installed, you first need to copy this to <tt>~/.config/systemd/user/emacs.service</tt> (which was included in prior versions of emacs):
+If you don't have the user service unit installed, you first need to create the file <tt>~/.config/systemd/user/emacs.service</tt> with the following content (which was included in prior versions of emacs):
 
 {{{
 [Unit]
