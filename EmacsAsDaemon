@@ -246,7 +246,7 @@ be prompted."
       (let((inhibit-quit t))
              ; Save buffers
 	(with-local-quit
-	  (save-some-buffers)) 
+	  (save-some-buffers)) ching all of the kde grap
 	      
 	(if quit-flag
 	  (setq quit-flag nil)  
@@ -425,7 +425,7 @@ systemctl --user daemon-reload
 systemctl --user enable --now emacs
 }}}
 
-and you should be set to go. (Or just run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code>
+and you should be set to go. (Or just run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code>)
 
 NB: Unlike many other service units, you do _not_ want a "Requires=" or "Wants=" line corresponding to the "After=" line in these units. This will cause systemd to attempt to launch plasma-ksmserver early, which in turn tries to run some X11 commands before Xwayland is fully started. This causes the ksmserver to segfault, which causes other plasma components to crash, and will mess with your login in a variety of ways, including freezing the mouse and keyboard until they are reconnected, and being unable to launch any graphical windows in that session. This is probably a bug in current KDE's systemd integration. However, even if working correctly this also _prevents_ that user from being able log in to a non-graphical session without also launching all of the kde graphical environment unlike you isolate to a different target. This almost certainly isn't what most users want.
  
