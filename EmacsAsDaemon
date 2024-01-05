@@ -67,7 +67,7 @@ Save it as <tt>/usr/lib/systemd/system/emacs@.service</tt> and then install it:
 systemctl daemon-reload 
 systemctl enable emacs@<user>
 systemctl start emacs@<user>
-}}}
+}}}History
 
 = Other Systems =
 
@@ -386,19 +386,26 @@ the daemon will fail to start.
 
 To solve the problem, we have to start the service after the graphical environment has already been loaded.
 
-=== KDE/Plasma ===
+If you already have emacs user service unit and are running modern systemd (since version 218), run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code> and add the following content:
 
-Add
-<pre>
-After=plasma-kwin_wayland.service
-</pre>
-to the <code>[Unit]</code> section. The <code>emacs.service</code> file would now look like:
+{{{
+[Unit]
+After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
+}}}
+
+Then run <code>$ systemctl --user restart emacs</code>
+
+NB: Unlike many other service units, you do _not_ want a "Requires=" or "Wants=" line corresponding to the "After=" line in these units. In current KDE, this will cause systemd to attempt to launch plasma-ksmserver early, which in turn tries to run some X11 commands before Xwayland is fully started. This causes the ksmserver to segfault, which causes other plasma components to crash, and will mess with your login in a variety of ways, including freezing the mouse and keyboard until they are reconnected, and being unable to launch any graphical windows in that session. This is probably a bug in current KDE's systemd integration. 
+
+Even if working correctly, in for both desktop environments, this also _prevents_ that user from being able log in to a non-graphical session without also launching all of the graphical environment when they try to log in to a text tty without a graphical environment already running, unless they systemctl isolate to a different target. This almost certainly isn't what most users want.
+
+If you don't have an emacs user service unit, put the following contents in <code>~/.config/systemd/user/emacs.service</code>
 
 {{{
 [Unit]
 Description=Emacs text editor
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
-After=plasma-kwin_wayland.service
+After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
 
 
 [Service]
@@ -410,58 +417,3 @@ Restart=on-failure
 [Install]
 WantedBy=default.target
 }}}
-
-Note that since modern emacs installations already ship a systemd --user service, you can use a drop-in instead. That is, instead of the above, add below contents to the file <code>~/.config/systemd/user/emacs.service.d/10-after-gfx.conf</code>:
-
-{{{
-[Unit]
-After=plasma-kwin_wayland.service
-}}}
-
-Then do:
-
-{{{
-systemctl --user daemon-reload
-systemctl --user enable --now emacs
-}}}
-
-and you should be set to go. (Or just run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code>)
-
-NB: Unlike many other service units, you do _not_ want a "Requires=" or "Wants=" line corresponding to the "After=" line in these units. This will cause systemd to attempt to launch plasma-ksmserver early, which in turn tries to run some X11 commands before Xwayland is fully started. This causes the ksmserver to segfault, which causes other plasma components to crash, and will mess with your login in a variety of ways, including freezing the mouse and keyboard until they are reconnected, and being unable to launch any graphical windows in that session. This is probably a bug in current KDE's systemd integration. However, even if working correctly this also _prevents_ that user from being able log in to a non-graphical session without also launching all of the kde graphical environment unlike you isolate to a different target. This almost certainly isn't what most users want.
- 
-=== GNOME ===
-
-Similarly, add
-<pre>
-Requires=org.gnome.Shell@wayland.service
-After=org.gnome.Shell@wayland.service
-</pre>
-to the <code>[Unit]</code> section. The <code>emacs.service</code> file would now look like:
-
-{{{
-[Unit]
-Description=Emacs text editor
-Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
-Requires=org.gnome.Shell@wayland.service
-After=org.gnome.Shell@wayland.service
-
-
-[Service]
-Type=forking
-ExecStart=emacs --daemon
-ExecStop=emacsclient --eval "(kill-emacs)"
-Restart=on-failure
-
-[Install]
-WantedBy=default.target
-}}}
-
-Similar to the KDE section, a drop-in at <code>~/.config/systemd/user/emacs.service.d/10-after-gfx.conf</code> can be used:
-
-{{{
-[Unit]
-Requires=org.gnome.Shell@wayland.service
-After=org.gnome.Shell@wayland.service
-}}}
-
-Then the <code>systemctl</code> commands shown there can be invoked.
