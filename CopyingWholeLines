@@ -57,6 +57,40 @@ This section presents some additional ways to copy a line, besides those availab
     (beginning-of-line (or (and arg (1+ arg)) 2))
     (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
+==== Contender for best overall imo for adding to standard emacs ====
+
+If no region is selected, copy the current line *and don't move point*.  When called multiple times, move to the next line and append it to the previous kill (of the previous line), preserving the current column.  Preserving the current column keeps point in the same horizontal position, allowing the user to focus on the content of the next line rather than be distracted by the point jumping to the front.
+
+When given a region, rectangular or otherwise, copy the region as usual.  It doesn't make sense to copy all lines in a region. 
+First, the former "best overall" didn't have arguments for beg/end, so the user had to manually select a region.  Selecting multiple lines is trivial (use ##C-<SPC>##).  There's nothing to automate since both functions have an argument for selecting N lines.  However, copying all lines in a region breaks functionality for rectangular select **and** breaks selecting a substring.  If the user selects a substring, the function should assume the user meant to do that and copy only that text.  It's only when no selection exists that it should assume the user meant the entire line.
+
+Try it and see if you agree!
+
+  (defun copy-region-or-lines (n &optional beg end)
+    "Copy region or the next N lines into the kill ring.
+
+  When called repeatedly, move to next line and append it to the
+  previous kill."
+    (interactive "p")
+    (let* ((repeatp (eq last-command 'copy-region-or-lines))
+           (kill-command
+            (if repeatp
+                #'(lambda (b e) (kill-append (concat "\n" (buffer-substring b e)) nil))
+              #'(lambda (b e) (kill-ring-save b e (use-region-p)))))
+           beg
+           end)
+      (if repeatp
+          (let ((goal-column (current-column)))
+            (next-line)))
+      (setq beg (or beg
+                    (if (use-region-p)
+                        (region-beginning)
+                      (line-beginning-position))))
+      (setq end (or end
+                    (if (use-region-p)
+                        (region-end)
+                      (line-end-position n))))
+      (funcall kill-command beg end)))
 
 ===== Simple copy line ======
     (defun copy-line (arg)
