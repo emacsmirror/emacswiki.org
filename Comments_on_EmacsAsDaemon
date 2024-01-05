@@ -98,3 +98,19 @@ After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
 
 -- Anonyme 2023-10-18 13:14 UTC
 
+
+----
+
+I think this is really what we want for a unified service unit:
+
+<code>
+[Unit]
+After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
+</code>
+
+Otherwise, it will try to launch the whole graphical environment (unless you systemct isolate) when you try to login to a text tty, as emacs will start, and then try to launch the desktop environments (I suspect trying to launch both of them will lead to even more issues).
+
+Just having the "After=" line makes it do the right thing in all three cases (including just starting in text mode if there is no graphics server available).
+
+-- Anonymous 2024-01-05 22:25 UTC
+
