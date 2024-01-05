@@ -59,10 +59,10 @@ This section presents some additional ways to copy a line, besides those availab
 
 ==== Contender for best overall imo for adding to standard emacs ====
 
-If no region is selected, copy the current line *and don't move point*.  When called multiple times, move to the next line and append it to the previous kill (of the previous line), preserving the current column.  Preserving the current column keeps point in the same horizontal position, allowing the user to focus on the content of the next line rather than be distracted by the point jumping to the front.
+If no region is selected, copy the current line /and don't move point/.  When called multiple times, move to the next line and append it to the previous kill (of the previous line), preserving the current column.  Preserving the current column keeps point in the same horizontal position, allowing the user to focus on the content of the next line rather than be distracted by the point jumping to the front.
 
 When given a region, rectangular or otherwise, copy the region as usual.  It doesn't make sense to copy all lines in a region. 
-First, the former "best overall" didn't have arguments for beg/end, so the user had to manually select a region.  Selecting multiple lines is trivial (use ##C-<SPC>##).  There's nothing to automate since both functions have an argument for selecting N lines.  However, copying all lines in a region breaks functionality for rectangular select **and** breaks selecting a substring.  If the user selects a substring, the function should assume the user meant to do that and copy only that text.  It's only when no selection exists that it should assume the user meant the entire line.
+First, the former "best overall" didn't have arguments for beg/end, so the user had to manually select a region.  Selecting multiple lines is trivial (use ##C-<SPC>##).  There's nothing to automate since both functions have an argument for selecting N lines.  However, copying all lines in a region breaks functionality for rectangular select /and/ breaks selecting a substring.  If the user selects a substring, the function should assume the user meant to do that and copy only that text.  It's only when no selection exists that it should assume the user meant the entire line.
 
 Try it and see if you agree!
 
@@ -89,9 +89,13 @@ Try it and see if you agree!
                     (if (use-region-p)
                         (region-end)
                       (line-end-position n))))
-      (funcall kill-command beg end)))
+      (funcall kill-command beg end)
+      ;; (if repeatp (message "%s" (car kill-ring)))
+      ))
 
   (global-set-key (kbd "M-w") 'copy-region-or-lines)
+
+For added usability, consider uncommenting the last expression which will show the copied lines in the minibuffer on successive calls.
 
 ===== Simple copy line ======
     (defun copy-line (arg)
