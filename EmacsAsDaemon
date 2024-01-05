@@ -81,8 +81,13 @@ Restart=on-failure
 WantedBy=default.target
 }}}
 
-===CentOS===
-CentOS 7 does not support <tt>--user</tt> configurations for systemd. Instead, you can use this unit file:
+
+= Other Systems =
+
+There are other ways to launch <code>emacs --daemon</code> depending on your requirements.
+
+===Legacy Systemd (eg RHEL/Centos 7)===
+EL 7 does not support <tt>--user</tt> configurations for systemd. Instead, you can use this unit file:
 {{{
 [Unit]
 Description=Emacs: the extensible, self-documenting text editor
@@ -104,17 +109,11 @@ Save it as <tt>/usr/lib/systemd/system/emacs@.service</tt> and then install it:
 systemctl daemon-reload 
 systemctl enable emacs@<user>
 systemctl start emacs@<user>
-}}}History
+}}}
 
-= Other Systems =
+===SysVinit===
 
-There are other ways to launch <code>emacs --daemon</code> depending on your requirements.
-
-===Debian===
-
-One easy way to start the Emacs daemon is via "Settings > Session and Startup > Application Autostart". 
-
-You can also place an init script to place in /etc/init.d/emacsd. Here are examples for GNU Debian/Ubuntu.  
+You can place an init script to place in /etc/init.d/emacsd. Here are examples for GNU Debian/Ubuntu.  
 
 * [DebianInitScript Init script example 1]
 
@@ -149,27 +148,6 @@ files for "multiplexed" user configuration.
 === NixOS ===
 
 Just add the relevant configuration option as described in the [https://nixos.org/nixos/manual/index.html#module-services-emacs-enabling manual]. To restart the daemon after changing the user configuration, run
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 {{{
 systemctl --user restart emacs
