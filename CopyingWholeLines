@@ -91,6 +91,8 @@ Try it and see if you agree!
                       (line-end-position n))))
       (funcall kill-command beg end)))
 
+  (global-set-key (kbd "M-w") 'copy-region-or-lines)
+
 ===== Simple copy line ======
     (defun copy-line (arg)
       "Copy lines (as many as prefix argument) in the kill ring"
