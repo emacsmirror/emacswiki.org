@@ -68,8 +68,8 @@ Try it and see if you agree!
 
   (defun copy-region-or-lines (n &optional beg end)
     "Copy region or the next N lines into the kill ring.
-  When called repeatedly, move to next line and append it to the
-  previous kill."
+  When called repeatedly, move to the next line and append it to
+  the previous kill."
     (interactive "p")
     (let* ((repeatp (eq last-command 'copy-region-or-lines))
            (kill-command
