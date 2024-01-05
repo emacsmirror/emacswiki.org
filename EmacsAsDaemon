@@ -44,7 +44,7 @@ systemctl enable --user emacs
 systemctl start --user emacs
 }}}
 
-== Wayland ==
+=== Wayland ===
 
 On wayland if we try to run the systemd service that comes along with emacs, some environment variables are not set when the daemon tries to start and
 the daemon will fail to start.
