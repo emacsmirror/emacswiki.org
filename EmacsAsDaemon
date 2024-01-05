@@ -190,7 +190,7 @@ To set environment variable(s) for the daemon, add an <code>EnvironmentVariables
 You can run <tt>emacs --daemon</tt> by creating a shortcut file or .bat file in the startup folder. See EmacsMsWindowsIntegration for details.
 
 
-= Stopping the Emacs Daemon =
+= Stopping the Emacs Daemon without Systemd =
 
 The simplest way to stop the emacs daemon from within emacs is to use the <code>kill-emacs</code> or <code>save-buffers-kill-emacs</code> commands.
 
