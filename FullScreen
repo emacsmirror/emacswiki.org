@@ -25,13 +25,13 @@ A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI
 See also the devilspie2 section in this article if you prefer a X Window tiling program instead.
 
 ====Cross platform====
-The distracting visual effect is caused by loading .emacs in GNU/Linux. So you have to add the code to the the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the init file (thanks Chad):
+The distracting visual effect is caused by loading the ##init file## in GNU/Linux. So you have to add the code to the the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the init file (thanks Chad):
 
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
-It works even if it takes time to load a typical .emacs configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
+It works even if it takes time to load a typical ##init file## configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
 
 The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
 
@@ -41,7 +41,7 @@ Essentially the code above will make emacs behave like `emacs --maximize` automa
 
 ====Windows====
 In Windows you can prevent the distracting visual effect by either:
-* Solution 1: Making a conventional ##.emacs## configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading .emacs like in GNU/Linux. Therefore this can be added to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html init file for Windows] but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
+* Solution 1: Making a conventional ##init file## configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading the ##init file## like in GNU/Linux. Therefore this can be added to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html init file for Windows] but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
 
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
@@ -51,8 +51,8 @@ In Windows you can prevent the distracting visual effect by either:
 (set-frame-position nil 0 0)
 (set-frame-size nil (display-pixel-width) (display-pixel-height) t)
 }}}
-The ##set*## lines are responsible to prevent the distracting visual effect in .emacs, and they will position the window in the top left position that is seen for 0.2 seconds before it is maximized which preferred since it will make the window border overlap each other. However, they have no impact when used in early-init.el, but it does not matter because `(push '(fullscreen . maximized) default-frame-alist)` is sufficient to prevent the distracting visual effect in early-init.el
-* Solution 2: Configuring ##.emacs.d/early-init.el## -- see the previous section. However, some people like to keep all configuration in .emacs (see Solution 1) above. Also, the initial frame buffer that is seen for about 0.2 seconds is positioned in the middle of the screen before it is maxmized, which is a bit more annoying that Solution 1.
+The ##set*## lines in ##init file## are responsible to prevent the distracting visual effect in the, and they will position the window in the top left position that is seen for 0.2 seconds before it is maximized which preferred since it will make the window border overlap each other. However, they have no impact when used in early-init.el, but it does not matter because `(push '(fullscreen . maximized) default-frame-alist)` is sufficient to prevent the distracting visual effect in early-init.el
+* Solution 2: Configuring the ##early init file## -- see the previous section. However, some people like to keep all configuration in the ##init file## (see Solution 1) above. Also, the initial frame buffer that is seen for about 0.2 seconds is positioned in the middle of the screen before it is maxmized, which is a bit more annoying that Solution 1.
 * Solution 3: Add an ‘Emacs.Geometry’ entry to the Windows Registry settings. (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows). Not completely documented yet.
 
 [:frame-cmds.el]
