@@ -32,7 +32,7 @@ WantedBy=default.target
 
 === Graphical Emacs ===
 
-If the graphical environment is unavailable when the emacs daemon launches, it will launch in text only mode, which means that text emacsclient sessions (inside of a terminal) will launch, but graphical emacsclient sessions will fail. Unfortunately, especially on Wayland, this is easily triggered even with a graphical login manager. We have to instruct systemd to wait until /after/ the graphical environment is available before starting emacs if it's trying to start them at the same time.
+If the graphical environment is unavailable when the emacs daemon launches, it will launch in text only mode, which means that text emacsclient sessions (inside of a terminal) will launch, but graphical emacsclient sessions will fail. Unfortunately, on Wayland this is easily triggered even with a graphical login manager (on X11 this is usually only encountered if first logging into a plain tty, starting the emacs daemon, then later starting the X11 environment). We have to instruct systemd to wait until /after/ the graphical environment is available before starting emacs if it's trying to start them at the same time.
 
 If you already have an emacs user service unit and are running modern systemd (since version 218), run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code> and add the following content:
 
