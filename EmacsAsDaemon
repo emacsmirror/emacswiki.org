@@ -1,7 +1,7 @@
 Emacs supports a client/server mode where new files are opened in a running instance of Emacs. This saves you from having to load configuration and packages for every new file you open. This involves two configuration steps: using EmacsClient to open files, and running the Emacs server. This page focuses on how to launch the server at startup, a.k.a. daemon mode.
 
 
-= Running emacs like a Daemon  =
+= Running Emacs as a Daemon  =
 
 This feature was introduced in Emacs 23.1.  Daemon mode starts Emacs loading the user's standard init files, but headless.  The command to run it is: 
 
