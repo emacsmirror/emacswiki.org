@@ -1,5 +1,6 @@
 [font=Comic Sans MS] I'm a programmer from Canada. I like tea 🍵[/font]
 
+[:Tips]
 == Helpful Tips💡==
 
 `C-c' is reserved for the user to remap. I use it for often-used commands:
@@ -19,6 +20,7 @@ M-m      - First non-whitespace character
 
 * ##M-x telnet## doesn't work on Windows :(
 
+[:Email]
 == Email 💌 ==
 
 I '''LOVE''' rmail. rmail is small, and simple. it uses emacs' built-in sendmail-mode for composition, and emacs' bulilt-in SMTP facility. But...:
@@ -60,6 +62,7 @@ Emacs has *no* built-in ##rust-mode##. This approach requires:
 * Company mode may be installed from *ELPA*
 * Eglot and Tree-sitter come built-into Emacs.
 
+[:SeeAlso]
 == See Also 🔗 ==
 
 Fun built-in packages:
@@ -92,6 +95,7 @@ Links to pages here on the Wiki that I feel need additional editing or care, but
 * [[Eglot]] -- Needs page ;-;
 * [[EmacSpeak]] -- TTS cuz *accessibility is important*
 
+[:Links]
 == Links 🌏 ==
 
 * I maintain the [[Melonesque]] wiki theme.
