@@ -44,11 +44,9 @@ WantedBy=default.target
 
 (Modern emacs uses a different unit file, which relies on the --fg-daemon option introduced in version 26.)
 
-=== Wayland ===
+=== Graphical Emacs ===
 
-On wayland if we try to run the systemd service that comes along with emacs, some environment variables are not set when the daemon tries to start and it will fall back to running in text-only mode.
-
-To solve the problem, we have to start the service after the graphical environment has already been loaded.
+If the graphical environment is unavailable when the emacs daemon launches, it will launch in text only mode, which means that text (inside of a terminal) emacsclient sessions will launch, but graphical emacsclient sessions will fail. Unfortunately, especially on Wayland, this is easily triggered even with a graphical login manager. We have to instruct systemd to wait until /after/ the graphical environment is available before starting emacs if it's trying to start them at the same time.
 
 If you already have emacs user service unit and are running modern systemd (since version 218), run <code>$ EDITOR=emacs systemctl --user edit emacs.service --drop-in=10-after-gfx</code> and add the following content:
 
@@ -110,6 +108,10 @@ systemctl daemon-reload
 systemctl enable emacs@<user>
 systemctl start emacs@<user>
 }}}
+
+=== X11 without Systemd ===
+
+add <code>/usr/bin/emacs --daemon</code> to your <code>~/.xinitrc</code>
 
 ===SysVinit===
 
