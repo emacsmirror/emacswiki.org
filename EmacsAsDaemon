@@ -97,7 +97,7 @@ systemctl enable emacs@<user>
 systemctl start emacs@<user>
 }}}
 
-=== X11 without Systemd ===
+=== startx ===
 
 add <code>/usr/bin/emacs --daemon</code> to your <code>~/.xinitrc</code>
 
