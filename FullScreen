@@ -41,7 +41,7 @@ Essentially the code above will make emacs behave like `emacs --maximize` automa
 
 ====Windows====
 In Windows you can prevent the distracting visual effect by either:
-* Solution 1: Making a conventional [[InitFile|init file]] configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading the ##init file## like in GNU/Linux. Therefore this can be added to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html init file for Windows] but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
+* Solution 1: Making a conventional ##init file## configuration (https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Fullscreen-mode-on-MS_002dWindows) -- In Windows, the distracting visual effect is NOT caused by loading the ##init file## like in GNU/Linux. Therefore this can be added to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html init file for Windows] but it must be added to the ''top of the file'' to avoid other configuration to load first that will cause a distracting visual effect:
 
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
