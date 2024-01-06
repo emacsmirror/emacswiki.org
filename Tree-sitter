@@ -10,7 +10,7 @@ Tree-sitter offers different features than emacs' native parser. two things are 
 
 === Step 1 ===
 
-Emacs can automatically install a tree-sitter parser with `treesit-install-language-grammar'. If you have a C compiler installed, it will prompt for a language name.
+Emacs can automatically install a tree-sitter parser with `treesit-install-language-grammar'. If you have a C compiler installed, it will prompt for a language name. If the language name is in the [[https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/master/repos list of supported languages]], the Git repo is automatically filled in.
 
 <pre>
 M-x treesit-install-language-grammar
