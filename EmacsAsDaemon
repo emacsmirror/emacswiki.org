@@ -55,9 +55,7 @@ Unlike many other service units, you do _not_ want a "Requires=" or "Wants=" lin
 
 With only the "After=" directive, systemd will do the right thing and delay emacs's launch if it is being started as part of a graphical login, and let it start in text mode if there's no graphics server available. If the user wants to do some work in text mode and then latter open graphical windows (eg working in a tty then also opening a graphical session), they will have to issue <code>$ systemctl --user restart emacs</code> after, which is just a limitation of how emacs (*cough* the gtk...) handles graphical environments.
 
-= Running Emacs as a Daemon From the Shell =
-
-The command to run it is: 
+= Running Emacs as a Daemon From the Shell = 
 
 <pre>
 emacs --daemon
