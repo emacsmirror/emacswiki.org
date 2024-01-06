@@ -61,22 +61,10 @@ Unlike many other service units, you do _not_ want a "Requires=" or "Wants=" lin
 
 With only the "After=" directive, systemd will do the right thing and delay emacs's launch if it is being started as part of a graphical login, and let it start in text mode if there's no graphics server available. If the user wants to do some work in text mode and then latter open graphical windows (eg working in a tty then also opening a graphical session), they will have to issue <code>$ systemctl --user restart emacs</code> after, which is just a limitation of how emacs (*cough* the gtk...) handles graphical environments.
 
-If you don't have an emacs user service unit, put the following contents in <code>~/.config/systemd/user/emacs.service</code>
+If your systemd doesn't have the edit command or support for their drop-in framework, add the following line the <code>[Unit]</code> section of the service file provided in the section above:
 
 {{{
-[Unit]
-Description=Emacs text editor
-Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 After=graphical-session.target
-
-[Service]
-Type=forking
-ExecStart=emacs --daemon
-ExecStop=emacsclient --eval "(kill-emacs)"
-Restart=on-failure
-
-[Install]
-WantedBy=default.target
 }}}
 
 
