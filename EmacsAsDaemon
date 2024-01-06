@@ -54,7 +54,7 @@ If you already have emacs user service unit and are running modern systemd (sinc
 
 {{{
 [Unit]
-After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
+After=graphical-session.target
 }}}
 
 Then run <code>$ systemctl --user restart emacs</code>
@@ -69,7 +69,7 @@ If you don't have an emacs user service unit, put the following contents in <cod
 [Unit]
 Description=Emacs text editor
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
-After=plasma-kwin_wayland.service org.gnome.Shell@wayland.service
+After=graphical-session.target
 
 [Service]
 Type=forking
