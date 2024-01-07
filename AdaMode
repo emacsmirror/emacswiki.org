@@ -4,7 +4,7 @@ Project page:
 
 * http://www.nongnu.org/ada-mode/
 
-The current [::ada-mode] maintainer is StephenLeake, [http://stephe-leake.org/] who maintains the code in GNU ELPA and periodically publishes updated versions on the project page.
+The current [::ada-mode] maintainer is StephenLeake, [http://stephe-leake.org/] who maintains the code in GNU ELPA and periodically publishes updated versions on the project page.  (As of 23Nov04, Stephen has decided to retire from development https://lists.nongnu.org/archive/html/ada-mode-users/2023-11/msg00000.html).
 
 Related packages:
 
