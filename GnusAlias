@@ -62,3 +62,7 @@ to this:
                 (not (file-directory-p element))))
 
 Now the extra fcc header works as I think it should. - Geoff Ferrari
+
+----
+
+CategoryGnus CategoryMail
