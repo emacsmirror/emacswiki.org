@@ -1,10 +1,9 @@
 [[de:Easy_PG]]
-!EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
+!EasyPG is an all-in-one GnuPG interface for Emacs. It has two aspects: convenient tools to use !GnuPG from Emacs (##epa##), and a fully functional interface library to !GnuPG (##epg##).
 
-Homepage:
-
-* http://epg.sourceforge.jp/ (epa-file.el part of GNU emacs.  See http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el for source.)
-* You can find the manual here: http://www.gnu.org/software/emacs/manual/epa.html (or from Emacs, with `C-h i m EasyPG Assistant RET').
+* [[http://epg.sourceforge.jp/ Home page]]
+* [[http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el Source code]]
+* [[http://www.gnu.org/software/emacs/manual/epa.html Manual]] (`C-h i m EasyPG RET')
 
 == Files ==
 
