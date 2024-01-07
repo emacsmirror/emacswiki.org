@@ -2,3 +2,284 @@ So I'm gonna move some comments to this section, uwu
 
 -- [https://www.emacswiki.org/emacs/muto muto] 2024-01-07 17:20 UTC
 
+----
+
+The GUI password prompt pops up if you use the ##--use-agent## flag on ##gpg##. !EasyPG adds this flag if it sees an environment variable that looks like:
+
+{{{
+GPG_AGENT_INFO=/tmp/seahorse-nDQm50/S.gpg-agent:6321:1
+}}}
+
+(Use ##getenv GPG_AGENT_INFO## to check). In this example, ##seahorse## is installed (the default in Ubuntu). Uninstalling Seahorse may force !EasyPG to use the minibuffer prompt.
+
+-- [[DanielClemente]] 2024-01-07 17:20 UTC
+
+----
+
+I have the same problem. And in console emacs23 can pop up nothing, so it hang there, you have to use ##C-g## quit it. For my Gentoo system, I compile the package 'pinentry' without gtk qt3 ncurses. It caused emacs23 hang both in X or console. I notice that pinentry did not have the readline USE in recent  version.
+
+I found the thread to fix it.
+https://web.archive.org/web/20090204142256/http://www.nabble.com/gnupg-interface-td17242718.html
+
+1. Install the latest GnuPG 1.x along with 2.x and let epg-gpg-program
+   to point the executable, or
+
+2. Use other pinentry-program which interact through the windowing system
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+I generally don't mind the graphical password prompt when I'm at my desk, but when logged into a remote terminal with ##multi-tty## this can be darn inconvenient (I have to VNC into my desktop just to enter the password!)
+
+[[http://www.enigmacurry.com/2009/01/14/extending-emacs-with-advice/ Here is my solution]] that turns off the use of the agent in these cases.
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+How about ##(setenv "GPG_AGENT_INFO" nil)##
+
+Another form is: ##(setenv (concat "GPG_AGENT_INFO" nil))##
+
+: This did it for me in emacs 23 : nice solution.
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+Yes but when you use the command line the pinentry widget will popup.
+
+On the !GnuPG homepage:
+
+: GnuPG comes in two flavours: ##1.4.9## is the portable standalone version. ##2.0.11##
+is the enhanced and somewhat harder to build version.
+
+IMHO The best solution seem to use 1.4.9.
+
+-- ThierryVolpiatto 2024-01-07 17:20 UTC
+
+----
+
+Uninstalling seahorse doesn't work for me (gentoo) - even though ##GPG_AGENT_INFO## is unset I still get the graphical password prompt %%*scowl*%%
+
+----
+
+I used to use this to temporarily unset the ##GPG_AGENT_INFO## environment variable if running in terminal:
+
+    ;; Do not use gpg agent when runing in terminal
+    (defadvice epg--start (around advice-epg-disable-agent activate)
+      (let ((agent (getenv "GPG_AGENT_INFO")))
+        (when (not (display-graphic-p))
+          (setenv "GPG_AGENT_INFO" nil))
+        ad-do-it
+        (when (not (display-graphic-p))
+          (setenv "GPG_AGENT_INFO" agent))))
+
+If you use emacsclient and sometimes over plaintext ssh, sometimes in X, this will alter the behaviour on-the-fly:
+
+    (defun epg--gpg-agent (orig-fun &rest args)
+       "Don't allow epg--start to use gpg-agent in plain text terminals."
+        (if (display-graphic-p)
+            (apply orig-fun args)
+          (let ((agent (getenv "GPG_AGENT_INFO")))
+            (setenv "GPG_AGENT_INFO" nil) ; give us a usable text password prompt
+            (apply orig-fun args)
+            (setenv "GPG_AGENT_INFO" agent))))
+
+    (advice-add 'epg--start :around #'epg--gpg-agent))
+    
+Note also there's a bug in pinentry in GnuPG2, if you run Arch Linux you could install gnupg1 and do <code>(when (file-executable-p "/usr/bin/gpg1") (setq epg-gpg-program "/usr/bin/gpg1"))</code> to make it use gpg1 on your Arch boxen.
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+I now use [[http://unix.stackexchange.com/questions/55638/can-emacs-use-gpg-agent-in-a-terminal-at-all/278875#278875 this method]] instead.
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+I removed ##gpg-agent##. Of course, it totally solved the problem with the GUI dialog. In Ubuntu, ##gpg-agent## is used by default as a replacement for ##ssh-agent##. When ##gpg-agent## is deleted, ##ssh-agent## is used. So, no visible losses.
+
+--[[DmitriMinaev]] 2024-01-07 17:20 UTC
+
+----
+
+There's another, more straightforward solution, which should yield the desired result with both gpg1 and gpg2, and doesn't require you to disable the GPG agent.
+Add the following line to ~/.gnupg/gpg-agent.conf:
+
+    pinentry-program /usr/bin/pinentry-curses
+
+-- Unknown 2024-01-07 17:20 UTC
+
+: Kludging ##GPG_TTY## to get appropriate pinentry for each terminal or GUI frame
+
+gpg-agent adheres to DISPLAY if set, and GPG_TTY if otherwise, to decide where and how to perform pinentry.  If you use emacs --daemon with a mix of GUI and console terminal, GPG_TTY was probably inherited from emacs --daemon's shell and will be totally irrelevant and wrong; on the other hand, if you open even one GUI emacsclient frame at any time, gpg-agent/pinentry will attempt to use that frame's setting of DISPLAY.  So I made this small function to manipulate DISPLAY and GPG_TTY when the user changes emacsclients.
+
+{{{
+(defun wg/kludge-gpg-agent ()
+  "Setting GPG_TTY to get appropriate pinentry for each terminal or GUI frame."
+  (if (display-graphic-p)
+      (setenv "DISPLAY" (terminal-name))
+    (progn (setenv "GPG_TTY" (terminal-name))
+           (setenv "DISPLAY"))))
+
+(add-hook 'window-configuration-change-hook #'wg/kludge-gpg-agent)
+}}}
+
+N.B.: This hack used to use <code>after-make-frame-functions</code>, but <code>window-configuration-change-hook</code> works more smoothly, as it now handles the case of switching between existing emacsclient frames as well as making new ones.
+
+--[[wgreenhouse]] 2024-01-07 17:20 UTC
+
+----
+
+With Emacs 23 and the default epg that comes bundled.  I am able to save (and encrypt) a ##*.gpg## file, but when I try to reopen it in emacs, I get the following:  ##File exists, but cannot be read##.  I am able to decrypt it fine outside of emacs with ##gpg -d##
+
+Running ##M-x epa-decrypt-file RET FILENAME## on the same file gives the following error:
+'Decrypting test4.gpg...0% (0/674)
+epg-decrypt-file: Wrong type argument: listp, exit
+'
+
+Any thoughts or comments would be much appreciated!!
+
+-- Unknown 2024-01-07 17:20 UTC
+
+You can use public key to save(encrypt) a *.gpg file, and only use private key to (re)open(or decrypt) it. If you are the public key's owner, you can use command
+
+   gpg -o [fn] --export-private-keys -a
+
+to get it and import it to your system.
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+I was getting the error 'File exists, but cannot be read' because emacs could not find the gpg command.
+
+Another way to test if emacs can find it would be to do M-x epa-list-keys
+
+-- johan 2024-01-07 17:20 UTC
+
+----
+
+With Emacs 23 epa-list-keys was working correctly but trying to open a gpg file gave me the error: 'File exists, but cannot be read'
+Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again.
+
+-- goibhniu 2024-01-07 17:20 UTC
+
+----
+
+goibhniu: I think this may be a problem with the gpg-agent.  I've had it on a Mac and was able to fix it by uninstalling and reinstalling GPG Tools.  Here are some useful links:
+
+http://comments.gmane.org/gmane.emacs.bugs/65815
+(Hehe, apparently rms himself ran into a problem.)
+
+http://support.gpgtools.org/discussions/everything/2128-gpg-error
+
+-- dm 2024-01-07 17:20 UTC
+
+----
+
+One reason for 'File exists, but cannot be read' can be that it cannot find gpg.  It is a shame that the error message is so bad.
+
+To fix, you can either set epg-gpg-program to the full path (e.g. /sw/bin/gpg2) or set it to a relative path (e.g. gpg2) and make sure that exec-path contains the right directory.  Setting $PATH from inside Emacs is NOT adequate, it has to be in exec-path.  (Setting $PATH outside Emacs would probably do but with Emacs.app invoked from Finder that might not be convenient.)
+
+-- rjk 2024-01-07 17:20 UTC
+
+----
+
+I found a problem when I use [[Wanderlust]] Version 201107150352 with EasyPG 0.0.16(is this the last one?). I changed Wanderlust throught the emacs customization to put a default "Bcc" pointing to my own mail so I have copies of whatever I send.
+
+    ; In ~/.emacs says:
+    '(wl-bcc "My name <my-mail@the-server.com>
+
+When I try to send an encrypted mail, for example to myself, it's says something like
+
+    "No public key for my-mail@the-server.com,my-mail@the-server.com; skip it?".
+
+To solve this problem, you must download the source code of epg, and edit epa-mail.el.
+In the implementation of the function epa-mail-encrypt:
+
+    ;;;###autoload
+    (defun epa-mail-encrypt (start end recipients sign signers)
+
+there are some lines that says as follow:
+
+       (if recipients
+           (setq recipients (delete ""
+                                    (split-string recipients "[ \t\n]+"))))
+
+Just change them to this ones:
+
+       (if recipients
+           (setq recipients (delete ""
+                                    (split-string recipients "[, \t\n]+"))))
+
+
+-- Unknown 2024-01-07 17:20 UTC
+
+----
+
+Customized the function epa-mail-encrypt (EasyPG version 23.1; Emacs 23.4.1) to encrypt a body of the Gnus message (compatible with the mymail-crypt Chrome extension):
+{{{
+(require 'epa-mail)
+
+(defun epa-mail-encrypt-message ()
+  "Encrypt the current mail message."
+  (interactive)
+  (save-excursion
+    (let ((verbose current-prefix-arg)
+          (context (epg-make-context epa-protocol)))
+
+      (goto-char (point-min))
+      (save-restriction
+        (setq recipients
+              (mail-strip-quoted-names
+               (mapconcat #'identity
+                          (nconc (mail-fetch-field "to" nil nil t)
+                                 (mail-fetch-field "cc" nil nil t)
+                                 (mail-fetch-field "bcc" nil nil t))
+                          ","))))
+      (if recipients
+          (setq recipients (delete ""
+                                   (split-string recipients "[, \t\n]+"))))
+      (setq epa-last-coding-system-specified
+            (or coding-system-for-write
+                (epa--select-safe-coding-system (point) (point-max))))
+      (let ((recipient-keys
+             (if verbose
+                 (epa-select-keys
+                  context "Select recipients for encryption."
+                  recipients)
+               (if recipients
+                   (mapcar
+                    (lambda (recipient)
+                      (setq recipient-key
+                            (epa-mail--find-usable-key
+                             (epg-list-keys
+                              (epg-make-context epa-protocol)
+                              (concat "<" recipient ">"))
+                             'encrypt))
+                      (unless (or recipient-key
+                                  (y-or-n-p
+                                   (format
+                                    "No public key for %s; skip it? "
+                                    recipient)))
+                        (error "No public key for %s" recipient))
+                      recipient-key)
+                    recipients)))))
+        (print recipient-keys)
+        (message-goto-body)
+        (epa-encrypt-region (point) (point-max) recipient-keys nil nil)))))
+
+;; run as the last when the message buffer has been initialized
+(add-hook
+ 'message-setup-hook
+ (lambda ()
+   (define-key message-mode-map "\C-c\C-mcb" 'epa-mail-encrypt-message)))
+
+}}}
+
+-- Unknown 2024-01-07 17:20 UTC
