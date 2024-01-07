@@ -1,15 +1,17 @@
-When your ls emits ANSI color escape sequences in eshell, then you're not calling the builtin eshell/ls.  This usually happens when you use command-line parameters not handled by the builtin.  Some init files will alias 'ls' to 'ls --color=yes', for example.
+: This is not necessary as of Emacs 23
 
-In order for eshell to understand these commands, you have to add an output filter.  You can do this with CVS Emacs (as of 2008-09-28) by customizing eshell-output-filter-functions or by adding the following to your .emacs:
+When ##ls## emits ANSI color escape sequences in [[Eshell]], then you're not calling the builtin ##eshell/ls##.  This usually happens when you use *command-line parameters* not handled by the builtin. Some init files will alias ##ls## to ##ls --color=yes##, for example.
 
-    (require 'ansi-color)
-    (require 'eshell)
-    (defun eshell-handle-ansi-color ()
-      (ansi-color-apply-on-region eshell-last-output-start
-                                  eshell-last-output-end))
-    (add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
+In order for eshell to understand these commands, you have to add an output filter by customizing ##eshell-output-filter-functions## or by adding the following to your .emacs:
 
-This should no longer be necessary in Emacs 23+.
+{{{
+(require 'ansi-color)
+(require 'eshell)
+(defun eshell-handle-ansi-color ()
+  (ansi-color-apply-on-region eshell-last-output-start
+                              eshell-last-output-end))
+(add-to-list 'eshell-output-filter-functions 'eshell-handle-ansi-color)
+}}}
 
 ----
 CategoryEshell
