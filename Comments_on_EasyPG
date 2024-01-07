@@ -283,3 +283,15 @@ Customized the function epa-mail-encrypt (EasyPG version 23.1; Emacs 23.4.1) to 
 }}}
 
 -- Unknown 2024-01-07 17:20 UTC
+
+----
+
+: Can't save / sign with GnuPG2.1 and Emacs <25
+
+[[http://git.savannah.gnu.org/cgit/emacs.git/commit/?h=emacs-24&id=dbae12c5 This patch]] fixes the bug where you can't save or sign emails when using ##gnupg >= 2.1## with emacs <25. If you can't upgrade emacs yet, you can stick that whole version of ##epg--list-keys-1## in your InitFile to fix it.
+
+(The error message on saving is something unhelpful like
+Opening output file: [pub u 2048 1 912606D3301A36CC 2317511021 nil nil u nil ...], 15
+though the backtrace does end up with epg--list-keys-1)
+
+-- Unknown 2024-01-07 17:20 UTC
