@@ -118,7 +118,7 @@ This advice is intended to be used like this:
 
 === Code generation helpers ===
 ====python-mode skeletons====
-The built-in python-mode comes with several skeletons (see Manual:autocomplete ) and key bindings for functions to insert them (`python-skeleton-<foo>').  They can be inserted automatically if you have `abbrev-mode' activated and `python-skeleton-autoinsert' set to `t'.
+The built-in python-mode comes with several skeletons and key bindings for functions to insert them (`python-skeleton-<foo>').  They can be inserted automatically if you have `abbrev-mode' activated and `python-skeleton-autoinsert' set to `t'.
 ====yasnippet====
 [[Yasnippet]] comes with a broad set of templates for Python.
 ====sphinx-doc====
