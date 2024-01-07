@@ -1,5 +1,5 @@
 [[es:EmacsHabla(Emacspeak)]]
-EmacSpeak is a *text-to-speech* environment for Emacs. It uses modern techniques
+!EmacSpeak is a *text-to-speech* environment for Emacs. It uses modern techniques
 to read the contents of the buffer using a *speech synthesizer*. It is helpful
 for visually-impaired users.
 
