@@ -48,8 +48,8 @@ make config && make
 
 Some requirements for this setup:
 
-* The [b]IBM <nowiki>ViaVoice</nowiki> TTS Runtime-kit for Linux[/b]
-* The [b]IBM <nowiki>ViaVoice</nowiki> TTS SDK for Linux[/b]
+* The [b]IBM !ViaVoice TTS Runtime-kit for Linux[/b]
+* The [b]IBM !ViaVoice TTS SDK for Linux[/b]
 
 You may try searching the Web for the above two packages.
 
@@ -66,7 +66,7 @@ alien -i filename.rpm
 
 Required: ##tclx##, so on Debian, ##apt-get install tclx8.3 tclx8.3-dev## first.
 
-The Emacspeak *Outloud speech server* allows Emacspeak to interface with <nowiki>ViaVoice</nowiki>. It
+The Emacspeak *Outloud speech server* allows Emacspeak to interface with !ViaVoice. It
 is in the ##servers/linux-outloud## folder in Emacspeak. The ##NOTES## file in this directory describes compilation.
 
 : You may need to change the ##-ltcl## option in the Makefile to something like ##-ltcl8.3##.
