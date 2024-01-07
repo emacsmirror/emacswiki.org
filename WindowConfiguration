@@ -4,7 +4,7 @@ A window configuration is the layout of the various [[window]]s in an Emacs
 or redo changes to the window configuration.
 
 * Saving and restoring window configurations -> WindowsMode, PolicySwitch, [https://github.com/alphapapa/burly.el Burly.el]
-* Switching back and forth between configurations -> WinnerMode
+* Switching back and forth between configurations -> WinnerMode, [https://github.com/nex3/perspective-el Perspective-el], [https://github.com/nex3/perspective-el?tab=readme-ov-file#similar-packages Some more packages]
 * Storing them in registers and restoring them from there -> WindowsAndRegisters 
 * Saving and loading of window configurations, animated window configuration morphing -> WorkgroupsForWindows
 
