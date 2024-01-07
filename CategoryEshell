@@ -8,7 +8,7 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 * [EshellAlias Aliases] -- Alias ##open## to ##open-file## etc.
 * [EshellFunctions Functions] -- Writing functions in Eshell
 * [EshellForLoop For Loops] -- Writing loops like ##for x in a b c do ...##
-* [EshellGlobbin Globbing] -- Expanding wildcards such as ##*.txt##
+* [EshellGlobbing Globbing] -- Expanding wildcards such as ##*.txt##
 * [EshellAutojump Auto-Jump] -- use `j' to jump to your favorite directories
 * [EshellBackticks Backticks] -- Replace a command in ##`backticks`## with its output.
 
