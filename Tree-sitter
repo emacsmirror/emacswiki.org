@@ -68,7 +68,7 @@ this checks if it's a ts mode then runs their counterparts.
 -- MahmoudAdam
 == History ==
 
-Historically, Emacs, like many editors, has used heuristics (often [https://www.emacswiki.org/emacs/RegularExpression/ regular expressions]) for approximating the parse of a language to do syntax highlighting and code navigation in order to do it quickly.
+Historically, Emacs, like many editors, has used heuristics (often [[RegularExpression|regular expressions]]) for approximating the parse of a language to do syntax highlighting and code navigation in order to do it quickly.
 
 == External Links ==
 
