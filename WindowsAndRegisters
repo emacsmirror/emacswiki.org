@@ -3,9 +3,10 @@ left, the calendar at the top right, and a text file at the bottom
 right.  When you start reading news in Gnus, this window configuration
 will be changed.
 
-A simple way to deal with this is to use [[register]]s.  Store your favorite
-window configurations in registers, and jump to them later.
-This is the easiest solution if you've been using registers for other things, too.
+One simple way to deal with this is to use [[register]]s. Store your
+favorite window configurations in registers, and jump to them later.
+This is the easiest solution if you've been using registers for other
+things, too.
 
 Registers are referred to by a single character, therefore, you can
 use register 1, 2, a, b, etc.
@@ -24,7 +25,11 @@ It would be nice if Emacs saved the configurations in a file after exiting, espe
 
 http://EMacro.sf.net/ has example code in e-common.el, which detects if you are in a GUI environment. When you run the ediff command, it widens Emacs to 2 side-by-side windows. When you are done, EMacro restores Emacs to its previous size.
 
-'''See also:''' FramesAndRegisters for similar commands for saving and restoring frame configurations.
+'''See also:'''
+* [https://github.com/alphapapa/burly.el Burly] -- package for saving and restoring frame and window configurations in your bookmarks.
+* FramesAndRegisters for similar commands for saving and restoring frame configurations.
+
+
 
 ----
 Here is a workspace implementation, working as workspaces on windows managers. That means that you have 9 workspaces, from 1 to 9, and you can switch from one to another, they are alway saved.
