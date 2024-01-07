@@ -1,11 +1,103 @@
+This is a set of tutorials to get started using [[GnuPG|GPG]] from Emacs. It focuses on using EasyPG and GPG2.
+
+== About ==
+
+GPG is a *cryptography* tool. You use it to create and use a *keypair*:
+
+* One key for *encrypting* files (public, give it to anyone)
+* One key for *decrypting* files (private, keep it secret)
+
+== Using GPG2 in the Terminal ==
+
+=== Creating a Key ===
+
+Create a keypair for yourself using the command-line interface:
+
+{{{
+gpg2 --quick-generate-key "me <me@example.com>"
+}}}
+
+This will generate a key associated with the string ##"me <me@example.com>##. You will be prompted to give your key a password.
+
+=== Exporting a Key ===
+
+You can export your public and private keys to files using the commands:
+
+{{{
+gpg2 --armor --export me@example.com > public.key
+gpg2 --armor --export-secret-key me@example.com > private.key
+}}}
+
+=== Importing a Key ===
+
+Import someone else's public key if you wish to send them secret messages:
+
+{{{
+gpg2 --import my-friends-public.key
+}}}
+
+If their key string is ##"Friend <friend@example.com>"##, you can encrypt a ##file.txt## for them using
+
+{{{
+gpg2 -r friend@example.com --encrypt file.txt
+}}}
+
+=== Encrypting and Decrypting ===
+
+Encrypt a file for yourself using your key's keystring:
+
+{{{ 
+gpg2 -r me@example.com --encrypt file.txt
+}}}
+
+This will generate ##file.txt.gpg## and you can delete the original ##file.txt##.
+
+Decrypt a file with
+
+{{{
+gpg2 --decrypt file.txt.gpg
+}}}
+
+You will be prompted for your key's password.
+
+== Using EPA in Emacs ==
+
+EPA is Emacs' interface to GPG. It's not fully-featured but it has many good commands for managing keys.
+
+=== Starting EPA ===
+
+Run ##M-x epa-list-keys## to list your system's keyring.
+
+: EPA cannot generate keys. Do this from ##gpg## or ##gpg2##.
+
+=== Exporting a Key ===
+
+In your key list, mark a key using ##m##, then press ##o## to start exporting your key.
+
+To export in ASCII, set ##epa-armor## to ##t##.
+
+: EPA can *only* export your public key. 
+
+=== Importing a Key ===
+
+Use ##i## to import a key into your keyring.
+
+=== Encrypting / Decrypting ===
+
+Use ##epa-encrypt-file## and select the file to encrypt. You'll be prompted to select a key for encryption.
+
+Use ##epa-decrypt-file## to decrypt a file back into plaintext.
+
+== TODO ==
+
 We need some basic tutorial on how to get started using GPG from Emacs before we start talking about using [[GnuPG]] and various email clients.
 
 Here are some ideas from a thread on Mastodon:
 
-* how to create a key for yourself 
-* import somebody else's key 
-* encrypt a file for unlocking with  your own key
-* encrypt a file for unlocking with an imported key
+* [s]how to create a key for yourself[/s]
+* [s]import somebody else's key[/s]
+* [s]encrypt a file for unlocking with  your own key[/s]
+* [s]encrypt a file for unlocking with an imported key[/s]
 * easily integrate with a linux email client such as Thunderbird or Kmail or Evolution
 * what version of gpg is running?
 * how to create a passphrase
@@ -14,10 +106,10 @@ Here are some ideas from a thread on Mastodon:
 * explain what those weird subkeys are
 * how and where to upload it to public keyservers
 * how to extract and send a key to somebody else, knowing their public key
-* how to import someone else's key
+* [s]how to import someone else's key[/s]
 * how to set trust levels for other's keys
 * explain errors that happen when methods using imported keys throw 'unusable key' errors
-* encrypt/decrypt
+* [s]encrypt/decrypt[/s]
 * easy integration
 
 I'm going to start with the text I originally wrote for my
