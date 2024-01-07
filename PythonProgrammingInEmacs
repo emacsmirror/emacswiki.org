@@ -231,7 +231,9 @@ Viewing the results from [https://docs.python.org/3/library/profile.html the Pyt
 ====The Python shell====
 You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions. Please note that on MacOS the natively shipped Python version comes without proper readline support. You might want to install other versions and use them as default for the `run-python` command.
 
-The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point' and thus works with CompanyMode as well. 
+The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point' and thus works with CompanyMode as well.
+
+Native completion is disabled on Windows per the comment at the definition of `python-shell-completion-native-disabled-interpreters'
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
 {{{
@@ -251,6 +253,7 @@ pydoc.help = pydoc.Helper(output = sys.stdout)
 
 [https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] provides replacements for the built-in `python-send-*' commands that support IPython magic commands.
 
+As noted above with the Python shell, native completion is disabled on Windows.
 ====Emacs IPython Notebook (EIN)====
 [https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides an IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  This replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
 ==== ob-python====
