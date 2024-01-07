@@ -18,10 +18,8 @@ when using python-mode.el and you want TAB characters, and not spaces this is wh
 	    (lambda ()
 		    (setq-default indent-tabs-mode t)
 		    (setq-default tab-width 4)
-		    (setq-default py-indent-tabs-mode t)
-	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+		    (setq-default py-indent-tabs-mode t)))
 
-OK the delete-trailing-whitespace is extra magic and unrelated.
 ----
 
 CategoryIndentation
