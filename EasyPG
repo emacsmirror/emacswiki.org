@@ -1,11 +1,16 @@
 [[de:Easy_PG]]
-!EasyPG is an all-in-one GnuPG interface for Emacs. It has two aspects: convenient tools to use !GnuPG from Emacs (##epa##), and a fully functional interface library to !GnuPG (##epg##).
+!EasyPG is an all-in-one GnuPG interface for Emacs. It has two types of modules:
+
+* Applications to use !GnuPG from Emacs (##epa##)
+* A fully functional interface library to !GnuPG (##epg.el##).
+
+The latter includes ##epa-file.el## for auto-encryption.
 
 * [[http://epg.sourceforge.jp/ Home page]]
 * [[http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/epa-file.el Source code]]
 * [[http://www.gnu.org/software/emacs/manual/epa.html Manual]] (`C-h i m EasyPG RET')
 
-== Files ==
+== Automatic Encryption ==
 
 Setup for transparent, automatic encryption and decryption:
 
@@ -16,23 +21,23 @@ Now visit ##anything.gpg## and it will encrypt it when you save the buffer.
 
 See AutoEncryption for alternatives.
 
-== Using symmetric or public-key encryption always ==
+== Always Use Symmetric or Key Encryption ==
 
-If you always want a file encrypted with symmetric encryption, put the following at the top of your file:
+To always encrypt a file symmetrically, put this at the beginning of the file:
 
-    -*- epa-file-encrypt-to: nil -*-
+{{{
+-*- epa-file-encrypt-to: nil -*-
+}}}
 
-To encrypt with a public key, but prevent EPG from prompting for a key every time you save a file, put the following at the top of your file:
+To encrypt with a public key (without EPG prompting for a key every time you save), put the following at the top of the file:
 
-    -*- epa-file-encrypt-to: ("your@email.address") -*-
+{{{
+-*- epa-file-encrypt-to: ("your@email.address") -*-
+}}}
 
 EPA will prompt for the key only the first time you save the file, assuming you have the email address you specified in your keyring.
 
-Alternatively, set [https://www.gnu.org/software/emacs/manual/html_node/epa/Encrypting_002fdecrypting-gpg-files.html#index-epa_002dfile_002dselect_002dkeys-43 `epa-file-select-keys'] to something other than `t' or `nil'.
-
-== Comments ==
-
-Note that easy-pg consists of two different kind of modules, one is a library (epg.el) and the others are applications (epa-*.el).  Auto-encryption (epa-file.el) is a part of the latter.  As the docs says "The !EasyPG Library dares to disable passphrase caching", that is intended behavior. Caveat user, if you start using the library directly. ;)
+Alternatively, set [https://www.gnu.org/software/emacs/manual/html_node/epa/Encrypting_002fdecrypting-gpg-files.html#index-epa_002dfile_002dselect_002dkeys-43 epa-file-select-keys] to [b]something other than `t' or `nil'[/b].
 
 == Use the Minibuffer for Pasword Prompts ==
 
@@ -50,8 +55,6 @@ Add the following to your InitFile
 }}}
 
 Restart ##gpg-agent## for this to take effect.
-
-
 
 == Gnus ==
 
