@@ -233,7 +233,7 @@ You can open an interactive Python shell with `run-python' ("C-c C-p"), and send
 
 The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point' and thus works with CompanyMode as well.
 
-Native completion is disabled on Windows per the comment at the definition of `python-shell-completion-native-disabled-interpreters'
+Native completion is disabled on Windows per the comment at the definition of `python-shell-completion-native-disabled-interpreters' but non-native completion should still work -- you can test this by eval'ing `(completion-at-point)' in the inferior shell buffer.
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
 {{{
