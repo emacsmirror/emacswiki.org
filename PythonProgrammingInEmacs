@@ -98,6 +98,63 @@ The tools built on jedi support using it to find definitions. [https://github.co
 
 [https://melpa.org/#/helm-cscope helm-cscope] provides a Helm interface to [https://melpa.org/#/xcscope xcscope].  [https://pypi.python.org/pypi/pycscope/ pycscope] supports generating the required cscope index of Python source trees.
 
+===Debugging===
+
+====gud====
+The native `python-mode' supports pdb tracking via the GrandUnifiedDebugger: when you execute a block of code that contains some call to Python's pdb (or ipdb) it will prompt the block of code and will follow 
+the execution of pdb, marking the current line with an arrow.  
+
+To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as 
+"python -m pdb foo.py"
+
+====realgud====
+[https://melpa.org/#/realgud realgud] provides support for pdb, ipdb and trepanning debuggers.  [https://github.com/rocky/emacs-dbgr/wiki/Features Its features not in the gud] include single-keystroke debugger commands inside the source code.
+
+====dap-mode====
+[https://melpa.org/#/dap-mode dap-mode] supports debugging using implementations of the [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], and will be configured automatically by [LspMode] when available.  See the [https://emacs-lsp.github.io/dap-mode/ main docs] and [https://emacs-lsp.github.io/dap-mode/page/configuration/ configuration guide]. 
+
+===Lint, style and syntax checkers===
+Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.  Both support multiple checkers per buffer.
+====Flycheck====
+[[Flycheck]] comes with [https://www.flycheck.org/en/latest/languages.html#python built-in Python support] for flake8, pylint, Pyright, mypy and the Python compiler.  Checkers are also available for [https://melpa.org/#/flycheck-cython Cython], [https://melpa.org/#/flycheck-pyre Pyre], and LspMode, which includes its own checker.
+==== Flymake====
+[[FlyMake]] uses pyflakes out of the box - just enable Flymake.
+
+You can also configure Flymake to use flake8 or pylint.
+
+===Reformatting and PEP8 conformance===
+
+====black====
+[https://github.com/psf/black black] formats Python code to an almost-fixed style, hence "the uncompromising Python code formatter".
+
+Both [https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
+
+====yapf====
+[https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
+
+Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefer/elpy Elpy] support applying yapf to the current buffer.
+
+====autopep8====
+[https://pypi.python.org/pypi/autopep8/ autopep8] formats Python code to conform to the PEP 8 style guide using [https://pypi.python.org/pypi/pep8 the pep8 tool].
+
+Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
+
+====Tidying imports====
+[http://melpa.org/#/py-isort py-isort] using [https://pypi.python.org/pypi/isort isort].
+
+Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
+
+[https://github.com/anachronic/importmagic.el importmagic.el] automatically insert missing imports using [https://pypi.python.org/pypi/importmagic importmagic].
+
+===Refactoring===
+[https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
+
+[https://github.com/python-rope/pylsp-rope pylsp-rope] is a plugin to extend the refactoring capabilities of Python LSP Server (pylsp) using the Rope refactoring library.
+
+[https://github.com/abingham/emacs-traad emacs-traad] also supports refactoring using Rope.
+
+[https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
+
 === Code generation helpers ===
 ====python-mode skeletons====
 The built-in python-mode comes with several skeletons and key bindings for functions to insert them (`python-skeleton-<foo>').  They can be inserted automatically if you have `abbrev-mode' activated and `python-skeleton-autoinsert' set to `t'.
@@ -111,47 +168,6 @@ as used by [http://www.sphinx-doc.org Sphinx].
 reformatting (refilling) and highlighting Python docstrings. It understands both epytext and Sphinx formats (even intermingled!), so it knows how to reflow them correctly. It will also highlight markup in your docstrings, including epytext and reStructuredText.
 ====org-recipes====
 [https://github.com/tuhdo/org-recipes org-recipes] A code snippet manager with Org and Helm. It is not specific to python and does not expand snippets like yasnippet does, but has the added benefit of combining text with org-mode source blocks that can then be inserted in a buffer via Helm.
-
-===Lint, style and syntax checkers===
-Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.  Both support multiple checkers per buffer.
-====Flycheck====
-[[Flycheck]] comes with [https://www.flycheck.org/en/latest/languages.html#python built-in Python support] for flake8, pylint, Pyright, mypy and the Python compiler.  Checkers are also available for [https://melpa.org/#/flycheck-cython Cython], [https://melpa.org/#/flycheck-pyre Pyre], and LspMode, which includes its own checker.
-==== Flymake====
-[[FlyMake]] uses pyflakes out of the box - just enable Flymake.
-
-You can also configure Flymake to use flake8 or pylint.
-
-===Refactoring===
-[https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
-
-[https://github.com/python-rope/pylsp-rope pylsp-rope] is a plugin to extend the refactoring capabilities of Python LSP Server (pylsp) using the Rope refactoring library.
-
-[https://github.com/abingham/emacs-traad emacs-traad] also supports refactoring using Rope.
-
-[https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
-
-===Reformatting and PEP8 conformance===
-====yapf====
-[https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
-
-Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefer/elpy Elpy] support applying yapf to the current buffer.
-
-====autopep8====
-[https://pypi.python.org/pypi/autopep8/ autopep8] formats Python code to conform to the PEP 8 style guide using [https://pypi.python.org/pypi/pep8 the pep8 tool].
-
-Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
-
-====black====
-[https://github.com/psf/black black] formats Python code to an almost-fixed style, hence "the uncompromising Python code formatter".
-
-Both [https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
-
-====Tidying imports====
-[http://melpa.org/#/py-isort py-isort] using [https://pypi.python.org/pypi/isort isort].
-
-Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
-
-[https://github.com/anachronic/importmagic.el importmagic.el] automatically insert missing imports using [https://pypi.python.org/pypi/importmagic importmagic].
 
 ===Running tests===
 The [http://pytest.org pytest Python package] subsumes several other test packages, as it supports tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
@@ -188,21 +204,6 @@ was updated after pytest was run then nothing is reported.
     :error-patterns ((warning line-start (file-name) ":" line ":" (message) line-end))
     :modes (python-mode)))
 }}}
-
-===Debugging===
-
-====gud====
-The native `python-mode' supports pdb tracking via the GrandUnifiedDebugger: when you execute a block of code that contains some call to Python's pdb (or ipdb) it will prompt the block of code and will follow 
-the execution of pdb, marking the current line with an arrow.  
-
-To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as 
-"python -m pdb foo.py"
-
-====realgud====
-[https://melpa.org/#/realgud realgud] provides support for pdb, ipdb and trepanning debuggers.  [https://github.com/rocky/emacs-dbgr/wiki/Features Its features not in the gud] include single-keystroke debugger commands inside the source code.
-
-====dap-mode====
-[https://melpa.org/#/dap-mode dap-mode] supports debugging using implementations of the [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], and will be configured automatically by LspMode when available.  See the [https://emacs-lsp.github.io/dap-mode/ main docs] and [https://emacs-lsp.github.io/dap-mode/page/configuration/ configuration guide]. 
 
 ===Profiling===
 Viewing the results from [https://docs.python.org/3/library/profile.html the Python profilers]:
