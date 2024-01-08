@@ -314,15 +314,6 @@ Not having the right encoding set leads to errors in ipython:
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
 
-==How to improve this page==
-Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
-
-Add sections on: semantic editing (a la paredit), 
-
-Extend sections on: refactoring, code navigation.
-
-Add a feature comparison table for packages?
-
 === Too many __init__.py buffers ===
 In large Python projects, you may end up having lots of buffers similarly named __init__.py<XXX>.
 PACK/__init__.py contains the code for a Python package PACK.
@@ -347,6 +338,14 @@ This advice is intended to be used like this:
 ;;(advice-remove 'create-file-buffer #'my-create-file-buffer)
 }}}
 
+==How to improve this page==
+Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
+
+Add sections on: semantic editing (a la paredit), 
+
+Extend sections on: refactoring, code navigation.
+
+Add a feature comparison table for packages?
 
 ----
 Categories: CategoryProgramming, ProgrammingModes
