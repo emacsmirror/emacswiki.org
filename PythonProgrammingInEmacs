@@ -114,13 +114,13 @@ To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as
 [https://melpa.org/#/dap-mode dap-mode] supports debugging using implementations of the [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], and will be configured automatically by [LspMode] when available.  See the [https://emacs-lsp.github.io/dap-mode/ main docs] and [https://emacs-lsp.github.io/dap-mode/page/configuration/ configuration guide]. 
 
 ===Lint, style and syntax checkers===
-Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.  Both support multiple checkers per buffer.
+Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint, pychecker and ruff.  Both support multiple checkers per buffer.
 ====Flycheck====
-[[Flycheck]] comes with [https://www.flycheck.org/en/latest/languages.html#python built-in Python support] for flake8, pylint, Pyright, mypy and the Python compiler.  Checkers are also available for [https://melpa.org/#/flycheck-cython Cython], [https://melpa.org/#/flycheck-pyre Pyre], and LspMode, which includes its own checker.
+[[Flycheck]] comes with [https://www.flycheck.org/en/latest/languages.html#python built-in Python support] for flake8, pylint, Pyright, mypy and the Python compiler.  Checkers are also available for [https://melpa.org/#/flycheck-cython Cython], [https://melpa.org/#/flycheck-pyre Pyre], and from various [LanguageServerProtocol] servers via LSP clients.
 ==== Flymake====
 [[FlyMake]] uses pyflakes out of the box - just enable Flymake.
 
-You can also configure Flymake to use flake8 or pylint.
+You can also configure Flymake to use flake8, pylint or [https://melpa.org/#/flymake-ruff ruff].
 
 ===Reformatting and PEP8 conformance===
 
@@ -128,6 +128,11 @@ You can also configure Flymake to use flake8 or pylint.
 [https://github.com/psf/black black] formats Python code to an almost-fixed style, hence "the uncompromising Python code formatter".
 
 Both [https://melpa.org/#/python-black python-black] and [https://github.com/jorgenschaefer/elpy Elpy] support applying black to the current buffer. 
+
+====ruff====
+[https://github.com/astral-sh/ruff ruff] is "an extremely fast Python linter and code formatter, written in Rust."
+
+[https://melpa.org/#/ruff-format ruff-format] supports formatting using ruff.  
 
 ====yapf====
 [https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
