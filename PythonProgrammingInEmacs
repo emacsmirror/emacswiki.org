@@ -6,7 +6,7 @@ The quickest way to start is just to open a Python file in Emacs -- `python-mode
 
 Beyond that, as people ask for recommendations fairly often, the following is a reasonable approach:
 * If you already use one of the StarterKits like [[Spacemacs]] or DoomEmacs, then use its Python configuration.
-* If you want to set up a relatively complete environment quickly, and have someone else choose individual packages and handle combining them, then use one of the IDE packages listed below.  Elpy appears to be the most popular Python-specific IDE package, while LspMode supports many languages and has gained a lot of developer attention.
+* If you want to set up a relatively complete environment quickly, and have someone else choose individual packages and handle combining them, then use one of the IDE packages listed below.  Elpy appears to be the most popular Python-specific IDE package, while the [LanguageServerProtocol] supports many languages and has become very popular since c. 2019.
 * If you want complete control then select the packages you want from the Support Features section.  
 
 ==Python mode==
@@ -20,21 +20,27 @@ These provide powerful and relatively complete environments by combining and cus
 * [https://develop.spacemacs.org/layers/+lang/python/README.html Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
 ===Doom===
 * [https://github.com/hlissner/doom-emacs/blob/91ced7997537cc692e2a06294a428c5b4037d687/modules/lang/python/README.org Python module] for DoomEmacs.  
+===Language Server Protocol===
+The main [LanguageServerProtocol] clients support Python programming with various LSP servers.
+====LSP clients====
+* [[Eglot]]
+* [LspMode] 
+====LSP Servers===
+General-purpose servers
+* [https://github.com/microsoft/pyright Pyright] by Microsoft, closed-source, lsp-mode configuration [https://emacs-lsp.github.io/lsp-pyright/ here].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
+* [https://github.com/python-lsp/python-lsp-server Python LSP Server], aka "pylsp", forked from Palantir's pyls, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/ here]
+* [https://github.com/pappasam/jedi-language-server jedi] language server, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ here]
+* [https://github.com/palantir/python-language-server python-language-server], aka "pyls", by Palantir, no longer under development, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/  here]
+* [https://github.com/Microsoft/python-language-server Microsoft python-language-server], no longer under development, lsp-mode configuration [https://emacs-lsp.github.io/lsp-python-ms/ here]
+
+Focused servers
+* [https://github.com/astral-sh/ruff-lsp ruff-lsp], supporting [https://github.com/astral-sh/ruff ruff], lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-ruff-lsp/ here]
 ===Elpy===
 * [https://github.com/jorgenschaefer/elpy Elpy].  The installation instructions are [https://elpy.readthedocs.io/en/latest/introduction.html#installation here].
-===Language Server Protocol===
-Any of the main [LanguageServerProtocol] packages should support Python programming with a variety of backends.  [LspMode] provides these guides to configuring backends
-* [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ Jedi language server]
-* [https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/ Palantir's python-language-server], also based on Jedi
-* [https://emacs-lsp.github.io/lsp-python-ms/ Microsoft's python-language-server]
-* [https://emacs-lsp.github.io/lsp-pyright/ Microsoft's Pyright language server].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
-* [https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/ Python LSP Server]
 ===python-mode.el===
 * [ProgrammingWithPythonModeDotEl python-mode.el].  Replaces the `python-mode' in python.el.
 ===Anaconda mode===
 * [https://github.com/proofit404/anaconda-mode anaconda-mode] 
-===eglot===
-* [https://github.com/joaotavora/eglot eglot] (natively supported since Emacs 29)
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
