@@ -25,7 +25,7 @@ The main [LanguageServerProtocol] clients support Python programming with variou
 ====LSP clients====
 * [[Eglot]]
 * [LspMode] 
-====LSP Servers===
+====LSP servers===
 General-purpose servers
 * [https://github.com/microsoft/pyright Pyright] by Microsoft, closed-source, lsp-mode configuration [https://emacs-lsp.github.io/lsp-pyright/ here].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
 * [https://github.com/python-lsp/python-lsp-server Python LSP Server], aka "pylsp", forked from Palantir's pyls, open-source, extensible via a plug-in mechanism, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/ here]
