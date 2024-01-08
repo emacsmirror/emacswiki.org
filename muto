@@ -70,7 +70,7 @@ Fun built-in packages:
 * [[eww]] -- Web browser
 * [[rcirc]] -- IRC client
 * [[Eshell]] -- Shell
-* [[proced]] -- System resource monitor
+* ProcEd -- System resource monitor
 * [[Mpc]] -- Music Player Daemon client.
 
 External packages I like:
@@ -92,7 +92,7 @@ Links to pages here on the Wiki that I feel need additional editing or care, but
 * [[Gnus]] -- Done for now.
 * [[Rust]] -- Needs page.
 * [[Elpher]] -- Needs page.
-* [[Eglot]] -- Needs page ;-;
+* [[Eglot]] -- Could use links / quickstart
 * [[EmacSpeak]] -- TTS cuz *accessibility is important*
 
 [:Links]
