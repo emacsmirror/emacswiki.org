@@ -16,3 +16,10 @@ This page is outdated and it is not valid in emacs 27.
 
 -- alinsoar 2021-11-08 11:59 UTC
 
+
+----
+
+Is there any way to add some spacing between the tabs and the main buffers?  I'd basically like to do some equivalent of setting line-spacing for the tab window.
+
+-- benjamin leis 2024-01-08 22:36 UTC
+
