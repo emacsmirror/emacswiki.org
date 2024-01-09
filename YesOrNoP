@@ -13,9 +13,14 @@ By default, Emacs prompts for a `yes' sometimes, and other times simply `y'. If 
 
 and similarly to use `y' always set
 
-    (defalias 'yes-or-no-p 'y-or-n-p)
+    (defalias 'yes-or-no-p 'y-or-n-p) ;; Until Emacs 28
 
 Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie. Some users apparently feel that no `yes-or-no-p' prompts are important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere.
+
+Note that this does not work any more in Emacs 29 and later. Instead, you can add this in your [[init file]],
+
+    (setopt use-short-answers nil) ;; Since Emacs 29, `yes-or-no-p' will not use `y-or-no-p'
+    (setopt use-short-answers t)   ;; Since Emacs 29, `yes-or-no-p' will use `y-or-n-p'
 
 == Auto-Confirmation: Automatically Saying Yes ==
 
