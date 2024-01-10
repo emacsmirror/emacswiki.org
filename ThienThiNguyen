@@ -30,5 +30,15 @@ from http://www.gnuvola.org/software anymore - do they have a new home?
 
 (I mirror your packages on the [[Emacsmirror]].
 
+[new]
+
+; The following was posted to [https://lists.gnu.org/archive/html/info-gnu/2023-09/msg00000.html info-gnu mailing list] by Amin Bandali on 2023-09-09,
+
+We have learned with deep sadness that Thien-Thi Nguyen (ttn) died in October 2022.  Thien-Thi was a hacker, artist, writer, and long-time maintainer and contributor to many GNU programs as well as other free software packages.  He was the GNU maintainer of the rcs, guile-sdl, alive, and superopt packages, and he was working on GNU Go as well.
+
+Thien-Thi especially loved GNU Emacs, GNU Taler, and GNU Go: he was the author and maintainer of the xpm, gnugo, ascii-art-to-unicode, and hideshow GNU Emacs packages and made substantial contributions to many others such as vc, as well as to GNU Taler and its documentation.
+
+We greatly miss Thien-Thi in the free software community - his death is a great loss to the Free World.
+
 ----
 CategoryHomepage
