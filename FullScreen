@@ -25,7 +25,7 @@ A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI
 See also the devilspie2 section in this article if you prefer a X Window tiling program instead.
 
 ====Cross platform====
-The distracting visual effect is caused by loading the ##init file## in GNU/Linux. So you have to add the code to the the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the init file (thanks Chad):
+The distracting visual effect is caused by loading the ##init file## in GNU/Linux. So you have to add the code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the init file (thanks Chad):
 
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
