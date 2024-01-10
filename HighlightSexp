@@ -7,7 +7,7 @@ http://github.com/daimrod/highlight-sexp
 
 == Installation and configuration ==
 
-Put the file somewhere is your load-path and add the following line to
+Put the file somewhere in your load-path and add the following line to
 your .emacs
 
   (require 'highlight-sexp)
