@@ -8,7 +8,7 @@ Cocoa is the Objective-C API (originally developed by !NeXT) that is used for na
 
 Carbon is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
 
-X11 Emacs is the "original" emacs running under X11 (installed by default in recent versions of Mac OS X)
+X11 Emacs is the "original" emacs running under X11. An X11 server available for Mac OS X is [[https://en.wikipedia.org/wiki/XQuartz XQuartz]]. (Mac OS has no X11 server included by default; this has been the case since Mac OS X 10.8 Mountain Lion in 2012.)
 
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
 If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  
