@@ -2,6 +2,7 @@
 There are now <code>View-scroll-half-page-backward</code> and <code>View-scroll-half-page-forward</code> in view.el, not sure when they were added.
 
 You can bind them likes this:
+
     (keymap-global-set "C-v" #'View-scroll-half-page-forward)
     (keymap-global-set "M-v" #'View-scroll-half-page-backward)
 
