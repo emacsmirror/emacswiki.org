@@ -1,3 +1,12 @@
+== View.el == 
+This are <code>View-scroll-half-page-backward</code> and <code>View-scroll-half-page-forward</code> in view.el, not sure from which version.
+
+You can bind them likes this:
+    (keymap-global-set "C-v" #'View-scroll-half-page-forward)
+    (keymap-global-set "M-v" #'View-scroll-half-page-backward)
+
+
+== History ==
 By default Emacs scrolls nearly full screenfuls with <code>scroll-up</code> and <code>scroll-down</code>. I personally would like it to scroll half a page at a time, but unfortunately haven't been able to figure out how to do it cleanly.
 
 There is a <code>next-screen-context-lines</code> variable which controls how many lines of continuity should be preserved when scrolling by screenfuls. The problem at hand could be solved by setting this variable to <code>window-height/2</code>, but obviously it should be calculated every time the <code>next-screen-context-lines</code> is used because <code>window-height</code> is not constant.
@@ -124,10 +133,6 @@ As at July 2021, Evil has options for half-page scrolling with <code>evil-scroll
 
 
  
-
-== View.el == 
-This seems to be built-in. Maybe it wasn't in the past.
-I use View-scroll-half-page-backward and View-scroll-half-page-forward from view.el
 
 ----
 CategoryDisplay
