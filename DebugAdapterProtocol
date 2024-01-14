@@ -1,0 +1,14 @@
+The [https://microsoft.github.io/debug-adapter-protocol/ Debug Adapter Protocol], aka DAP, "defines the abstract protocol used between a development tool (e.g. IDE or editor) and a debugger".
+
+==History==
+The DAP was created by Microsoft, and is closely related to the LanguageServerProtocol.
+
+==Emacs clients==
+Emacs clients include
+* DapMode
+* [https://sr.ht/~theo/edap/ edap]
+
+gdb [https://www.sourceware.org/gdb/news/ included] DAP support in version 14.1, released on 2023-12-03.
+
+==Language support==
+Implementations are available for dozens of languages, see [https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/ here].
