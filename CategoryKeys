@@ -57,7 +57,7 @@ See also: MenuAccessFromKeyboard: using menus from the keyboard.
 * ControlLock -- Like caps-lock, but for your control key
 * AltGrKey -- Emacs keys may be hidden because on Windows /AltGr/ + /Control/ + /key/ is just /AltGr/ + /key/
 * FootSwitches -- assign Ctrl and other keys to pedal type switches
-
+* EventApplyModifier -- Applying modifiers without a modifier key
 
 == Using Menus ==
 
