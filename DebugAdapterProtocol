@@ -8,7 +8,8 @@ Emacs clients include
 * DapMode
 * [https://sr.ht/~theo/edap/ edap]
 
-gdb [https://www.sourceware.org/gdb/news/ included] DAP support in version 14.1, released on 2023-12-03.
+==Use via gdb==
+gdb [https://www.sourceware.org/gdb/news/ included] DAP support in version 14.1, released on 2023-12-03.  This support should be usable via the debuggers supporting gdb listed at DebuggingWithEmacs.
 
 ==Language support==
 Implementations are available for dozens of languages, see [https://microsoft.github.io/debug-adapter-protocol/implementors/adapters/ here].
