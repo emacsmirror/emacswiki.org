@@ -30,7 +30,7 @@ Debugging other programs using Emacs:
 * DebuggingWithEmacs usually involves the GrandUnifiedDebugger (GUD) as an interface to command line debuggers such as gdb, dbx, cdb,....
 ** GdbMode -- a debugger mode specialized for gdb
 ** PdbNotes -- additional setup info for python
-** DapMode -- an Emacs client for the Debug Adaptor Protocol
+** DebugAdapterProtocol -- debugging using the Debug Adapter Protocol
 
 * There is a [https://github.com/rocky/emacs-dbgr/wiki/ rewrite of GUD] from scratch. The debuggers can be run stand-alone or from an existing a comint "track-mode" shell The debuggers supported include:
 ** [http://bashdb.sf.net bashdb]  --  Bash debugger
