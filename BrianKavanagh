@@ -5,6 +5,8 @@ emacs since 1994
 * dired + archive-mode + jad decompilation has saved me many hours.
 * Yet to find anything like numeric register incrementing within keyboard macros in any other editor.
 
+Author: [Lisp:event-apply+.el (event-apply+.el)]
+
 The following is a slightly useful set of functions for modifying numbers at point - it won't be used every day, but it can come in handy for simple incrementation and for when you forget those higher powers of two...
 
 <pre>
