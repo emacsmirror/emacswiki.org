@@ -1,9 +1,9 @@
 Emacs has a few commands that can line up text with respect to 
 whitespace, assignment, columns or regexp specified delimiters.
 
-== Commands available starting with emacs 22 ==
+== Commands ==
 
-For version 22 or higher, the following commands are available:
+The following commands are available:
 
   align
   align-current
@@ -11,13 +11,12 @@ For version 22 or higher, the following commands are available:
   align-newline-and-indent
   align-regexp
 
-Alignment is done with respect to a set of rules (e.g. line up the = signs). Which rules exactly depend on the current mode, and should provide some sort of "Do What I Mean" feeling. These rules are described in the variable <code>align-rules-list</code>, a few of them are explained below. Documentation is scarce at the moment and inspection of the list given by this variable is perhaps the best way to find which one is available in which mode.
+Alignment is done with a set of rules (e.g. line up the = signs). Which rules exactly depend on the current mode, and should provide some sort of "Do What I Mean" feeling. These rules are described in the variable <code>align-rules-list</code>; a few of them are explained below. Documentation is severely lacking and inspection of the list given by this variable is perhaps the best way to find which one is available in which mode.
 
 Some custom settings are available through the use of the customize buffer.
 Just type <code>M-x customize-group RET align RET</code>.
 
 <b>Sidenote:</b> The default text-mode rules in `align-rules-list' are "too aggressive" to be enabled by default, therefore you need to specify the universal arg (C-u) to enable them.  See below.
-
 
 === The align command ===
 
@@ -35,6 +34,48 @@ Note that <code>C-u M-x align</code> fails to align words of length one (bug ? f
   carrots  16.5                   =>          carrots      16.5  
   patatoes      12.                           patatoes     12.   
 
+=== The align-regexp command ===
+  
+This command aligns the current region using a column delimiter given by a regular expression. For example, assume we want to align first names in a list of the form:
+
+   LASTNAME Firstname
+   DRAKE Francis
+   BRÛLÉ Étienne
+   IBN MĀJID Ahmad
+
+====Left aligning a column====
+There are two difficulties here: case and accented letters.
+First ensure that the case is taken into account. For this,
+just type:
+ 
+   M-: (setq case-fold-search nil) RET
+
+Then, select the region and use the align-regexp command:
+
+   M-x align-regexp RET [[:upper:]][[:lower:]] RET
+
+The regular expression given above matches the beginning of the
+firstname, which is of the form, a upper-case letter followed by a lower-case letter. This syntax is sufficiently general to deal with accented letters. The result is as follow:
+
+    LASTNAME  Firstname
+    DRAKE     Francis
+    BRÛLÉ     Étienne
+    IBN MĀJID Ahmad
+
+====Right-aligning a column====
+
+Continuing on, select the region and use align-regexp again, but with a prefix argument:
+
+    C-u M-x align-regexp RET ^.*\([[:upper:]][[:lower:]].*\)$ RET DEL -1 RET RET n
+
+The result is as follow:
+
+    LASTNAME   Firstname
+    DRAKE        Francis
+    BRÛLÉ        Étienne
+    IBN MĀJID      Ahmad
+
+The "-1" indicates to right-align (aka justify) the first matched group, by first deleting any initial whitespace and then adding the whitespace needed to do the justification.  Be careful with the regexps you use here, as mistakes can give confusing results.
 
 === The align-current command ===
 
@@ -53,39 +94,7 @@ Here is another example in c-mode:
   int b;                          gives       int          b;
   float c;                                    float        c;
 
-
-
-=== The align-regexp command ===
-  
-This command aligns the current region using a column delimiter given by a regular expression. For example, assume we want to align firstnames in a list of the form:
-
-   LASTNAME Firstname
-   SMITH John
-   BOLL� �milien
-   MOHAMED SALEM El Balem
-
-There are two difficulties here: case and accented letters.
-First ensure that the case is taken into account. For this,
-just type:
- 
-   M-: (setq case-fold-search nil) RET
-
-Then, select the region and use the align-regexp command:
-
-   M-x align-regexp RET [[:upper:]][[:lower:]] RET
-
-The regular expression given above matches the beginning of the
-firstname, which is of the form, a upper-case letter followed by a lower-case letter. This syntax is sufficiently general to deal with accented letters. The result is as follow:
-
-   LASTNAME      Firstname
-   SMITH         John
-   BOLL�         �milien
-   MOHAMED SALEM El Balem
-
-
-
 ==How do I align several whitespace-separated columns?==
-
 
 === Using align-regexp with options ===
 
