@@ -7,7 +7,7 @@
 ;; Version: 2024.01.15
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: convenience
-;; Homepage: http://github.com/brians.emacs/event-apply+
+;; Homepage: https://github.com/BriansEmacs/event-apply-plus.el
 
 ;; -------------------------------------------------------------------
 ;; This file is not part of GNU Emacs.
