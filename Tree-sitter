@@ -2,6 +2,8 @@
 
 tree-sitter is included in Emacs 29 and later.
 
+Also see this [[https://www.masteringemacs.org/article/tree-sitter-complications-of-parsing-languages introductory article]] that talks about the difficulties of parsing languages.
+
 == Configuration ==
 
 Tree-sitter offers different features than emacs' native parser. two things are required to activate it:
@@ -72,6 +74,7 @@ Historically, Emacs, like many editors, has used heuristics (often [[RegularExpr
 
 == External Links ==
 
+* [https://www.masteringemacs.org/article/how-to-get-started-tree-sitter How to get started with Tree-Sitter] -- MickeyPeterson / Mastering Emacs
 * [https://tree-sitter.github.io/tree-sitter/#parsers A list of Tree-sitter parsers you can install manually]
 * [https://corwin.bru.st/emacs-tree-sitter/ Corwin Brust's archive of Windows compiled libraries]
 
