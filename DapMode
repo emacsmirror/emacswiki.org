@@ -1,0 +1,3 @@
+[https://emacs-lsp.github.io/dap-mode/ dap-mode] is an "Emacs client/library for Debug Adapter Protocol",  a "wire protocol for communication between client and Debug Server.  It's similar to [[LanguageServerProtocol|LSP]]".
+
+dap-mode is developed by the same project as LspMode.
