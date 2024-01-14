@@ -1,0 +1,28 @@
+*Emacs* functions can be bound to keyboard events that use a number of different modifiers.
+
+* Shift 
+* Control 
+* Meta 
+* Alt 
+* Super 
+* Hyper 
+
+Not all input devices (/keyboards/) will have keys for all of these modifiers.
+
+For environments in which the input device (/keyboard/) does not supply all of the modifier keys (*Shift*, *Control*, *Meta*, *Alt*, *Super*, *Hyper*) that Emacs can use for key bindings, Emacs supplies the functions (and key bindings):
+
+* event-apply-shift-modifier    (##C-x @ S##)
+* event-apply-control-modifier  (##C-x @ c##)
+* event-apply-meta-modifier     (##C-x @ m##)
+* event-apply-alt-modifier      (##C-x @ a##)
+* event-apply-super-modifier    (##C-x @ s##)
+* event-apply-hyper-modifier    (##C-x @ h##)
+
+Which can be used to /add/ a modifier to the next "event" (keyboard input, mouse click, etc...)
+
+i.e. To simulate entering the keyboard event ##H-a## (##<HYPER>## + ##<a>## keys pressed simultaneously), you could enter:
+
+   C-x @ h a
+
+Combinations of multiple modifiers (i.e. ##A-C-H-a## - ##<ALT>## + ##<CTRL>## + ##<HYPER>## + ##<a>##) all pressed simultaneously, can be achieved using the [Lisp:event-apply+.el] library.
+
