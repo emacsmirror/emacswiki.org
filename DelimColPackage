@@ -5,7 +5,7 @@ This page describes package Lisp:delim-col.el, by ViniciusJoseLatorre.
 
 == About delim-col ==
 
-DelimColPackage helps to prettify columns in a text region or rectangle.
+DelimColPackage, descended from pretty-column.el by the same author, helps to prettify columns in a text region or rectangle.
 
 To use it, make sure that this file is in load-path and insert in your
 ##.emacs##:
