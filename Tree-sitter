@@ -2,7 +2,7 @@
 
 tree-sitter is included in Emacs 29 and later.
 
-Also see this [[https://www.masteringemacs.org/article/tree-sitter-complications-of-parsing-languages introductory article]] that talks about the difficulties of parsing languages.
+Also see this [[https://www.masteringemacs.org/article/tree-sitter-complications-of-parsing-languages introductory article]] that talks about the difficulties of parsing languages and how tree-sitter makes a difference.
 
 == Configuration ==
 
