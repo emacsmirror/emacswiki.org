@@ -1,28 +1,39 @@
-*Emacs* functions can be bound to keyboard events that use a number of different modifiers.
+*Emacs* functions can be bound to keyboard / mouse events that use a number of different modifiers.
 
-* Shift 
-* Control 
-* Meta 
-* Alt 
-* Super 
-* Hyper 
+* *Shift*
+* *Control*
+* *Meta* 
+* *Alt*
+* *Super* 
+* *Hyper*
 
 Not all input devices (/keyboards/) will have keys for all of these modifiers.
 
-For environments in which the input device (/keyboard/) does not supply all of the modifier keys (*Shift*, *Control*, *Meta*, *Alt*, *Super*, *Hyper*) that Emacs can use for key bindings, Emacs supplies the functions (and key bindings):
+For environments in which the input device does not supply all of the modifier keys (*Shift*, *Control*, *Meta*, *Alt*, *Super*, *Hyper*), you can use one of the *Emacs* //event-apply-*-modifier// functions to simulate the addition of a single modifier to the next input  /event/ (keystroke, mouse click, etc...)
 
-* event-apply-shift-modifier    (##C-x @ S##)
-* event-apply-control-modifier  (##C-x @ c##)
-* event-apply-meta-modifier     (##C-x @ m##)
-* event-apply-alt-modifier      (##C-x @ a##)
-* event-apply-super-modifier    (##C-x @ s##)
-* event-apply-hyper-modifier    (##C-x @ h##)
+Standard *Emacs* supplies the following functions (and key bindings) to perform this simulation:
 
-Which can be used to /add/ a modifier to the next "event" (keyboard input, mouse click, etc...)
+* `event-apply-shift-modifier' -- (##C-x @ S##)
+* `event-apply-control-modifier' -- (##C-x @ c##)
+* `event-apply-meta-modifier' -- (##C-x @ m##)
+* `event-apply-alt-modifier' -- (##C-x @ a##)
+* `event-apply-super-modifier' -- (##C-x @ s##)
+* `event-apply-hyper-modifier' -- (##C-x @ h##)
 
-i.e. To simulate entering the keyboard event ##H-a## (##<HYPER>## + ##<a>## keys pressed simultaneously), you could enter:
+These functions can be invoked before a keystroke / mouse event so as to manually /add/ a single modifier to the next keystroke / mouse event without requiring the modifier key to be present.
+
+For example:
+
+To simulate entering the keyboard event ##H-a## (##<HYPER>## + ##<a>## keys pressed simultaneously), you could enter:
 
    C-x @ h a
 
-Combinations of multiple modifiers (i.e. ##A-C-H-a## - ##<ALT>## + ##<CTRL>## + ##<HYPER>## + ##<a>##) all pressed simultaneously, can be achieved using the [Lisp:event-apply+.el (event-apply+.el)] library.
+To simulate entering the keyboard event ##s-TAB## (##<SUPER>## + ##<TAB>## keys pressed simultaneously), you could enter:
+
+   C-x @ s TAB
+
+==Combinations of multiple modifiers==
+
+To manually add more than one modifier (For example: ##A-C-H-a## - ##<ALT>## + ##<CTRL>## + ##<HYPER>## + ##<a>##) so as to simulate the pressing of more than one modifier key
+simultaneously, use the [Lisp:event-apply+.el (event-apply+.el)] library.
 
