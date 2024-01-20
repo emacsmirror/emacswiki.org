@@ -40,51 +40,13 @@ To unfill, i.e. remove all line-endings from a paragraph, options include:
 * UnfillParagraph
 * Repeatedly applying `delete-indentation' (<kbd>M-^</kbd>)
 * Setting `fill-column' to a really large value and running `fill-paragraph'
-
+==Adaptively setting prefixes for wrapped lines==
+See [[Adaptive Wrap]].
 ==Specialist support==
 ===Mail===
 # Mail read or written within Emacs can take advantage of FormatFlowed
 ===Org mode===
-[new:IainDalton:2010-02-12 20:24 UTC]
-Is there any code floating about that does "virtual indenting"--which is to indenting what visual-line-mode is to wrapping--like KDE's Kate?  The information needed to display lines at the right indentation may already be there--fill-paragraph does indentation as well as wrapping.  This would make editing someone else's non-wrapped code nicer, and make paragraphs in lists in markup languages (MarkDown, LaTeX, HTML) look nice without hard-wrapping, like:
-
-<pre>
-- This is a long paragraph in a list.  The quick brown fox jumped over
-  the lazy dog.
-</pre>
-
-instead of
-
-<pre>
-- This is a long paragraph in a list.  The quick brown fox jumped over
-the lazy dog.
-</pre>
-
---- IainDalton
-
-Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together
-
-
-Response to statement about fill-paragraph: doesn't fill-paragraph modify the buffer?  If I understand correctly, IainDalton's idea is that the original buffer contains one long line, but the display of that line should wrap the line *and* indent the subsequent lines according to syntax.  So the virtual indenting I'm interested in is effectively fill-paragraph on the display only, not the underlying buffer.  --- Spezzer 
-
-RE: IainDalton's question.
-
-The ELPA package <tt>adaptive-wrap</tt> provides the desired effect.
-
---- Chris
-
-RE: IainDalton's question.
-
-An easier solution which however only applies in <tt>org-mode</tt> is to simply use
-
-<code>
-(setq org-startup-indented t)
-</code>
-
-as described by http://orgmode.org/manual/Clean-view.html#Clean-view
-
---- N.N.
-
+[[Org Mode]]'s `org-startup-indented' supports setting the line prefixes to use when wrapping similarly to [[Adaptive Wrap]], as described at http://orgmode.org/manual/Clean-view.html#Clean-view
 
 ----
 CategoryFilling
