@@ -7,6 +7,8 @@ general process of displaying lines that are too long for the
 screen. Filling is sometimes used to avoid having to wrap
 lines.
 
+See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Filling.html Filling] in the Emacs manual.
+
 ==Common ways to fill==
 ===The fill-paragraph command===
 FillParagraph -- command for filling the current paragraph. By default, this is bound to <code>M-q</code>.
