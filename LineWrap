@@ -15,10 +15,13 @@ a bent arrow (&#x21a9;)
 in the window [[fringe]].  This does not happen at word boundaries.  To prevent
 Emacs from wrapping lines in this way and instead appear to truncate lines that are longer than the window width, use TruncateLines. Truncating lines does not alter your buffer text in any way -- the displayed backslash character of line-wrapping and the dollar (##$##) character of truncating are not part of the text (and so cannot be accessed).
 
-When you type past a certain column ([[option]] `fill-column'), Emacs inserts a [[line ending]].  This behavior is called '''filling''' a paragraph -- see AutoFillMode. 
-
 ==Manually filling paragraphs==
-Besides relying on this fill-as-you-type behavior, you can manually fill an existing paragraph with [[command]] `fill-paragraph' (`M-q'). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending. For doing the opposite, i.e. removing all line ends from a paragraph, currently (as of Emacs 24.3) no built-in function exists -- see UnfillParagraph
+You can manually fill a paragraph with [[command]] `fill-paragraph' (`M-q'). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending.
+
+For "unfilling", i.e. removing all line ends from a paragraph, options include
+* UnfillParagraph
+* Repeatedly applying `delete-indentation' (`M-^')
+* Setting `fill-column' to a really large value cand running `fill-paragraph'
 
 ==Comments on the flavors==
 Modes such as Long Lines wrap lines on word boundaries as you type, by inserting ''temporary'' line-ending characters. These are removed when you save the buffer to a file or copy its text for [[yank]]ing elsewhere, so they are only for display purposes.
