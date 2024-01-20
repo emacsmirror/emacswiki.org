@@ -26,7 +26,7 @@ It can be used to customize where wrapping occurs.  For example, running
 
 will make the characters in ",_/:" act as word-wrapping boundaries, which may be helpful when displaying long URLs.
 
-=== Changing the line-wrap character ===
+== Changing the line-wrap character ==
 To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
 
   M-: (set-display-table-slot standard-display-table 'wrap ?\ )
