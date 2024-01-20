@@ -1,11 +1,15 @@
 ==Flavors of line-wrapping==
 
-Line-wrapping comes in a few flavors:
-
-# By default, Emacs wraps a line that reaches the window width, either displaying a backslash (`\') in the buffer or placing a bent arrow (&#x21a9;) in the window [[fringe]].  This happens at character-level, not respecting word boundaries. The buffer text is not changed.
-# Modes such as AutoFillMode insert a [[line ending]] after the last word that occurs before the value of [[option]] `fill-column' (a column number).
-# Modes such as VisualFillColumn (in concert with VisualLineMode) wrap a line after the last word before `fill-column', but ultimately they do not alter the buffer text. Such "soft" wrapping is essentially a display effect.
-# Modes such as VisualLineMode wrap a line right before the window edge, but ultimately they do not alter the buffer text. VisualLineMode wrapping is essentially a display effect.
+===Default===
+By default, Emacs wraps a line that reaches the window width, either displaying a backslash (`\') in the buffer or placing a bent arrow (&#x21a9;) in the window [[fringe]].  This happens at character-level, not respecting word boundaries. The buffer text is not changed.
+===Truncating===
+To truncate lines rather than wrapping them, use TruncateLines.
+===Visual-Line mode===
+VisualLineMode wraps a line right before the window edge. The buffer text is not changed.
+====Visual-Fill-Column mode====
+VisualFillColumn (used in concert with VisualLineMode) wraps a line after the last word before `fill-column'. The buffer text is not changed.
+===Auto-Fill mode===
+AutoFillMode inserts a [[line ending]] after the last word that occurs before the value of [[option]] `fill-column' (a column number).  This changes the buffer text.
 
 ==Changes to default behavior==
 ===Enabling word-wrapping===
@@ -13,8 +17,6 @@ Line-wrapping comes in a few flavors:
 To use word-wrapping for continuation lines, set `word-wrap': i.e., ##M-: (setq word-wrap t)##, or placing it as a file variable ##-*- mode:blah ; word-wrap:t -*-## in your first line. 
 ====Word-wrapping by category====
 Emacs 28 provides an additional word-wrapping feature called ##word-wrap-by-category##. This is supposed to improve word-wrapping for CJK and in similar contexts. But it can be also used, alternatively, for other unicode regions. For example, turning this boolean flag on ##(setq word-wrap-by-category t)##, and setting ##(modify-category-entry '(45 . 47) ?|)## adds ##",-/"## to the set of characters emacs will consider as word wrapping boundaries. This is helpful when using long URLs: e.g. if ##LINK## is longer than the line length, the line ##* LINK##, will be wrapped at the first space -- then the first line will be just ##*##, and LINK will start from the next line, and will be broken in half anyway because it's long. The modification described above will break LINK in the middle, so the first line will be ##* LIN## for some decently long prefix ##LIN## of ##LINK##, and the second line will contain just ##K##. 
-===Truncating rather than wrapping===
-To truncate lines rather than wrapping them, use TruncateLines.
 === Changing the line-wrap character ===
 To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
 
@@ -30,24 +32,6 @@ To unfill, i.e. remove all line-endings from a paragraph, options include:
 * Setting `fill-column' to a really large value and running `fill-paragraph'
 
 ==Comments on the flavors==
-Modes such as Long Lines wrap lines on word boundaries as you type, by inserting ''temporary'' line-ending characters. These are removed when you save the buffer to a file or copy its text for [[yank]]ing elsewhere, so they are only for display purposes.
-
-Of these three flavors, only Auto Fill mode actually changes your file (saved buffer). The default behavior of line-wrapping or truncating (#1) changes only the way your text appears, and Long Lines mode (#3) changes your text only temporarily.
-
-[new]
-There is now a fourth flavor that kind of obsoletes Long Lines mode -- Kim Storm's word-wrap patch has landed in CVS (uh, I think early August or September 2008).  This patch changes the redisplay engine to wrap on \s+ (i.e., whitespace) and now Longlines/Notepad-like wrapping is available everywhere.  The line-number remains accurate, but you can use movement keys to scroll to the next displayed line without actually changing lines.  M-e and M-a also work better (I had problems in Latex with them).  It also has the benefit that when you resize, all the text goes with it, and it makes vertical splitting MUCH more readable, and no more backslashes to break up the text.
-
-There are two ways to enable it: the first is with M-x visual-line-mode (for those with real menus, apparently Options->Line Wrapping in this Buffer->Word Wrap), which will give you a minor mode "wrap" in the mode line.  As explained in C-h f visual-line-mode, one of the effects of this command is to subtly change the effect of commands that deal with "lines": C-a, C-e no longer go to the end of the line (as in \n), but go to the end of the line (as in display line).  M-a, M-e still work as they should.  In addition, vertical split windows are guaranteed to not be truncated, and resize properly on changing width.  Works wonderfully, especially if you have free form text that you're keeping in version control (like a thesis in Latex) where hard-wrapping just doesn't work out very well.  It also makes vertical splitting much more useful, especially with huge windows.  In my experience, it slows down redraw a little bit, but it's worth it.
-
-To enable it globally, there is a global-visual-line-mode which you would enable with ##M-x global-visual-line-mode##.
-
-To enable it as a file variable, it'd be ## -*- mode:blah ; mode:visual-line -*-##.
-
-
-
--- volhovm
-
-[new]
 It's a nice trick. I suggest you also do ##(modify-category-entry 58 ?> (category-table) t)## to avoid unnecessary pain. When you have a line like ##* hello <spaces> :hello:hello:##, with ##<spaces>## such that the line wrap should occur somewhere in ##:hello:hello:##. Since initially, with ##(setq word-wrap-by-category t)##, according to ##kinsoku.el##, character ##:## belongs to category ##?>##, it is prohibited to be placed at the beginning of the line. So where to put the line break? The only possibility is right after the asterisk at the beginning of the line. It seems there is a conflict there between kinsoku and org.mode.
 
 -- C.
