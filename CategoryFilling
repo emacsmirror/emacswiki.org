@@ -1,24 +1,20 @@
 [[zh:自动换行]]
 [[ja:カテゴリ・改行と行折り返し]]
-[::Filling]
-is the term used by Emacs to describe breaking
-lines before they get too long and run off the screen. It
-describes inserting carriage return characters, i.e. changing
+"Filling" is the term used by Emacs to describe breaking
+lines by inserting carriage return characters, i.e. changing
 the text. It is related to LineWrap, which describes the more
 general process of displaying lines that are too long for the
 screen. Filling is sometimes used to avoid having to wrap
 lines.
 
-The usual way to fill paragraphs are:
-
+==Flavors of filling==
+The usual ways to fill paragraphs are:
 * FillParagraph -- command for filling the current paragraph.
   By default, this is bound to <code>M-q</code>.
 * AutoFillMode -- MinorMode that lets Emacs break the line
   you are typing as soon as the last word ends beyond the right margin.
-* TruncateLines -- the display engine will do LineWrap without taking word
-  boundaries into account.  Alternatively the display engine can “truncate”
-  lines.
 
+==Other useful minor modes==
 There are a few more minor modes that may be useful:
 
 * [https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] -- 
@@ -34,14 +30,6 @@ convention can be adjusted in Emacs.) Because the newlines are part of the
 text, the lines may look odd (too long or too short) if you later view the
 file using another editor.
 
-Conversely, you may encounter text files that do not contain newline
-characters, which means that Emacs treats each line as a super long line,
-making everything very hard to read. The solution for this is:
-
-* LongLines -- inserts "soft" newlines to break long lines into shorter ones.
-These "soft" newlines will not be saved to file, copied into the KillRing, etc.
-* VisualFillColumn -- similar to LongLines above, it "soft" wraps text in a file at the `fill-column' variable, without changing the contents of the file.
-
 Highlighting or finding long lines without necessarily filling them:
 
 * ColumnMarker -- highlight a column (vertical line) of text, useful for Fortran or Cobol programming
@@ -50,19 +38,11 @@ Highlighting or finding long lines without necessarily filling them:
 * FindLongLines -- finding and working with long lines
 * HighlightLongLines -- another way to highlight long lines
 * MarginMode -- yet another highlight column mode
-
-
-: (Any recommendations? Too much choice!)
-
-Unwrapping:
-
-* UnfillParagraph, UnwrapLine -- take a paragraph and turn it into one long line
-
-See also:
-
+==Undoing filling==
+See UndoFilling
+==See also==
 * FillAdapt
 * FillingComments
-* UndoFilling
 * ErcFilling -- filling [[ERC]]'s buffers
 * NobreakFade -- some "nobreak" predicates
 * [http://user42.tuxfamily.org/parasep/index.html parasep.el] -- more things for paragraph separators
