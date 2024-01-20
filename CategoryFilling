@@ -7,13 +7,15 @@ general process of displaying lines that are too long for the
 screen. Filling is sometimes used to avoid having to wrap
 lines.
 
-See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Filling.html Filling] in the Emacs manual.
+==Official documentation==
+* [https://www.gnu.org/software/emacs/manual/html_node/emacs/Filling.html Filling Text] in the EmacsManual.
+* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Filling.html Filling] in the EmacsLispReference. 
 
 ==Common ways to fill==
 ===Explicit fill commands===
 The FillParagraph command fills the current paragraph. By default, this is bound to <code>M-q</code>.
 
-See also [https://www.gnu.org/software/emacs/manual/html_node/emacs/Fill-Commands.html Explicit Fill Commands] in the Emacs manual for information on `fill-paragraph' and related options and commands, including `fill-region', `fill-individual-paragraphs', and 'fill-region-as-paragraph', .
+See the official documentation linked above for information on `fill-paragraph' and related options and commands, including `fill-region', `fill-individual-paragraphs', and 'fill-region-as-paragraph', .
 
 ===Auto-Fill mode===
 AutoFillMode -- MinorMode that lets Emacs break the line you are typing as soon as the last word ends beyond the right margin.
