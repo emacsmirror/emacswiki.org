@@ -2,17 +2,6 @@ Options to undo filling, i.e. remove all line-endings from a paragraph
 * UnfillParagraph, UnwrapLine -- take a paragraph and turn it into one long line
 * Repeatedly applying `delete-indentation' (<kbd>M-^</kbd>)
 * Set `fill-column' to a really large value and run `fill-paragraph'
-* Create a custom function:
-
- (defun unfill-buffer ()
-   "Undo filling for all paragraphs."
-   (interactive)
-   (goto-char (point-min))
-   (let ((fill-column 99999))
-     (fill-paragraph nil)
-     (while (< (point) (point-max))
-       (forward-paragraph)
-       (fill-paragraph nil))))
 
 ----
 CategoryFilling
