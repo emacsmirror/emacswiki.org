@@ -6,7 +6,6 @@ Line-wrapping comes in a few flavors:
 # Modes such as AutoFillMode insert a [[line ending]] after the last word that occurs before the value of [[option]] `fill-column' (a column number).
 # Modes such as VisualFillColumn (in concert with VisualLineMode) wrap a line after the last word before `fill-column', but ultimately they do not alter the buffer text. Such "soft" wrapping is essentially a display effect.
 # Modes such as VisualLineMode wrap a line right before the window edge, but ultimately they do not alter the buffer text. VisualLineMode wrapping is essentially a display effect.
-# Mail read or written within Emacs can take advantage of FormatFlowed
 
 ==Default behavior==
 By default, when a line extends past the width of the window, Emacs wraps it,
@@ -27,8 +26,6 @@ To unfill, i.e. remove all line-endings from a paragraph, options include:
 Modes such as Long Lines wrap lines on word boundaries as you type, by inserting ''temporary'' line-ending characters. These are removed when you save the buffer to a file or copy its text for [[yank]]ing elsewhere, so they are only for display purposes.
 
 Of these three flavors, only Auto Fill mode actually changes your file (saved buffer). The default behavior of line-wrapping or truncating (#1) changes only the way your text appears, and Long Lines mode (#3) changes your text only temporarily.
-
-http://emacshorrors.com/posts/longlines-mode.html is an informative article which compares and contrasts some of the above approaches.
 
 [new]
 There is now a fourth flavor that kind of obsoletes Long Lines mode -- Kim Storm's word-wrap patch has landed in CVS (uh, I think early August or September 2008).  This patch changes the redisplay engine to wrap on \s+ (i.e., whitespace) and now Longlines/Notepad-like wrapping is available everywhere.  The line-number remains accurate, but you can use movement keys to scroll to the next displayed line without actually changing lines.  M-e and M-a also work better (I had problems in Latex with them).  It also has the benefit that when you resize, all the text goes with it, and it makes vertical splitting MUCH more readable, and no more backslashes to break up the text.
@@ -52,6 +49,10 @@ It's a nice trick. I suggest you also do ##(modify-category-entry 58 ?> (categor
 
 -- C.
 
+==Specialist support==
+===Mail===
+# Mail read or written within Emacs can take advantage of FormatFlowed
+===Org mode===
 == Changing the line-wrap character ==
 
 To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
@@ -107,6 +108,7 @@ An easier solution which however only applies in <tt>org-mode</tt> is to simply 
 as described by http://orgmode.org/manual/Clean-view.html#Clean-view
 
 --- N.N.
+
 
 ----
 CategoryFilling
