@@ -21,6 +21,9 @@ The usual way to fill paragraphs are:
 
 There are a few more minor modes that may be useful:
 
+* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] -- 
+  "sets the fill prefix automatically from the text in each paragraph being 
+  filled rather than using a predetermined value"
 * RefillMode -- fills the paragraph after each edit (included in GNU Emacs 21).
 * WordWrapping -- looks quite similar to RefillMode.
 
