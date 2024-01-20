@@ -90,9 +90,4 @@ If you see that   C-u 100 C-x f M-q   and   C-u 20 C-x f M-q   and others are do
 Note: lisp-interaction-mode will respect the fill-column setting if you customize the variable emacs-lisp-docstring-fill-column to t
 
 ----
-
-See also MarginMode and AutoFillMode. And UnfillParagraph.
-
-
-----
 CategoryFilling CategoryCode
