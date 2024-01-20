@@ -21,7 +21,7 @@ And here is how to replace the useless binding for fill-paragraph in [[ERC]]:
 
     (define-key erc-mode-map (kbd "M-q") 'unwrap-line)
 
-See also UnfillParagraph.
+See also UndoFilling.
 
 ----
 
@@ -47,10 +47,6 @@ Hmm, I couldn't get that working. But now I see you're using it for other source
         (just-one-space))))
 
 Good idea to bind it to M-q. -- DamienElmes
-
-[new:ChongYidong:2005-02-21 17:07 UTC]
-For interactive use, it is convenient to call M-^ (`delete-indentation'), which
-merges the current line with the one preceding it. -- ChongYidong
 
 ----
 CategoryChatClient
