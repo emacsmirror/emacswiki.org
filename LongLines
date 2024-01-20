@@ -9,9 +9,7 @@ lines from running off the screen. This wrapping is a display effect. It works b
 
 This means that, ultimately, the text in a file you edit is changed only by hard returns (the returns that you insert manually), not by soft returns (which are inserted temporarily for visual wrapping).
 
-GnuEmacs 22 and later come with Long Lines mode.  For other versions of Emacs, you can download it here: Lisp:longlines.el. (Do not take the version of ##longlines.el## from Emacs CVS and dump it into
-an older Emacs version; it's not compatible.  The version of ##longlines.el##
-in the ElispArea (Lisp:longlines.el) is maintained to be compatible with older Emacs versions
+You can download it here: Lisp:longlines.el. This version was maintained to be compatible with older Emacs versions
 and with XEmacs.)
 
 By default, soft returns are automatically inserted as you edit, to keep your text wrapped. If you do not want this effect, set
@@ -24,11 +22,6 @@ hard returns are marked with a glyph. This makes typing errors
 easier to spot.
 
 Long Lines mode does not lengthen short lines. It does not remove line endings (hard returns); it only (visually) wraps long lines.
-
-If you want to remove hard returns and then let Long Lines mode handle line wrapping, you can do this:
-
-# Use `C-u 99999 C-x f' to set variable `fill-column' to 99999.
-# Use command `fill-region' to fill all paragraphs in the [[region]]. Or use `M-q' (`fill-paragraph') on individual paragraphs to fill them. See also commands `fill-individual-paragraphs', `fill-nonuniform-paragraphs', and `fill-region-as-paragraph'.
 
 If `longlines-wrap-follows-window-size' is non-`nil', then Long Lines mode uses the window size as the wrap limit, instead of `fill-column'.
 
