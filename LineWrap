@@ -15,7 +15,12 @@ To use word-wrapping for continuation lines, set `word-wrap': i.e., ##M-: (setq 
 Emacs 28 provides an additional word-wrapping feature called ##word-wrap-by-category##. This is supposed to improve word-wrapping for CJK and in similar contexts. But it can be also used, alternatively, for other unicode regions. For example, turning this boolean flag on ##(setq word-wrap-by-category t)##, and setting ##(modify-category-entry '(45 . 47) ?|)## adds ##",-/"## to the set of characters emacs will consider as word wrapping boundaries. This is helpful when using long URLs: e.g. if ##LINK## is longer than the line length, the line ##* LINK##, will be wrapped at the first space -- then the first line will be just ##*##, and LINK will start from the next line, and will be broken in half anyway because it's long. The modification described above will break LINK in the middle, so the first line will be ##* LIN## for some decently long prefix ##LIN## of ##LINK##, and the second line will contain just ##K##. 
 ===Truncating rather than wrapping===
 To truncate lines rather than wrapping them, use TruncateLines.
+=== Changing the line-wrap character ===
+To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
 
+  M-: (set-display-table-slot standard-display-table 'wrap ?\ )
+
+Notice that after the `##\##'  there is a whitespace character but you can use other characters.
 ==Manually filling paragraphs==
 You can manually fill a paragraph with [[command]] `fill-paragraph' (<kbd>M-q</kbd>). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending.
 
@@ -51,21 +56,6 @@ It's a nice trick. I suggest you also do ##(modify-category-entry 58 ?> (categor
 ===Mail===
 # Mail read or written within Emacs can take advantage of FormatFlowed
 ===Org mode===
-== Changing the line-wrap character ==
-To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
-
-  M-: (set-display-table-slot standard-display-table 'wrap ?\ )
-
-You can also add this (the part in parentheses) to your [[init file]].
-Notice that after the `##\##'  there is a whitespace character (actually the backslash is optional for the whitespace, but it is used here for clarity), but you can add whatever you want:
-* "\b" -- a backspace character; if it works correctly on your box it will remove the backslash and replace it with nothing; however, it doesn't seem to work when you use more than one vertical window (it damages its layout); perhaps it's just a bug
-* "\a", "\t", "\r", "\u", etc. (same "bug", with some small variations)
-* "\n" -- it has the surprising effect of truncating the lines (if you use more than one vertical window, it only truncates the lines in the last one); probably a bug
-* "a", "b", ..., "<", "(", and any other ''single'' character (yes, it only accepts single characters)
-* "\x<octal>" -- another way to specify characters
-* "\" -- the default character (which you wanted to eliminate anyway, so you obviously don't need this minihowto for doing it) :)
-* "?<character>" could also be replaced by "0", but it may show the bug mentioned above
-
 [new:IainDalton:2010-02-12 20:24 UTC]
 Is there any code floating about that does "virtual indenting"--which is to indenting what visual-line-mode is to wrapping--like KDE's Kate?  The information needed to display lines at the right indentation may already be there--fill-paragraph does indentation as well as wrapping.  This would make editing someone else's non-wrapped code nicer, and make paragraphs in lists in markup languages (MarkDown, LaTeX, HTML) look nice without hard-wrapping, like:
 
