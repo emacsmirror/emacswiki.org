@@ -15,7 +15,7 @@ This refers to breaking lines by characters, i.e. changing the buffer text.  See
 ===Basic word-wrapping===
 To use word-wrapping for continuation lines, set `word-wrap': i.e., ##M-: (setq word-wrap t)##, or placing it as a file variable ##-*- mode:blah ; word-wrap:t -*-## in your first line. 
 ===Word-wrapping by category===
-Emacs 28 provides an the variable ##word-wrap-by-category##.  This is off by default.  Setting it is useful for word-wrapping with CJK characters.
+Emacs 28 provides the variable ##word-wrap-by-category##.  This is off by default.  Setting it is useful for word-wrapping with CJK characters.
 
 It can be used to customize where wrapping occurs.  For example, running
 
