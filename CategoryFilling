@@ -1,48 +1,37 @@
 [[zh:自动换行]]
 [[ja:カテゴリ・改行と行折り返し]]
 "Filling" is the term used by Emacs to describe breaking
-lines by inserting carriage return characters, i.e. changing
-the text. It is related to LineWrap, which describes the more
+lines by inserting EndOfLine characters. 
+It is related to LineWrap, which describes the more
 general process of displaying lines that are too long for the
 screen. Filling is sometimes used to avoid having to wrap
 lines.
 
-==Flavors of filling==
-The usual ways to fill paragraphs are:
-* FillParagraph -- command for filling the current paragraph.
-  By default, this is bound to <code>M-q</code>.
-* AutoFillMode -- MinorMode that lets Emacs break the line
-  you are typing as soon as the last word ends beyond the right margin.
+==Common ways to fill==
+===The fill-paragraph command===
+FillParagraph -- command for filling the current paragraph. By default, this is bound to <code>M-q</code>.
+===Auto-Fill mode===
+AutoFillMode -- MinorMode that lets Emacs break the line you are typing as soon as the last word ends beyond the right margin.
+===Refill mode===
+RefillMode -- fills the paragraph after each edit
 
-==Other useful minor modes==
-There are a few more minor modes that may be useful:
+==Adaptive Fill mode==
+[https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] --  "sets the fill prefix automatically from the text in each paragraph being filled rather than using a predetermined value"
 
-* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] -- 
-  "sets the fill prefix automatically from the text in each paragraph being 
-  filled rather than using a predetermined value"
-* RefillMode -- fills the paragraph after each edit (included in GNU Emacs 21).
-* WordWrapping -- looks quite similar to RefillMode.
+Similar: FillAdapt
 
-Usually, Emacs does not make a difference between "hard" and "soft" carriage
-returns. The end of each line is delineated with a newline character (\n) on
-Unix. (Old versions of Mac OS use a carriage return (\r), and DOS and Windows use both (\r\n, not \n\r). This EndOfLine
-convention can be adjusted in Emacs.) Because the newlines are part of the
-text, the lines may look odd (too long or too short) if you later view the
-file using another editor.
-
-Highlighting or finding long lines without necessarily filling them:
-
+==Undoing filling==
+See UndoFilling
+==Highlighting or finding long lines==
 * ColumnMarker -- highlight a column (vertical line) of text, useful for Fortran or Cobol programming
-* EightyColumnRule -- why some people like an 80-column cut-off
 * FillColumnIndicator -- a minor mode that indicates the fill column, either drawing a line or shading
 * FindLongLines -- finding and working with long lines
 * HighlightLongLines -- another way to highlight long lines
 * MarginMode -- yet another highlight column mode
-==Undoing filling==
-See UndoFilling
 ==See also==
-* FillAdapt
+* WordWrapping -- looks quite similar to RefillMode.
 * FillingComments
 * ErcFilling -- filling [[ERC]]'s buffers
 * NobreakFade -- some "nobreak" predicates
 * [http://user42.tuxfamily.org/parasep/index.html parasep.el] -- more things for paragraph separators
+
