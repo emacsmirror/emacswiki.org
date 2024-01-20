@@ -10,8 +10,11 @@ lines.
 See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Filling.html Filling] in the Emacs manual.
 
 ==Common ways to fill==
-===The fill-paragraph command===
-FillParagraph -- command for filling the current paragraph. By default, this is bound to <code>M-q</code>.
+===Explicit fill commands===
+The FillParagraph command fills the current paragraph. By default, this is bound to <code>M-q</code>.
+
+See also [https://www.gnu.org/software/emacs/manual/html_node/emacs/Fill-Commands.html Explicit Fill Commands] in the Emacs manual for information on `fill-paragraph' and related options and commands, including `fill-region', `fill-individual-paragraphs', and 'fill-region-as-paragraph', .
+
 ===Auto-Fill mode===
 AutoFillMode -- MinorMode that lets Emacs break the line you are typing as soon as the last word ends beyond the right margin.
 ===Refill mode===
