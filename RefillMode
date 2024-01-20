@@ -1,20 +1,13 @@
 This mode does automatic refilling, all the time.
 
+Use <code>M-x refill-mode</code> to toggle it.
+
 Basically, it hits <code>M-q</code> automatically after changes to
 the buffer that might normally trigger auto-filling.
 This prevents you from ever writing anything other
 than perfectly filled paragraphs in your buffers.  If you need to
 write a table or anything else non-filled, you need to disable Refill
 mode temporarily.
-
-Then use <code>M-x refill-mode</code> to toggle it.
-
-Refill mode is often used in conjunction with LongLines.  Sometimes
-you don't want to refill certain paragraphs.  While you edit these,
-make sure you disable refill mode!  Something like the following might
-be useful.  Change the key binding to your taste.
-
-<code>(global-set-key (kbd "C-c q") 'refill-mode)</code>
 
 == Types of Fill ==
 
