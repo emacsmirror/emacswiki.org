@@ -1,4 +1,4 @@
-[https://melpa.org/#/visual-fill-column Visual Fill Column] is a small Emacs minor mode used to together with VisualLineMode.  Instead of wrapping lines at the window edge, it wraps at ##fill-column## or, if ##fill-column## is too large for the window, at the window edge.
+[https://melpa.org/#/visual-fill-column Visual Fill Column] is a small Emacs minor mode used with VisualLineMode.  Instead of wrapping lines at the window edge, it wraps at ##fill-column## or, if ##fill-column## is too large for the window, at the window edge.
 
 Together VisualFillMode and VisualLineMode are similar to the now-defunct LongLines mode.
 
