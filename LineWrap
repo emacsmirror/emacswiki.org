@@ -38,7 +38,7 @@ See [[Adaptive Wrap]].
 ===Mail===
 Mail read or written within Emacs can take advantage of FormatFlowed
 ===Org mode===
-[[Org Mode]]'s `org-startup-indented' supports setting the line prefixes to use when wrapping similarly to [[Adaptive Wrap]], as described at http://orgmode.org/manual/Clean-view.html#Clean-view
+OrgMode's `org-startup-indented' supports setting the line prefixes to use when wrapping similarly to AdaptiveWrap, as described at http://orgmode.org/manual/Clean-view.html#Clean-view
 
 ----
 CategoryFilling
