@@ -8,8 +8,8 @@ To truncate lines rather than wrapping them, use TruncateLines.
 VisualLineMode wraps a line right before the window edge. The buffer text is not changed.
 ====Visual-Fill-Column mode====
 VisualFillColumn (used in concert with VisualLineMode) wraps a line after the last word before `fill-column'. The buffer text is not changed.
-===Auto-Fill mode===
-AutoFillMode inserts a [[line ending]] after the last word that occurs before the value of [[option]] `fill-column' (a column number).  This changes the buffer text.
+===Filling===
+This refers to breaking lines by characters, i.e. changing the buffer text.  See CategoryFilling for how to do this.
 
 ==Enabling word-wrapping==
 ===Basic word-wrapping===
@@ -32,13 +32,6 @@ To disable the `##\##' character in line wrapping (copying from Emacs in a termi
   M-: (set-display-table-slot standard-display-table 'wrap ?\ )
 
 Notice that after the `##\##'  there is a whitespace character but you can use other characters.
-==Manually filling paragraphs==
-You can manually fill a paragraph with [[command]] `fill-paragraph' (<kbd>M-q</kbd>). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending.
-
-To unfill, i.e. remove all line-endings from a paragraph, options include:
-* UnfillParagraph
-* Repeatedly applying `delete-indentation' (<kbd>M-^</kbd>)
-* Setting `fill-column' to a really large value and running `fill-paragraph'
 ==Adaptively setting prefixes for wrapped lines==
 See [[Adaptive Wrap]].
 ==Specialist support==
