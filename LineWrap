@@ -2,17 +2,19 @@
 
 Line-wrapping comes in a few flavors:
 
-# By default, Emacs wraps a line that reaches the window width, except at a word boundary. The buffer text is not changed.
+# By default, Emacs wraps a line that reaches the window width, either displaying a backslash (`\') in the buffer or placing a bent arrow (&#x21a9;) in the window [[fringe]].  This happens at character-level, not respecting word boundaries. The buffer text is not changed.
 # Modes such as AutoFillMode insert a [[line ending]] after the last word that occurs before the value of [[option]] `fill-column' (a column number).
 # Modes such as VisualFillColumn (in concert with VisualLineMode) wrap a line after the last word before `fill-column', but ultimately they do not alter the buffer text. Such "soft" wrapping is essentially a display effect.
 # Modes such as VisualLineMode wrap a line right before the window edge, but ultimately they do not alter the buffer text. VisualLineMode wrapping is essentially a display effect.
 
-==Default behavior==
-By default, when a line extends past the width of the window, Emacs wraps it,
-either displaying a backslash (`\') in the buffer or placing
-a bent arrow (&#x21a9;)
-in the window [[fringe]].  This does not happen at word boundaries.  To prevent
-Emacs from wrapping lines in this way and instead appear to truncate lines that are longer than the window width, use TruncateLines. Truncating lines does not alter your buffer text in any way -- the displayed backslash character of line-wrapping and the dollar (##$##) character of truncating are not part of the text (and so cannot be accessed).
+==Changes to default behavior==
+===Enabling word-wrapping===
+====Basic word-wrapping====
+To use word-wrapping for continuation lines, set `word-wrap': i.e., ##M-: (setq word-wrap t)##, or placing it as a file variable ##-*- mode:blah ; word-wrap:t -*-## in your first line. 
+====Word-wrapping by category====
+Emacs 28 provides an additional word-wrapping feature called ##word-wrap-by-category##. This is supposed to improve word-wrapping for CJK and in similar contexts. But it can be also used, alternatively, for other unicode regions. For example, turning this boolean flag on ##(setq word-wrap-by-category t)##, and setting ##(modify-category-entry '(45 . 47) ?|)## adds ##",-/"## to the set of characters emacs will consider as word wrapping boundaries. This is helpful when using long URLs: e.g. if ##LINK## is longer than the line length, the line ##* LINK##, will be wrapped at the first space -- then the first line will be just ##*##, and LINK will start from the next line, and will be broken in half anyway because it's long. The modification described above will break LINK in the middle, so the first line will be ##* LIN## for some decently long prefix ##LIN## of ##LINK##, and the second line will contain just ##K##. 
+===Truncating rather than wrapping===
+To truncate lines rather than wrapping them, use TruncateLines.
 
 ==Manually filling paragraphs==
 You can manually fill a paragraph with [[command]] `fill-paragraph' (<kbd>M-q</kbd>). Instead of wrapping a single line around to the next window line, the line is divided into two separate lines, separated by a line ending.
@@ -36,11 +38,7 @@ To enable it globally, there is a global-visual-line-mode which you would enable
 
 To enable it as a file variable, it'd be ## -*- mode:blah ; mode:visual-line -*-##.
 
-If you don't want to use the visual-line-mode command because you don't want the behaviors changed (i.e., you want it to leave your C-a, C-e pure), the variable to set is `word-wrap': i.e., ##M-: (setq word-wrap t)##, or placing it as a file variable ##-*- mode:blah ; word-wrap:t -*-## in your first line. 
 
-Usage of the word-wrap feature is really dependent on whether or not you like to horizontally scroll or not (with `truncate-lines'). I don't, since I'm using Emacs to write at the moment and this makes it much easier to read.  If you're just truncating and wrapping, I highly recommend it. -- [[sword]]
-
-Emacs 28 provides an additional word wrapping feature that is called ##word-wrap-by-category##. This is supposed to improve word-wrapping for CJK and in similar contexts. But it can be also used, alternatively, for other unicode regions. For example, turning this boolean flag on ##(setq word-wrap-by-category t)##, and setting ##(modify-category-entry '(45 . 47) ?|)## adds ##",-/"## to the set of characters emacs will consider as word wrapping boundaries. This is helpful when using long URLs: e.g. if ##LINK## is longer than the line length, the line ##* LINK##, will be wrapped at the first space -- then the first line will be just ##*##, and LINK will start from the next line, and will be broken in half anyway because it's long. The modification described above will break LINK in the middle, so the first line will be ##* LIN## for some decently long prefix ##LIN## of ##LINK##, and the second line will contain just ##K##. 
 
 -- volhovm
 
@@ -54,7 +52,6 @@ It's a nice trick. I suggest you also do ##(modify-category-entry 58 ?> (categor
 # Mail read or written within Emacs can take advantage of FormatFlowed
 ===Org mode===
 == Changing the line-wrap character ==
-
 To disable the `##\##' character in line wrapping (copying from Emacs in a terminal can copy the character), remove it with a trick that is not well documented:
 
   M-: (set-display-table-slot standard-display-table 'wrap ?\ )
