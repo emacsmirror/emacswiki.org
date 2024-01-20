@@ -29,9 +29,9 @@ See UndoFilling
 * HighlightLongLines -- another way to highlight long lines
 * MarginMode -- yet another highlight column mode
 ==See also==
-* WordWrapping -- looks quite similar to RefillMode.
-* FillingComments
 * ErcFilling -- filling [[ERC]]'s buffers
+* FillingComments
 * NobreakFade -- some "nobreak" predicates
 * [http://user42.tuxfamily.org/parasep/index.html parasep.el] -- more things for paragraph separators
+* WordWrapping -- similar to AutoFillMode.
 
