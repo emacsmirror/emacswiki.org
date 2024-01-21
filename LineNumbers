@@ -13,28 +13,11 @@ You can enable it globally by appending this to your ##.emacs## file:
 
 <pre>
 (when (version<= "26.0.50" emacs-version )
-  (global-display-line-numbers-mode))
+  (global-display-line-numbers-mode 1))
 </pre>
 
-To disable it in certain major modes you can redefine ##display-line-numbers--turn-on##:
-
-<pre>
-(require 'display-line-numbers)
-
-(defcustom display-line-numbers-exempt-modes
-  '(vterm-mode eshell-mode shell-mode term-mode ansi-term-mode)
-  "Major modes on which to disable line numbers."
-  :group 'display-line-numbers
-  :type 'list
-  :version "green")
-
-(defun display-line-numbers--turn-on ()
-  "Turn on line numbers except for certain major modes.
-Exempt major modes are defined in `display-line-numbers-exempt-modes'."
-  (unless (or (minibufferp)
-              (member major-mode display-line-numbers-exempt-modes))
-    (display-line-numbers-mode)))
-</pre>
+Alternatively, to use it only in programming modes:
+    (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 === Display the current line number in the mode line===
 Use <code>M-x line-number-mode</code>.
 
