@@ -1,4 +1,6 @@
-Last year I wrote [http://www.young-0.com/emacs/lineno.el lineno.el], which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
+Source code at Lisp:lineno.el.
+
+Last year I wrote lineno.el, which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
 
 russell young
 
@@ -10,16 +12,13 @@ If I had time to go in and fix something, the highest priority would be to make 
 
 ry
 
-[new:SamAsk:2011-10-27] I have added lineno.el to marmalade repo (http://marmalade-repo.org/packages/lineno/0.1) (GOOD LIVE LINK).  The file is in the repo as ".tar", but just change the ending to ".el" - it is not really a TAR file.
-
-[new]
 I find that the redraw operation to put in the line numbers makes the text "jitter" uncomfortably to the right as I page up and down the buffer.  First the text is drawn by Emacs, then the line number routine redraws it shifted right to put the line numbers it.  It would be nice to hook into the first rendering, instead of hooking in after the first rendering is already done.  But it does put the line numbers in nicely.
 
-[new]
 I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalgamation file sqlite3.c (5MB, 148784 lines).
 [tt]lineno[/tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7).
 
 --  [http://www.emacswiki.org/emacs/priyadarshan priyadarshan] 2014-08-07 13:56 UTC
+
 
 ----
 CategoryDisplay
