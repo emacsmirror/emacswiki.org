@@ -21,6 +21,7 @@ that colors and [[face]]s belong in CategoryFaces.
 ** HighlightIndentation -- highlight indentation using vertical guide lines
 * ChangingCursorDynamically -- automatically change the cursor, depending on the context
 * TruncateLines -- the display engine can do LineWrap
+* LineNumbers -- display information about line numbers
 * ModeLine -- the mode-line provides lots of information
 ** ModeLineMinorModeMenu -- pop up minor-mode menus from the mode-line.
 ** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
