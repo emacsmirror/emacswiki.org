@@ -1,23 +1,9 @@
-Linum mode was distributed with Emacs in versions after 22.  It is considered obsolete as of Emacs version 29.1.
+Linum mode was distributed with Emacs in versions after 22, superseded by `display-line-numbers-mode' (see LineNumbers) in Emacs 26, and is considered obsolete as of version 29.1.
 
-Library ##linum.el## works incrementally and can number large files very quickly.
-
-http://stud4.tuwien.ac.at/~e0225855/linum/linum.html
-
-##linum.el## 
-
-[new:DrewAdams:2007-03-08 21:38 UTC]
-Seems very good, to me. It looks like a good candidate to replace ##setnu.el##. -- DrewAdams 
-
-[new:Sapsi:2007-10-24]
+==Changing the color of the line numbers==
 I was wondering if there is way to change the color of the line numbers e.g change color/change background color so that it can be readily differentiated from the neighboring text. Great code. Thanks -- Saptarshi
-Also is there a way to turn on linum mode automatically for any opened file? - Thanks Saptarshi
 
 : Try ##M-x customize-face RET linum##. Also try ##M-x global-linum-mode##, or append ##(add-hook 'find-file-hook (lambda () (linum-mode 1)))## to your ##.emacs##.
-
-: Append ##(global-linum-mode 1)## to your ##.emacs##.
-
-Note: adding ##(global-linum-mode 1)## to your ##.emacs## will cause Emacs to ask "Options have changed - save them?" when exiting.  Clearly this is not a good way to enable ##linum-mode## globally.
 
 [new:MichaelHoffman:2011-12-20]
 Another workaround that keeps the appearance of the dynamic linum-format is to use this function which replaces the spaces on the left with zeroes that have the same foreground and background color.
@@ -56,7 +42,7 @@ If you can't to just align line numbers to the right as well as have a little pa
 
 -AnshulVerma
 
-== Linum: Separating line numbers from text ==
+==Separating line numbers from text ==
 
 Putting the following in your .emacs will put one space separation between the linenumber display and the buffer contents:
 
@@ -192,7 +178,7 @@ this, was hacked together from multiple places.
 [new]
 
 
-== Linum: Numbering the last line of the buffer ==
+==Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]
 
 *NOTE:* This is now incorporated into the version distributed with Emacs 24.5 and possibly earlier versions.
@@ -238,7 +224,7 @@ Since most editors number the last line of a file even if it is empty (ie. no ch
 
 If this is seen as useful, I'd like for it to be incorporated into the original code. -- AdamKerz
 
-== Linum: Disable linum for certain major-modes ==
+==Disable linum for certain major-modes ==
 [new:FlorianAdamsky:2010-08-15 11:41 UTC]
 I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mode or compilation-mode. Therefore I tried to hook on these modes, but this doesn't work for me (maybe a bug?) [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/addd8d997ff49c2e/d6b74c3ab8af2a8a]. So I tried to overwrite the function (linum-on), which works fine. Here is my solution:
 
@@ -255,7 +241,7 @@ I have generalized this to a lisp add-on file Lisp:linum-off.el
 
 -- MatthewFidler
 
-== Linum: Select lines by clicking ==
+==Select lines by clicking ==
 [new:sabof:2011-11-12 12:40 UTC]
 Select lines by click-dragging on the margin.
 Tested with GNU Emacs 23.3
@@ -300,7 +286,7 @@ Tested with GNU Emacs 23.3
 
 -- sabof
 
-== Linum: background color under linum in the left-margin area? ==
+==background color under linum in the left-margin area? ==
 
 It is possible to change the linum's face so that the background has a custom color, but how to fix the background of the left-margin under line numbers so that it has the same color (not the default one)? See the snapshot.
 
@@ -311,14 +297,14 @@ It is possible to change the linum's face so that the background has a custom co
 As far as i know that space under the numbers is the "default" face and there is no difference between this color and the background of other buffers.  So all you can do is to have the same background color for the "default" and "linum" faces.  (You can customize a face with "M-x customize-face")  -- AlexKost
 
 
-== Linum: highlight the current line number ==
+==highlight the current line number ==
 [[https://github.com/targzeta/linum-highlight-current-line-number linum-highligth-current-line-number]] implements a little function to highlight the current line number with a customizable face (linum group).
 
 [[image:linum-highlight-current-line]]
 
 [[targzeta]]
 
-== Linum: fix margins when font is scaled ==
+==fix margins when font is scaled ==
 [new:PabloMachon:2015-10-18 19:50 CEST]
 When font size is increased in text-scale mode (maybe just invoking `text-scale-increase'), linum mode's line numbers are not properly displayed. The number's font increases but the area containing them stays the same size. As a consequence the numbers don't fit.
 
@@ -348,7 +334,7 @@ Scaling the frame instead of the buffer using [http://www.emacswiki.org/emacs/zo
 
 --[[sshaw]]
 
-== Linum: Using on Emacs version 29.1 or later ==
+==Using on Emacs version 29.1 or later ==
 
 Emacs 29.1 marks ##linum## as obsolete, and you can expect to get errors of the form "Symbol's function definition is void: global-linum-mode".  The release notes recommend migrating to ##nlinum## or the built-in ##line-numbers-mode##.  To stick with ##linum##, add ##(require 'linum)## to your Init file.
 
