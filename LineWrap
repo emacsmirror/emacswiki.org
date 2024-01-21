@@ -33,7 +33,7 @@ To disable the `##\##' character in line wrapping (copying from Emacs in a termi
 
 Notice that after the `##\##'  there is a whitespace character but you can use other characters.
 ==Adaptively setting prefixes for wrapped lines==
-See [[Adaptive Wrap]].
+See AdaptiveWrap.
 ==Specialist support==
 ===Mail===
 Mail read or written within Emacs can take advantage of FormatFlowed
