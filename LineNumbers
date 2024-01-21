@@ -17,6 +17,7 @@ You can enable it globally by appending this to your ##.emacs## file:
 </pre>
 
 Alternatively, to use it only in programming modes:
+
     (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 === Display the current line number in the mode line===
 Use <code>M-x line-number-mode</code>.
