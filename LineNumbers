@@ -77,43 +77,8 @@ I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalga
 ==LinumPlus==
 LinumPlus
 
-==NLinum==
-
-The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages/nlinum.html) is meant as a replacement for linum.el, using the jit-lock infrastructure to fix various corner case bugs in linum.el.  It should usually be about as fast or faster than linum.el.
-
-To precalculate the line number width to avoid horizontal jumps on scrolling:
-<pre>
-;; Preset `nlinum-format' for minimum width.
-(defun my-nlinum-mode-hook ()
-  (when nlinum-mode
-    (setq-local nlinum-format
-                (concat "%" (number-to-string
-                             ;; Guesstimate number of buffer lines.
-                             (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
-                        "d"))))
-(add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
-</pre>
-
-Note: a previous version set <code>nlinum--width</code> and then
-called <code>nlinum-flush</code>, but that can cause problems in
-nlinum's timers, see
-http://debbugs.gnu.org/cgi/bugreport.cgi?bug=23777.
-
-----
-
-the lastest Nlinum-mode git version(1.6) not worked with emacs deamon mode, use emacsclient to open a file, will result a "*ERROR*: Invalid face: linum" error, following hack worked for me on emacs-version 24.5.1.
-
-<pre>
-(defun initialize-nlinum (&optional frame)
-  (require 'nlinum)
-  (add-hook 'prog-mode-hook 'nlinum-mode))
-(when (daemonp)
-  (add-hook 'window-setup-hook 'initialize-nlinum)
-  (defadvice make-frame (around toggle-nlinum-mode compile activate)
-  (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
-</pre>
-
-- zw963(Billy)
+==Nlinum==
+See [[Nlinum]]
 ==Setnu==
 
 If you want to display line numbers for every line you are editing,
