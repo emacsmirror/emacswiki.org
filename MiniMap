@@ -1,42 +1,30 @@
-[http://elpa.gnu.org/packages/minimap.html Minimap] is a feature provided by the [http://www.sublimetext.com/ Sublime] editor. It shows a smaller, "minibar", display of the current buffer alongside the main editing window.
+This page is about the [https://elpa.gnu.org/packages/minimap.html minimap] package, an Emacs implementation of [http://www.sublimetext.com/ Sublime Text]'s "minimap". 
 
-This page is about a minimap implementation for Emacs. In the minibar window, it highlights the portion of the buffer that is currently visible in the main window. This highlight position is updated automatically, as you navigate in the main window. You can scroll the main window by dragging the
-highlighted area in the minibar.
+It shows a "minibar" with a small-scale display of the current buffer alongside the main editing window. This highlights the portion of the buffer that is currently visible in the main window. You can scroll the main window by dragging the highlighted area in the minibar.
 
-You can configure the size/readability of the sidebar freely by specifying the font familiy and height. Here are two screenshots of the minibar in action:
-
-With Bitstream Vera Sans, Height 30, with semantic overlays enabled (requires CEDET):
-
-http://randomsample.de/minimap1.jpg 
-
-With Proggyfont Tiny, Height 20:
-
-http://randomsample.de/minimap2.jpg
-
-It is in GNU ELPA, so you can get it directly from `M-x package-install', or you can find its code at https://git.savannah.gnu.org/cgit/emacs/elpa.git/tree/packages/minimap/minimap.el
+==Installation==
+It is in GNU ELPA as [https://elpa.gnu.org/packages/minimap.html minimap], so you can get it directly from `M-x package-install', or you can find its code at https://git.savannah.gnu.org/cgit/emacs/elpa.git/tree/packages/minimap/minimap.el
 
 Repository at GitHub: https://github.com/dengste/minimap
 
-Usage:
-
+==Usage==
 * Use `M-x minimap-mode' to toggle the minimap minor mode. By default, the Minimap will automatically be activated for all buffers which are derived from `prog-mode'.
 * Use `M-x customize-group RET minimap RET' to adapt minimap to your needs.
 
-Things you can customize:
-
+==Customization==
 * Recenter strategies - always keep active region in the middle, or scroll dependent on the position in the buffer.
 * Can use information from CEDET's semantic analyzer to display structure, functions, variables and types.
 * Alternatively, can display certain faces in their normal size so that you can still read them (function names, for instance).
 * Position on the left or right.
 * Set minimap-update-delay to 0 if you want an immediate reaction to scrolling (slows down scrolling, though).
 
-KNOWN BUGS:
-
+==Screenshots==
+* [http://randomsample.de/minimap1.jpg With Bitstream Vera Sans, Height 30, with semantic overlays enabled (requires CEDET):]
+* [http://randomsample.de/minimap2.jpg With Proggyfont Tiny, Height 20:] 
+==Known bugs==
 * Currently cannot deal with images.
 * Display/movement can be a bit erratic at times.
-
-TODO:
-
+==TODO==
 * Fix known bugs.
 * Make sidebar permanently visible. This requires something like a
    'window group' feature in Emacs, which is currently being worked on (for the EmacsCodeBrowser).
