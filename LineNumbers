@@ -7,7 +7,7 @@ See also, from the EmacsManual
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Position-Info.html Cursor Position Information]
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Display-Custom.html Customization of Display]
 ===Display line numbers for every line===
-##display-line-numbers-mode## is available since Emacs 26.  For older Emacs, see the section below on ##linum-mode##.
+##display-line-numbers-mode## is available since Emacs 26.  For older Emacs, see LinumMode and [[Nlinum]].
 
 You can enable it globally by appending this to your ##.emacs## file:
 
