@@ -1,5 +1,12 @@
 Linum mode was distributed with Emacs in versions after 22, superseded by `display-line-numbers-mode' (see LineNumbers) in Emacs 26, and is considered obsolete as of version 29.1.
 
+
+==Obsoletion==
+
+Emacs 29.1 marks ##linum## as obsolete, and you can expect to get errors of the form "Symbol's function definition is void: global-linum-mode".
+
+The release notes recommend migrating to [[Nlinum]] or the built-in ##line-numbers-mode##.  To stick with ##linum##, add ##(require 'linum)## to your Init file.
+
 ==Changing the color of the line numbers==
 I was wondering if there is way to change the color of the line numbers e.g change color/change background color so that it can be readily differentiated from the neighboring text. Great code. Thanks -- Saptarshi
 
@@ -334,9 +341,6 @@ Scaling the frame instead of the buffer using [http://www.emacswiki.org/emacs/zo
 
 --[[sshaw]]
 
-==Using on Emacs version 29.1 or later ==
-
-Emacs 29.1 marks ##linum## as obsolete, and you can expect to get errors of the form "Symbol's function definition is void: global-linum-mode".  The release notes recommend migrating to ##nlinum## or the built-in ##line-numbers-mode##.  To stick with ##linum##, add ##(require 'linum)## to your Init file.
 
 ----
 CategoryDisplay
