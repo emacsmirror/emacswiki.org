@@ -1,0 +1,17 @@
+The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages/nlinum.html) is meant as a replacement for LinumMode, using the jit-lock infrastructure to fix various corner case bugs, and aiming to be as fast or faster.
+
+To precalculate the line number width to avoid horizontal jumps on scrolling:
+<pre>
+;; Preset `nlinum-format' for minimum width.
+(defun my-nlinum-mode-hook ()
+  (when nlinum-mode
+    (setq-local nlinum-format
+                (concat "%" (number-to-string
+                             ;; Guesstimate number of buffer lines.
+                             (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
+                        "d"))))
+(add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
+</pre>
+
+----
+CategoryDisplay
