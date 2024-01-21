@@ -1,12 +1,13 @@
 This page is about ''displaying'' line numbers in a buffer, or otherwise indicating line numbers, ''without'' actually changing the buffer content. If you just want to work on a specific part of the file and you are accustomed to doing that by showing line numbers in the margin, try BasicNarrowing instead.
 
-'''See Also:''' The code on this page just ''displays'' line numbers without actually changing the buffer content. NumberLines will add the line numbers to the buffer content.
+'''See Also:''' NumberLines will add the line numbers to the buffer content.
 
-== The Easy Way ==
-
-##display-line-numbers-mode## is available since Emacs 26.
-
-For older Emacs, use ##M-x linum-mode##. It could slow down emacs when viewing file with more than tens of thousands of lines. See https://github.com/redguardtoo/emacs.d/issues/178 for bug report and solution. The solution is simple: disable `linum-mode` or any linum-mode alternative when file is too big.
+==Built-in ways==
+See also, from the EmacsManual
+* [https://www.gnu.org/software/emacs/manual/html_node/emacs/Position-Info.html Cursor Position Information]
+* [https://www.gnu.org/software/emacs/manual/html_node/emacs/Display-Custom.html Customization of Display]
+===Display line numbers for every line===
+##display-line-numbers-mode## is available since Emacs 26.  For older Emacs, see the section below on ##linum-mode##.
 
 You can enable it globally by appending this to your ##.emacs## file:
 
@@ -15,8 +16,7 @@ You can enable it globally by appending this to your ##.emacs## file:
   (global-display-line-numbers-mode))
 </pre>
 
-
-To disable this in certain major modes you can redefine ##display-line-numbers--turn-on##:
+To disable it in certain major modes you can redefine ##display-line-numbers--turn-on##:
 
 <pre>
 (require 'display-line-numbers)
@@ -34,15 +34,14 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
   (unless (or (minibufferp)
               (member major-mode display-line-numbers-exempt-modes))
     (display-line-numbers-mode)))
-
-(global-display-line-numbers-mode)
 </pre>
+=== Display the current line number in the mode line===
+Use <code>M-x line-number-mode</code>.
 
-== The Current Line Only ==
-
-If you just want the current line number in your modeline (and it isn't there already), use [::LineNumberMode] by running the <code>M-x line-number-mode</code> command.
-
-If you just want to know the current line number that the TextCursor is on, you can use the <code>M-x what-line</code> command (which is usually not on a key).  Or use <code>count-lines-page</code> (<code>C-x l</code>) that reports the total number of lines as well as the numbers of lines before and after the current one.
+=== Display the current line number once===
+To display the current line number in the EchoArea, you can 
+* use <code>M-x what-line</code> command
+* use <code>count-lines-page</code> (<kbd>C-x l</kbd>), which reports the total number of lines as well as the numbers of lines before and after the current one.
 
 == XEmacs line-numbers-mode ==
 
