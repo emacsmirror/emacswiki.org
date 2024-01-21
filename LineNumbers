@@ -39,23 +39,45 @@ Exempt major modes are defined in `display-line-numbers-exempt-modes'."
 Use <code>M-x line-number-mode</code>.
 
 === Display the current line number once===
-To display the current line number in the EchoArea, you can 
+To display the current line number in the EchoArea, you can
 * use <code>M-x what-line</code> command
 * use <code>count-lines-page</code> (<kbd>C-x l</kbd>), which reports the total number of lines as well as the numbers of lines before and after the current one.
 
-== XEmacs line-numbers-mode ==
+=== Linum mode===
+Obsolete from Emacs 29, see LinumMode.
 
-JerryChen had [http://www.geocities.ws/gchen275/xemacs/ a line-numbers-mode on Geocities]. It seems to be [[XEmacs]] specific.
-[http://www.geocities.ws/gchen275/xemacs/line-numbers-mode.gif Screenshot].
-
-== line-num ==
+==line-num==
 
 [[line-num.el]]
 
-== LinumPlus ==
+==LineNo==
+Last year I wrote [http://www.young-0.com/emacs/lineno.el lineno.el], which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
+
+russell young
+
+On a larger buffer with line numbers, when I do C-x 2 to split the window and then scroll one of them, the numbers in the other window vanish.
+
+Yes, that is the way it works - it draws in the current window. It would not be too hard to make it work in multiple windows, but it didn't really seem necessary to how I wanted to use it. (you would have to use buffer-window-count to find how many and what windows it is showed in, and replace the local variables with lists)
+
+If I had time to go in and fix something, the highest priority would be to make it work with ediff. It has essentially the same problem there, the numbers are updated from inside post-command-hook, if the buffer is changed in some way that is not a command the update function is not called.
+
+ry
+
+[new:SamAsk:2011-10-27] I have added lineno.el to marmalade repo (http://marmalade-repo.org/packages/lineno/0.1) (GOOD LIVE LINK).  The file is in the repo as ".tar", but just change the ending to ".el" - it is not really a TAR file.
+
+[new]
+I find that the redraw operation to put in the line numbers makes the text "jitter" uncomfortably to the right as I page up and down the buffer.  First the text is drawn by Emacs, then the line number routine redraws it shifted right to put the line numbers it.  It would be nice to hook into the first rendering, instead of hooking in after the first rendering is already done.  But it does put the line numbers in nicely.
+
+[new]
+I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalgamation file sqlite3.c (5MB, 148784 lines).
+[tt]lineno[/tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7).
+
+--  [http://www.emacswiki.org/emacs/priyadarshan priyadarshan] 2014-08-07 13:56 UTC
+
+==LinumPlus==
 LinumPlus
 
-== NLinum ==
+==NLinum==
 
 The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages/nlinum.html) is meant as a replacement for linum.el, using the jit-lock infrastructure to fix various corner case bugs in linum.el.  It should usually be about as fast or faster than linum.el.
 
@@ -92,9 +114,7 @@ the lastest Nlinum-mode git version(1.6) not worked with emacs deamon mode, use 
 </pre>
 
 - zw963(Billy)
-== Linum mode==
-See LinumMode
-== Setnu ==
+==Setnu==
 
 If you want to display line numbers for every line you are editing,
 take a look at setnu.el by KyleJones.
@@ -127,7 +147,7 @@ I have this bound to C-n.
 * When I tried it (setnu+, I think) on a large file (almost 20,000 lines) it was too slow, it's almost as if Emacs hangs, I wish if this can be fixed -- SysTems
 
 [new:DrewAdams:2006-10-07 15:09 UTC]
-: You'll have to provide more information, if you expect help. 
+: You'll have to provide more information, if you expect help.
 
 ## Try setnu without setnu+, to see which library is the problem. Setnu+ is an extension of setnu.
 ## Try with ##emacs -q##, to see if the problem comes from Emacs and the setnu(+) library or from something in your InitFile.
@@ -141,7 +161,7 @@ I have this bound to C-n.
 : To find files on my computer to test this I first issues this command
 ~$ find ~/ -iname '*txt' -size +500k
 
-: I found the text version of a book I downloaded long ago (and never had the time to read) called Underground by Suelette Dreyfus. You can download the same file from this link 
+: I found the text version of a book I downloaded long ago (and never had the time to read) called Underground by Suelette Dreyfus. You can download the same file from this link
 http://www.xs4all.nl/~suelette/underground/underground.txt (it's legally available for free download)
 
 : As for my Emacs configuration, I will try to describe it to my best of knowledge:
@@ -161,7 +181,7 @@ of 2005-03-17 on trouble, modified by Debian"
 : I hope this helps. -- SysTems
 
 [new:DrewAdams:2006-10-09 02:20 UTC]
-: Thanks. I don't have an answer for you yet, but it would be good for you to at least determine if you have the same problem when you do ##(require 'setnu)## instead of ##(require 'setnu+)##. If so, then the problem is not in Lisp:setnu+.el. When you use `require', Emacs loads the required library. Library ##setnu+.el## does its own `require' of ##setnu.el##, so that's how ##setnu## gets loaded if you require ##setnu+##. 
+: Thanks. I don't have an answer for you yet, but it would be good for you to at least determine if you have the same problem when you do ##(require 'setnu)## instead of ##(require 'setnu+)##. If so, then the problem is not in Lisp:setnu+.el. When you use `require', Emacs loads the required library. Library ##setnu+.el## does its own `require' of ##setnu.el##, so that's how ##setnu## gets loaded if you require ##setnu+##.
 
 : So, at least try that, please. If it turns out that the problem is ##setnu+.el## and not ##setnu.el##, then the workaround is to just use ##(require 'setnu)##. I suspect the problem is really in ##setnu.el##, but please find that out.
 
@@ -169,7 +189,7 @@ of 2005-03-17 on trouble, modified by Debian"
 
 [new]
 : I retried the test as you suggested with (require setnu) instead of (require setnu+), on both GnuEmacs and XEmacs. And I got the same results 4 minutes for GNU Emacs and almost 10 seconds for XEmacs. (10 seconds is still very poor performance compared to vim or nedit)
-: And I also visited KyleJones personal site and I quote from his setnu description this line /"This package is best used on files with a few thousand lines at most, unless you have very fast hardware and are willing to waste it recalculating and redisplaying line numbers."/. So obviously he is aware of the bad performance! -- SysTems 
+: And I also visited KyleJones personal site and I quote from his setnu description this line /"This package is best used on files with a few thousand lines at most, unless you have very fast hardware and are willing to waste it recalculating and redisplaying line numbers."/. So obviously he is aware of the bad performance! -- SysTems
 
 [new:DrewAdams:2006-10-09 23:56 UTC]
 : OK, so I guess you got the answer. Sorry about the bad news. You might still send an email to KyleJones, to at least let him know of the incredible performance difference between XEmacs and GnuEmacs. 10 seconds might be tolerable in some contexts (or less, with a smaller file), but 4 minutes is useless. You never know -- perhaps there is a tiny bug that causes this performance decline in GnuEmacs relative to XEmacs. -- DrewAdams
@@ -183,7 +203,7 @@ of 2005-03-17 on trouble, modified by Debian"
 [new:DrewAdams:2006-09-12 14:09 UTC]
 : I have no such problem. The version of setnu I have is from 1997. Unless someone else here has a suggestion, try emailing help-gnu-emacs@gnu.org or the setnu maintainer (listed in the ##setnu.el##, probably). Do you have the problem when you start with ##emacs -q##? If not, then probably some other library you use is interfering. Does the problem occur in every mode? -- DrewAdams
 
-[new:StefanKamphausen:2006-09-12 19:31 UTC] 
+[new:StefanKamphausen:2006-09-12 19:31 UTC]
 : OK, using the stupid approach (emacs -q, manually loading line after line from my init files, each time performing a test for the problem) I found that the following in my custom.el introduces the problems:
 
 (custom-set-variables '(global-font-lock-mode t nil (font-lock)))
@@ -207,7 +227,7 @@ shell> emacs -q
 ;; type
 (global-font-lock-mode 1)
 ;; C-x C-e
-;; perform the test.... OOOps (at least for me).  
+;; perform the test.... OOOps (at least for me).
 
 : Result is shown [http://www.skamphausen.de/downloads/setnu-err.png here]
 
@@ -217,7 +237,7 @@ shell> emacs -q
 [new]
 : I will give it a try... -- StefanKamphausen
 
-=== Horizontal frame resize problem with setnu+ == 
+=== Horizontal frame resize problem with setnu+==
 I tried using setnu+ with Aquamacs and when I add newlines to the current buffer, the frame gets wider.
 (if I delete the newline, it does not decrease the width framesize)
 
@@ -230,7 +250,7 @@ this will leave the frame alone, and everything is fine.
 
 -- V.Tron
 
-=== Problems with Soft wrap and syntax coloring ==
+=== Problems with Soft wrap and syntax coloring==
 
 In soft wrap mode the wrapped line goes under the linenumbers which gives the impression that line numbers are part of the buffer.
 Also, line numbers participate in syntax coloring which I think is basically wrong.
@@ -238,41 +258,16 @@ Also, line numbers participate in syntax coloring which I think is basically wro
 The highlight problem can be rectified by assigning the line number extent to a new customizable face.
 I sent this very simple patch to the author who will incorporate it in a later release.
 
-According to the author of sentu+, there is no easy way to get the correct wrapped line behaviour fixed. 
+According to the author of sentu+, there is no easy way to get the correct wrapped line behaviour fixed.
 In fact, the proper place for line-numbers would be on the fringe, not the buffer proper.
 I am truely surprised noone ever needed this basic feature of a code editor.
 
 -- V.Tron
 
-==LineNo: Alternative line number function ==
-Last year I wrote [http://www.young-0.com/emacs/lineno.el lineno.el], which works on any size files. Rather than making line numbers for the whole buffer, it just displays them for the lines visible in the selected window, updating them as the buffer is edited or the location changed. That way the actual size of the file does not matter. I don't use it much, but it seems to work well.
+==XEmacs line-numbers-mode==
 
-russell young
+JerryChen had [http://www.geocities.ws/gchen275/xemacs/ a line-numbers-mode on Geocities]. It seems to be [[XEmacs]] specific.
+[http://www.geocities.ws/gchen275/xemacs/line-numbers-mode.gif Screenshot].
 
-[new]
-On a larger buffer with line numbers, when I do C-x 2 to split the window and then scroll one of them, the numbers in the other window vanish.
-
-[new]
-Yes, that is the way it works - it draws in the current window. It would not be too hard to make it work in multiple windows, but it didn't really seem necessary to how I wanted to use it. (you would have to use buffer-window-count to find how many and what windows it is showed in, and replace the local variables with lists)
-
-If I had time to go in and fix something, the highest priority would be to make it work with ediff. It has essentially the same problem there, the numbers are updated from inside post-command-hook, if the buffer is changed in some way that is not a command the update function is not called.
-
-ry
-
-[new:SamAsk:2011-10-27] I have added lineno.el to marmalade repo (http://marmalade-repo.org/packages/lineno/0.1) (GOOD LIVE LINK).  The file is in the repo as ".tar", but just change the ending to ".el" - it is not really a TAR file.
-
-[new]
-I find that the redraw operation to put in the line numbers makes the text "jitter" uncomfortably to the right as I page up and down the buffer.  First the text is drawn by Emacs, then the line number routine redraws it shifted right to put the line numbers it.  It would be nice to hook into the first rendering, instead of hooking in after the first rendering is already done.  But it does put the line numbers in nicely.
-
-[new]
-I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalgamation file sqlite3.c (5MB, 148784 lines).
-[tt]lineno[/tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7).
-
---  [http://www.emacswiki.org/emacs/priyadarshan priyadarshan] 2014-08-07 13:56 UTC
-
-
-=== Problems with nlinum ===
-
-* Each time I enabled ##nlinum## and try to ##make-frame## I got a error ##font-info: Invalid face: linum##, even start Emacs via ##emacs -q##. Disable ##nlinum## can workaround. This problem was met in ##nlinum-1.6.el##. I did not tried other version. -- David Young
 ----
 CategoryDisplay
