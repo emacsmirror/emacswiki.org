@@ -1,0 +1,151 @@
+If you want to display line numbers for every line you are editing,
+take a look at setnu.el by KyleJones.
+
+* http://www.wonderworks.com/download/setnu.el
+
+* Library Lisp:setnu+.el enhances setnu:
+
+** If the current [[Frame]] has only one window, then it adjusts the ''frame size to accomodate the line numbers'' -- that is, it fits the frame to the buffer each time, after displaying or removing the line numbers.
+** It improves setnu's ability to deal with [[Face]]s and adding/removing newlines.
+
+
+[new]
+I couldn't find a function to toggle setnu mode on/off, so I wrote one:
+
+(defun toggle-setnu-mode ()
+(interactive)
+(if setnu-mode
+(setnu-mode -1)
+(setnu-mode 1)))
+
+I have this bound to C-n.
+
+[new:DrewAdams:2006-06-14 00:17 UTC]
+: How hard did you look? ;-) Try command `setnu-mode'. Try, especially, the version of `setnu-mode' defined in Lisp:setnu+.el. -- DrewAdams
+
+
+=== Problems with setnu ===
+
+* When I tried it (setnu+, I think) on a large file (almost 20,000 lines) it was too slow, it's almost as if Emacs hangs, I wish if this can be fixed -- SysTems
+
+[new:DrewAdams:2006-10-07 15:09 UTC]
+: You'll have to provide more information, if you expect help.
+
+## Try setnu without setnu+, to see which library is the problem. Setnu+ is an extension of setnu.
+## Try with ##emacs -q##, to see if the problem comes from Emacs and the setnu(+) library or from something in your InitFile.
+## Report an exact recipe to either KyleJones (for setnu) or DrewAdams (for setnu+), being sure to specify your Emacs version and the library version/date. You can post the recipe here also -- someone else might have a solution.
+
+: -- DrewAdams
+
+[new]
+: Well, first you should know, I am not an expert emacs user (yet), I really think this mode is important especially when debugging script, your eye can quickly go to the line number where the error was reported, and for this, this problem doesn't appear. This problem only appear in large files or very large files.
+
+: To find files on my computer to test this I first issues this command
+~$ find ~/ -iname '*txt' -size +500k
+
+: I found the text version of a book I downloaded long ago (and never had the time to read) called Underground by Suelette Dreyfus. You can download the same file from this link
+http://www.xs4all.nl/~suelette/underground/underground.txt (it's legally available for free download)
+
+: As for my Emacs configuration, I will try to describe it to my best of knowledge:
+My computer have a pentium 3 1 giga hertz processor and 256 MB Ram. It runs debian sarge and linux 2.6 kernel. Emacs version is  "GNU Emacs 21.4.1 (i386-pc-linux-gnu, X toolkit, Xaw3d scroll bars)
+of 2005-03-17 on trouble, modified by Debian"
+
+: I downloaded both setnu and setnu+ and put them in a folder on my loadpath. And added (require setnu+) to my InitFile. I am not sure what an extension really means, and I dont fully understand what require really do!
+
+: Anyway, to the interesting part: I opened the underground.txt file. And type M-x setnu-mode. It took emacs almost 4 and a half minutes to show the line numbers. During this time emacs was not responsive at all. I typed M-x setnu-mode again. It took emacs 2 minutes for to remove the numbers (actually it didnt remove them right away, I have to click inside emacs once for it, I clicked inside emacs when I noticed that the processor monitor showed normal activity, during the 4.5 minutes and the other 2 minutes it took emacs to process setnu-mode the processor was at 100%)
+
+: I also tried the same file in Nedit and gvim (to test how long their implementation of showing line numbers take, to see if maybe 4 minutes is normal) in both of them the line number appearance was insantaneous.
+
+: I tried the same file in Xemacs, I think Xemacs use the same startup file as GNU Emacs so I am guessing it is using the same setnu+ script. It took it 15 seconds to show the numbers, but when i typed M-x setnu-mode again the remove the numbers the effect was insantaneous
+
+: The Xemacs version was "XEmacs 21.4 (patch 17) "Jumbo Shrimp" [Lucid] (i386-debian-linux, Mule) of Tue Feb  8 2005 on penell"
+
+: I hope this helps. -- SysTems
+
+[new:DrewAdams:2006-10-09 02:20 UTC]
+: Thanks. I don't have an answer for you yet, but it would be good for you to at least determine if you have the same problem when you do ##(require 'setnu)## instead of ##(require 'setnu+)##. If so, then the problem is not in Lisp:setnu+.el. When you use `require', Emacs loads the required library. Library ##setnu+.el## does its own `require' of ##setnu.el##, so that's how ##setnu## gets loaded if you require ##setnu+##.
+
+: So, at least try that, please. If it turns out that the problem is ##setnu+.el## and not ##setnu.el##, then the workaround is to just use ##(require 'setnu)##. I suspect the problem is really in ##setnu.el##, but please find that out.
+
+: If the problem is in ##setnu.el##, then please notify KyleJones (the ##setnu## maintainer). It seems odd that XEmacs would be very fast and GnuEmacs very slow. Perhaps there is a GnuEmacs bug associated with this. It would be worth finding out. -- DrewAdams
+
+[new]
+: I retried the test as you suggested with (require setnu) instead of (require setnu+), on both GnuEmacs and XEmacs. And I got the same results 4 minutes for GNU Emacs and almost 10 seconds for XEmacs. (10 seconds is still very poor performance compared to vim or nedit)
+: And I also visited KyleJones personal site and I quote from his setnu description this line /"This package is best used on files with a few thousand lines at most, unless you have very fast hardware and are willing to waste it recalculating and redisplaying line numbers."/. So obviously he is aware of the bad performance! -- SysTems
+
+[new:DrewAdams:2006-10-09 23:56 UTC]
+: OK, so I guess you got the answer. Sorry about the bad news. You might still send an email to KyleJones, to at least let him know of the incredible performance difference between XEmacs and GnuEmacs. 10 seconds might be tolerable in some contexts (or less, with a smaller file), but 4 minutes is useless. You never know -- perhaps there is a tiny bug that causes this performance decline in GnuEmacs relative to XEmacs. -- DrewAdams
+
+[new]
+
+* (XEmacs) Can anybody confirm my problems described [http://groups.google.de/group/comp.emacs.xemacs/browse_frm/thread/02a6f20d7296d922/6bfe7090d42e1d24 here]?
+
+* (Emacs) Does anybody use setnu successfully with Gnu Emacs?  For me it just f'ups whenever I do some kill'n'yanking.  The line numbers don't show up at all or the appear at the ''end'' of a line and from then are undeletable and remain cluttering the buffer display until I reopen the file. -- StefanKamphausen
+
+[new:DrewAdams:2006-09-12 14:09 UTC]
+: I have no such problem. The version of setnu I have is from 1997. Unless someone else here has a suggestion, try emailing help-gnu-emacs@gnu.org or the setnu maintainer (listed in the ##setnu.el##, probably). Do you have the problem when you start with ##emacs -q##? If not, then probably some other library you use is interfering. Does the problem occur in every mode? -- DrewAdams
+
+[new:StefanKamphausen:2006-09-12 19:31 UTC]
+: OK, using the stupid approach (emacs -q, manually loading line after line from my init files, each time performing a test for the problem) I found that the following in my custom.el introduces the problems:
+
+(custom-set-variables '(global-font-lock-mode t nil (font-lock)))
+
+: as soon as I load a file containing the above code setnu stops working in Gnu Emacs.  Any pointers?  How do you turn on font lock? -- StefanKamphausen
+
+[new:DrewAdams:2006-09-12 22:53 UTC]
+: I turn it on this way: ##(global-font-lock-mode t)##. But see also EnablingFontLock. -- DrewAdams
+
+[new:StefanKamphausen:2006-09-12 20:01 UTC]
+: OK, even simpler...
+
+shell> emacs -q
+;; in *scratch* type sth with at least two lines:
+(let ((x 0))
+(print x))
+;; go to the beginning
+;; M-x mark-sexp, C-w, C-y ... everything is fine.  This is our test
+;; Now.. M-x load-library setnu  M-x setnu-mode
+;; perform the test... OK
+;; type
+(global-font-lock-mode 1)
+;; C-x C-e
+;; perform the test.... OOOps (at least for me).
+
+: Result is shown [http://www.skamphausen.de/downloads/setnu-err.png here]
+
+[new:DrewAdams:2006-09-12 22:58 UTC]
+: Yes, the same thing happens to me. However, I don't have that problem when I use Lisp:setnu+.el (which uses ##setnu.el##). See above, where it says that Lisp:setnu+.el fixes problems with adding/removing newlines. -- DrewAdams
+
+[new]
+: I will give it a try... -- StefanKamphausen
+
+=== Horizontal frame resize problem with setnu+==
+I tried using setnu+ with Aquamacs and when I add newlines to the current buffer, the frame gets wider.
+(if I delete the newline, it does not decrease the width framesize)
+
+This is fixed if you customize the variable setnu+-fit-frame-flag to nil
+
+(custom-set-variables
+'(setnu+-fit-frame-flag nil))
+
+this will leave the frame alone, and everything is fine.
+
+-- V.Tron
+
+=== Problems with Soft wrap and syntax coloring==
+
+In soft wrap mode the wrapped line goes under the linenumbers which gives the impression that line numbers are part of the buffer.
+Also, line numbers participate in syntax coloring which I think is basically wrong.
+
+The highlight problem can be rectified by assigning the line number extent to a new customizable face.
+I sent this very simple patch to the author who will incorporate it in a later release.
+
+According to the author of sentu+, there is no easy way to get the correct wrapped line behaviour fixed.
+In fact, the proper place for line-numbers would be on the fringe, not the buffer proper.
+I am truely surprised noone ever needed this basic feature of a code editor.
+
+-- V.Tron
+
+
+----
+CategoryDisplay
