@@ -1,0 +1,356 @@
+Linum mode was distributed with Emacs in versions after 22.  It is considered obsolete as of Emacs version 29.1.
+
+Library ##linum.el## works incrementally and can number large files very quickly.
+
+http://stud4.tuwien.ac.at/~e0225855/linum/linum.html
+
+##linum.el## 
+
+[new:DrewAdams:2007-03-08 21:38 UTC]
+Seems very good, to me. It looks like a good candidate to replace ##setnu.el##. -- DrewAdams 
+
+[new:Sapsi:2007-10-24]
+I was wondering if there is way to change the color of the line numbers e.g change color/change background color so that it can be readily differentiated from the neighboring text. Great code. Thanks -- Saptarshi
+Also is there a way to turn on linum mode automatically for any opened file? - Thanks Saptarshi
+
+: Try ##M-x customize-face RET linum##. Also try ##M-x global-linum-mode##, or append ##(add-hook 'find-file-hook (lambda () (linum-mode 1)))## to your ##.emacs##.
+
+: Append ##(global-linum-mode 1)## to your ##.emacs##.
+
+Note: adding ##(global-linum-mode 1)## to your ##.emacs## will cause Emacs to ask "Options have changed - save them?" when exiting.  Clearly this is not a good way to enable ##linum-mode## globally.
+
+[new:MichaelHoffman:2011-12-20]
+Another workaround that keeps the appearance of the dynamic linum-format is to use this function which replaces the spaces on the left with zeroes that have the same foreground and background color.
+
+<pre>
+(eval-after-load 'linum
+  '(progn
+     (defface linum-leading-zero
+       `((t :inherit 'linum
+            :foreground ,(face-attribute 'linum :background nil t)))
+       "Face for displaying leading zeroes for line numbers in display margin."
+       :group 'linum)
+
+     (defun linum-format-func (line)
+       (let ((w (length
+                 (number-to-string (count-lines (point-min) (point-max))))))
+         (concat
+          (propertize (make-string (- w (length (number-to-string line))) ?0)
+                      'face 'linum-leading-zero)
+          (propertize (number-to-string line) 'face 'linum))))
+
+     (setq linum-format 'linum-format-func)))
+</pre>
+
+--Michael Hoffman
+
+[new:AnshulVerma:2014-06-23]
+If you can't to just align line numbers to the right as well as have a little padding on the right.
+
+<pre>
+(defun linum-format-func (line)
+  (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
+     (propertize (format (format "%%%dd " w) line) 'face 'linum)))
+(setq linum-format 'linum-format-func)
+</pre>
+
+-AnshulVerma
+
+== Linum: Separating line numbers from text ==
+
+Putting the following in your .emacs will put one space separation between the linenumber display and the buffer contents:
+
+<pre>
+(setq linum-format "%d ")
+</pre>
+
+If you want a solid line separator, try something like this:
+
+<pre>
+(setq linum-format "%4d \u2502 ")
+</pre>
+
+-- ChrisDone
+
+[new]
+: I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. -- [[AaronMeurer]]
+
+:: I guess I don't see what you see.  Using the version of ##linum.el## that is in Emacs 24 (a build from Dec 2011), the default value of `line-format' is ##"%6d "##, and the digits are right-aligned.  -- DrewAdams
+
+: No, I think you are misunderstanding the question.  %6d right aligns for me too.  But this adds a bunch of unnecessary whitespace to the left of the numbers.  %d (no number) uses only as much space as is needed, but it left aligns (this is the printf standard, I think).  dynamic right aligns, but it does so by setting N in %Nd to be length of number of lines in the file, which still wastes space if you are at the top.  Does this make sense?  I can give an example if that would help. -- [[AaronMeurer]]
+
+:: With ##emacs -Q## (Emacs 24), I see no extra space at the left.  The the last line number, which has the most digits, is flush with the left side, and all line numbers are right aligned. Here are two images, from the top and bottom of the buffer. What am I missing? -- DrewAdams
+
+[[image:linum-align1]]
+[[image:linum-align2]]
+
+: There is extra space in the first picture, where the largest visible line number is two digits long. With %d, you get the following (sorry, I don't know how to upload images to this wiki; feel free to upload them here if you want).  See https://gist.github.com/1602365.  Notice how in the first and second, only two spaces are used for the numbering (three if you count the padding space on the right; but you should use the mode line plus the cursor to see where column 0 is).  In the third, I've moved down two lines, and it automatically uses three spaces.  All three of these screen shots were taken without editing the file in between (as you can tell from the percentage in the mode line in the second image).  This is the behavior I like, but I want it to right align the numbers. -- [[AaronMeurer]]
+
+:: 1. I see what you mean, but don't have an answer for you.  -- DrewAdams 
+
+:: 2. To upload an image to the wiki, check this page's source code for examples.  You use the source code ##[[image:SomePageName]]#.  Then click `Preview' to show the page and that source text will show you a `##?##' link in the previewed page.  Click that link to get to an upload page. -- DrewAdams
+
+
+
+
+
+
+[new]
+Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
+
+(setq linum-format
+(lambda (line)
+(propertize (format
+(let ((w (length (number-to-string
+(count-lines (point-min) (point-max))))))
+(concat "%" (number-to-string w) "d "))
+line)
+'face 'linum)))
+
+You can use `linum-before-numbering-hook' to count and store the number of lines only once per update. Thus you can avoid the somewhat expensive `count-lines' call for each updated line. And a more simplistic constant-width version of the above could look like:
+
+(setq linum-format "%6d ")
+
+[new]
+Here's an approach based on the previous suggestion of using `linum-before-numbering-hook' to make the line counting more efficient:
+
+ (defvar my-linum-format-string "%4d")
+
+ (add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
+
+ (defun my-linum-get-format-string ()
+   (let* ((width (length (number-to-string
+                          (count-lines (point-min) (point-max)))))
+          (format (concat "%" (number-to-string width) "d")))
+     (setq my-linum-format-string format)))
+
+ (setq linum-format 'my-linum-format)
+
+ (defun my-linum-format (line-number)
+   (propertize (format my-linum-format-string line-number) 'face 'linum))
+
+[new]
+Here's a better approach. Every buffer has its own format variable and the separator use the mode-line face.
+
+{{{
+(unless window-system
+  (add-hook 'linum-before-numbering-hook
+	    (lambda ()
+	      (setq-local linum-format-fmt
+			  (let ((w (length (number-to-string
+					    (count-lines (point-min) (point-max))))))
+			    (concat "%" (number-to-string w) "d"))))))
+
+(defun linum-format-func (line)
+  (concat
+   (propertize (format linum-format-fmt line) 'face 'linum)
+   (propertize " " 'face 'mode-line)))
+
+(unless window-system
+  (setq linum-format 'linum-format-func))
+}}}
+
+<b>Example screenshot:</b>
+
+[[image:LinumSeparatorNewApproach]]
+
+[new]
+I'm no expert but when I add the below to my .spacemacs it accomplishes what you are looking for. None of the above worked for me, cannot remember where I found 
+this, was hacked together from multiple places.
+
+{{{
+(require 'hl-line)
+
+(defface my-linum-hl
+  `((t :inherit linum :background ,(face-background 'hl-line nil t)))
+  "Face for the current line number."
+  :group 'linum)
+
+(add-hook 'linum-before-numbering-hook 'my-linum-get-format-string)
+
+(defun my-linum-get-format-string ()
+  (let* ((width (1+ (length (number-to-string
+                             (count-lines (point-min) (point-max))))))
+         (format (concat "%" (number-to-string width) "d \u2502")))
+    (setq my-linum-format-string format)))
+
+(defvar my-linum-current-line-number 0)
+
+(setq linum-format 'my-linum-format)
+
+(defun my-linum-format (line-number)
+  (propertize (format my-linum-format-string line-number) 'face
+              (if (eq line-number my-linum-current-line-number)
+                  'my-linum-hl
+                'linum)))
+
+(defadvice linum-update (around my-linum-update)
+  (let ((my-linum-current-line-number (line-number-at-pos)))
+    ad-do-it))
+(ad-activate 'linum-update)
+}}}
+[new]
+
+
+== Linum: Numbering the last line of the buffer ==
+[new:AdamKerz:2009-05-08 01:35 UTC]
+
+*NOTE:* This is now incorporated into the version distributed with Emacs 24.5 and possibly earlier versions.
+
+Since most editors number the last line of a file even if it is empty (ie. no characters after the last eol char), I kept having to think about how many lines are in the file. Even Emacs lists the line number in the mode line, but no number appears in the margin. The below patch fixes this:
+{{{
+--- linum.el-rev474.svn000.tmp.el	Fri May 08 11:30:24 2009
++++ linum.el	Fri May 08 11:29:38 2009
+@@ -135,8 +135,15 @@
+-  (let ((line (line-number-at-pos))
+-        (limit (window-end win t))
+-        (fmt (cond ((stringp linum-format) linum-format)
+-                   ((eq linum-format 'dynamic)
+-                    (let ((w (length (number-to-string
+-                                      (count-lines (point-min) (point-max))))))
+-                      (concat "%" (number-to-string w) "d")))))
+-        (width 0))
++  (let* ((line (line-number-at-pos))
++         (limit (window-end win t))
++         ;; set empty-line-at-eob flag
++         (empty-line-at-eob (or (equal ?\n (char-before (point-max)))
++                                (equal (point-min) (point-max))))
++         ;; we will automatically number the line at eob if it's not empty
++         ;; (so we'll say it's already done)
++         (numbered-line-at-eob (not empty-line-at-eob))
++         (fmt (cond ((stringp linum-format) linum-format)
++                    ((eq linum-format 'dynamic)
++                     (let* ((c (count-lines (point-min) (point-max)))
++                            (w (length (number-to-string
++                                        (+ c (if empty-line-at-eob 1 0))))))
++                       (concat "%" (number-to-string w) "d")))))
++         (width 0))
+@@ -146 +153,2 @@
+-    (while (and (not (eobp)) (<= (point) limit))
++    ;; stop if point>limit, or if eobp and numbered-line-at-eob
++    (while (and (not (and (eobp) numbered-line-at-eob)) (<= (point) limit))
+@@ -165,0 +174,4 @@
++      ;; before moving forward, if we're already at eob
++      (if (eobp)
++          ;; then we've numbered the empty line
++          (setq numbered-line-at-eob t))
+}}}
+
+If this is seen as useful, I'd like for it to be incorporated into the original code. -- AdamKerz
+
+== Linum: Disable linum for certain major-modes ==
+[new:FlorianAdamsky:2010-08-15 11:41 UTC]
+I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mode or compilation-mode. Therefore I tried to hook on these modes, but this doesn't work for me (maybe a bug?) [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/addd8d997ff49c2e/d6b74c3ab8af2a8a]. So I tried to overwrite the function (linum-on), which works fine. Here is my solution:
+
+(setq linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode))
+(defun linum-on ()
+(unless (or (minibufferp) (member major-mode linum-disabled-modes-list))
+(linum-mode 1)))
+
+-- FlorianAdamsky
+
+[new] 
+
+I have generalized this to a lisp add-on file Lisp:linum-off.el 
+
+-- MatthewFidler
+
+== Linum: Select lines by clicking ==
+[new:sabof:2011-11-12 12:40 UTC]
+Select lines by click-dragging on the margin.
+Tested with GNU Emacs 23.3
+{{{
+(defvar *linum-mdown-line* nil)
+
+(defun line-at-click ()
+  (save-excursion
+	(let ((click-y (cdr (cdr (mouse-position))))
+		  (line-move-visual-store line-move-visual))
+	  (setq line-move-visual t)
+	  (goto-char (window-start))
+	  (next-line (1- click-y))
+	  (setq line-move-visual line-move-visual-store)
+	  ;; If you are using tabbar substitute the next line with
+	  ;; (line-number-at-pos))))
+	  (1+ (line-number-at-pos)))))
+
+(defun md-select-linum ()
+  (interactive)
+  (goto-line (line-at-click))
+  (set-mark (point))
+  (setq *linum-mdown-line*
+		(line-number-at-pos)))
+
+(defun mu-select-linum ()
+  (interactive)
+  (when *linum-mdown-line*
+	(let (mu-line)
+	  ;; (goto-line (line-at-click))
+	  (setq mu-line (line-at-click))
+	  (goto-line (max *linum-mdown-line* mu-line))
+	  (set-mark (line-end-position))
+	  (goto-line (min *linum-mdown-line* mu-line))
+	  (setq *linum-mdown*
+			nil))))
+
+(global-set-key (kbd "<left-margin> <down-mouse-1>") 'md-select-linum)
+(global-set-key (kbd "<left-margin> <mouse-1>") 'mu-select-linum)
+(global-set-key (kbd "<left-margin> <drag-mouse-1>") 'mu-select-linum)
+}}}
+
+-- sabof
+
+== Linum: background color under linum in the left-margin area? ==
+
+It is possible to change the linum's face so that the background has a custom color, but how to fix the background of the left-margin under line numbers so that it has the same color (not the default one)? See the snapshot.
+
+[[image:leftmargin]]
+
+
+[new]
+As far as i know that space under the numbers is the "default" face and there is no difference between this color and the background of other buffers.  So all you can do is to have the same background color for the "default" and "linum" faces.  (You can customize a face with "M-x customize-face")  -- AlexKost
+
+
+== Linum: highlight the current line number ==
+[[https://github.com/targzeta/linum-highlight-current-line-number linum-highligth-current-line-number]] implements a little function to highlight the current line number with a customizable face (linum group).
+
+[[image:linum-highlight-current-line]]
+
+[[targzeta]]
+
+== Linum: fix margins when font is scaled ==
+[new:PabloMachon:2015-10-18 19:50 CEST]
+When font size is increased in text-scale mode (maybe just invoking `text-scale-increase'), linum mode's line numbers are not properly displayed. The number's font increases but the area containing them stays the same size. As a consequence the numbers don't fit.
+
+I think I can fix that problem with the following code:
+<pre>
+(require 'linum)
+(defun linum-update-window-scale-fix (win)
+  "fix linum for scaled text"
+  (set-window-margins win
+		      (ceiling (* (if (boundp 'text-scale-mode-step)
+				      (expt text-scale-mode-step
+					    text-scale-mode-amount) 1)
+				  (if (car (window-margins))
+				      (car (window-margins)) 1)
+				  ))))
+(advice-add #'linum-update-window :after #'linum-update-window-scale-fix)
+</pre>
+( EDIT: some small bugs fixed. 2015-10-19 01:47 CEST) 
+
+It seems to work, at least with 24.5.
+
+--PabloMachon
+
+[new:sshaw:2015-10-18 22:54 UTC]
+
+Scaling the frame instead of the buffer using [http://www.emacswiki.org/emacs/zoom-frm.el zoom-frm.el] will preserve linum's column.
+
+--[[sshaw]]
+
+== Linum: Using on Emacs version 29.1 or later ==
+
+Emacs 29.1 marks ##linum## as obsolete, and you can expect to get errors of the form "Symbol's function definition is void: global-linum-mode".  The release notes recommend migrating to ##nlinum## or the built-in ##line-numbers-mode##.  To stick with ##linum##, add ##(require 'linum)## to your Init file.
+
+----
+CategoryDisplay
