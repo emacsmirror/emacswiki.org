@@ -9,7 +9,7 @@ Copy linum+.el from [https://github.com/emacsmirror/linum-plus emacsmirror/linum
 
     (require 'linum+)
 
-then use <kbd>M-x linum-mode<\kbd> to display line numbers
+then use <kbd>M-x linum-mode</kbd> to display line numbers
 
 
 
