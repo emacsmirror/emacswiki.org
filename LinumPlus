@@ -1,9 +1,9 @@
-== Linum Plus ==
-
 This extension of linum can control the width of line
 numbers displayed based on the line number of the point at the end of the current window or buffer.
 
-Installation:
+See also: LineNumbers, LinumMode
+
+==Installation==
 
 Copy linum+.el from [https://github.com/emacsmirror/linum-plus emacsmirror/linum-plus] to your load-path and add to your .emacs:
 
@@ -11,11 +11,9 @@ Copy linum+.el from [https://github.com/emacsmirror/linum-plus emacsmirror/linum
 
 then use <kbd>M-x linum-mode<\kbd> to display line numbers
 
-See also: LineNumbers, LinumMode
 
-== Discussion ==
 
-=== linum+.el inserts a blank space with a color different from background ===
+== Discussion: linum+.el inserts a blank space with a color different from background ==
 
 [new]
 
