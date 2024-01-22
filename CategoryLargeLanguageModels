@@ -2,4 +2,5 @@ Emacs-related support for [https://en.wikipedia.org/wiki/Large_language_model La
 
 * [https://github.com/xenodium/chatgpt-shell chatgpt-shell] ([https://melpa.org/#/chatgpt-shell MELPA]), created by Xenodium.  "`chatgpt-shell' is a comint-based !ChatGPT shell for Emacs."   There is an associated org-babel package [https://melpa.org/#/ob-chatgpt-shell ob-chatgpt-shell].
 * [https://github.com/ahyatt/llm llm] ([https://elpa.gnu.org/packages/llm.html ELPA]), created by Andrew Hyatt. "This library provides an interface for interacting with Large Language Models (LLMs)."  Supports these providers: Open AI (and compatible), Gemini, Vertex, Ollama, GPT4ALL, llama.cpp.
+** [https://emacsconf.org/2023/talks/llm/ LLM clients in Emacs, functionality and standardization] - talk from EmacsConf 2023.
 * [https://github.com/karthink/gptel gptel] ([https://melpa.org/#/gptel MELPA]), created by karthink.  "gptel is a simple Large Language Model chat client, with support for multiple models/backends."  Supports these providers: The services Open AI/!ChatGPT, Gemini, Azure, Kagi (!FastGPT & Summarizer), Ollama, GPT4All, llama.cpp, and llamafile. 
