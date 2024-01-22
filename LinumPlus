@@ -1,38 +1,17 @@
 == Linum Plus ==
 
-<pre>
-Commentary:
+This extension of linum can control the width of line
+numbers displayed based on the line number of the point at the end of the current window or buffer.
 
-This extension  of linum can  smart control width of  line number
-displayed, If line number can be viewed of current buffer is from
-1 to 50, then  width of line number is 2, and  line number can be
-viewed of current  buffer is from 100 to 150,  then width of line
-number is  3. and  use it, you  can customize line  number format
-with linum+-dynamic-format even if linum-format is 'dynamic.  For
-more details,  see article Use  linum+ smart display  line number
-</pre>
-http://emacser.com/linum-plus.htm
-
-<pre>
 Installation:
 
-Copy linum+.el to your load-path and add to your .emacs:
+Copy linum+.el from [https://github.com/emacsmirror/linum-plus emacsmirror/linum-plus] to your load-path and add to your .emacs:
 
-(require 'linum+)
+    (require 'linum+)
 
-then use M-x linum-mode to turn on line number displaying
-</pre>
+then use <kbd>M-x linum-mode<\kbd> to display line numbers
 
-Screenshots:
-
-http://emacser.com/screenshots/linum+/linum+1.png
-http://emacser.com/screenshots/linum+/linum+2.png
-
-Download: [http://code.google.com/p/dea/source/browse/trunk/my-lisps/linum%2B.el LinumPlus ]
-
-See also: LineNumbers
-
-
+See also: LineNumbers, LinumMode
 
 == Discussion ==
 
