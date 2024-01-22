@@ -5,9 +5,7 @@ This page is about ''displaying'' line numbers in a buffer, or otherwise indicat
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Position-Info.html Cursor Position Information] and [https://www.gnu.org/software/emacs/manual/html_node/emacs/Display-Custom.html Customization of Display] from the EmacsManual
 ==Display line numbers for every line==
 ===Display-Line-Numbers mode===
-##display-line-numbers-mode## is available since Emacs 26.
-
-You can enable it globally by appending this to your ##.emacs## file:
+##display-line-numbers-mode## was added in Emacs 26.  You can enable it globally by appending this to your ##.emacs## file:
 
     (global-display-line-numbers-mode 1)
 
