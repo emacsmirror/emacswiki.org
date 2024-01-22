@@ -2,50 +2,48 @@ This page is about ''displaying'' line numbers in a buffer, or otherwise indicat
 
 '''See Also:''' NumberLines will add the line numbers to the buffer content.
 
-==Built-in ways==
-See also, from the EmacsManual
+==From the Emacs Manual==
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Position-Info.html Cursor Position Information]
 * [https://www.gnu.org/software/emacs/manual/html_node/emacs/Display-Custom.html Customization of Display]
-===Display line numbers for every line===
+==Display line numbers for every line==
+===Display-Line-Numbers mode===
 ##display-line-numbers-mode## is available since Emacs 26.  For older Emacs, see LinumMode and [[Nlinum]].
 
 You can enable it globally by appending this to your ##.emacs## file:
 
-<pre>
-(when (version<= "26.0.50" emacs-version )
-  (global-display-line-numbers-mode 1))
-</pre>
+    (global-display-line-numbers-mode 1)
 
 Alternatively, to use it only in programming modes:
 
     (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 
 The variable `display-line-numbers' may be used to control the type of line numbers that are displayed (absolute/relative/visual).
-=== Display the current line number in the mode line===
+
+===Linum mode===
+Obsolete from Emacs 29, see LinumMode.
+== Display the current line number in the mode line==
 Use <code>M-x line-number-mode</code>.
 
-=== Display the current line number once===
+== Display the current line number once==
 To display the current line number in the EchoArea, you can
 * use <code>M-x what-line</code> command
 * use <code>count-lines-page</code> (<kbd>C-x l</kbd>), which reports the total number of lines as well as the numbers of lines before and after the current one.
 
-=== Linum mode===
-Obsolete from Emacs 29, see LinumMode.
-
-==line-num==
+==External packages==
+===line-num===
 
 [[line-num.el]]
 
-==LineNo==
+===LineNo===
 LineNo
-==LinumPlus==
+===LinumPlus===
 LinumPlus
 
-==Nlinum==
+===Nlinum===
 See [[Nlinum]]
-==Setnu==
+===Setnu===
 See [[Setnu]]
-==XEmacs line-numbers-mode==
+===XEmacs line-numbers-mode===
 
 JerryChen had [http://www.geocities.ws/gchen275/xemacs/ a line-numbers-mode on Geocities]. It seems to be [[XEmacs]] specific.
 [http://www.geocities.ws/gchen275/xemacs/line-numbers-mode.gif Screenshot].
