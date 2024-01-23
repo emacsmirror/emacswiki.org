@@ -49,9 +49,11 @@ Setting browse-url-generic-program to Midori just works fine :
           browse-url-generic-program "midori")
 
 === Links gui mode ===
-Also Known As  links -g
-set links in browse-url-generic-program
-set -g in browse-url-generic-args
+Refers to the links web browser from http://links.twibright.com/ [https://en.wikipedia.org/wiki/Links_(web_browser) wikipedia].
+
+Also known as "links -g"
+* set links in browse-url-generic-program
+* set -g in browse-url-generic-args
 
 === Xwidget Webkit ===
 If you try the Emacs Xwidget branch you can do:
