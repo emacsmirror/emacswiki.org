@@ -1,60 +1,26 @@
-`browse-url' (originally written by DenisHowe) allows you to click on a URL in the buffer and have Emacs start a browser (usually Netscape) to browse that URL (see also  BrowseAproposURL).  `browse-url' normally tries to use an existing browser process instead of creating a new one.  Whether this will work or not depends on the browser used.
+The `browse-url' package included in Emacs, originally written by DenisHowe, allows you to open a URL in a browser, normally reusing an existing browser process instead of creating a new one.
 
-In order to select the browser used by `browse-url', customize the option (`M-x customize-option') `browse-url-browser-function' and follow the prompts.  Emacs 20.7 value menu lists 10 supported browsers.
+The URL, which defaults to the URL around point, is read from the minibuffer.  `browse-url' can also load URLs associated with the current buffer, from dired, etc.
 
-If your browser is not among the browsers supported, choose the entry "Specified by `Browse Url Generic Program'" and customize the option `browse-url-generic-program'.  Using a generic browser offers no remote control -- for every URL you click a new process will be started.
+==See also==
+* GotoAddress -- highlight URLs and make them clickable
+* BrowseAproposURL -- launch browser searches
 
+==Selecting the browser to use==
+This is controlled by the variable `browse-url-browser-function'.
 
-== without customize ==
+You can customize it by entering <kbd>M-x customize-option browse-url-browser-function</kbd> and following the prompts.  If your browser is not among those listed, choose the entry "Specified by `Browse Url Generic Program'" and customize the option `browse-url-generic-program'.  Using a generic browser offers no remote control -- for every URL you click a new process will be started.
 
-Here is a suggestion without customize. (On my system `gnus-button-url' is undefined, so I guess it is not necessary. -- AlexSchroeder)
-
- From: GrahamGough
- Subject: Re: browse-url and replacing netscape nav with opera?
- Newsgroups: comp.emacs
- Date: 23 May 2001 14:02:57 +0100
-
-I have the following; not sure if they're all necessary, but they work
-
-    (setq gnus-button-url 'browse-url-generic
-          browse-url-generic-program "opera"
-          browse-url-browser-function gnus-button-url)
-
-For help on getting a persistent browser (that doesn't die when emacs is exited), see PersistentProcesses.
+For help on getting a browser that doesn't die when emacs is exited, see PersistentProcesses.
 
 == Browsing the URL of the current buffer ==
+The command `browse-url-of-buffer' opens the URL associated with the file in the current buffer.
 
-The command `browse-url-of-buffer' gets a browser to render the URL associated with the file in the current buffer.  This is great when editing web-related pages.  For example, when you are editing an HTML file, you can have it rendered in your favourite browser by typing `C-c C-v'.  This is especially nice if you are using a browser within Emacs like [[w3]] or [[w3m]]; then you can have your source in the top window of an Emacs frame, and the output in the bottom frame, and simply regenerate whenever you like without ever having to leave the source!
-
-However, if you're doing any non-trivial web stuff (such as CGI
-scripts for example), you'll need to tell Emacs how to map the file name to a URL.  Otherwise, Emacs will map
-/var/www/cgi/files/filename.pl to file://var/www/cgi/files/filename.pl,
-while you might want http://my.website.com/cgi?filename.pl.  You can achieve this mapping by adding an entry to the variable
-`browse-url-filename-alist'.  So you could add an entry like this
-this:
+To control how file names are mapped to URLs, update the variable
+`browse-url-filename-alist', for example:
 
     (add-to-list 'browse-url-filename-alist
                  '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
-
-Now `C-c C-v' will do the right thing.
-
-This example assumes that 'browse-url-filename-alist' has already been defined as a list. For the more typical case in which you're defining the variable for the first time in your .emacs, you can do something like this instead (from the variable description):
-
-    (setq browse-url-filename-alist
-          '(("/webmaster@webserver:/home/www/html/" .
-             "http://www.acme.co.uk/")
-            ("^/\(ftp@\|anonymous@\)?\([^:]+\):/*" . "ftp://\2/")
-            ("^/\([^:@]+@\)?\([^:]+\):/*" . "ftp://\1\2/")
-            ("^/+" . "file:/")))
-
-== Open the url in the default browser according to the xwindows configuration system ==
-
-    (if window-system
-        (setq browse-url-browser-function 'browse-url-generic
-              browse-url-generic-program "xdg-open")
-      (setq browse-url-browser-function 'my-browse))
-
--- [[jasonblewis]]
 
 == Different Browsers Depending On Environment ==
 
