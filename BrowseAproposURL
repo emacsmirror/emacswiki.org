@@ -1,9 +1,7 @@
 = Apropos Searching =
 
 == General Browsers ==
-Most of modern browsers (mozilla, opera, etc -- MSIE is not `modern' ;-) allow you to write keywords in the location bar for doing easy and fast searching. For example in opera "g emacswiki" googles for "emacswiki". 
-
-* Incorrect about MSIE - this has been supported since v.5 however it's never been exposed anyplace obvious.  TweakUI for XP helps you set this (the long and short of it is to modify HKCU\Software\Microsoft\Internet Explorer\SearchUrl).  I use it all the time to get bus routes :)
+Most of browsers allow you to write keywords in the location bar for doing easy and fast searching. For example in opera "g emacswiki" googles for "emacswiki". 
 
 == Emacs Solution ==
 Well, browse-apropos-url provide this functionality -- and more to elisp coders -- independently of which browser does browse-url start.
