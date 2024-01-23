@@ -91,7 +91,7 @@ file, but I guess that can be easily fixed.
 
 == Importing from CSV files & popular programs into bbdb 3 ==
 
-Use bbdb-csv-import from melpa or from https://gitlab.com/iankelling/bbdb-csv-import and follow the simple instructions at the top of the file. Works with gmail, thunderbird, linkedin, outlook.com, easily extensible to more. It is well supported.
+Use bbdb-csv-import from melpa or from https://sr.ht/~iank/bbdb-csv-import/ and follow the simple instructions at the top of the file. Works with gmail, thunderbird, linkedin, outlook.com, easily extensible to more. It is well supported.
 
 This project was created due to too many bugs in the bbdb 2 importer below. 
   
