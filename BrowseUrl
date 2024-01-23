@@ -23,6 +23,8 @@ To control how file names are mapped to URLs, update the variable
                  '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
 
 == Support for various browsers ==
+===Back-porting support to earlier Emacs===
+If you are using a version of Emacs without support for one of the browsers supported in recent versions, you can backport support from the current ##browse-url.el##.
 === Galeon ===
 There's `browse-url-galeon'.
 Note that the "new galeon window" functionality is broken in emacs 21.2.  Is fixed in the current emacs CVS 21.3.50 though. 
@@ -32,17 +34,6 @@ JuhapekkaTolvanen : This worked fine, when I still used Galeon:
     (setq browse-url-browser-function 'browse-url-generic
           browse-url-generic-program "galeon"
           browse-url-generic-args '("-n"))
-
-=== Epiphany ===
-
-    (setq browse-url-browser-function 'browse-url-epiphany)
-    (setq browse-url-epiphany-new-window-is-tab t)          ; for tab instead of new window.
-
-This doesn't seem to be available yet on Debian etch.  However, the instructions above for galeon work with epiphany if you just change the name of the program
- 
-     (setq browse-url-browser-function 'browse-url-generic
-           browse-url-generic-program "epiphany"
-           browse-url-generic-args '("--new-tab"))
 
 === Seamonkey ===
 
