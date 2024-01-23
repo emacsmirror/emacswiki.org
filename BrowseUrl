@@ -106,6 +106,8 @@ I don't know why but to be able to use # anchors in URLs I had to define:
 
 -- DieterWilhelm, 2021-08-30
 
+==Gemini==
+This refers to [https://geminiprotocol.net/ Gemini], "a new internet technology supporting an electronic library of interconnected text documents", "to build a lightweight online space where documents are just documents, in the interests of every reader's privacy, attention and bandwidth", inspired by [https://en.wikipedia.org/wiki/Gopher_(protocol) Gopher].
 === Lagrange and Gemini URLs ===
 To support Gemini URLs and open them with Lagrange, the following snippet can be used. It first creates the <code>lagrange-browse-url-lagrange</code> function. Then, it cofigures the handlers with the proper regexp to identify a gopher/gemini URL. The regexp were obtained from the elpher package.
 
