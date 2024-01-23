@@ -137,18 +137,6 @@ If you installed the elpher package, it configures the <code>browse-url-default-
 
 --  ChristianGimenez, 2022-04-10
 
-== Feeling Lucky? ==
-
-Let Google figure out the most appropriate web site for the stuff in your region:
-
-{{{
-(defun browse-lucky (start end)
-  (interactive "r")
-  (let ((q (buffer-substring-no-properties start end)))
-    (browse-url (concat "http://www.google.com/search?btnI&q="
-			(url-hexify-string q)))))
-}}}
-
 == Discussion ==
 
 === "Bug" in browse-url-default-windows-browser ===
