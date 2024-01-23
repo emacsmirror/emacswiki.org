@@ -69,13 +69,10 @@ Add the following to .conkerorrc:
 
     url_remoting_fn = load_url_in_new_buffer;
 
-
 === IceCat ===
-Add the following to .emacs:
-
-    (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "icecat")
-
+Customize
+* `browse-url-browser-function' to `browse-url-firefox' and
+* `browse-url-firefox-program' to "icecat"
 === Termux (Android) ===
 If you're running Emacs on Termux you can use `am' to pass URL to browser. `am' can be installed by running `apt install termux-am'. You can then add this to your init.el:
 
