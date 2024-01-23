@@ -23,34 +23,6 @@ To control how file names are mapped to URLs, update the variable
                  '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
 
 == Support for various browsers ==
-=== Mozilla, new tab ===
-
-You can put the call to `mozilla-remote' into the shell script above, of
-course, but you could also define a new function in Emacs.  Here is
-from a posting, slightly edited:
-
-From: JesperHarder
-Subject: Re: browse-url-mozilla in new tab
-Newsgroups: gnu.emacs.gnus
-Date: Sat, 28 Sep 2002 22:12:43 +0200
-
-So here's a function which does it.  Set `browse-url-browser-function'
-to `my-browse-url-mozilla-new-tab'.
-
-    (defun my-browse-url-mozilla-new-tab (url &optional new-window)
-      ;; new-window ignored
-      "Open URL in a new tab in Mozilla."
-      (interactive (browse-url-interactive-arg "URL: "))
-      (unless
-          (string= "" 
-                   (shell-command-to-string 
-                    (concat "mozilla -remote 'openURL(" url ",new-tab)'")))
-        (message "Starting Mozilla...")
-        (start-process (concat "mozilla " url) nil "mozilla" url)
-        (message "Starting Mozilla...done")))
-
-This code works fine with Phoenix too.
-
 === Firefox ===
 
 That's how I use Firefox 2.0 with GNU Emacs 22. It uses only one window and opens new links in new tabs.
