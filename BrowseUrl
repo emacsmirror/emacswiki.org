@@ -63,10 +63,7 @@ If you try the Emacs Xwidget branch you can do:
 Then a webkit browser will show up inside an Emacs buffer.
 
 === Conkeror ===
-Add the following to .emacs:
-
-   (setq browse-url-browser-function 'browse-url-generic
-         browse-url-generic-program "/path/to/conkeror")
+There's `browse-url-conkeror' but it is marked obsolete in Emacs 28.
 
 Add the following to .conkerorrc:
 
