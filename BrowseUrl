@@ -26,32 +26,10 @@ To control how file names are mapped to URLs, update the variable
 ===Back-porting support to earlier Emacs===
 If you are using a version of Emacs without support for one of the browsers supported in recent versions, you can backport support from the current ##browse-url.el##.
 === Galeon ===
-There's `browse-url-galeon'.
-Note that the "new galeon window" functionality is broken in emacs 21.2.  Is fixed in the current emacs CVS 21.3.50 though. 
-
-JuhapekkaTolvanen : This worked fine, when I still used Galeon:
-
-    (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "galeon"
-          browse-url-generic-args '("-n"))
+There's `browse-url-galeon' but it is marked obsolete as of Emacs 25.
 
 === Seamonkey ===
-
-The code above for Mozilla works with Seamonkey too...
-
-    (defun my-browse-url-seamonkey-new-tab (url &optional new-window)
-      ;; new-window ignored                                                         
-      "Open URL in a new tab in Seamonkey."
-      (interactive (browse-url-interactive-arg "URL: "))
-      (unless
-          (string= ""
-                   (shell-command-to-string
-                    (concat "seamonkey -remote 'openURL(" url ",new-tab)'")))
-        (message "Starting Seamonkey...")
-        (start-process (concat "seamonkey " url) nil "seamonkey" url)
-        (message "Starting Seamonkey...done")))
-
-    (setq browse-url-browser-function 'my-browse-url-seamonkey-new-tab)
+Customize the `browse-url-mozilla-*' variables to use "seamonkey" in place of "mozilla".
 
 === Opera ===
 From opera -h:
