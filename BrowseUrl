@@ -44,31 +44,6 @@ This doesn't seem to be available yet on Debian etch.  However, the instructions
            browse-url-generic-program "epiphany"
            browse-url-generic-args '("--new-tab"))
 
-=== Konqueror ===
-
-This works fine with KDE 3.4 and emacs 21.4:
-
-    (defun my-browse-url-in-konqueror-new-tab (url &rest ARGS)
-      "Open URL in a new Konqueror tab"
-       (interactive (browse-url-interactive-arg "URL: "))
-      (call-process "sh" nil t nil "-c" (concat "konqnewtab.sh " url)))
-
-    (setq browse-url-browser-function 'my-browse-url-in-konqueror-new-tab)
-
-"konqnewtab.sh" being the following shell script:
-
-    #!/bin/sh
-    # Usage: konqnewtab http://someurl.org
-
-    pid=`dcop | grep konqueror | sed 's/konqueror-//' | tail -n 1`
-    # find the most recently used konqueror window
-    # use head -n 1 to find the konqueror window opened first
-
-    if [ "$pid" != "" ]
-        then  dcop konqueror-"$pid" konqueror-mainwindow#1 newTab "$1"
-    else konqueror "$1" >/dev/null 2>&1 &
-    fi
-
 === Seamonkey ===
 
 The code above for Mozilla works with Seamonkey too...
