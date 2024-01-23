@@ -24,7 +24,6 @@ To control how file names are mapped to URLs, update the variable
 
 == Support for various browsers ==
 === Galeon ===
-
 There's `browse-url-galeon'.
 Note that the "new galeon window" functionality is broken in emacs 21.2.  Is fixed in the current emacs CVS 21.3.50 though. 
 
@@ -44,13 +43,6 @@ This doesn't seem to be available yet on Debian etch.  However, the instructions
      (setq browse-url-browser-function 'browse-url-generic
            browse-url-generic-program "epiphany"
            browse-url-generic-args '("--new-tab"))
-
-=== Chromium ===
-
-On arch linux, the following command will allow emacs to use the chromium-browser PKGBUILD:
-
-    (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "chromium-browser")
 
 === Konqueror ===
 
@@ -173,7 +165,6 @@ I don't know why but to be able to use # anchors in URLs I had to define:
         (concat "start msedge" " " url)))
 
 -- DieterWilhelm, 2021-08-30
-
 
 === Lagrange and Gemini URLs ===
 To support Gemini URLs and open them with Lagrange, the following snippet can be used. It first creates the <code>lagrange-browse-url-lagrange</code> function. Then, it cofigures the handlers with the proper regexp to identify a gopher/gemini URL. The regexp were obtained from the elpher package.
