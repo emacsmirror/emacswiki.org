@@ -22,57 +22,6 @@ To control how file names are mapped to URLs, update the variable
     (add-to-list 'browse-url-filename-alist
                  '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
 
-== Different Browsers Depending On Environment ==
-
-Here is another solution.  I normally use a shell script to start the
-web browser of my choice.  Without X, it just starts [[w3m]];
-with X, it starts xterm and runs [[w3m]].
-
-* Works using X and starting the shell script
-* Works using X and calling `browse-url' in Emacs
-* Works on the console and starting the shell script
-* Fails on the console when calling `browse-url' in Emacs
-
-In order to fix it, you must run [[w3m]] as a shell command in order to
-capture the output.  Here is how:
-
-In your ~/.emacs:
-
-    (if window-system
-        (setq browse-url-browser-function 'browse-url-generic
-              browse-url-generic-program "web-browser")
-      (setq browse-url-browser-function 'my-browse))
-
-    (defun my-browse (url &rest ignore)
-      "Browse URL using w3m."
-      (interactive "sURL: ")
-      (shell-command (concat "w3m " url))
-      (pop-to-buffer "*Shell Command Output*")
-      (setq truncate-lines t))
-
-In your ~/bin/web-browser (a shell script):
-
-    #! /bin/bash
-
-    if [ -z "$1" ]; then
-        URL="-B"
-    else
-        URL=$1
-    fi
-
-    if [ -z "$DISPLAY" ]; then
-        w3m $URL
-    else
-        xterm -name web-browser -bg "#304020" -fg "navajo white" -e w3m $URL
-    fi
-
-Note that now you can define `web-browser %s &' as an external browser
-in [[w3m]], such that -- in X -- you can spawn more windows.
-
-Note also that if you want to run [[w3m]] interactively when it runs
-within Emacs (in the example given that happens only when calling
-`browse-url' within Emacs on the console), then you need [[emacs-w3m]].
-
 == Support for various browsers ==
 === Mozilla, new tab ===
 
