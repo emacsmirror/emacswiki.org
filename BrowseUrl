@@ -139,55 +139,6 @@ If you installed the elpher package, it configures the <code>browse-url-default-
 
 == Discussion ==
 
-=== "Bug" in browse-url-default-windows-browser ===
-
-[new]
-The function <code>browse-url-default-windows-browser</code> strips anchors from URLs to local files. For instance, if typing
-
-    M-x browse-url-default-windows-browser file:///C:/index.html#test
-
-where <code>C:/index.html</code> is an existing file, <code>#test</code> will be removed from the final URL.
-
-*Update:* Further investigation reveals that the problem is related to <code>w32-shell-execute</code>. Executing
-
-    (w32-shell-execute "open" "file:///C:/index.html#test")
-
-opens <code>file:///C:/index.html</code>, without the anchor. <code>w32-shell-execute</code> is defined in C source code ... does this mean the problem is intractable?
-
-[new]
-Your should report your problem to the Emacs user list [[help-gnu-emacs]].
-
-My guess is that the URL needs to quoted before opened, but I haven't checked it anywhere.
-
-{{{
---- browse-url.el	02 Mar 2009 17:54:39 -0500	1.77
-+++ browse-url.el	02 Mar 2009 17:54:46 -0500	
-@@ -831,7 +831,7 @@
-       (if dos-windows-version
- 	  (shell-command (concat "start " (shell-quote-argument url)))
- 	(error "Browsing URLs is not supported on this system"))
--    (w32-shell-execute "open" url)))
-+    (w32-shell-execute "open"(shell-quote-argument url))))
- 
- (defun browse-url-default-macosx-browser (url &optional new-window)
-   (interactive (browse-url-interactive-arg "URL: "))
-}}}
-
-Note that you should use the command `M-x browse-url', but customize `browse-url-browser-function' as `browse-url-default-windows-browser'. See the [[Manual:Browse-URL]] section of the Emacs manual. -- AaronHawley
-
-[new]
-The problem is not one of quoting, since <code>(shell-quote-argument "file:///C:/index.html#test")</code> returns <code>"\"file:///C:/index.html#test\""</code>. Rather, it seems to be the case that <code>file:///C:/index.html#test</code> is a /nonstandard/ URI; [http://tools.ietf.org/html/rfc1630 RFC 1630] and [http://tools.ietf.org/html/rfc1738 RFC 1738] don't specify a <code>#target</code> (i.e., an anchor) for file URIs. (External URIs work!) Most browsers will happily parse such URIs anyway, but with Window's <code>ShellExecute</code> the nonstandard URI is converted to a standard one before reaching the browser, and so the <code>#target</code> is stripped off.
-
-In other words, however useful <code>#targets</code> in file URIs are, Windows is "right" in removing them. :(
-
-**The solution:** call the browser /directly/ instead, e.g., use <code>browse-url-firefox</code> instead of <code>browse-url-default-windows-browser</code>. Add
-
-    (setq browse-url-browser-function 'browse-url-firefox
-          browse-url-new-window-flag t
-          browse-url-firefox-new-window-is-tab t)
-
-to <code>.emacs</code> and use the function <code>browse-url</code> (thanks, AaronHawley).
-
 === Defining a new URL type? ===
 
 I'd like to define a handler for a new URL type, but the info pages for URL mode is, um, completely missing.  Does anybody have any pointers?
