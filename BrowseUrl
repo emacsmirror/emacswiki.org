@@ -136,14 +136,18 @@ If you installed the elpher package, it configures the <code>browse-url-default-
                      #'lagrange-browse-url-lagrange)))
 
 --  ChristianGimenez, 2022-04-10
+==Misc==
+=== Making URLs clickable ===
+The built-in GotoAddress does this
+
+Alternatives: 
+* [[Hyperbole]] does this automatically and much more
+* nXhtml has mlinks.el (HTML-style links only)
+* OrgMode has support for URL links but that's a major mode
+===Setting URL handlers===
+See `browse-url-handlers', included from Emacs 28.
 
 == Discussion ==
-
-=== Defining a new URL type? ===
-
-I'd like to define a handler for a new URL type, but the info pages for URL mode is, um, completely missing.  Does anybody have any pointers?
-
-Thanks, JamesFelixBlack
 
 === More control over opening in emacs vs. opening in external ===
 
@@ -219,17 +223,6 @@ The default `open' loads the URL according to default browser behavior.  In inst
 }}}
 
 On the other hand, if you want the browser to reuse an existing tab if it has one already showing the URL, the applescript is somewhat more complicated.  [http://qwan.org/2011/09/01/reloading-a-page-in-chrome-from-aquamacs/ Instructions are here.]
-
-=== Is there a package which makes URLs clickable? ===
-
-I'm looking for a minor mode or similar which I can turn on in any buffer and it makes all URLs in the buffer clickable and of course keeps the URLs updated when the buffer text is edited. Is there such a package?
-
-[new]
-Sounds like you want goto-address-mode (see GotoAddress). Other alternatives: [[Hyperbole]] does this automatically and much more, nXhtml has mlinks.el (HTML-style links only), and org-mode has support for URL links but that's a major mode. There's also BrowseUrl. The commentary  suggests adding the following to your .emacs.
-
-{{{
-(global-set-key [S-mouse-2] 'browse-url-at-mouse)
-}}}
 
 === Choose browser when using Org-mode's org-open-at-point (C-c C-o) ===
 
