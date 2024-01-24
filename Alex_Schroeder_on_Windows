@@ -43,7 +43,11 @@
 ;; settings
 (setq visible-bell t
       completion-ignore-case t
-      read-buffer-completion-ignore-case t)
+      read-buffer-completion-ignore-case t
+      ;; use flex everywhere!
+      completion-styles '(basic partial-completion flex)
+      completion-category-overrides nil
+      completion-category-defaults nil)
 (setq sentence-end-double-space nil)
 
 ;; on Windows, the menu button of the Atreus keyboard I use is not
@@ -63,9 +67,79 @@
                         (name 20 20 :left :elide)
                         " " filename))))
 
+(global-set-key (kbd "C-x b") 'switch-buffer-or-find-file)
+
+(defvar asc:file-names-seen nil
+  "List of file names seen.")
+
+(defun asc:file-names-seen-update ()
+  "Add the current file name to `asc:file-names-seen'."
+  (let ((name (or buffer-file-name dired-directory)))
+    (when name
+      (setq asc:file-names-seen
+            (cons name (delete name asc:file-names-seen))))))
+
+(add-hook 'find-file-hook 'asc:file-names-seen-update)
+(add-hook 'dired-after-readin-hook 'asc:file-names-seen-update)
+
+(defvar switch-buffer-or-find-file-history nil
+  "History of file names or buffers picked.")
+
+;; default history-length is 100 which is not enough
+(put 'switch-buffer-or-find-file-history 'history-length 1000)
+
+(defun switch-buffer-or-find-file ()
+  "Switch buffer or find file."
+  (interactive)
+  (let ((buffer-names (mapcar 'buffer-name (buffer-list)))
+        (file-names nil)
+        (file-names-alist nil)
+        (default nil)n
+        (this-buffer-name (buffer-name (current-buffer))))
+    ;; build filename list (reversed!)
+    (dolist (full-name asc:file-names-seen)
+      (let* ((name (if (file-directory-p full-name)
+                       ;; parent directory with a slash…
+                       (file-name-as-directory
+                        (file-name-nondirectory
+                         (directory-file-name full-name)))
+                     ;; filename
+                     (file-name-nondirectory full-name)))
+             (full-names (assoc name file-names-alist)))
+        (setq file-names (cons name file-names))
+        (if full-names
+            (setcdr full-names (cons full-name (cdr full-names)))
+          (setq file-names-alist (cons (cons name (list full-name))
+                                       file-names-alist)))))
+    ;; filter beginning of the buffer name list and figure out the default
+    (while (and (not default) buffer-names)
+      (let ((name (car buffer-names)))
+        (if (or (string= (substring name 0 1) " ")
+                (eq this-buffer-name name))
+            (setq buffer-names (cdr buffer-names))
+          (setq default name))))
+    (setq candidates (completion-table-merge buffer-names file-names))
+    (let* ((name (completing-read
+                  (format "Switch to (%s): " default)
+                  candidates
+                  (lambda (s)
+                    (and (not (string-empty-p s))
+                         (not (or (string= (substring s 0 1) " ")
+                                  (eq this-buffer-name s)))))
+                  nil nil
+                  'switch-buffer-or-find-file-history
+                  default))
+           (buf (get-buffer name))
+           (files (cdr (assoc name file-names-alist))))
+      (cond (buf (switch-to-buffer buf))
+            ((= 1 (length files))
+             (find-file (car files)))
+            (t (find-file
+                (completing-read "Which one of these files: " files)))))))
+
 ;; no casual window splitting
 (setq special-display-buffer-names
-      '("*compilation*" "*info*" "*Help*" "*Completions*" "*grep*")
+      '("*compilation*" "*info*" "*Help*" "*grep*")
       special-display-function 'display-buffer-same-window)
 
 ;; selection
@@ -130,6 +204,10 @@
 (use-package dictionary
   :bind ("C-c d" . dictionary-search))
 
+;; Swiper
+(use-package swiper :ensure t
+  :bind ("C-o" . swiper))
+
 ;; Number Mark
 (add-to-list 'load-path (expand-file-name "asc" user-emacs-directory))
 (autoload 'number-mark-mode "number-mark.el" "Working with numbers." t)
@@ -172,13 +250,36 @@
 (defun asc:adoc-follow-xref ()
   "Follow the xref at point."
   (interactive)
-  (let ((data (split-string (or (adoc-xref-id-at-point)
-                                (error "No Asciidoc reference at point"))
-                             ":"))
-        module file)
-    (cond ((= 2 (length data)) (setq module (car data) file (nth 1 data)))
-          ((= 1 (length data)) (setq module (asc:module-name) file (car data))))
-    (find-file (file-name-concat (asc:modules-directory) module "pages" file))))
+  (let ((data (or (adoc-example-at-point)
+                  (adoc-image-at-point)
+                  (adoc-page-at-point)
+                  (error "No Asciidoc reference at point")))
+        module dir file)
+    (cond ((= 3 (length data)) (setq module (nth 1 data) dir (nth 0 data) file (nth 2 data)))
+          ((= 2 (length data)) (setq module (asc:module-name) dir (nth 0 data) file (nth 1 data)))
+          (t (error "Cannot parse %S" data)))
+    (find-file (file-name-concat (asc:modules-directory) module dir file))))
+
+(defun adoc-example-at-point ()
+  "Return the example at point."
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (when (looking-at "include::example\\$\\([^[]+\\)")
+      (append '("examples") (split-string (match-string 1) ":")))))
+
+(defun adoc-image-at-point ()
+  "Return the image at point."
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (when (looking-at "image::\\([^[]+\\)")
+      (append '("images") (split-string (match-string 1) ":")))))
+
+(defun adoc-page-at-point ()
+  "Return the page at point."
+  (save-excursion
+    (let ((id (adoc-xref-id-at-point)))
+      (when id
+        (append '("pages") (split-string id ":"))))))
 
 ;; See (edit-abbrevs)
 
@@ -247,6 +348,49 @@
     (if (string= module this-module)
         (insert "xref:" file "[]")
       (insert "xref:" module ":" file "[]"))))
+
+(defun adoc:example ()
+  "Insert example with existing file."
+  (interactive)
+  (let ((caption (read-string "Caption: "))
+        (slug (read-string "Slug: "))
+        (prefix (expand-file-name "../examples/"))
+        (filename (read-file-name "Example: " "../examples/" nil t)))
+    (setq filename (substring filename (length prefix))) ; doesn't work for examples from elsewhere!
+    (insert "." caption "\n"
+            "[source#" slug ",java]\n"
+            "----\n"
+            "include::example$" filename "[tags=]\n"
+            "----\n"
+            "<1>")))
+
+(defconst asc:java-style
+  '((c-basic-offset . 2)
+    (c-comment-only-line-offset 0 . 0)
+    (c-offsets-alist
+     (inline-open . 0)
+     (topmost-intro-cont . +)
+     (statement-block-intro . +)
+     (knr-argdecl-intro . 5)
+     (substatement-open . +)
+     (substatement-label . +)
+     (label . +)
+     (statement-case-open . +)
+     (statement-cont . +)
+     (arglist-intro . c-lineup-arglist-intro-after-paren)
+     (arglist-close . c-lineup-arglist)
+     (brace-list-intro first c-lineup-2nd-brace-entry-in-arglist c-lineup-class-decl-init-+ +)
+     (access-label . 0)
+     (inher-cont . c-lineup-java-inher)
+     (func-decl-cont . c-lineup-java-throws)))
+  "My C Programming Style")
+(c-add-style "java" asc:java-style)
+
+;; Customizations for all modes in CC Mode.
+(defun asc:java-mode-common-hook ()
+  (setq tab-width 8
+        indent-tabs-mode nil))
+(add-hook 'java-mode-hook 'asc:java-mode-common-hook)
 
 (setq langtool-language-tool-jar "/dev/doc/LanguageTool-6.1/languagetool-commandline.jar"
       langtool-default-language "en-US"
@@ -402,6 +546,58 @@ current buffer. Use a prefix argument to override either."
 (setq shell-file-name (executable-find "cmdproxy")
       shell-file-name "C:/tools/emacs/libexec/emacs/28.2/x86_64-w64-mingw32/cmdproxy.exe")
 
+;; initial frame size not so tall because the font size is so large
+(setq initial-frame-alist
+      '((top . 1) (left . 1) (width . 100) (height . 30)))
+
+;; Theme at the end
+(use-package brutalist-theme
+  :ensure t
+  :config
+  (let
+      ((fg "#111111")
+       (fg-table "#222291")
+       (fg-dim "dim gray")
+       (fg-slight-dim "grey70")
+       (bg "#fffff8")
+       (bg-light "#ddddd8")
+       (fg-light "#ddddd8")
+       (bg-highlight "#FFF1AA")
+       (bg-highlight-2 "LightCyan")
+       (bg-highlight-3 "LightGreen")
+       (bg-highlight-dim "#eeeee8")
+       (diff-added "#e9ffe9")
+       (diff-added-highlight "#a4f4a3")
+       (diff-removed "#ffecec")
+       (diff-removed-highlight "#f9cbca")
+       (powerline1 "grey22")
+       (powerline2 "grey40")
+       (string "blue")
+       (cursor "white smoke")
+       (paren-match "blue")
+       (paren-mismatch "red"))
+    (custom-theme-set-faces
+     'brutalist
+     `(markup-list-face ((t (:background ,bg :foreground ,fg-table))))
+     `(markup-complex-replacement-face ((t (:background ,bg-highlight :foreground ,fg))))
+     `(markup-internal-reference-face ((t (:underline t :foreground ,fg-slight-dim))))
+     `(markup-meta-face ((t (:background ,bg :foreground ,fg-dim))))
+     `(markup-secondary-text-face ((t (:background ,bg :foreground ,fg-dim))))
+     `(mode-line-inactive ((t (:inherit mode-line :foreground ,fg-dim)))))))
+;; if you add to the above, (disable-theme 'brutalist) and enable the theme again
+(enable-theme 'brutalist)
+
+(add-hook 'after-init-hook
+          (lambda ()
+            ;; ensure this face really does get set!
+            (set-face-foreground 'mode-line-inactive "dim gray")))
+
+;; font even further back
+(defface markup-replacement-face '((t (:inherit default))) "")
+(when (find-font (font-spec :name "Iosevka"))
+  (dolist (face '(default fixed-pitch))
+    (set-face-attribute face nil :family "Iosevka" :height 120)))
+
 ;; Meow
 
 (defun meow-setup ()
@@ -490,62 +686,85 @@ current buffer. Use a prefix argument to override either."
    '("'" . repeat)
    '("<escape>" . ignore)))
 
+(defface meow-normal-indicator '((t (:foreground "orange"))) "N")
+
 (use-package meow :ensure t
   :config (progn
             (meow-setup)
             (meow-global-mode 1)))
 
-;; initial frame size not so tall because the font size is so large
-(setq initial-frame-alist
-      '((top . 1) (left . 1) (width . 100) (height . 30)))
+;; add isearch
 
-;; Theme at the end
-(use-package brutalist-theme
-  :ensure t
-  :config
-  (let
-      ((fg "#111111")
-       (fg-table "#222291")
-       (fg-dim "dim gray")
-       (fg-slight-dim "grey70")
-       (bg "#fffff8")
-       (bg-light "#ddddd8")
-       (fg-light "#ddddd8")
-       (bg-highlight "#FFF1AA")
-       (bg-highlight-2 "LightCyan")
-       (bg-highlight-3 "LightGreen")
-       (bg-highlight-dim "#eeeee8")
-       (diff-added "#e9ffe9")
-       (diff-added-highlight "#a4f4a3")
-       (diff-removed "#ffecec")
-       (diff-removed-highlight "#f9cbca")
-       (powerline1 "grey22")
-       (powerline2 "grey40")
-       (string "blue")
-       (cursor "white smoke")
-       (paren-match "blue")
-       (paren-mismatch "red"))
-    (custom-theme-set-faces
-     'brutalist
-     `(markup-list-face ((t (:background ,bg :foreground ,fg-table))))
-     `(markup-complex-replacement-face ((t (:background ,bg-highlight :foreground ,fg))))
-     `(markup-internal-reference-face ((t (:underline t :foreground ,fg-slight-dim))))
-     `(markup-meta-face ((t (:background ,bg :foreground ,fg-dim))))
-     `(markup-secondary-text-face ((t (:background ,bg :foreground ,fg-dim))))
-     `(mode-line-inactive ((t (:inherit mode-line :foreground ,fg-dim)))))))
-;; if you add to the above, (disable-theme 'brutalist) and enable the theme again
-(enable-theme 'brutalist)
+(require 'transient)
+(transient-define-prefix cc/isearch-menu ()
+  "isearch Menu"
+  [["Edit Search String"
+    ("e"
+     "Edit the search string (recursive)"
+     isearch-edit-string
+     :transient nil)
+    ("w"
+     "Pull next word or character word from buffer"
+     isearch-yank-word-or-char
+     :transient nil)
+    ("s"
+     "Pull next symbol or character from buffer"
+     isearch-yank-symbol-or-char
+     :transient nil)
+    ("l"
+     "Pull rest of line from buffer"
+     isearch-yank-line
+     :transient nil)
+    ("y"
+     "Pull string from kill ring"
+     isearch-yank-kill
+     :transient nil)
+    ("t"
+     "Pull thing from buffer"
+     isearch-forward-thing-at-point
+     :transient nil)]
 
-(add-hook 'after-init-hook
-          (lambda ()
-            ;; ensure this face really does get set!
-            (set-face-foreground 'mode-line-inactive "dim gray")))
+   ["Replace"
+    ("q"
+     "Start ‘query-replace’"
+     isearch-query-replace
+     :if-nil buffer-read-only
+     :transient nil)
+    ("x"
+     "Start ‘query-replace-regexp’"
+     isearch-query-replace-regexp
+     :if-nil buffer-read-only     
+     :transient nil)]]
 
-;; font even further back
-(defface markup-replacement-face '((t (:inherit default))) "")
-(when (find-font (font-spec :name "Iosevka"))
-  (dolist (face '(default fixed-pitch))
-    (set-face-attribute face nil :family "Iosevka" :height 120)))
+  [["Toggle"
+    ("X"
+     "Toggle regexp searching"
+     isearch-toggle-regexp
+     :transient nil)
+    ("S"
+     "Toggle symbol searching"
+     isearch-toggle-symbol
+     :transient nil)
+    ("W"
+     "Toggle word searching"
+     isearch-toggle-word
+     :transient nil)
+    ("F"
+     "Toggle case fold"
+     isearch-toggle-case-fold
+     :transient nil)
+    ("L"
+     "Toggle lax whitespace"
+     isearch-toggle-lax-whitespace
+     :transient nil)]
+
+   ["Misc"
+    ("o"
+     "occur"
+     isearch-occur
+     :transient nil)]])
+
+(define-key isearch-mode-map (kbd "<f2>") 'cc/isearch-menu)
 
 ;; at the very end, resume where we left off
 (setq desktop-restore-frames nil
@@ -553,10 +772,19 @@ current buffer. Use a prefix argument to override either."
       desktop-load-locked-desktop t
       ;; don't save any files
       desktop-files-not-to-save ""
+      desktop-globals-to-save
+      '(desktop-missing-file-warning
+        search-ring
+        regexp-search-ring
+        file-name-history
+        asc:file-names-seen)
       desktop-modes-not-to-save
       '(tags-table-mode Info-mode
 	dired-mode eww-mode))
 (desktop-save-mode 1)
+
+;; emacs-client
+(server-start)
 
 ;; enable disabled stuff
 (put 'narrow-to-region 'disabled nil)
@@ -567,7 +795,7 @@ current buffer. Use a prefix argument to override either."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(meow expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
+   '(swiper expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
