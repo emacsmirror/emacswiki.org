@@ -64,17 +64,6 @@ It has updated links to the Mr. Ravel's mode. It also has links to a second mode
 It could also use a link to a third mode, 'GnuplotMode'
 [[https://www.emacswiki.org/emacs/GnuplotMode]].
 
-
-== Default font-size should not be 1.2em ==
-
-The new CSS is a  very nice improvement, but the default font-size is set to 1.2em.  This causes all fonts on the page to be 20% larger than the user's default font size.  For me, this is jarring and annoying, causing me to have to scan more and scroll more to read the same amount of text.  I have the default font size set to be comfortable for me, and web sites should generally respect users' default font size.  So, please consider setting the <code>body</code> element's <code>font-size</code> to <code>100%</code> in the stylesheet.
-
-[new:AlexDaniel:2016-03-22 22:58 UTC]
-There's a [[https://github.com/bburns/emacswiki-light-theme github repo]] for the new css, so I think that it would be better to place your suggestion there. I created a [[https://github.com/bburns/emacswiki-light-theme/issues/13 new issue just for that]].
-
-[new:BrianBurns:2016-03-23 11:25 UTC]
-Good point - I'll set the size to 100%, as it's easy enough for users to override, and there was only one other (positive) comment on the font size - I just tend to like larger fonts as my eyes get older. :)
-
 == Alt key problem when using Compiz in Ubuntu ==
 
 In Ubuntu (at least when using Compiz), the left Alt key brings up a HUD by default. This causes problems when you use left Alt as the meta key. Hence, this problem should go under the GNU/Linux section in the [[MetaKeyProblems|Meta Key Problems]] article. One solution to this problem is to disable a keyboard shortcut to display the HUD, described [http://askubuntu.com/a/122232 here].
