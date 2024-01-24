@@ -8,27 +8,6 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== ISBN search links point to outdated pages ==
-
-Looking at TheCraftOfTextEditing I noticed that the ISBN links on there have stopped working. For example ISBN 9781411682979 or ISBN 9781461278276
-
-# It seems Barnes & Noble now redirect the link to their main home page, dropping the search.
-# Amazon shows "Sorry we couldn't find that page", although https://www.amazon.com/s?k=9781411682979 seems to work.
-# Pricescan seems to be something completely different now.
-
--- TomWillemse
-
-[new]
-Good point. I think I'll switch to https://en.wikipedia.org/wiki/Special:BookSources/ – offloading the problem. Agreed?
-
--- Alex Schroeder
-
-[new:TomWillemse:2023-12-07 08:13 UTC]
-Yeah sounds good to me. And works!
-
--- TomWillemse
-
-
 == Revisioning Problems ==
 
 [:EditingGetsOldPageText]
@@ -80,6 +59,9 @@ The irony being that markup in headers **is** rendered in the (javascript-built)
 
 The link text retains its crude ASCII formatting. -- VegardOye
 
+[new]
+Yes, there is no recursive parsing of the link text.
+-- Alex
 
 ----
 CategoryEmacsWikiSite
