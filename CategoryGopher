@@ -24,7 +24,7 @@ server sends back the according gophermap or file as plain-text.
 For more information, see http://gopher.floodgap.com (or
 gopher://gopher.floodgap.com) and gopher://gopherproject.org.
 
-[https://gemini.circumlunar.space/ Gemini] is a similar project, but
+[[GeminiProtocol|Gemini]] is a similar project, but
 newer: it makes many changes to bring non-HTTP and non-HTML but
 decentralized hypertext to the masses:
 
