@@ -1,27 +1,25 @@
-The `browse-url' package included in Emacs, originally written by DenisHowe, allows you to open a URL in a browser, normally reusing an existing browser process instead of creating a new one.
+The `browse-url' package included in Emacs, originally written by DenisHowe, allows you to open a URL in a browser.
 
-The URL, which defaults to the URL around point, is read from the minibuffer.  `browse-url' can also load URLs associated with the current buffer, from dired, etc.
+It is described in the EmacsManual under [https://www.gnu.org/software/emacs/manual/html_node/emacs/Browse_002dURL.html Following URLs] and in the extensive package documentation accesibled with <kbd>C-h P</kbd>.
 
-==See also==
-* GotoAddress -- highlight URLs and make them clickable
-* BrowseAproposURL -- launch browser searches
+==Basic browsing==
+The main command to use is `browse-url'. The URL, which defaults to the URL around point, is read from the minibuffer. 
+
+`browse-url-at-point' will open the URL around the point directly.
+
+== Browsing the URL of the current buffer ==
+`browse-url-of-buffer' opens the URL associated with the file in the current buffer.
+
+== Browsing the URL of the current region==
+`browse-url-of-region'
+==Browsing from dired==
+`browse-url-of-dired-file' displays the file named on the current line.
+
+==Launching browser searches==
+See BrowseAproposURL
 
 == Making URLs clickable ==
-The built-in GotoAddress does this
-
-Alternatives: 
-* [[Hyperbole]] does this automatically and much more
-* nXhtml has mlinks.el (HTML-style links only)
-* OrgMode has support for URL links but that's a major mode
-== Browsing the URL of the current buffer ==
-The command `browse-url-of-buffer' opens the URL associated with the file in the current buffer.
-
-To control how file names are mapped to URLs, update the variable
-`browse-url-filename-alist', for example:
-
-    (add-to-list 'browse-url-filename-alist
-                 '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
-
+The built-in GotoAddress highlights URLs and make them clickable
 
 ==Selecting the browser to use==
 ===Setting a default browser===
@@ -31,8 +29,14 @@ You can customize it by entering <kbd>M-x customize-option browse-url-browser-fu
 
 For help on getting a browser that doesn't die when emacs is exited, see PersistentProcesses.
 
-===Setting URL handlers===
-See `browse-url-handlers', included from Emacs 28.
+===Varying handling by URL===
+See `browse-url-handlers', included from Emacs 28, which allows varying how each URL is handled based on regexp-matching.
+
+To control how file names are mapped to URLs, update the variable
+`browse-url-filename-alist', for example:
+
+    (add-to-list 'browse-url-filename-alist
+                 '("/var/www/cgi/files/" . "http://my.website.com/cgi?"))
 
 === Using various browsers ===
 ==== Conkeror ====
@@ -120,7 +124,6 @@ I want C-u to always open in emacs (e.g. emacs-w3m) and C-u C-u to always open i
 
 Is there a way?
 
-[new]
 -> Have a look here: http://www.emacswiki.org/cgi-bin/wiki/JorgenSchaefersEmacsConfig
 I have this in my .emacs:
 {{{
@@ -139,7 +142,6 @@ I have this in my .emacs:
 (global-set-key "\C-xm" 'browse-url-at-point)
 }}}
 hth Memnon
-[new]
 
 ===Choose the browser persistently===
 Alternatively, to use C-u to give a choice between opening in an internal or an external browser, with that choice persisting until reset:
@@ -168,11 +170,9 @@ Alternatively, to use C-u to give a choice between opening in an internal or an 
 }}}
 
 === Choose the browser when using Org-mode's org-open-at-point (C-c C-o) ===
-
 If you want to be able to easily choose between different browsers
 (with w3m as the default) you can advise `org-open-at-point' with the
 following code (note, it uses choose-browser from above):
-[new]
 {{{
 (defadvice org-open-at-point (around org-open-at-point-choose-browser activate)
   (let ((browse-url-browser-function
@@ -186,7 +186,6 @@ following code (note, it uses choose-browser from above):
                )))
     ad-do-it))
 }}}
-[new]
 
 Defaults to w3m: C-c C-o
 Defaults to external browser: C-u C-c C-o
