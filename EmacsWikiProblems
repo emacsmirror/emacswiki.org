@@ -45,7 +45,7 @@ Interestingly, the markup in this particular header renders properly in the TOC
 [new]
 Markup cannot be nested by default. Very few markup elements can in fact be nested. This is not documented anywhere, I think.
 Common sense stuff like list items and inline markup can be nested (bold list items, for example).
-Emphasis markup using apostrophes is the online inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
+Emphasis markup using apostrophes is the only inline markup that can be nested: ##''italic '''bold''' and italic''## -> ''italic '''bold''' and italic''. -- AlexSchroeder
 
 [new]
 The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
