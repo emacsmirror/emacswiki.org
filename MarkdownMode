@@ -1,168 +1,25 @@
 `markdown-mode' is a major mode for GNU Emacs which provides syntax highlighting and supporting commands for editing Markdown files. It provides key bindings and commands for inserting Markdown elements and to assist in calling a Markdown processor program to parse the source code or preview the document in a browser. It also, optionally, provides syntax highlighting for wiki links and embedded LaTeX mathematical expressions.
 
-Homepage: http://jblevins.org/projects/markdown-mode/
-MELPA page: https://melpa.org/#/markdown-mode
-markdown-mode version 2.3 was released on August 31, 2017. Release notes can be found here:
+* Homepage and manual: http://jblevins.org/projects/markdown-mode/
+* MELPA page: https://stable.melpa.org/#/markdown-mode
 
-== Usage notes ==
+==Manual==
+There is a manual by the author at the package home page, http://jblevins.org/projects/markdown-mode/, which covers both installation and usage thoroughly.  The Emacs package documentation available through <kbd>C-h P</kbd> includes the same material.
 
-Useful markdown-specific editing features:
+For greater depth, the author also has an e-book, the "Guide to Markdown Mode for Emacs", available for sale at https://leanpub.com/markdown-mode.
 
-* Change heading level two ways: by cycling with `C-c C--' or `C-c C-=' (`M-<left>' or `M-<right>') or by re-issuing a heading insertion command when the point is at a heading (e.g., `C-c C-t 4' will replace the current heading with a level-four heading).
-* Section navigation via outline-minor-mode using the same keybindings as in org-mode (`C-c C-f', `C-c C-b', `C-c C-u', `C-c C-p', and `C-c C-n').
-* Reorder list items with `M-<up>' and `M-<down>'.
+==Alternative manual==
+There is an alterative manual, also extracted from the source code at [https://github.com/daniel-birket/markdown-mode-texinfo daniel-birket/markdown-mode-texinfo] 
+on GitHub. This version is *not* authorized by the author of `markdown-mode'.  It is available in various formats, including Info, PDF and HTML.
 
-== Emacs/Info-format Manual ==
-
-You may download an alternate
-[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.info.gz info-format manual]
-for `markdown-mode' from
-[https://github.com/daniel-birket/markdown-mode-texinfo markdown-mode-texinfo] 
-on GitHub.
-
-Once installed with the other Emacs info files, it may be viewed from
-within Emacs or with the command-line `info' utility. As it has a
-[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.texi Texinfo source], it is also available as a
-[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.pdf typeset PDF] and other formats.
-
-This manual is *not* authorized by the author of `markdown-mode',
-Jason Blevins. It is based upon his program's internal doc strings.
-
-== Check Markdown with Flycheck ==
-
-You may check syntax in a markdown-mode buffer with [https://www.emacswiki.org/emacs/Flycheck Flycheck]
-after installing the ruby gem `mdl' ([https://github.com/mivok/markdownlint markdown lint]).
-
-== eLisp Scraps & Gists ==
-
-=== Checking Parenthesis ===
-
-It can be useful to enforce certain static constraints on Markdown files; for example, the heavy use of brackets and parentheses in link syntax mean it is easy to omit a closing parentheses, especially if one is linking something inside a natural language digression (where one will have 2 or more closing parentheses). Balance can be checked with [[DebuggingParentheses|'check-parens']], and it can be automatically invoked after file saves with the usual hooks, eg.
-
-    (add-hook 'markdown-mode-hook
-            (lambda ()
-              (when buffer-file-name
-                (add-hook 'after-save-hook
-                          'check-parens
-                          nil t))))
-
-A similar logic applies to double-quotes, especially if one is frequently adding tooltips to links. 'check-parens' works off the buffer syntax table, and double-quotes are not special to markdown-mode, so one must do a more invasive hook:
-
-    ; warning, may yield wrong results in edge-cases like single double-quotes in code block.
-    ; Use only if your files usually are balanced w/r/t double-quotes
-    ; <http://stackoverflow.com/questions/9527593/>
-    (add-hook 'markdown-mode-hook (lambda () (modify-syntax-entry ?\" "\"" markdown-mode-syntax-table)))
-
-=== HTML 5 and UTF-8 ===
-
-Assuming you are using the Perl script `markdown' which is called without a filename, and assuming you write all your files using UTF-8, then this is for you:
-
-{{{
-(eval-after-load "markdown-mode"
-  '(defalias 'markdown-add-xhtml-header-and-footer 'as/markdown-add-xhtml-header-and-footer))
-
-(defun as/markdown-add-xhtml-header-and-footer (title)
-    "Wrap XHTML header and footer with given TITLE around current buffer."
-    (goto-char (point-min))
-    (insert "<!DOCTYPE html5>\n"
-	    "<html>\n"
-	    "<head>\n<title>")
-    (insert title)
-    (insert "</title>\n")
-    (insert "<meta charset=\"utf-8\" />\n")
-    (when (> (length markdown-css-paths) 0)
-      (insert (mapconcat 'markdown-stylesheet-link-string markdown-css-paths "\n")))
-    (insert "\n</head>\n\n"
-	    "<body>\n\n")
-    (goto-char (point-max))
-    (insert "\n"
-	    "</body>\n"
-	    "</html>\n"))
-}}}
-
-This does the following:
-
-* generates a HTML 5 header instead of an XHTML header
-* adds a UTF-8 charset declaration and ignores ##markdown-content-type## and ##markdown-coding-system##
-* ##markdown-xhtml-header-content## is also ignored
-
-=== Visual Lines ===
-
-This other app I'm using treats single newlines as paragraph breaks. In order for Emacs to work well with it, I use the following:
-
-{{{
-;; The Markdown files I write using IA Writer use newlines to separate
-;; paragraphs. That's why I need Visual Line Mode. I also need to
-;; disable M-q. If I fill paragraphs, that introduces unwanted
-;; newlines.
-(add-hook 'markdown-mode-hook 'visual-line-mode)
-(add-hook 'markdown-mode-hook 'as/markdown-config)
-(defun as/markdown-config ()
-  (local-set-key (kbd "M-q") 'ignore))
-}}}
-
-=== Google+ Export ===
-
-Sometimes I want to post a fragment I wrote on Google+ and need a quick way to convert Markdown to Google+ markup.
-
-{{{
-;; I write a lot of Markdown but then I want to post the text on
-;; Google+ so here's a quick export.
-(defun as/markdown-region-to-google (start end)
-  (interactive "r")
-  (goto-char start)
-  (while (search-forward "*" end t)
-    (goto-char (match-beginning 0))
-    (cond ((looking-at "\\b\\*\\*\\|\\*\\*\\b")
-	   (delete-char 1)
-	   (forward-char 1))
-	  ((looking-at "\\b\\*\\|\\*\\b")
-	   (delete-char 1)
-	   (insert "_")))))
-}}}
-
-=== LaTeX Export ===
-
-When I'm done writing a chapter, the text gets copied over to a LaTeX document. Here's a quick way to convert my text.
-
-{{{
-;; Often Markdown gets added to a LaTeX project, too. So I eventually
-;; need a LaTeX export.
-(defun as/markdown-region-to-latex (start end)
-  (interactive "r")
-  (goto-char start)
-  (save-restriction
-    (let (in-list skip-to)
-      (narrow-to-region start end)
-      (while (re-search-forward "\\*\\|\n\\|\\`" nil t)
-	(goto-char (match-beginning 0))
-	(if (= (point) (match-end 0))
-	    (setq skip-to (1+ (point)))
-	  (setq skip-to (match-end 0)))
-	(cond ((looking-at "\\*\\*\\b\\([^*]*?\\)\\b\\*\\*")
-	       (replace-match "\\\\textbf{\\1}"))
-	      ((looking-at "\\*\\b\\([^*]*?\\)\\b\\*")
-	       (replace-match "\\\\textit{\\1}"))
-	      ((looking-at "^# \\(.*\\)")
-	       (replace-match "\\\\section{\\1}"))
-	      ((looking-at "^## \\(.*\\)")
-	       (replace-match "\\\\subsection{\\1}"))
-	      ((looking-at "^### \\(.*\\)")
-	       (replace-match "\\\\subsubsection{\\1}"))
-	      ((looking-at "^\\* ")
-	       (replace-match (if in-list "\\\\item " "\\\\begin{itemize}\n\\\\item "))
-	       (setq in-list "itemize"))
-	      ((looking-at "^[0-9]+\\. ")
-	       (replace-match (if in-list "\\\\item " "\\\\begin{enumerate}\n\\\\item "))
-	       (setq in-list "enumerate"))
-	      ((and in-list (looking-at "^"))
-	       (replace-match (format "\\\\end{%s}\n" in-list))
-	       (setq in-list nil))
-	      (t (goto-char skip-to)))))))
-}}}
-
-== Related Pages ==
+== Previewing==
 [MarkdownPreviewMode Markdown Preview Mode]
+
+== Linting==
+[[Flycheck]] supports Markdown, as noted in its documentation.
+
+== Debugging parentheses ==
+Markdown code can include a lot of parentheses, brackets, etc. that must be balanced.  See [[DebuggingParentheses]] for how to check this.
 
 ----
 MarkupModes
