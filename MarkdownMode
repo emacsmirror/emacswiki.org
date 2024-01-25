@@ -1,17 +1,8 @@
-`markdown-mode' is a major mode for GNU Emacs which provides syntax highlighting and supporting commands for editing Markdown files. It provides keybindings and commands for inserting Markdown elements and to assist in calling `markdown' to parse the source code or preview the document in a browser. It also, optionally, provides syntax highlighting for wiki links and embedded itex mathematical expressions.
+`markdown-mode' is a major mode for GNU Emacs which provides syntax highlighting and supporting commands for editing Markdown files. It provides key bindings and commands for inserting Markdown elements and to assist in calling a Markdown processor program to parse the source code or preview the document in a browser. It also, optionally, provides syntax highlighting for wiki links and embedded LaTeX mathematical expressions.
 
-http://jblevins.org/projects/markdown-mode/
-
+Homepage: http://jblevins.org/projects/markdown-mode/
+MELPA page: https://melpa.org/#/markdown-mode
 markdown-mode version 2.3 was released on August 31, 2017. Release notes can be found here:
-
-https://jblevins.org/projects/markdown-mode/rev-2-3
-
-Debian offers the `elpa-markdown-mode' package.
-
-On Mac OS X Unix (with [http://brew.sh homebrew] installed), type
-<pre>
-$ brew install homebrew/emacs/markdown-mode
-</pre>
 
 == Usage notes ==
 
