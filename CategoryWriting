@@ -48,6 +48,10 @@ when writing about art (or other topics)
 == See Also ==
 ''Note: This page overlaps with material at CategoryEducation, and occasionally may need to synchronize.''
 
+* [[https://github.com/thinkhuman/writingwithemacs/ Writing with Emacs]] -- Articles accounting how writers use Emacs as their preferred writing tool.
+* [[https://github.com/frankjonen/emacs-for-writers Emacs Configuration for writers]] -- Spacemacs based configuration to help non-technical writers start off with a reasonable Emacs configuration.
+
+
 See also these sections of:
 
 * CategoryCompletion -- Complete the words you're typing.
