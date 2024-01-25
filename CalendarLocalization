@@ -226,6 +226,18 @@ See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
                                      "Октябрь" "Ноябрь" "Декабрь"]
           calendar-month-abbrev-array ["Янв" "Фев" "Мар" "Апр" "Май" "Июн" "Июл" "Авг" "Сен" "Окт" "Ноя" "Дек"])
 
+=== Serbian ===
+
+{{{
+(setq calendar-week-start-day 1
+            calendar-day-name-array ["Недеља" "Понедељак" "Уторак" "Среда" "Четвртак" "Петак" "Субота"]
+            calendar-day-abbrev-array ["Не" "По" "Ут" "Ср" "Че" "Пе" "Су"]
+	    calendar-day-header-array ["Не" "По" "Ут" "Ср" "Че" "Пе" "Су"]
+            calendar-month-name-array ["Јануар" "Фебруар" "Март" "Април" "Мај" 
+				       "Јун" "Јул" "Август" "Септембар"
+				       "Октобар" "Новембар" "Децембар"])
+}}}
+
 === Slovak ===
 
 {{{
