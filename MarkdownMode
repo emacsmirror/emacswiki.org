@@ -9,7 +9,6 @@ There is a manual by the author at the package home page, http://jblevins.org/pr
 
 For greater depth, the author also has an e-book, the "Guide to Markdown Mode for Emacs", available at https://leanpub.com/markdown-mode.
 
-===Alternative manual===
 There is an alterative manual, also extracted from the source code at [https://github.com/daniel-birket/markdown-mode-texinfo daniel-birket/markdown-mode-texinfo] 
 on GitHub. This version is *not* authorized by the author of `markdown-mode'.  It is available in various formats, including Info, PDF and HTML.
 
