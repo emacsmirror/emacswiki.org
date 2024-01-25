@@ -3,24 +3,40 @@
 * Homepage and manual: http://jblevins.org/projects/markdown-mode/
 * MELPA page: https://stable.melpa.org/#/markdown-mode
 
+This page covers markdown-mode and packages to work with it.
 ==Manual==
 There is a manual by the author at the package home page, http://jblevins.org/projects/markdown-mode/, which covers both installation and usage thoroughly.  The Emacs package documentation available through <kbd>C-h P</kbd> includes the same material.
 
 For greater depth, the author also has an e-book, the "Guide to Markdown Mode for Emacs", available for sale at https://leanpub.com/markdown-mode.
 
-==Alternative manual==
+===Alternative manual===
 There is an alterative manual, also extracted from the source code at [https://github.com/daniel-birket/markdown-mode-texinfo daniel-birket/markdown-mode-texinfo] 
 on GitHub. This version is *not* authorized by the author of `markdown-mode'.  It is available in various formats, including Info, PDF and HTML.
 
-== Previewing==
-[MarkdownPreviewMode Markdown Preview Mode]
-
+==Generating tables of contents==
+[https://melpa.org/#/markdown-toc markdown-toc] -- "a simple TOC generator for markdown"
 == Linting==
+[[https://melpa.org/#/flymake-markdownlint flymake-markdownlint]] -- is a FlyMake extension for Markdown
+
 [[Flycheck]] supports Markdown, as noted in its documentation.
 
 == Debugging parentheses ==
 Markdown code can include a lot of parentheses, brackets, etc. that must be balanced.  See [[DebuggingParentheses]] for how to check this.
 
+== Previewing==
+The following packages support previewing:
+===flymd===
+[https://melpa.org/#/flymd flymd] -- on the fly markdown preview in the browser
+===impatient-showdown===
+[https://melpa.org/#/impatient-showdown impatient-showdown] -- Preview markdown buffer live over HTTP using showdown.
+===Markdown Preview EWW===
+[https://melpa.org/#/markdown-preview-eww markdown-preview-eww] -- Realtime preview by eww.
+===Markdown Preview Mode===
+[MarkdownPreviewMode Markdown Preview Mode]
+===grip (GitHub)===
+[https://melpa.org/#/grip-mode grip-mode] -- GitHub-flavored Markdown/Org preview using [https://github.com/joeyespo/grip grip]
+===vmd-mode (GitHub)===
+[https://melpa.org/#/vmd-mode vmd-mode] -- Fast Github-flavored Markdown preview using a [https://github.com/yoshuawuyts/vmd vmd] subprocess.
 ----
 MarkupModes
 CategoryModes
