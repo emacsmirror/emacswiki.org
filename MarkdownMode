@@ -7,7 +7,7 @@ This page covers markdown-mode and packages to work with it.
 ==Manual==
 There is a manual by the author at the package home page, http://jblevins.org/projects/markdown-mode/, which covers both installation and usage thoroughly.  The Emacs package documentation available through <kbd>C-h P</kbd> includes the same material.
 
-For greater depth, the author also has an e-book, the "Guide to Markdown Mode for Emacs", available for sale at https://leanpub.com/markdown-mode.
+For greater depth, the author also has an e-book, the "Guide to Markdown Mode for Emacs", available at https://leanpub.com/markdown-mode.
 
 ===Alternative manual===
 There is an alterative manual, also extracted from the source code at [https://github.com/daniel-birket/markdown-mode-texinfo daniel-birket/markdown-mode-texinfo] 
@@ -24,13 +24,11 @@ on GitHub. This version is *not* authorized by the author of `markdown-mode'.  I
 Markdown code can include a lot of parentheses, brackets, etc. that must be balanced.  See [[DebuggingParentheses]] for how to check this.
 
 == Previewing==
-The following packages support previewing:
-===flymd===
-[https://melpa.org/#/flymd flymd] -- on the fly markdown preview in the browser
+This is supported via the built-in `markdown-live-preview-mode'.  This uses a local Markdown processor program to convert Markdown to HTML.
+
+There are other options below, notably `impatient-showdown', which does not require a locally-installed Markdown processor.
 ===impatient-showdown===
-[https://melpa.org/#/impatient-showdown impatient-showdown] -- Preview markdown buffer live over HTTP using showdown.
-===Markdown Preview EWW===
-[https://melpa.org/#/markdown-preview-eww markdown-preview-eww] -- Realtime preview by eww.
+[https://melpa.org/#/impatient-showdown impatient-showdown] provides live previewing without a local program by using a !JavaScript library that is downloaded by the generated HTML.
 ===Markdown Preview Mode===
 [MarkdownPreviewMode Markdown Preview Mode]
 ===grip (GitHub)===
