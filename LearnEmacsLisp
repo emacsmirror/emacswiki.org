@@ -12,7 +12,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 
 == Emacs Lisp for things you already use ==
 
-* Use `C-x ESC ESC' (`repeat-complex-command') to repeat [[command]]s you execute, and look at the Emacs Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.  You can edit that code to get a variation on the last behavior.
+* Use `C-x ESC ESC' (`repeat-complex-command') to repeat [[command]]s you execute, and look at the Emacs Lisp code that executes them, before hitting `RET' (Return) -- see RepeatingComplexCommand.  You can edit that code to get a variation on the last behavior.
 
 * Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. You'll see a description of the function or variable. If you have the Emacs source code locally, you will also see a link to the relevant definition in the code. Click the link or move the [[cursor]] to it and press `RET' to follow it.
 
