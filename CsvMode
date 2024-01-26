@@ -12,8 +12,7 @@ See also,
 * [[Synonyms]] -- initially supports thesaurus data, but can create interactive relations and hypertext interfaces to self-referential CSV data.
 
 == Set a different colour to each column ==
-
-Put this somewhere in your configuration (I suggest a separate file that's loaded to the configuration):
+Inspired by https://www.reddit.com/r/emacs/comments/26c71k/comment/chq2r8m
 
 {{{
 
@@ -38,14 +37,10 @@ Then hook it to `csv-mode`:
 
     (add-hook 'csv-mode-hook 'csv-highlight)
 
-
-Works best with some more hooks:
+It works best with some more hooks:
 
     (add-hook 'csv-mode-hook 'csv-align-mode)
     (add-hook 'csv-mode-hook '(lambda () (interactive) (toggle-truncate-lines nil))))
-
-
-Inspired by https://www.reddit.com/r/emacs/comments/26c71k/comment/chq2r8m
 
 ----
 CategoryFinancial
