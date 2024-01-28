@@ -41,4 +41,5 @@ See UndoFilling
 * NobreakFade -- some "nobreak" predicates
 * [http://user42.tuxfamily.org/parasep/index.html parasep.el] -- more things for paragraph separators
 * WordWrapping -- similar to AutoFillMode.
+* WrapMode -- similar to RefillMode
 
