@@ -1,0 +1,6 @@
+Meow ([https://melpa.org/#/meow MELPA], [https://github.com/meow-edit/meow GitHub]), "is yet another modal editing mode for Emacs.  Meow aims to blend modal editing into Emacs with minimal interference with its original key-bindings, avoiding most of the hassle introduced by key-binding conflicts. This leads to lower necessary configuration and better integration. More is achieved with fewer commands to remember."
+
+For further information see https://github.com/meow-edit/meow 
+
+----
+CategoryModalEditing
