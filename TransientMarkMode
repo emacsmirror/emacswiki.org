@@ -21,7 +21,8 @@ In Emacs 22 and later, `C-SPC C-SPC' activates Transient Mark mode only ''tempor
 * PcSelectionMode also uses Transient Mark mode.
 * ZmacsRegions is the equivalent, in [[XEmacs]], of Transient Mark mode in GnuEmacs.
 
-Transient Mark mode is unrelated to [[Transient]].
+Transient Mark mode is unrelated to *package* [[Transient]].
+
 == Commands that do not work well with Transient Mark Mode ==
 
 === indent-rigidly (prior to Emacs 23 only) ===
