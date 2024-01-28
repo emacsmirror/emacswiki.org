@@ -1,7 +1,6 @@
 wrap-mode.el is a minor mode for word wrapping like typical word processors.
 
-You can get it here: http://nbcs.rutgers.edu/~jszabo/wrap-mode.el
-
+You can get it [https://web.archive.org/web/20150415003050/http://nbcs.rutgers.edu/~jszabo/wrap-mode.el here]
 === Comparison to autofill-mode ===
 
 Auto-fill-mode breaks the current line (calls indent-new-comment-line) at the appropriate place when you press return or the space-bar on a column past the fill-column.
@@ -20,4 +19,4 @@ Bugs:
 
 This apparently does the same thing as RefillMode, which is included in Emacs 21.2.
 ----
-CategoryModes
+CategoryModes CategoryFilling
