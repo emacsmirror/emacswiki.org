@@ -1,4 +1,4 @@
-Transient ([https://www.gnu.org/software/emacs/manual/html_mono/transient.html Emacs manual], [https://melpa.org/#/transient MELPA], [https://github.com/magit/transient GitHub]) is a package used to implement keyboard-driven “menus”.  Originally developed for [[Magit]], it has been built into Emacs since version 28.
+Transient ([https://www.gnu.org/software/emacs/manual/html_mono/transient.html Emacs manual], [https://elpa.gnu.org/packages/transient.html ELPA], [https://melpa.org/#/transient MELPA], [https://github.com/magit/transient GitHub]) is a package used to implement keyboard-driven “menus”.  Originally developed for [[Magit]], it has been built into Emacs since version 28.
 
 From the code comments: "When the user calls a transient prefix command, then a transient (temporary) keymap is activated, which binds the transient's infix and suffix commands, and functions that control the transient state
 are added to `pre-command-hook' and `post-command-hook'.  The available suffix and infix commands and their state are shown in the echo area until the transient is exited by invoking a suffix command."
