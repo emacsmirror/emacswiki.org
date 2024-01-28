@@ -102,7 +102,7 @@ Wanderlust doesn't automatically display your IMAP folders. You can do so by add
 @/
 
 # Show newsgroups available on your default NNTP server:
-~/
+-/
 }}}
 
 === Setting up with Gmail ===
