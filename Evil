@@ -443,4 +443,4 @@ Setting this to 0 causes issues with tmux keybindings beginning with alt.  This 
     set -s escape-time 5
 
 ----
-CategoryKeys CategoryEmulation
+CategoryKeys CategoryEmulation CategoryModalEditing
