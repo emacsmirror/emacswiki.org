@@ -1,6 +1,19 @@
-[https://github.com/joaotavora/eglot eglot], is a [LanguageServerProtocol] client for Emacs, described as "the Emacs LSP client that stays out of your way".
+[https://github.com/joaotavora/eglot Eglot] ("Emacs Polyglot"), is a [LanguageServerProtocol] client for Emacs, described as "the Emacs LSP client that stays out of your way".
 
 It has been part of Emacs itself since Emacs 29.
+
+==Features==
+Summarized from the EmacsManual information [https://www.gnu.org/software/emacs/manual/html_node/eglot/Eglot-Features.html here]:
+* At-point documentation, integrated with ElDoc.  If MarkdownMode is installed, the documentation formatting will be improved.
+* On-the-fly diagnostics and suggested fixes via [[FlyMake]]
+* Finding definitions and uses of symbols via InfoXref
+* In-buffer navigation via ImenuMode
+* Improved completion via `completion-at-point'
+* Automatic reformatting of code as you type
+* Enhanced third-party tools: Boost capabilities of packages like [[CompanyMode]] and [[Yasnippet]]
+
+==Configuring==
+The article [https://justinbarclay.ca/posts/from-zero-to-ide-with-emacs-and-lsp/ From Zero To IDE with Emacs and LSP] shows one way to configure Emacs for an IDE-like experience using Eglot and other built-in features.
 
 ----
 CategoryProgramming
