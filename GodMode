@@ -1,0 +1,11 @@
+God mode ([https://melpa.org/#/god-mode MELPA], [https://github.com/emacsorphanage/god-mode GitHub]) is "is a global minor mode for entering Emacs commands without modifier keys. It's similar to Vim's separation of command mode and insert mode.  All existing key bindings will work in God mode. It's only there to reduce your usage of modifier keys."
+
+External links
+* [https://www.youtube.com/watch?v=HI7xsU9XPZk 4-min YouTube review] on the Emacs Elements channel
+* [https://chrisdone.com/posts/god-mode/ review] by Chris Done, including comparison to Vim and evaluation after 30 days
+
+Related:
+* [https://melpa.org/#/evil-god-state evil-god-state], "an [[Evil|evil-mode]] state for using god-mode"
+
+----
+CategoryModes  CategoryModalEditing
