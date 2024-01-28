@@ -1,11 +1,15 @@
 This page describes support for modal editing in Emacs, 
 
-Modal editing is a style of text-editing with different modes of operation, each with a different set of commands that can be used. For example Vim has an "insert mode" for inserting text and a "normal mode" for navigation, searching, and other operations.
+Modal editing is a style of text-editing with different modes of operation, each with a different set of commands that can be used. For example Vim has an "insert mode" for inserting text, and a "normal mode" for navigation, searching, and other operations, among a [https://vimhelp.org/intro.txt.html#vim-modes documented] total of seven basic modes, and seven additional ones.
 
 Emacs in its default configuration is generally considered to be a modeless editor.
 
-
-Modes
+==Modes==
 * See ModalEditingModes
 
-Other packages
+==Related packages==
+
+
+==Research studies==
+* ,Poller, M. F., & Garter, S. K. (1984). The Effects of Modes on Text Editing by Experienced Editor Users. Human Factors, 26(4), 449-462. https://doi.org/10.1177/001872088402600408
+
