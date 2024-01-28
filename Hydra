@@ -18,7 +18,7 @@ Hydra allows you to create keymaps for related commands, with the ability to eas
 
 With this code, typing `<f2> g g g' would increase the text size by three steps.
 
-CategoryKeys
+CategoryKeys CategoryModalEditing
 
 == Hydra, the Nix-based continuous build system ==
 
