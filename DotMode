@@ -7,11 +7,7 @@ See also ViKeys.
 
 == Integration with god-mode ==
 
-`god-mode' is a global minor mode for entering Emacs commands without modifier keys.  It’s similar to Vim’s separation of command mode and insert mode.
-
-* https://github.com/emacsorphanage/god-mode
-
-You can emulate `vim' behavior by enabling `dot-mode' only when `god-mode' is disabled, and repeat things after:
+`dot-mode' can be integrated with GodMode, emulating `vim' behavior, by enabling `dot-mode' only when `god-mode' is disabled, and repeat things after:
 
 {{{
 (defun my-god-repeat ()
