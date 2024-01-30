@@ -1,7 +1,6 @@
-Viper-mode or just [::Viper] is an Emacs mode that emulates vi key bindings. Besides being the newest variety of vi emulation, it also provides users different levels of emulation to help vi addicts kick the habit.
+Viper is a built-in Emacs package that provides a full-featured vi emulator.
 
-* GIT:emulation/viper.el
-* See the section "Emulation" in the EmacsManual.
+* Viper is documented in its own manual, located online [https://www.gnu.org/software/emacs/manual/html_node/viper/index.html here] and available as VIPER in InfoMode
 * http://www.cs.sunysb.edu/~kifer/emacs.html
 
 If you want Vim features too, use [[Evil]] instead.
@@ -24,7 +23,7 @@ Here is how to colorize Viper's mode-line mode indicator to make it more promine
 
 === Using different color themes for Viper ===
 
-The above didn't work for me so well. Here is a method to use different color themes for Viper's different insertion modes (also supports Vimpulse's Visual mode):
+The above didn't work for me so well. Here is a method to use different color themes for Viper's different insertion modes (also supports [[Vimpulse]]'s Visual mode):
 
     (require 'color-theme)
     (when (not (commandp 'color-theme-snapshot))
