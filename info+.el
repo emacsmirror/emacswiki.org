@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 29 11:23:13 2023 (-0800)
+;; Last-Updated: Mon Jan 29 15:53:30 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 7540
+;;     Update #: 7542
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -641,6 +641,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/01/29 dadams
+;;     Info-homoglyph: Fixed typo.  Thx to Anonymous on Emacs Wiki.
 ;; 2023/11/29 dadams
 ;;     Info-read-node-name: redefinition isn't needed for Emacs 29+.
 ;; 2023/05/28 dadams
@@ -1516,7 +1518,7 @@ By default, face `info-fixed-pitch' is inherited by faces
 ;;;###autoload
 (defface info-homoglyph
   (if (facep 'homoglyph)                ; Emacs 24+
-      '((t :inherit homoglyp))
+      '((t :inherit homoglyph))
     '((((background dark)) :foreground "cyan")
       (((type pc)) :foreground "magenta")
       (t :foreground "brown")))
