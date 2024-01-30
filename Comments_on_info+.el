@@ -84,31 +84,6 @@ I have no suggestions for Spacemacs key bindings to Info+ commands.
 -- DrewAdams 2021-08-25 16:39 UTC
 
 
-----
-
-Hello Drew,
-Would you mind apply the following patch ?
-
---- info+.old   2024-01-29 20:42:48.519962616 +0100
-+++ info+.el    2024-01-29 20:10:10.782402397 +0100
-@@ -1,4 +1,4 @@
--;;; info+.old --- Extensions to `info.el'.     -*- coding:utf-8 -*-
-+;;; info+.el --- Extensions to `info.el'.     -*- coding:utf-8 -*-
- ;;
- ;; Filename: info+.el
- ;; Description: Extensions to `info.el'.
-@@ -1516,7 +1516,7 @@
- ;;;###autoload
- (defface info-homoglyph
-   (if (facep 'homoglyph)                ; Emacs 24+
--      '((t :inherit homoglyp))
-+      '((t :inherit homoglyph))
-     '((((background dark)) :foreground "cyan")
-       (((type pc)) :foreground "magenta")
-       (t :foreground "brown")))
-
--- Anonymous 2024-01-29 19:45 UTC
-
 
 ----
 
@@ -136,4 +111,9 @@ Would you mind apply the following patch ?
 </pre>
 
 -- Anonymous 2024-01-29 19:47 UTC
+
+----
+
+Thanks for catching that. Done.
+
 
