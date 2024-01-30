@@ -111,15 +111,6 @@ When using CuaMode, the delete and backspace keys normally deletes the region if
 
 I hope this will be fixed in the CVS soon. The fix there will be different, however (the above is not entirely correct, but maybe a good workaround).
 
-=== Using Viper with Icicles ===
-
-[[Icicles]] redefines some functions when you are in ''Icicle'' mode (it restores them when you leave ''Icicle'' mode). It generally does not use `defadvice' to alter the functions; it redefines them instead. Because of this, there can be incompatibilities with other libraries that also change the same functions (using `defadvice' or otherwise). An example is Viper mode.
-
-If you load Viper before Icicles, then you will run into problems with function `read-file-name' because it is tweaked by both Viper and Icicles. If you load Icicles before Viper, you should not encounter this problem. But you might encounter other problems -- both Icicles and Viper try to control the minibuffer. If you do, please report them using ##M-x icicle-send-bug-report##. -- DrewAdams
-
-[new:DrewAdams:2008-05-02 15:04 UTC]
-I have changed Icicles so that it now uses `read-file-name-function'. This means that it should no longer matter which library you load or use first, Icicles or Viper. -- DrewAdams
-
 === vi keys in dired-mode ===
 
 From a [http://www.reddit.com/r/programming/comments/8lfx7/what_emacs_commands_do_you_use_most_and_find_most/c09o2qe Reddit discussion]:
