@@ -15,60 +15,37 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = polymode =
 
-* See Polymode
+See Polymode
 
 = mmm-mode.el =
 
-* See MmmMode
+See MmmMode
 
 = multi-web-mode.el =
 
-Auto select major mode for HTML files when point is moving around. Check updates at [https://github.com/fgallina/multi-web-mode github]. Written by FabianGallina. (Yes, it is actively maintained)
+Multi Web Mode ([https://melpa.org/#/multi-web-mode MELPA], [https://github.com/fgallina/multi-web-mode GitHub]) auto-selects major modes for HTML files as the point is moved around. It is written by FabianGallina
 
 = mumamo.el =
 
-MuMaMo (short for multiple major modes) needs Emacs 22 or later. It is distributed as part of [NxhtmlMode nXhtml] and can mix HTML+CSS+JavaScript, Java+HTML (JSP), PHP. It can also support NxmlMode (however this works best with Emacs 23).
-
-You can [[http://www.emacswiki.org/emacs/Icicles_-_Search_Commands%2c_Overview#SearchMumamoModes|search mumamo regions by major mode]] using '''[[Icicles]]'''.
-
+See MuMaMo 
 = multi-mode.el =
 
-Multi Mode is an implementation of the approach referred to in Emacs' TODO.
-It probably only works in Emacs 21 /and later/.
-
-- I have been using it with Emacs 23 with no issue. It also has 2009 in its copyright notice, so it seems like it is still being updated. 
+Multi Mode ([https://elpa.gnu.org/packages/multi-mode.html ELPA]) is mentioned in the Emacs TODO as a reference approach for supporting different major modes in one buffer.
 
 * http://www.loveshack.ukfsn.org/emacs/multi-mode.el
 
 See also its uses in noweb.el and haskell-latex.el in the same directory.
 
-Multi-mode is used by [http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el], which is a mode for editing ASPX files in emacs.  aspx-mode handles HTML, browser Javascript blocks, CSS blocks, and C#, with proper highlighting and indenting, all in one buffer.
-
 = two-mode-mode.el =
 
 Two Mode Mode by DavidWelton.
 This one is used for one of the solutions on the PhpMode page.
-It seems to be very easy to use.
-Just specify the start and end regular expressions for the second mode.
+It seems to be very easy to use -- just specify the start and end regular expressions for the second mode.
 
 * http://www.dedasys.com/freesoftware/files/two-mode-mode.el
 
 See EmacsLispAndLaTeX for an example.
 
-[new]
-Does two-mode-mode run on Emacs 23? I have tested it and it doesn't change between modes.
-
-
-I got it to work by changing the following:
-
-    - (if (string= to-mode mode-name)
-    + (if (string= to-mode major-mode)
-
-
-Seems to need the following in emacs 24 since make-local hook has been removed:
-
-    - (make-local-hook 'post-command-hook)
- 
 = Indirect buffers =
 
 This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See also IndirectBuffers.
