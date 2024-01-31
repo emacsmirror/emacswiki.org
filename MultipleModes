@@ -2,12 +2,12 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = Comparison =
 
-|| library        || elisp files || size  || last update || url                                                 ||
-|| polymode       ||          19 || 260 kb || 2019-01-03 || https://polymode.github.io/ ||
-|| mmm-mode       ||          17 || 185 kb ||  2018-06-21 || https://github.com/purcell/mmm-mode                 ||
-|| multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
-|| mumamo          ||         115 || 3090 kb ||  2010-04-25 || http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html ||
-|| multi-mode     ||           1 || 23 kb  ||        2009 || http://www.loveshack.ukfsn.org/emacs/multi-mode.el  ||
+|| library        || elisp files ||    size || last update || url                                                 ||
+|| polymode       ||          19 ||  260 kb ||  2019-01-03 || https://polymode.github.io/                         ||
+|| mmm-mode       ||          17 ||  185 kb ||  2018-06-21 || https://github.com/purcell/mmm-mode                 ||
+|| multi-web-mode ||           1 ||   16 kb ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
+|| mumamo         ||         115 || 3090 kb ||  2010-04-25 || http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html ||
+|| multi-mode     ||           1 ||   23 kb ||        2009 || http://www.loveshack.ukfsn.org/emacs/multi-mode.el  ||
 
 
 -----------
@@ -15,12 +15,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = polymode =
 
-Polymode is a framework for multiple major modes (MMM) inside a single Emacs buffer. It is fast and has a simple but flexible object oriented design. Creating new polymodes normally takes a few lines of code.
-
-Polymode also provides configurable facilities for literate programming - exporters, weavers and tanglers.
-
-* https://polymode.github.io/
-
+* See Polymode
 
 = mmm-mode.el =
 
@@ -74,20 +69,11 @@ Seems to need the following in emacs 24 since make-local hook has been removed:
 
     - (make-local-hook 'post-command-hook)
  
-
 = Indirect buffers =
 
 This is a built-in feature in Emacs. Indirect buffers feature does not exactly give multiple major modes in the same logical buffer but it gives user two (or more) different buffers which have their textual content linked together. To clone a buffer use `C-x 4 c' and then use different major modes in the clones. See the Emacs reference manual for more information about indirect buffers.  See also IndirectBuffers.
 
 Library <tt>[[narrow-indirect.el]]</tt> facilitates creating indirect buffers cloned and narrowed from other buffers.  And yes, you can use different [[major mode]]s in them, even fontifying them differently etc.  See NarrowIndirect.
-
-
----------------
-
-= Comments =
-
-[new] What a shame that there are multiple multiple mode modes. As soon as you need mode X that requires multiple mode M1, while already using another mode which uses multiple mode M2, you're loading far more than you need to. Just because TIMTOWTDI (sorry for the perl-ism) doesn't mean you must do it more than one way.
-
 
 ----
 CategoryModes
