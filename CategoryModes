@@ -13,6 +13,7 @@ Subpages:
 * DataModes -- other data formats
 * FrameModes -- Frame configurations, functions, commands; see also CategoryFrames
 * ModalEditingModes -- support for [[CategoryModalEditing|modal editing]]
+* MultipleModes -- support for multiple [[MajorMode|MajorModes]] in a buffer
 
 See also CategoryCode if you want to write a new major mode, or if
 you are looking for Emacs features that augment the the basic modes
