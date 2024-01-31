@@ -1,12 +1,9 @@
 == How to get MuMaMo ==
 To get %%MuMaMo%% you have to get [NxhtmlMode nXhtml].
 
-mumamo requires Emacs 22 or later.
+Mumamo requires Emacs 22 or later. Mumamo is no longer actively maintained.  See MultipleModes for other multiple-major-mode libraries.
 
-
-*Warning*: Mumamo is not actively maintained.  See MultipleModes for alternatives.
-
-Note: The recommended and supported way to use mumamo is by loading nXhtml.
+Note: The recommended and supported way to use Mumamo is by loading nXhtml.
 
 ----
 = Overview =
@@ -40,6 +37,9 @@ In the out of the box cases above (with main major mode nxhtml-mode) you just lo
 
 nxtml-mumamo-turn on is one of those "multi major modes" I mentioned above.
 (You can of course also add nxhtml-mumamo to auto-mode-alist and in fact it is already added to this in nXhtml.)
+
+
+You can [[http://www.emacswiki.org/emacs/Icicles_-_Search_Commands%2c_Overview#SearchMumamoModes|search mumamo regions by major mode]] using '''[[Icicles]]'''.
 
 ----
 == Comments and Questions ==
