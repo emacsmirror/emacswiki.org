@@ -1,0 +1,10 @@
+Polymode is a framework for multiple major modes (MMM) inside a single Emacs buffer. It is fast and has a simple but flexible object oriented design. Creating new polymodes normally takes a few lines of code.
+
+Polymode also provides configurable facilities for literate programming - exporters, weavers and tanglers.
+
+* https://polymode.github.io/
+
+Commentary:
+* [https://www.skybluetrades.net/blog/2021/06/2021-06-05-effortless-emacs-mmm-with-polymode/ Effortless Emacs Multiple Major Modes with Polymode
+], from 2021
+* [https://www.masteringemacs.org/article/polymode-multiple-major-modes-how-to-use-sql-python-in-one-buffer Polymode: Multiple Major Modes and How to Use SQL and Python in one Buffer], from 2019
