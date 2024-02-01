@@ -217,10 +217,10 @@ You don't have to define a two-valued predicate from scratch, if
 you already have a three-valued one that will do the job.  You can just convert it to a function that returns the determined truth value
 or a fallback truth value if indeterminate.
 
-The following function, for example, does that for a component predicate `PRED' that compares bookmarks.
+The following macro, for example, does that for a component predicate `PRED' that compares bookmarks.
 
 <pre>
-  (defun bmkp-make-plain-predicate (pred &optional final-pred)
+  (defmacro bmkp-make-plain-predicate (pred &optional final-pred)
     "Return a plain predicate that corresponds to component-predicate PRED.
 PRED and FINAL-PRED correspond to their namesakes in
 `bmkp-sort-comparer' (which see).
@@ -316,12 +316,12 @@ Using a single predicate or FINAL-PRED makes it easy to reuse an
 existing predicate that returns nil or non-nil.
 
 You can also convert a PRED-type predicate (which returns (t), (nil),
-or nil) into an ordinary predicate, by using function
+or nil) into an ordinary predicate, by using macro
 `bmkp-make-plain-predicate'.  That lets you reuse elsewhere, as
 ordinary predicates, any PRED-type predicates you define.
 
 For example, this defines a plain predicate to compare by URL:
- (defalias 'bmkp-url-p (bmkp-make-plain-predicate 'bmkp-url-cp))
+ (defalias 'bmkp-url-p (bmkp-make-plain-predicate bmkp-url-cp))
 
 Note: As a convention, predefined Bookmark+ PRED-type predicate names
 have the suffix `-cp' (for "component predicate") instead of `-p'.
