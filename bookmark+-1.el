@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Oct 24 15:32:50 2023 (-0700)
+;; Last-Updated: Thu Feb  1 13:48:02 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 9670
+;;     Update #: 9674
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -609,7 +609,7 @@
 ;;    `bmkp-make-gnus-record', `bmkp-make-icicle-search-hits-record',
 ;;    `bmkp-make-kmacro-list-record' (Emacs 22+),
 ;;    `bmkp-make-man-record', `bmkp-make-obsolete',
-;;    `bmkp-make-obsolete-variable', `bmkp-make-plain-predicate',
+;;    `bmkp-make-obsolete-variable',
 ;;    `bmkp-make-record-for-target-file', `bmkp-make-sequence-record',
 ;;    `bmkp-make-url-browse-record', `bmkp-make-variable-list-record',
 ;;    `bmkp-make-w3m-record', `bmkp-make-woman-record' (Emacs 21+),
@@ -1554,12 +1554,12 @@ Using a single predicate or FINAL-PRED makes it easy to reuse an
 existing predicate that returns nil or non-nil.
 
 You can also convert a PRED-type predicate (which returns (t), (nil),
-or nil) into an ordinary predicate, by using function
+or nil) into an ordinary predicate, by using macro
 `bmkp-make-plain-predicate'.  That lets you reuse elsewhere, as
 ordinary predicates, any PRED-type predicates you define.
 
 For example, this defines a plain predicate to compare by URL:
- (defalias 'bmkp-url-p (bmkp-make-plain-predicate 'bmkp-url-cp))
+ (defalias 'bmkp-url-p (bmkp-make-plain-predicate bmkp-url-cp))
 
 Note: As a convention, predefined Bookmark+ PRED-type predicate names
 have the suffix `-cp' (for \"component predicate\") instead of `-p'.
@@ -7506,20 +7506,6 @@ open a remote connection."
   (when case-fold-search (setq s1  (bmkp-upcase s1)
                                s2  (bmkp-upcase s2)))
   (string-lessp s1 s2))
-
-(defun bmkp-make-plain-predicate (pred &optional final-pred)
-  "Return a plain predicate that corresponds to component-predicate PRED.
-PRED and FINAL-PRED correspond to their namesakes in
-`bmkp-sort-comparer' (which see).
-
-PRED should return `(t)', `(nil)', or nil.
-
-Optional arg FINAL-PRED is the final predicate to use if PRED cannot
-decide (returns nil).  If FINAL-PRED is nil, then `bmkp-alpha-p', the
-plain-predicate equivalent of `bmkp-alpha-cp' is used as the final
-predicate."
-  `(lambda (b1 b2) (let ((res  (funcall ',pred b1 b2)))
-                     (if res (car res) (funcall ',(or final-pred  'bmkp-alpha-p) b1 b2)))))
 
 (defun bmkp-repeat-command (command)
   "Repeat COMMAND."
