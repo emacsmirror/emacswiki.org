@@ -1,3 +1,3 @@
-Adaptive Wrap Mode is the (soft wrap) analog on the *left* side to VisualFillColumn on the *right* side, or to [[Manual:Adaptive Fill Mode]]
+Adaptive Wrap Mode is the (soft wrap) analog on the *left* side to VisualFillColumn on the *right* side, or to [[Manual:Adaptive Fill Mode]]; a lightly edited version will be distributed with Emacs 30, under the name `visual-wrap-prefix-mode'.
 
 2020-08-27 - As of the date I created this article (today) it appears to only be available on GNU Elpa: https://elpa.gnu.org/packages/adaptive-wrap.html (and thus by extension, package.el).
