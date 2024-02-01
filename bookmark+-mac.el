@@ -4,11 +4,11 @@
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Mon Oct 23 09:03:10 2023 (-0700)
+;; Last-Updated: Thu Feb  1 13:58:48 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 236
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -102,8 +102,9 @@
 ;;    `bmkp-define-next+prev-cycle-commands',
 ;;    `bmkp-define-show-only-command', `bmkp-define-sort-command',
 ;;    `bmkp-define-file-sort-predicate', `bmkp-lexlet',
-;;    `bmkp-lexlet*', `bmkp-menu-bar-make-toggle',
-;;    `bmkp-with-bookmark-dir', `bmkp-with-help-window',
+;;    `bmkp-lexlet*', `bmkp-make-plain-predicate',
+;;    `bmkp-menu-bar-make-toggle', `bmkp-with-bookmark-dir',
+;;    `bmkp-with-help-window',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -206,6 +207,21 @@
 
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
+
+;;;###autoload (autoload 'bmkp-make-plain-predicate "bookmark+")
+(defmacro bmkp-make-plain-predicate (pred &optional final-pred)
+  "Return a plain predicate that corresponds to component-predicate PRED.
+PRED and FINAL-PRED correspond to their namesakes in
+`bmkp-sort-comparer' (which see).
+
+PRED should return `(t)', `(nil)', or nil.
+
+Optional arg FINAL-PRED is the final predicate to use if PRED cannot
+decide (returns nil).  If FINAL-PRED is nil, then `bmkp-alpha-p', the
+plain-predicate equivalent of `bmkp-alpha-cp' is used as the final
+predicate."
+  `(lambda (b1 b2) (let ((res  (funcall ',pred b1 b2)))
+                     (if res (car res) (funcall ',(or final-pred  'bmkp-alpha-p) b1 b2)))))
 
 ;;;###autoload (autoload 'bmkp-define-cycle-command "bookmark+")
 (defmacro bmkp-define-cycle-command (type &optional otherp)
