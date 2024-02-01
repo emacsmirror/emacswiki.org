@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Oct 26 15:10:31 2023 (-0700)
+;; Last-Updated: Thu Feb  1 13:51:21 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 17018
+;;     Update #: 17020
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2024/02/01 dadams
+;;     Move bmkp-make-plain-predicate to bookmark+-mac.el, changing it to a macro.
 ;; 2023/10/24 dadams
 ;;     bookmark-location: Respect new option, bmkp-bmenu-show-file-not-buffer-flag.
 ;; 2023/10/23 dadams
@@ -2659,6 +2661,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2024/02/01 dadams
+;;     Move bmkp-make-plain-predicate here from bookmark+-1.el, changing it to a macro.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
 ;;     Added: bmkp-lexlet, bmkp-lexlet*.
