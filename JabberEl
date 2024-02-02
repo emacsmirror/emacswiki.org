@@ -114,7 +114,7 @@ Control message history (which stored in <code>~/.emacs-jabber</code> dir):
 </pre>
 
 [new]
-Don't disturb me if someone chage presence status (usually remote clients make this automatically):
+Don't disturb me if someone changes presence status (usually remote clients make this automatically):
 <pre>
 (setq jabber-alert-presence-message-function (lambda (who oldstatus newstatus statustext) nil))
 </pre>
