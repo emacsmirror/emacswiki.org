@@ -1,3 +1,5 @@
+*Warning*: Plt Completions has not been updated since at least 2008.
+
 =PLT Completions=
 
 Plt Completions is an emacs mode that at the moment essentially duplicates the functionality of the excellent plt scheme help-desk, and in the future hopefully will do more. It helps with coding by displaying possible completions for the symbol currently being typed, in a new buffer. If you go to the completions buffer and hit Control-return it will take you to the documentation for that symbol, if you hit return, it inserts the symbol at point, and returns point to the buffer that you were editing in.
