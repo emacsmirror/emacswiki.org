@@ -1,0 +1,17 @@
+Racket, per [https://en.wikipedia.org/wiki/Racket_(programming_language)  Wikipedia:Racket_(programming_language)] is:
+* "a general-purpose, multi-paradigm programming language and a multi-platform distribution that includes the Racket language, compiler, large standard library, IDE, development tools, and a set of additional languages ..."
+* "a modern dialect of Lisp and a descendant of Scheme." Racket was known as PLT Scheme until 2010.
+* "designed as a platform for programming language design and implementation."
+
+Its main website is https://racket-lang.org/
+
+==Racket Programming in Emacs==
+https://docs.racket-lang.org/guide/Emacs.html provides extensive notes on programming Racket with Emacs.
+* The built-in SchemeMode can be used with Racket for basic support
+* Racket mode ([https://www.racket-mode.com/ website], [https://github.com/greghendershott/racket-mode GitHub], [https://melpa.org/#/racket-mode MELPA]) provides improved support via a variety of Emacs major and minor modes, including ##racket-mode## itself and modes to support other languages, code exploration, linting, REPL support, profiling, debugging, and logging support.
+* ##racket-langserver## ([https://github.com/jeapostrophe/racket-langserver GitHub], [https://pkgs.racket-lang.org/package/racket-langserver racket-lang.org]) is "a [[LanguageServerProtocol|Language Server Protocol]] implementation for Racket ... that mimics !DrRacket's code tools as closely as possible." After installation as a Racket package it should work with both [[Eglot]] and LspMode.  Note that:
+** Although ##racket-mode## also provides LSP-like support, using an LSP server may be preferred if you use LSP for other languages.
+** A warning: the similarly-named [https://github.com/theia-ide/racket-language-server racket-language-server] has been inactive since 2020 and has been archived.
+
+----
+CategoryProgramming
