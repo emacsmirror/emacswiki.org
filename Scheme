@@ -23,7 +23,6 @@ By default, ##run-scheme## looks for a program named `scheme'. You may change `s
 * RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
 * [http://www.nongnu.org/geiser/ Geiser] -- An advanced REPL that supports Guile and Racket.
 * QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
-* PltCompletions -- Completion mode for [[Racket]] (formerly PLT Scheme) that does what !DrRacket's [https://docs.racket-lang.org/tools/drracket_help-desk.html help-desk] does.
 * InfoLook -- Generic help look-up that supports Scheme Mode.
 * SchemeLookup -- Lookup R5RS symbol at point.
 * SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
