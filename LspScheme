@@ -1,0 +1,4 @@
+The ##lsp-scheme## package ([https://melpa.org/#/lsp-scheme MELPA], [https://codeberg.org/rgherdt/emacs-lsp-scheme Codeberg]) provides LanguageServerProtocol support for Scheme. 
+
+It builds on LspMode for client support and uses [https://codeberg.org/rgherdt/scheme-lsp-server scheme-lsp-server] for server support.  It supports the same implementations of [[Scheme]] as scheme-lsp-server, i.e. Gambit, Guile and CHICKEN.
+
