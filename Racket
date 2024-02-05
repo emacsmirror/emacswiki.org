@@ -6,8 +6,7 @@ Racket, per [https://en.wikipedia.org/wiki/Racket_(programming_language)  Wikipe
 Its main website is https://racket-lang.org/
 
 ==Racket Programming in Emacs==
-https://docs.racket-lang.org/guide/Emacs.html provides extensive notes on programming Racket with Emacs.
-* The built-in SchemeMode can be used with Racket for basic support
+https://docs.racket-lang.org/guide/Emacs.html provides extensive notes on programming Racket with Emacs.  While  the built-in SchemeMode provides basic support, ##racket-mode##, optionally with ##racket-langserver##, seems to provide the best available support for Racket.
 * Racket mode ([https://www.racket-mode.com/ website], [https://github.com/greghendershott/racket-mode GitHub], [https://melpa.org/#/racket-mode MELPA]) provides improved support via a variety of Emacs major and minor modes, including ##racket-mode## itself and modes to support other languages, code exploration, linting, REPL support, profiling, debugging, and logging support.
 * ##racket-langserver## ([https://github.com/jeapostrophe/racket-langserver GitHub], [https://pkgs.racket-lang.org/package/racket-langserver racket-lang.org]) is "a [[LanguageServerProtocol|Language Server Protocol]] implementation for Racket ... that mimics !DrRacket's code tools as closely as possible." After installation as a Racket package it should work with both [[Eglot]] and LspMode.  Note that:
 ** Although ##racket-mode## also provides LSP-like support, using an LSP server may be preferred if you use LSP for other languages.
