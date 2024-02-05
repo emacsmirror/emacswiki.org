@@ -4,52 +4,49 @@ It is widely used for teaching and research of *programming language semantics*,
 
 == Implementations ==
 
-There are several implementations of the language.
-
-* [[Guile]] -- Guile Scheme is GNU's official extension language.
-* [MitSlashGnuScheme MIT/GNU Scheme] -- A Scheme that comes with an Emacs-like editor
+There are many implementations of Scheme including those below. See https://www.scheme.org/ for a longer list.
 * Chez Scheme -- A Scheme currently maintained by Cisco Systems
-* Gauche -- An R7RS Scheme intended to be a script interpreter.
-* Chicken -- A compiler for R5RS and (soon) R7RS Scheme.
 * Chibi -- Intended to be a small Scheme made to be a C extension language.
+* Chicken -- A compiler for R5RS and (soon) R7RS Scheme.
+* Gauche -- An R7RS Scheme intended to be a script interpreter.
+* [[Guile]] -- Guile Scheme is GNU's official extension language.
 * [https://conservatory.scheme.org/ikarus/ Ikarus] -- R6RS compiler.
+* [MitSlashGnuScheme MIT/GNU Scheme] -- A Scheme that comes with an Emacs-like editor
+* [[Racket]]
 
-[[Racket]] is a closely-related descendant of Scheme. 
-== Writing Scheme in Emacs ==
+==Built-in packages==
+* SchemeMode -- major mode for editing Scheme
+* CmuScheme -- supports interacting with inferior Scheme processes
+* ExScheme -- supports interacting with inferior MitSlashGnuScheme processes
+* InfoLook -- Generic help look-up that supports Scheme Mode.
 
-`M-x run-scheme' will run a Scheme REPL inside Emacs. It is provided by CmuScheme.
+By default `M-x run-scheme' runs a command from CmuScheme (ExScheme also defines `run-scheme') which runs a Scheme REPL inside Emacs. This looks for a program name taken from `scheme-program-name', ##scheme## by default;you may change this to something like ##guile##.
 
-By default, ##run-scheme## looks for a program named `scheme'. You may change `scheme-program-name' to something like ##guile##.
-
-* SchemeMode -- built-in major mode for editing Scheme
-
+==Other packages==
 * GaucheScheme
 * [http://www.nongnu.org/geiser/ Geiser] -- An advanced REPL that supports Guile and Racket.
 * [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el] -- Jump to source locations displayed in Ikarus error messages
-* InfoLook -- Generic help look-up that supports Scheme Mode.
 * LspScheme - LanguageServerProtocol support for Scheme
 * QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
 * RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
 * [[Scheme48Mode]]
 * SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
 * SchemeLookup -- Lookup R5RS symbol at point.
+* SlimeMode -- A Common Lisp REPL that handles rudimentary Scheme code.
 
 == See Also ==
 
 * [[Lisp]] -- The language of which Scheme is a dialect.
-* CommonLisp -- Another dialect of Lisp
 * GeraldSussman -- Co-creator of Scheme
 * GuySteele -- Co-creator of Scheme
-* SlimeMode -- A Common Lisp REPL that handles rudimentary Scheme code.
 * EdWin -- An [[Emacsen]] written in Scheme, included in [MitSlashGnuScheme MIT Scheme]
 * [StructureAndInterpretationOfComputerPrograms SICP] -- An infamous book on computer programming.
 
 == External Links ==
 
 * [http://www.scheme.org/ Official Website]
-* KentPitman's critique of the R5RS: [http://groups.google.com/groups?selm=sfwk87xe5rv.fsf@world.std.com][http://groups.google.com/groups?selm=sfwwvh5hxxh.fsf@world.std.com][http://groups.google.com/groups?selm=sfwvgf5d6f0.fsf@shell01.TheWorld.com]
 * [[http://www.splode.com/~friedman/software/emacs-lisp/src/czscm.el czscm]] -- Scheme interpreter in ELisp by NoahFriedman.
-* [[http://stekt.oulu.fi/~tosi/emacs/emacs Simpler Interpreter]] written by KalleOlaviNiemitalo 
+* Lisp:sie.el -- Scheme In Emacs, a Scheme-like interpreter implemented in ELisp, written by KalleOlaviNiemitalo, which see. 
 
 ----
 CategoryProgramming
