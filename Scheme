@@ -30,7 +30,7 @@ By default, ##run-scheme## looks for a program named `scheme'. You may change `s
 * LspScheme - LanguageServerProtocol support for Scheme
 * QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
 * RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
-* Scheme48Mode
+* [[Scheme48Mode]]
 * SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
 * SchemeLookup -- Lookup R5RS symbol at point.
 
