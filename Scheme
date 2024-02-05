@@ -21,6 +21,7 @@ There are several implementations of the language.
 
 By default, ##run-scheme## looks for a program named `scheme'. You may change `scheme-program-name' to something like ##guile##.
 
+* SchemeMode -- built-in major mode for editing Scheme
 * RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
 * [http://www.nongnu.org/geiser/ Geiser] -- An advanced REPL that supports Guile and Racket.
 * QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
