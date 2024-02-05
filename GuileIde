@@ -20,7 +20,6 @@ Options for editing [[Guile]] code and interacting with an inferior [[Guile]] pr
 
 ----
 
-<I>Of course</I> none of these provide the [[Guile]] programmer with tools that work as well as those available to the EmacsLisp programmer, such as EdebugMode and LispInteractionMode, but that's because [[Guile]] runs as an inferior process.  If you would prefer to use EmacsLisp and supporting tools, you know where to find them (I hear tell there's even an editor built around them, called Emacs or something). (Note that replacing EmacsLisp with [[Guile]], or GuileEmacs, is a somewhat different thing, since it concerns the [[Guile]] interpreter that is running Emacs and not inferior [[Guile]] processes.)
 
 Please add your approach suggestions and wishlist items for an Emacs-based 
 [[Guile]] "interactive development environment" (IDE) to this page.
