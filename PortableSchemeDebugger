@@ -1,9 +1,8 @@
 [[Scheme]] debugger based on source instrumentation that works with Emacs.
 
-http://www.cs.tut.fi/staff/pk/scheme/psd/article/article.html 
+https://github.com/perttikellomaki/psd
 
 (Has anyone here used this?  Please add comments to this page.)
 
-See GuileIde for tools information specific to [[Guile]].
-
+Note that this is from 1993
 
