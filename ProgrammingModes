@@ -98,9 +98,10 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * ProgMode -- Base mode for other programming modes, provided by Emacs
 * PrologMode
 * ProcommMode -- mode for editing Procomm ASPECT scripts
-* PythonProgrammingInEmacs -- python modes (Note: PythonMode redirects there)
+* PythonProgrammingInEmacs -- Python modes (Note: PythonMode redirects there)
 * PureMode -- mode for editing and running Pure scripts
-* QuackMode -- alternative for PLT Scheme's <nowiki>DrScheme</nowiki>
+* RacketMode
+* QuackMode -- alternative for [[Racket]] and [[Scheme]]
 * R-Mode -- mode for R language, a part of EssMode
 * RakuMode -- mode for editing Raku code.
 * RubyMode -- see also EnhancedRubyMode
