@@ -12,7 +12,7 @@ Options for editing [[Guile]] code and interacting with an inferior [[Guile]] pr
 
 * PortableSchemeDebugger (PSD) -- Since [[Guile]]'s current debugger is limited (you can't, for instance, continue when an error occurs), it is hard to support such functionality from within Emacs.  However, PSD can be used to instrument [[Scheme]] code such that interactive debugging becomes possible.  It comes with an Emacs interface.  It needs to be tweaked a little if you use [[Guile]]-specific special forms like define-public in your code.
 
-* QuackPackage (Quack) -- NeilVanDyke's new ILispMode alternative for [[Scheme]], which obsoletes giguile.el.  http://www.neilvandyke.org/quack/
+* QuackMode (Quack) -- NeilVanDyke's new ILispMode alternative for [[Scheme]], which obsoletes giguile.el.  http://www.neilvandyke.org/quack/
 
 * ttn-pers-elisp/run-guile.el -- ThienThiNguyen's [[Guile]] wrapper for CmuScheme. http://www.gnuvola.org/software/ttn-pers-elisp/dist/lisp/low-stress/run-guile.el
 
