@@ -22,13 +22,17 @@ There are several implementations of the language.
 By default, ##run-scheme## looks for a program named `scheme'. You may change `scheme-program-name' to something like ##guile##.
 
 * SchemeMode -- built-in major mode for editing Scheme
-* RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
+
+* GaucheScheme
 * [http://www.nongnu.org/geiser/ Geiser] -- An advanced REPL that supports Guile and Racket.
-* QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
-* InfoLook -- Generic help look-up that supports Scheme Mode.
-* SchemeLookup -- Lookup R5RS symbol at point.
-* SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
 * [http://github.com/rotty/dotfiles/tree/master/.emacs.d/lisp/ikarus-script.el|ikarus-script.el] -- Jump to source locations displayed in Ikarus error messages
+* InfoLook -- Generic help look-up that supports Scheme Mode.
+* LspScheme - LanguageServerProtocol support for Scheme
+* QuackMode -- A [[Racket]]-focused extension that also supports other Schemes.
+* RunSchemeHere allows you to easily run multiple inferior ##run-scheme## processes. 
+* Scheme48Mode
+* SchemeComplete -- Provides R5RS and some SRFI symbol completion, and ElDoc support.
+* SchemeLookup -- Lookup R5RS symbol at point.
 
 == See Also ==
 
