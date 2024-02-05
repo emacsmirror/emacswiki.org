@@ -16,7 +16,7 @@ Options for editing [[Guile]] code and interacting with an inferior [[Guile]] pr
 
 * ttn-pers-elisp/run-guile.el -- ThienThiNguyen's [[Guile]] wrapper for CmuScheme. http://www.gnuvola.org/software/ttn-pers-elisp/dist/lisp/low-stress/run-guile.el
 
-* giguile.el -- NeilVanDyke's old [[Guile]] wrapper for SchemeMode and CmuScheme, obsoleted by QuackPackage. http://www.neilvandyke.org/giguile/
+* giguile.el -- NeilVanDyke's old [[Guile]] wrapper for SchemeMode and CmuScheme, obsoleted by QuackMode. http://www.neilvandyke.org/giguile/
 
 ----
 
