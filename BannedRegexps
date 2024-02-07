@@ -16,14 +16,5 @@
 # pages this will affect, take a look at this link (it's very slow):
 # https://www.emacswiki.org/emacs/?action=list-banned-content
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
-# (?<!20)([1I]([- ]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
+href=http # 2024-02-07 direct malformed HTML links mean spam
 (((customer(\scare)?|printer|tech(nical)?)\s(service|support)|toll\sfree|antivirus)(\sphone)?\s(number|n\.u\.m\.b\.e\.r)) # 2016-07-04 phone numbers usually means spam
-# ([1I]([-. ]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
-# ([1I]([, ]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
-# ([1I]([_ ]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
-# ([1I]([ ()]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
-# All the spammer phone numbers seem to start with 1 8xx
-# ([1I][-. ]*8([-. ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-# ([1I][, ]*8([, ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-# ([1I][_ ]*8([_ ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-# ([1I][ ()]*8([ ()]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
