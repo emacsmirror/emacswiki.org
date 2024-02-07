@@ -17,4 +17,5 @@
 # https://www.emacswiki.org/emacs/?action=list-banned-content
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
 href=http # 2024-02-07 direct malformed HTML links mean spam
+URL=http # 2024-02-07 borked bbCode links mean spam
 (((customer(\scare)?|printer|tech(nical)?)\s(service|support)|toll\sfree|antivirus)(\sphone)?\s(number|n\.u\.m\.b\.e\.r)) # 2016-07-04 phone numbers usually means spam
