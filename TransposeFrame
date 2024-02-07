@@ -6,6 +6,8 @@ This program is tested on GNU Emacs 22, 23, 27.1.
 
     list: Symbol’s function definition is void: window-redisplay-end-trigger
 
+(works for me on 29.2)
+
 == Downloading ==
 
 : Lisp:transpose-frame.el
