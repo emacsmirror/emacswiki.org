@@ -1,8 +1,8 @@
 Lots of spam-fighting today. Here's what the wiki has to offer, if you're an administrator:
 
-- ban URL's containing regular expressions via [[BannedContent]] (weird page name, I know)
-- ban page content containing regular expressions via [[BannedRegexps]] (this is much more sweeping and I don't like to use it)
-- ban IP numbers using regular expressions via [[BannedHosts]] (regular expressions is a stupid idea but I never got around to CIDR matching)
+* ban URL's containing regular expressions via [[BannedContent]] (weird page name, I know)
+* ban page content containing regular expressions via [[BannedRegexps]] (this is much more sweeping and I don't like to use it)
+* ban IP numbers using regular expressions via [[BannedHosts]] (regular expressions is a stupid idea but I never got around to CIDR matching)
 
 Also, there's a little helper that lists all the IP numbers and the usernames they used and whether they are already banned, e.g. [Self:action=ban;id=Comments_on_SiteMap ban contributors to Comments on SiteMap].
 
