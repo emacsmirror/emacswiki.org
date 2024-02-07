@@ -2,6 +2,10 @@ transpose-frame.el provides some interactive functions which allows users to tra
 
 This program is tested on GNU Emacs 22, 23, 27.1.
 
+⚠ However, GNU Emacs 29.1 fails to `rotate-frame-clockwise', for example:
+
+    list: Symbol’s function definition is void: window-redisplay-end-trigger
+
 == Downloading ==
 
 : Lisp:transpose-frame.el
