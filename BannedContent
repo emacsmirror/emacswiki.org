@@ -20,3 +20,4 @@ xrumer # 2023-08-24 Comments on SiteMap
 \b(amoxil|avanafil|cialis|cipralex|cipro|diclofenac|hydroxychloroquine|kamagra|prednisone|tadalafil|tadapox|topamax|tratatur|viagra|zyloric)\b # 2024-02-07 drugs
 \b(price|loan)\b # 2024-02-07 financial services
 linkclick # 2024-02-07 link tracker abused by spammer
+\.ru/ # 2024-02-08 Comments on SiteMap
