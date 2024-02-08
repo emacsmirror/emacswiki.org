@@ -58,3 +58,6 @@ I'm confused.  I looked at the dcl-mode in CVS Emacs and the example dcl code do
     hk
     fo:lnum$ fo:spaces$ fo:save$
 </pre>
+
+[new]
+I have created Lisp:teco-mode.el which targets mainly TECO64 but also any standard TECO macro - LdBeth
