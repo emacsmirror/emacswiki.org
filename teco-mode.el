@@ -75,7 +75,7 @@
 ;;;###autoload
 (define-derived-mode teco-mode prog-mode "TECO"
   :syntax-table teco-mode-syntax-table
-  (setq font-lock-defaults (list 'teco-font-lock-keywords))
+  (setq font-lock-defaults (list 'teco-font-lock-keywords nil t))
   (setq-local comment-start "! "
               comment-end " !"
               syntax-propertize-function #'teco-mode-syntax-propertize))
