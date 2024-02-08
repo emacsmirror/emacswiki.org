@@ -61,7 +61,7 @@
   (defconst teco-atsign-1-arg-regexp
     "@[:,0-9]*\\(?:E[%BGILNQRW_]\\|F[BDKR]\\|\\^\\(?:A\\|U\\.?[a-zA-Z0-9]\\)\\|[\1\25=INOS_]\\)\\([^\C-@]\\)[^\C-@]*?\\(\\1\\)")
   (defconst teco-atsign-2-arg-regexp
-    "@[:,0-9]**\\F[CNS_]\\([^\C-@]\\)[^\C-@]*?\\1[^\C-@]*?\\(\\1\\)"))
+    "@[:,0-9]*F[CNS_]\\([^\C-@]\\)[^\C-@]*?\\1[^\C-@]*?\\(\\1\\)"))
 
 (defalias 'teco-mode-syntax-propertize
   (syntax-propertize-rules
