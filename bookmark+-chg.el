@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Feb  1 13:51:21 2024 (-0800)
+;; Last-Updated: Sat Feb 10 15:20:10 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 17020
+;;     Update #: 17021
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1583,6 +1583,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2024/02/10 dadams
+;;     bookmark-bmenu-mode: Reformatted to put keys within `...'.
+;;     bmkp-bmenu-move-marked-to-bookmark-file: Mention confirmation prompt if FILE doesn't exist.
 ;; 2023/10/24 dadams
 ;;     Added option bmkp-bmenu-show-file-not-buffer-flag.
 ;; 2023/10/23 dadams
