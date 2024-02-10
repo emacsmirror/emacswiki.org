@@ -4,9 +4,9 @@ Pages of text are pages only when then are printed. Within Emacs, you can think 
 
 You can search for any character by quoting it, and Control-l is no exception. To incrementally move to the next page, you can thus use `C-s C-q C-l'. Emacs also has some page-specific commands that are bound to keys:
 
-* `forward-page' (`##C-x [##') -- Go to the next page.
+* `forward-page' (`##C-x ]##') -- Go to the next page.
 
-* `backward-page' (`##C-x ]##') -- Go to the previous page.
+* `backward-page' (`##C-x [##') -- Go to the previous page.
 
 * `count-lines-page' (`C-x l') -- Report how many lines are on the current page: total, before, and after point.
 
