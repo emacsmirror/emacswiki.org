@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Oct 24 15:34:10 2023 (-0700)
+;; Last-Updated: Sat Feb 10 15:12:54 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 4252
+;;     Update #: 4303
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1436,51 +1436,56 @@ Help - Bookmark Info
 --------------------
 
 \\<bookmark-bmenu-mode-map>\
-\\[bookmark-bmenu-toggle-filenames]\t- Toggle showing filenames next to bookmarks
-\\[bmkp-bmenu-describe-this-bookmark]\t- Show information about bookmark       (`C-u': internal form)
-\\[bmkp-bmenu-describe-this+move-down]\t- Show the info, then move to next bookmark
-\\[bmkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
-\\[bmkp-bmenu-describe-marked]\t- Show info about the marked bookmarks  (`C-u': internal form)
-\\[bookmark-bmenu-locate]\t- Show location of bookmark (in minibuffer)
-\\[bookmark-bmenu-show-annotation]\t- Show bookmark's annotation
-\\[bookmark-bmenu-show-all-annotations]\t- Show the annotations of all annotated bookmarks
+`\\[bookmark-bmenu-toggle-filenames]'\t- Toggle showing filenames next to bookmarks
+`\\[bmkp-bmenu-describe-this-bookmark]'
+\t- Show information about bookmark       (`C-u': internal form)
+`\\[bmkp-bmenu-describe-this+move-down]'
+\t- Show the info, then move to next bookmark
+`\\[bmkp-bmenu-describe-this+move-up]'\t- Show the info, then move to previous bookmark
+`\\[bmkp-bmenu-describe-marked]'\t- Show info about the marked bookmarks  (`C-u': internal form)
+`\\[bookmark-bmenu-locate]'\t- Show location of bookmark (in minibuffer)
+`\\[bookmark-bmenu-show-annotation]'\t- Show bookmark's annotation
+`\\[bookmark-bmenu-show-all-annotations]'\t- Show the annotations of all annotated bookmarks
 
-\\[bmkp-list-defuns-in-commands-file]
+`\\[bmkp-list-defuns-in-commands-file]'
 \t- List the commands defined in `bmkp-bmenu-commands-file'
 
 
 Bookmark-List Display (`*Bookmark List*')
 -----------------------------------------
 
-\\[bmkp-toggle-saving-menu-list-state]\t- Toggle autosaving bookmark-list display state
-\\[bmkp-save-menu-list-state]\t- Save bookmark-list display state
+`\\[bmkp-toggle-saving-menu-list-state]'\t- Toggle autosaving bookmark-list display state
+`\\[bmkp-save-menu-list-state]'\t- Save bookmark-list display state
 
-\\[bmkp-bmenu-refresh-menu-list]\t- Refresh display to current bookmark list  (`C-u': from file)
-\\[bmkp-bmenu-show-all]\t- Show all bookmarks
-\\[bmkp-toggle-bookmark-set-refreshes]
+`\\[bmkp-bmenu-refresh-menu-list]'\t- Refresh display to current bookmark list  (`C-u': from file)
+`\\[bmkp-bmenu-show-all]'\t- Show all bookmarks
+`\\[bmkp-toggle-bookmark-set-refreshes]'
 \t- Toggle whether `bookmark-set' refreshes the bookmark list
-\\[bmkp-bmenu-mode-status-help]\t- Show this help
-\\[bmkp-bmenu-quit]\t- Quit (`*Bookmark List*')
+
+`\\[bmkp-bmenu-mode-status-help]'\t- Show this help
+`\\[bmkp-bmenu-quit]'\t- Quit (`*Bookmark List*')
 
 
 Bookmark Files
 --------------
 
-\\[bmkp-toggle-saving-bookmark-file]\t- Toggle autosaving to the current bookmark file
-\\[bookmark-bmenu-save]\t- Save bookmarks now     (`C-u': Save As... - prompt for file)
-\\[bmkp-empty-file]\t- Empty existing bookmark file or create new, empty one
+`\\[bmkp-toggle-saving-bookmark-file]'\t- Toggle autosaving to the current bookmark file
+`\\[bookmark-bmenu-save]'\t- Save bookmarks now (`C-u': Save As... - prompt for file)
+`\\[bmkp-empty-file]'
+\t- Empty existing bookmark file or create new, empty one
 
-C-u \\[bmkp-bmenu-refresh-menu-list]\t- Revert to bookmarks in the bookmark file    (overwrite load)
-\\[bmkp-switch-bookmark-file-create]\t- Switch to a different bookmark file         (overwrite load)
-C-u \\[bmkp-switch-bookmark-file-create]\t- Switch back to the previous bookmark file   (overwrite load)
-\\[bookmark-bmenu-load]\t- Add bookmarks from a different bookmark file    (extra load)
-\\[bmkp-bmenu-load-marked-bookmark-file-bookmarks]\t- Load marked bookmark-file bookmarks             \
-\(extra load)
+`C-u \\[bmkp-bmenu-refresh-menu-list]'\t- Revert to bookmarks in the bookmark file    (overwrite load)
+`\\[bmkp-switch-bookmark-file-create]'\t- Switch to a different bookmark file         (overwrite load)
+`C-u \\[bmkp-switch-bookmark-file-create]'
+\t- Switch back to the previous bookmark file   (overwrite load)
+`\\[bookmark-bmenu-load]'\t- Add bookmarks from a different bookmark file    (extra load)
+`\\[bmkp-bmenu-load-marked-bookmark-file-bookmarks]'\t- Load marked bookmark-file bookmarks\
+             (extra load)
 
-\\[bmkp-bmenu-move-marked-to-bookmark-file]\t- Move the marked bookmarks to a bookmark file
-\\[bmkp-bmenu-copy-marked-to-bookmark-file]\t- Copy the marked bookmarks to a bookmark file
-\\[bmkp-bmenu-create-bookmark-file-from-marked]\t- Copy the marked bookmarks to a new bookmark file
-C-u \\[bmkp-bmenu-create-bookmark-file-from-marked]\t- Same, plus create bookmark-file bookmark for it
+`\\[bmkp-bmenu-move-marked-to-bookmark-file]'\t- Move the marked bookmarks to a bookmark file
+`\\[bmkp-bmenu-copy-marked-to-bookmark-file]'\t- Copy the marked bookmarks to a bookmark file
+`\\[bmkp-bmenu-create-bookmark-file-from-marked]'\t- Copy the marked bookmarks to a new bookmark file
+`C-u \\[bmkp-bmenu-create-bookmark-file-from-marked]'\t- Same, plus create bookmark-file bookmark for it
 
 
 General
@@ -1488,125 +1493,128 @@ General
 
 Here:
 
-\\[bmkp-bmenu-dired-marked]\t- Open Dired for the marked file and directory bookmarks
-\\[bmkp-bmenu-make-sequence-from-marked]
+`\\[bmkp-bmenu-dired-marked]'\t- Open Dired for the marked file and directory bookmarks
+`\\[bmkp-bmenu-make-sequence-from-marked]'
 \t- Create a sequence bookmark from the marked bookmarks
-\\[bmkp-temporary-bookmarking-mode]\t- Toggle temporary-only bookmarking (new, empty bookmark file)
+`\\[bmkp-temporary-bookmarking-mode]'\t- Toggle temporary-only bookmarking (new, empty bookmark file)
 
 Anywhere:
 
 \\<global-map>\
-\\[bmkp-toggle-autotemp-on-set]\t- Toggle making bookmarks temporary when setting them
-\\[bmkp-set-bookmark-file-bookmark]\t- Create a bookmark to a bookmark file (`j y' to load it)
-\\[bmkp-delete-bookmarks]\t- Delete some bookmarks at point or all in buffer
-\\[bmkp-make-function-bookmark]\t- Create a function bookmark
+`\\[bmkp-toggle-autotemp-on-set]'
+\t- Toggle making bookmarks temporary when setting them
+`\\[bmkp-set-bookmark-file-bookmark]'\t- Create a bookmark to a bookmark file
+\t(`\\[bmkp-bookmark-file-jump]' to load it, `C-u \\[bmkp-bookmark-file-jump]' to switch to it)
+`\\[bmkp-delete-bookmarks]'\t- Delete some bookmarks at point or all in buffer
+`\\[bmkp-make-function-bookmark]'\t- Create a function bookmark
 
-\\[bmkp-choose-navlist-of-type]\t- Set the navlist to the bookmarks of a type you choose
-\\[bmkp-choose-navlist-from-bookmark-list]\t- Set the navlist to the bookmarks of a \
-bookmark-list bookmark
-\\[bmkp-navlist-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in navlist
+`\\[bmkp-choose-navlist-of-type]'\t- Set navlist to bookmarks of a type you choose
+`\\[bmkp-choose-navlist-from-bookmark-list]'\t- Set navlist to bookmarks of a bookmark-list bookmark
+`\\[bmkp-navlist-bmenu-list]'\t- Open `*Bookmark List*' for bookmarks in navlist
 
-\\[bmkp-this-file/buffer-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in current file/buffer
-\\[bmkp-switch-to-bookmark-file-this-file/buffer]\t- Switch to bookmark file for current file/buffer
-\\[bmkp-save-bookmarks-this-file/buffer]\t- Save bookmarks for current file/buffer to a file
+`\\[bmkp-this-file/buffer-bmenu-list]'
+\t- Open `*Bookmark List*' for bookmarks in current file/buffer
+`\\[bmkp-switch-to-bookmark-file-this-file/buffer]'\t- Switch to bookmark file for current file/buffer
+`\\[bmkp-save-bookmarks-this-file/buffer]'\t- Save bookmarks for current file/buffer to a file
 \\<bookmark-bmenu-mode-map>
 
 
 Create/Set Bookmarks (anywhere)
 --------------------
 
-\\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Set/delete an autonamed bookmark here
-\\[bmkp-autofile-set]\t- Set and autoname a bookmark for a file
-\\[bmkp-file-target-set]\t- Set a bookmark for a file
-\\[bmkp-url-target-set]\t- Set a bookmark for a URL
-\\[bmkp-bookmark-set-confirm-overwrite]\t\t- Set a bookmark here
-\\[bmkp-set-desktop-bookmark]\t\t- Set a bookmark for the current desktop
-\\[bmkp-set-bookmark-file-bookmark]\t\t- Set a bookmark for a bookmark file
-\\[bmkp-set-snippet-bookmark]\t- Save the region text as a snippet bookmark
+`\\[bmkp-toggle-autonamed-bookmark-set/delete]'\t- Set/delete an autonamed bookmark here
+`\\[bmkp-autofile-set]'\t- Set and autoname a bookmark for a file
+`\\[bmkp-file-target-set]'\t- Set a bookmark for a file
+`\\[bmkp-url-target-set]'\t- Set a bookmark for a URL
+`\\[bmkp-bookmark-set-confirm-overwrite]'\t- Set a bookmark here
+`\\[bmkp-set-desktop-bookmark]'\t- Set a bookmark for the current desktop
+`\\[bmkp-set-bookmark-file-bookmark]'\t- Set a bookmark for a bookmark file
+`\\[bmkp-set-snippet-bookmark]'\t- Save the region text as a snippet bookmark
 
 
 Jump to (Visit) Bookmarks
 -------------------------
 
-\\[bookmark-bmenu-this-window]\t- This bookmark in the same window
-\\[bookmark-bmenu-other-window]\t- This bookmark in another window
-\\[bookmark-bmenu-switch-other-window]\t- This bookmark in other window, without selecting it
-\\[bookmark-bmenu-2-window]\t- This bookmark and last-visited bookmark
-\\[bookmark-bmenu-1-window]\t- This bookmark in a full-frame window
-\\[bookmark-bmenu-other-frame]\t- This bookmark in another frame
+`\\[bookmark-bmenu-this-window]'\t- This bookmark in the same window
+`\\[bookmark-bmenu-other-window]'\t- This bookmark in another window
+`\\[bookmark-bmenu-switch-other-window]'\t- This bookmark in other window, without selecting it
+`\\[bookmark-bmenu-2-window]'\t- This bookmark and last-visited bookmark
+`\\[bookmark-bmenu-1-window]'\t- This bookmark in a full-frame window
+`\\[bookmark-bmenu-other-frame]'
+\t- This bookmark in another frame
 
-\\[bmkp-bmenu-jump-to-marked]\t- Bookmarks marked `>', in other windows
+`\\[bmkp-bmenu-jump-to-marked]'\t- Bookmarks marked `>', in other windows
 
 Prefix `j' uses another window; prefix `J' reuses this window:
 
-\\[bookmark-jump-other-window]\t- Bookmark by name
-\\[bmkp-jump-in-navlist-other-window]\t- Bookmark in the navigation list
-\\[bmkp-lighted-jump-other-window]\t- Highlighted bookmark
+`\\[bookmark-jump-other-window]'\t- Bookmark by name
+`\\[bmkp-jump-in-navlist-other-window]'\t- Bookmark in the navigation list
+`\\[bmkp-lighted-jump-other-window]'\t- Highlighted bookmark
 
-\\[bmkp-jump-to-type-other-window]\t- Bookmark by type
-\\[bmkp-autonamed-jump-other-window]\t- Autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump-other-window]\t- Autonamed bookmark in this buffer
-\\[bmkp-temporary-jump-other-window]\t- Temporary bookmark
+`\\[bmkp-jump-to-type-other-window]'\t- Bookmark by type
+`\\[bmkp-autonamed-jump-other-window]'\t- Autonamed bookmark
+`\\[bmkp-autonamed-this-buffer-jump-other-window]'\t- Autonamed bookmark in this buffer
+`\\[bmkp-temporary-jump-other-window]'\t- Temporary bookmark
 
-\\[bmkp-autofile-jump-other-window]\t- Autofile bookmark
-\\[bmkp-dired-jump-other-window]\t- Dired bookmark
-\\[bmkp-file-jump-other-window]\t- File or directory bookmark
-\\[bmkp-dired-this-dir-jump-other-window]\t- Dired bookmark for this dir
-\\[bmkp-file-this-dir-jump-other-window]\t- Bookmark for a file or subdir in this dir
-\\[bmkp-local-file-jump-other-window]\t- Local-file bookmark
-\\[bmkp-remote-file-jump-other-window]\t- Remote-file bookmark
-\\[bmkp-non-file-jump-other-window]\t- Non-file (buffer) bookmark
+`\\[bmkp-autofile-jump-other-window]'\t- Autofile bookmark
+`\\[bmkp-dired-jump-other-window]'\t- Dired bookmark
+`\\[bmkp-file-jump-other-window]'\t- File or directory bookmark
+`\\[bmkp-dired-this-dir-jump-other-window]'\t- Dired bookmark for this dir
+`\\[bmkp-file-this-dir-jump-other-window]'\t- Bookmark for a file or subdir in this dir
+`\\[bmkp-local-file-jump-other-window]'\t- Local-file bookmark
+`\\[bmkp-remote-file-jump-other-window]'\t- Remote-file bookmark
+`\\[bmkp-non-file-jump-other-window]'\t- Non-file (buffer) bookmark
 
-\\[bmkp-desktop-jump]\t- Desktop bookmark
-\\[bmkp-bookmark-list-jump]\t- Bookmark-list bookmark
-\\[bmkp-bookmark-file-jump]\t- Bookmark-file bookmark
+`\\[bmkp-desktop-jump]'\t- Desktop bookmark
+`\\[bmkp-bookmark-list-jump]'\t- Bookmark-list bookmark
+`\\[bmkp-bookmark-file-jump]'\t- Bookmark-file bookmark
 
-\\[bmkp-region-jump-other-window]\t- Region bookmark (restore region)
-\\[bmkp-snippet-to-kill-ring]\t- Snippet bookmark (copy to `kill-ring')
-\\[bmkp-image-jump-other-window]\t- Image-file bookmark
-\\[bmkp-info-jump-other-window]\t- Info bookmark
-\\[bmkp-man-jump-other-window]\t- `man'-page bookmark
-\\[bmkp-gnus-jump-other-window]\t- Gnus bookmark
-\\[bmkp-url-jump-other-window]\t- URL bookmark
-\\[bmkp-variable-list-jump]\t- Variable-list bookmark
+`\\[bmkp-region-jump-other-window]'\t- Region bookmark (restore region)
+`\\[bmkp-snippet-to-kill-ring]'\t- Snippet bookmark (copy to `kill-ring')
+`\\[bmkp-image-jump-other-window]'\t- Image-file bookmark
+`\\[bmkp-info-jump-other-window]'\t- Info bookmark
+`\\[bmkp-man-jump-other-window]'\t- `man'-page bookmark
+`\\[bmkp-gnus-jump-other-window]'\t- Gnus bookmark
+`\\[bmkp-url-jump-other-window]'\t- URL bookmark
+`\\[bmkp-variable-list-jump]'\t- Variable-list bookmark
 
-\\[bmkp-some-tags-jump-other-window]\t- Bookmark having some tags you specify
-\\[bmkp-all-tags-jump-other-window]\t- Bookmark having each tag you specify
-\\[bmkp-some-tags-regexp-jump-other-window]\t- Bookmark having a tag that matches a regexp
-\\[bmkp-all-tags-regexp-jump-other-window]\t- Bookmark having all its tags match a regexp
-\\[bmkp-file-some-tags-jump-other-window]\t- File bookmark having some tags you specify
-\\[bmkp-file-all-tags-jump-other-window]\t- File bookmark having each tag you specify
-\\[bmkp-file-some-tags-regexp-jump-other-window]\t- File bookmark having a tag that matches a regexp
-\\[bmkp-file-all-tags-regexp-jump-other-window]\t- File bookmark having all its tags match a regexp
-\\[bmkp-file-this-dir-some-tags-jump-other-window]\t- File in this dir having some tags you specify
-\\[bmkp-file-this-dir-all-tags-jump-other-window]\t- File in this dir having each tag you specify
-\\[bmkp-file-this-dir-some-tags-regexp-jump-other-window]\t- \
+`\\[bmkp-some-tags-jump-other-window]'\t- Bookmark having some tags you specify
+`\\[bmkp-all-tags-jump-other-window]'\t- Bookmark having each tag you specify
+`\\[bmkp-some-tags-regexp-jump-other-window]'\t- Bookmark having a tag that matches a regexp
+`\\[bmkp-all-tags-regexp-jump-other-window]'\t- Bookmark having all its tags match a regexp
+`\\[bmkp-file-some-tags-jump-other-window]'\t- File bookmark having some tags you specify
+`\\[bmkp-file-all-tags-jump-other-window]'\t- File bookmark having each tag you specify
+`\\[bmkp-file-some-tags-regexp-jump-other-window]'\t- File bookmark having a tag that matches a regexp
+`\\[bmkp-file-all-tags-regexp-jump-other-window]'\t- File bookmark having all its tags match a regexp
+`\\[bmkp-file-this-dir-some-tags-jump-other-window]'\t- File in this dir having some tags you specify
+`\\[bmkp-file-this-dir-all-tags-jump-other-window]'\t- File in this dir having each tag you specify
+`\\[bmkp-file-this-dir-some-tags-regexp-jump-other-window]'\t- \
 File in this dir having a tag that matches a regexp
-\\[bmkp-file-this-dir-all-tags-regexp-jump-other-window]\t- \
+`\\[bmkp-file-this-dir-all-tags-regexp-jump-other-window]'\t- \
 File in this dir having all its tags match a regexp
 
 
 Autonamed Bookmarks
 -------------------
 
-\\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
-C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Delete all autonamed bookmarks in current buffer
-\\[bmkp-autonamed-jump-other-window]\t\t- Jump to an autonamed bookmark
-\\[bmkp-autonamed-this-buffer-jump-other-window]\t\t- Jump to an autonamed bookmark in a given buffer
+`\\[bmkp-toggle-autonamed-bookmark-set/delete]'\t- Create/delete autonamed bookmark at point
+`C-u \\[bmkp-toggle-autonamed-bookmark-set/delete]'\t- Delete all autonamed bookmarks in current buffer
+`\\[bmkp-autonamed-jump-other-window]'\t\t- Jump to an autonamed bookmark
+`\\[bmkp-autonamed-this-buffer-jump-other-window]'\t\t- Jump to an autonamed bookmark in a given buffer
 
 
 Cycle Bookmarks (anywhere)
 ---------------
 
-\\[bmkp-next-bookmark-this-file/buffer-repeat]...\t- Next bookmark in buffer         (C-x x n, C-x x C-n)
-\\[bmkp-previous-bookmark-this-file/buffer-repeat]...\t- Prev bookmark in buffer         (C-x x p, \
+`\\[bmkp-next-bookmark-this-file/buffer-repeat]'...\t- Next bookmark in buffer         (C-x x n, C-x x C-n)
+`\\[bmkp-previous-bookmark-this-file/buffer-repeat]'...\t- Prev bookmark in buffer         (C-x x p, \
 C-x x C-p)
-\\[bmkp-next-bookmark-repeat]...- Next bookmark in navlist        (C-x x f, C-x x C-f)
-\\[bmkp-previous-bookmark-repeat]...\t- Prev bookmark in navlist        (C-x x b, C-x x C-b)
-\\[bmkp-next-bookmark-w32-repeat]...\t- MS Windows `Open' next     in navlist   (C-x x next)
-\\[bmkp-previous-bookmark-w32-repeat]...- MS Windows `Open' previous in navlist  (C-x x prior)
-\\[bmkp-next-lighted-this-buffer-repeat]...- Next highlighted bookmark in buffer  (C-x x C-down)
-\\[bmkp-previous-lighted-this-buffer-repeat]...\t- Prev highlighted bookmark in buffer     (C-x x C-up)
+`\\[bmkp-next-bookmark-repeat]'...- Next bookmark in navlist        (C-x x f, C-x x C-f)
+`\\[bmkp-previous-bookmark-repeat]'...\t- Prev bookmark in navlist        (C-x x b, C-x x C-b)
+`\\[bmkp-next-bookmark-w32-repeat]'...\t- MS Windows `Open' next     in navlist   (C-x x next)
+`\\[bmkp-previous-bookmark-w32-repeat]'...- MS Windows `Open' previous in navlist  (C-x x prior)
+`\\[bmkp-next-lighted-this-buffer-repeat]'...- Next highlighted bookmark in buffer  (C-x x C-down)
+`\\[bmkp-previous-lighted-this-buffer-repeat]'...\t- Prev highlighted bookmark in buffer     (C-x x C-up)
 
  Similar, but not bound to keys by default:
   \\[bmkp-next-autonamed-bookmark-repeat]        (and `previous')
@@ -1631,10 +1639,10 @@ C-x x C-p)
 Search-and-Replace in Bookmark Targets (here, in sort order)
 --------------------------------------
 
-\\[bmkp-bmenu-isearch-marked-bookmarks]\t- Isearch the marked bookmarks            (`C-u': all)
-\\[bmkp-bmenu-isearch-marked-bookmarks-regexp]\t- Regexp-isearch the marked bookmarks     (`C-u': all)
-\\[bmkp-bmenu-search-marked-bookmarks-regexp]\t- Regexp-search the marked file bookmarks (`C-u': all)
-\\[bmkp-bmenu-query-replace-marked-bookmarks-regexp]\t\t- Query-replace the marked file bookmarks
+`\\[bmkp-bmenu-isearch-marked-bookmarks]'\t- Isearch the marked bookmarks            (`C-u': all)
+`\\[bmkp-bmenu-isearch-marked-bookmarks-regexp]'\t- Regexp-isearch the marked bookmarks     (`C-u': all)
+`\\[bmkp-bmenu-search-marked-bookmarks-regexp]'\t- Regexp-search the marked file bookmarks (`C-u': all)
+`\\[bmkp-bmenu-query-replace-marked-bookmarks-regexp]'\t\t- Query-replace the marked file bookmarks
 
 
 Mark/Unmark Bookmarks
@@ -1642,63 +1650,64 @@ Mark/Unmark Bookmarks
 
 \(Mark means `>'.  Flag means `D'.   See also `Tags', below.)
 
-\\[bmkp-bmenu-flag-for-deletion]\t- Flag bookmark `D' for deletion, then move down
-\\[bmkp-bmenu-flag-for-deletion-backwards]\t- Flag bookmark `D' for deletion, then move up
+`\\[bmkp-bmenu-flag-for-deletion]'\t- Flag bookmark `D' for deletion, then move down
+`\\[bmkp-bmenu-flag-for-deletion-backwards]'\t- Flag bookmark `D' for deletion, then move up
 
-\\[bookmark-bmenu-mark]\t- Mark bookmark
-\\[bookmark-bmenu-unmark]\t- Unmark bookmark                    (`C-u': move up one line)
-\\[bookmark-bmenu-backup-unmark]\t- Unmark previous bookmark (move up, then unmark)
+`\\[bookmark-bmenu-mark]'\t- Mark bookmark
+`\\[bookmark-bmenu-unmark]'\t- Unmark bookmark                    (`C-u': move up one line)
+`\\[bookmark-bmenu-backup-unmark]'\t- Unmark previous bookmark (move up, then unmark)
 
-\\[bmkp-bmenu-mark-all]\t- Mark all bookmarks
-\\[bmkp-bmenu-regexp-mark]\t- Mark all bookmarks whose names match a regexp
-\\[bmkp-bmenu-unmark-all]\t- Unmark all bookmarks              (`C-u': interactive query)
-\\[bmkp-bmenu-toggle-marks]\t- Toggle marks: unmark the marked and mark the unmarked
+`\\[bmkp-bmenu-mark-all]'\t- Mark all bookmarks
+`\\[bmkp-bmenu-regexp-mark]'\t- Mark all bookmarks whose names match a regexp
+`\\[bmkp-bmenu-unmark-all]'\t- Unmark all bookmarks              (`C-u': interactive query)
+`\\[bmkp-bmenu-toggle-marks]'\t- Toggle marks: unmark the marked and mark the unmarked
 
-\\[bmkp-bmenu-mark-autofile-bookmarks]\t- Mark autofile bookmarks
-\\[bmkp-bmenu-mark-autonamed-bookmarks]\t- Mark autonamed bookmarks
-\\[bmkp-bmenu-mark-temporary-bookmarks]\t- Mark temporary bookmarks
-\\[bmkp-bmenu-mark-lighted-bookmarks]\t- Mark highlighted bookmarks (requires `bookmark+-lit.el)
+`\\[bmkp-bmenu-mark-autofile-bookmarks]'\t- Mark autofile bookmarks
+`\\[bmkp-bmenu-mark-autonamed-bookmarks]'\t- Mark autonamed bookmarks
+`\\[bmkp-bmenu-mark-temporary-bookmarks]'\t- Mark temporary bookmarks
+`\\[bmkp-bmenu-mark-lighted-bookmarks]'\t- Mark highlighted bookmarks (requires `bookmark+-lit.el)
 
-\\[bmkp-bmenu-mark-non-file-bookmarks]\t- Mark non-file (i.e. buffer) bookmarks
-\\[bmkp-bmenu-mark-dired-bookmarks]\t- Mark Dired bookmarks
-\\[bmkp-bmenu-mark-file-bookmarks]\t- Mark file & directory bookmarks          (`C-u': local only)
-\\[bmkp-bmenu-mark-gnus-bookmarks]\t- Mark Gnus bookmarks
-\\[bmkp-bmenu-mark-info-bookmarks]\t- Mark Info bookmarks
-\\[bmkp-bmenu-mark-icicles-search-hits-bookmarks]\t- Mark Icicles search-hits bookmarks
-\\[bmkp-bmenu-mark-non-invokable-bookmarks]\t- Mark non-invokable bookmarks
-\\[bmkp-bmenu-mark-image-bookmarks]\t- Mark image-file bookmarks
-\\[bmkp-bmenu-mark-desktop-bookmarks]\t- Mark desktop bookmarks
-\\[bmkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
-\\[bmkp-bmenu-mark-orphaned-local-file-bookmarks]\t- Mark orphaned local file/dir bookmarks  (`C-u': \
+`\\[bmkp-bmenu-mark-non-file-bookmarks]'\t- Mark non-file (i.e. buffer) bookmarks
+`\\[bmkp-bmenu-mark-dired-bookmarks]'\t- Mark Dired bookmarks
+`\\[bmkp-bmenu-mark-file-bookmarks]'\t- Mark file & directory bookmarks          (`C-u': local only)
+`\\[bmkp-bmenu-mark-gnus-bookmarks]'\t- Mark Gnus bookmarks
+`\\[bmkp-bmenu-mark-info-bookmarks]'\t- Mark Info bookmarks
+`\\[bmkp-bmenu-mark-icicles-search-hits-bookmarks]'\t- Mark Icicles search-hits bookmarks
+`\\[bmkp-bmenu-mark-non-invokable-bookmarks]'\t- Mark non-invokable bookmarks
+`\\[bmkp-bmenu-mark-image-bookmarks]'\t- Mark image-file bookmarks
+`\\[bmkp-bmenu-mark-desktop-bookmarks]'\t- Mark desktop bookmarks
+`\\[bmkp-bmenu-mark-man-bookmarks]'\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
+`\\[bmkp-bmenu-mark-orphaned-local-file-bookmarks]'\t- Mark orphaned local file/dir bookmarks  (`C-u': \
 remote also)
-\\[bmkp-bmenu-mark-region-bookmarks]\t- Mark region bookmarks
-\\[bmkp-bmenu-mark-function-bookmarks]\t- Mark function bookmarks
-\\[bmkp-bmenu-mark-url-bookmarks]\t- Mark URL bookmarks
-\\[bmkp-bmenu-mark-variable-list-bookmarks]\t- Mark variable-list bookmarks
-\\[bmkp-bmenu-mark-w3m-bookmarks]\t- Mark W3M (URL) bookmarks
-\\[bmkp-bmenu-mark-snippet-bookmarks]\t- Mark snippet bookmarks
-\\[bmkp-bmenu-mark-bookmark-file-bookmarks]\t- Mark bookmark-file bookmarks
-\\[bmkp-bmenu-mark-bookmark-list-bookmarks]\t- Mark bookmark-list bookmarks
-
+`\\[bmkp-bmenu-mark-region-bookmarks]'\t- Mark region bookmarks
+`\\[bmkp-bmenu-mark-function-bookmarks]'\t- Mark function bookmarks
+`\\[bmkp-bmenu-mark-url-bookmarks]'\t- Mark URL bookmarks
+`\\[bmkp-bmenu-mark-variable-list-bookmarks]'\t- Mark variable-list bookmarks
+`\\[bmkp-bmenu-mark-w3m-bookmarks]'\t- Mark W3M (URL) bookmarks
+`\\[bmkp-bmenu-mark-snippet-bookmarks]'\t- Mark snippet bookmarks
+`\\[bmkp-bmenu-mark-bookmark-file-bookmarks]'\t- Mark bookmark-file bookmarks
+`\\[bmkp-bmenu-mark-bookmark-list-bookmarks]'\t- Mark bookmark-list bookmarks
+`
 
 Modify, Delete Bookmarks
 ------------------------
 
 \(See also `Tags', next.)
 
-\\[bmkp-bmenu-edit-bookmark-name-and-location]\t- Rename or relocate bookmark
-\\[bookmark-bmenu-relocate]\t- Relocate bookmark
-\\[bmkp-bmenu-relocate-marked]\t- Relocate marked bookmarks
-\\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
-\\[bookmark-bmenu-edit-annotation]\t- Edit bookmark's annotation
-\\[bmkp-bmenu-edit-annotations-for-marked]\t- Edit annotations of marked bookmarks (`C-u': all)
-\\[bmkp-bmenu-edit-bookmark-record]\t- Edit internal Lisp record for bookmark
-\\[bmkp-bmenu-edit-marked]\t- Edit internal Lisp records of marked bookmarks  (`C-u': all)
-\\[bmkp-bmenu-toggle-temporary]\t- Toggle temporary/savable status of bookmark
-\\[bmkp-bmenu-toggle-marked-temporary/savable]\t- Toggle temporary/savable status of marked bookmarks
-\\[bmkp-delete-all-temporary-bookmarks]\t- Delete all temp bookmarks
-\\[bookmark-bmenu-execute-deletions]\t- Delete (visible) bookmarks flagged `D'
-\\[bmkp-bmenu-delete-marked]\t- Delete (visible) bookmarks marked `>'
+`\\[bmkp-bmenu-edit-bookmark-name-and-location]'\t- Rename or relocate bookmark
+`\\[bookmark-bmenu-relocate]'\t- Relocate bookmark
+`\\[bmkp-bmenu-relocate-marked]'\t- Relocate marked bookmarks
+`\\[bmkp-bmenu-edit-tags]'\t- Edit bookmark's tags
+`\\[bookmark-bmenu-edit-annotation]'\t- Edit bookmark's annotation
+`\\[bmkp-bmenu-edit-annotations-for-marked]'\t- Edit annotations of marked bookmarks            (`C-u': all)
+`\\[bmkp-bmenu-edit-bookmark-record]'\t- Edit internal Lisp record for bookmark
+`\\[bmkp-bmenu-edit-marked]'\t- Edit internal Lisp records of marked bookmarks  (`C-u': all)
+`\\[bmkp-bmenu-toggle-temporary]'\t- Toggle temporary/savable status of bookmark
+`\\[bmkp-bmenu-toggle-marked-temporary/savable]'\t- Toggle temporary/savable status of marked bookmarks
+`\\[bmkp-delete-all-temporary-bookmarks]'
+\t- Delete all temporary bookmarks
+`\\[bookmark-bmenu-execute-deletions]'\t- Delete (visible) bookmarks flagged `D'
+`\\[bmkp-bmenu-delete-marked]'\t- Delete (visible) bookmarks marked `>'
 
 
 Bookmark Tags
@@ -1706,86 +1715,87 @@ Bookmark Tags
 
 Here:
 
-\\[bmkp-bmenu-copy-tags]\t- Copy tags from this bookmark (for subsequent pasting)
-\\[bmkp-bmenu-paste-add-tags]\t- Paste tags (copied from another) to this bookmark
-\\[bmkp-bmenu-paste-replace-tags]\t- Replace tags for this bookmark (with those copied)
-\\[bmkp-add-tags]\t- Add some tags to a bookmark
-\\[bmkp-remove-tags]\t- Remove some tags from a bookmark (`C-u': from all bookmarks)
-\\[bmkp-remove-all-tags]\t- Remove all tags from a bookmark
-\\[bmkp-remove-tags-from-all]\t- Remove some tags from all bookmarks
-\\[bmkp-rename-tag]\t- Rename a tag in all bookmarks
-\\[bmkp-list-all-tags]\t- List all tags used in any bookmarks (`C-u': show tag values)
-\\[bmkp-bmenu-list-tags-of-marked]\t- List tags used in marked bookmarks  (`C-u': show tag values)
-\\[bmkp-bmenu-edit-tags]\t- Edit bookmark's tags
-\\[bmkp-bmenu-set-tag-value]\t- Set the value of a tag (as attribute)
+`\\[bmkp-bmenu-copy-tags]'\t- Copy tags from this bookmark (for subsequent pasting)
+`\\[bmkp-bmenu-paste-add-tags]'\t- Paste tags (copied from another) to this bookmark
+`\\[bmkp-bmenu-paste-replace-tags]'\t- Replace tags for this bookmark (with those copied)
+`\\[bmkp-add-tags]'\t- Add some tags to a bookmark
+`\\[bmkp-remove-tags]'\t- Remove some tags from a bookmark (`C-u': from all bookmarks)
+`\\[bmkp-remove-all-tags]'\t- Remove all tags from a bookmark
+`\\[bmkp-remove-tags-from-all]'\t- Remove some tags from all bookmarks
+`\\[bmkp-rename-tag]'\t- Rename a tag in all bookmarks
+`\\[bmkp-list-all-tags]'\t- List all tags used in any bookmarks (`C-u': show tag values)
+`\\[bmkp-bmenu-list-tags-of-marked]'\t- List tags used in marked bookmarks  (`C-u': show tag values)
+`\\[bmkp-bmenu-edit-tags]'\t- Edit bookmark's tags
+`\\[bmkp-bmenu-set-tag-value]'\t- Set the value of a tag (as attribute)
 
-\\[bmkp-bmenu-set-tag-value-for-marked]\t- Set value of a tag, for each marked bookmark    (`C-u': all)
-\\[bmkp-bmenu-paste-add-tags-to-marked]\t- Add tags copied from a bookmark to those marked (`C-u': all)
-\\[bmkp-bmenu-paste-replace-tags-for-marked]\t- Replace tags of marked with copied tags \
+`\\[bmkp-bmenu-set-tag-value-for-marked]'\t- Set value of a tag, for each marked bookmark    (`C-u': all)
+`\\[bmkp-bmenu-paste-add-tags-to-marked]'
+\t- Add tags copied from a bookmark to those marked (`C-u': all)
+`\\[bmkp-bmenu-paste-replace-tags-for-marked]'\t- Replace tags of marked with copied tags \
         (`C-u': all)
-\\[bmkp-bmenu-add-tags-to-marked]\t- Add some tags to the marked bookmarks           (`C-u': all)
-\\[bmkp-bmenu-remove-tags-from-marked]\t- Remove some tags from the marked bookmarks      (`C-u': all)
+`\\[bmkp-bmenu-add-tags-to-marked]'\t- Add some tags to the marked bookmarks           (`C-u': all)
+`\\[bmkp-bmenu-remove-tags-from-marked]'\t- Remove some tags from the marked bookmarks      (`C-u': all)
 
-\\[bmkp-bmenu-mark-bookmarks-tagged-regexp]\t- Mark bookmarks having at least one \
+`\\[bmkp-bmenu-mark-bookmarks-tagged-regexp]'\t- Mark bookmarks having at least one \
 tag that matches a regexp
-\\[bmkp-bmenu-mark-bookmarks-tagged-some]\t- Mark bookmarks having at least one tag \
+`\\[bmkp-bmenu-mark-bookmarks-tagged-some]'\t- Mark bookmarks having at least one tag \
 in a set    (OR)
-\\[bmkp-bmenu-mark-bookmarks-tagged-all]\t- Mark bookmarks having all of the tags \
+`\\[bmkp-bmenu-mark-bookmarks-tagged-all]'\t- Mark bookmarks having all of the tags \
 in a set     (AND)
-\\[bmkp-bmenu-mark-bookmarks-tagged-none]\t- Mark bookmarks not having any of the tags \
-in a set (NOT OR)
-\\[bmkp-bmenu-mark-bookmarks-tagged-not-all]\t- Mark bookmarks not having all of the \
-tags in a set (NOT AND)
+`\\[bmkp-bmenu-mark-bookmarks-tagged-none]'
+\t- Mark bookmarks not having any of the tags in a set (NOT OR)
+`\\[bmkp-bmenu-mark-bookmarks-tagged-not-all]'
+\t- Mark bookmarks not having all of the tags in a set (NOT AND)
 
-\\[bmkp-bmenu-unmark-bookmarks-tagged-regexp]\t- Unmark bookmarks having a \
+`\\[bmkp-bmenu-unmark-bookmarks-tagged-regexp]'\t- Unmark bookmarks having a \
 tag that matches a regexp
-\\[bmkp-bmenu-unmark-bookmarks-tagged-some]\t- Unmark bookmarks having at least one \
+`\\[bmkp-bmenu-unmark-bookmarks-tagged-some]'\t- Unmark bookmarks having at least one \
 tag in a set  (OR)
-\\[bmkp-bmenu-unmark-bookmarks-tagged-all]\t- Unmark bookmarks having all of the tags \
+`\\[bmkp-bmenu-unmark-bookmarks-tagged-all]'\t- Unmark bookmarks having all of the tags \
 in a set   (AND)
-\\[bmkp-bmenu-unmark-bookmarks-tagged-none]\t- Unmark bookmarks not having any tags \
-in a set      (NOT OR)
-\\[bmkp-bmenu-unmark-bookmarks-tagged-not-all]\t- Unmark bookmarks not having all tags \
-in a set      (NOT AND)
+`\\[bmkp-bmenu-unmark-bookmarks-tagged-none]'
+\t- Unmark bookmarks not having any tags in a set      (NOT OR)
+`\\[bmkp-bmenu-unmark-bookmarks-tagged-not-all]'
+\t- Unmark bookmarks not having all tags in a set      (NOT AND)
 
 Anywhere:
 
 \\<global-map>\
-\\[bmkp-list-all-tags]\t- List all tags
-\\[bmkp-edit-tags]\t- Edit the tags of a bookmark
-\\[bmkp-rename-tag]\t- Rename a tag (everywhere)
-\\[bmkp-copy-tags]\t- Copy tags from a bookmark (for subsequent pasting)
-\\[bmkp-paste-add-tags]\t- Add (paste) tags copied from a bookmark
-\\[bmkp-paste-replace-tags]\t- Replace (paste) a bookmark's tags with copied tags
-\\[bmkp-add-tags]\t- Add some tags to a bookmark
-\\[bmkp-remove-tags]\t- Remove some tags from a bookmark
-\\[bmkp-remove-all-tags]\t- Remove ALL tags from a bookmark
-\\[bmkp-remove-tags-from-all]\t- Remove some tags from ALL bookmarks
-\\[bmkp-tag-a-file]\t- Add tags to a file (create/update autofile bookmark)
-\\[bmkp-untag-a-file]\t- Remove tags from a file (an autofile bookmark)
-\\[bmkp-set-tag-value]\t- Set a tag value for a bookmark
-\\[bmkp-set-tag-value-for-navlist]\t- Set a tag value for each bookmark in navlist
+`\\[bmkp-list-all-tags]'\t- List all tags
+`\\[bmkp-edit-tags]'\t- Edit the tags of a bookmark
+`\\[bmkp-rename-tag]'\t- Rename a tag (everywhere)
+`\\[bmkp-copy-tags]'\t- Copy tags from a bookmark (for subsequent pasting)
+`\\[bmkp-paste-add-tags]'\t- Add (paste) tags copied from a bookmark
+`\\[bmkp-paste-replace-tags]'\t- Replace (paste) a bookmark's tags with copied tags
+`\\[bmkp-add-tags]'\t- Add some tags to a bookmark
+`\\[bmkp-remove-tags]'\t- Remove some tags from a bookmark
+`\\[bmkp-remove-all-tags]'\t- Remove ALL tags from a bookmark
+`\\[bmkp-remove-tags-from-all]'\t- Remove some tags from ALL bookmarks
+`\\[bmkp-tag-a-file]'\t- Add tags to a file (create/update autofile bookmark)
+`\\[bmkp-untag-a-file]'\t- Remove tags from a file (an autofile bookmark)
+`\\[bmkp-set-tag-value]'\t- Set a tag value for a bookmark
+`\\[bmkp-set-tag-value-for-navlist]'\t- Set a tag value for each bookmark in navlist
 \\<bookmark-bmenu-mode-map>
 
 
 Bookmark Highlighting
 ---------------------
 
-\\[bmkp-bmenu-show-only-lighted-bookmarks]\t- Show only the highlighted bookmarks
-\\[bmkp-bmenu-set-lighting]\t- Set highlighting for bookmark
-\\[bmkp-bmenu-set-lighting-for-marked]\t- Set highlighting for marked bookmarks
-\\[bmkp-bmenu-light]\t- Highlight bookmark
-\\[bmkp-bmenu-unlight]\t- Unhighlight bookmark
-\\[bmkp-bmenu-mark-lighted-bookmarks]\t- Mark the highlighted bookmarks
-\\[bmkp-bmenu-light-marked]\t- Highlight the marked bookmarks
-\\[bmkp-bmenu-unlight-marked]\t- Unhighlight the marked bookmarks
-\\[bmkp-light-bookmark-this-buffer]\t- Highlight a bookmark in current buffer
-\\[bmkp-unlight-bookmark-this-buffer]\t- Unhighlight a bookmark in current buffer
-\\[bmkp-light-bookmarks]\t- Highlight bookmarks (see prefix arg)
-\\[bmkp-unlight-bookmarks]\t- Unhighlight bookmarks (see prefix arg)
-\\[bmkp-bookmarks-lighted-at-point]\t- List bookmarks highlighted at point
-\\[bmkp-unlight-bookmark-here]\t- Unhighlight a bookmark at point or on same line
-\\[bmkp-lighted-jump-other-window]\t- Jump to a highlighted bookmark (other window)
+`\\[bmkp-bmenu-show-only-lighted-bookmarks]'\t- Show only the highlighted bookmarks
+`\\[bmkp-bmenu-set-lighting]'\t- Set highlighting for bookmark
+`\\[bmkp-bmenu-set-lighting-for-marked]'\t- Set highlighting for marked bookmarks
+`\\[bmkp-bmenu-light]'\t- Highlight bookmark
+`\\[bmkp-bmenu-unlight]'\t- Unhighlight bookmark
+`\\[bmkp-bmenu-mark-lighted-bookmarks]'\t- Mark the highlighted bookmarks
+`\\[bmkp-bmenu-light-marked]'\t- Highlight the marked bookmarks
+`\\[bmkp-bmenu-unlight-marked]'\t- Unhighlight the marked bookmarks
+`\\[bmkp-light-bookmark-this-buffer]'\t- Highlight a bookmark in current buffer
+`\\[bmkp-unlight-bookmark-this-buffer]'\t- Unhighlight a bookmark in current buffer
+`\\[bmkp-light-bookmarks]'\t- Highlight bookmarks (see prefix arg)
+`\\[bmkp-unlight-bookmarks]'\t- Unhighlight bookmarks (see prefix arg)
+`\\[bmkp-bookmarks-lighted-at-point]'\t- List bookmarks highlighted at point
+`\\[bmkp-unlight-bookmark-here]'\t- Unhighlight a bookmark at point or on same line
+`\\[bmkp-lighted-jump-other-window]'\t- Jump to a highlighted bookmark (other window)
 
 
 Sort `*Bookmark List*' (`s C-h' to see this)
@@ -1793,136 +1803,137 @@ Sort `*Bookmark List*' (`s C-h' to see this)
 
 \(Repeat to cycle normal/reversed/off, except as noted.)
 
-\\[bmkp-reverse-sort-order]\t- Reverse current sort direction       (repeat to toggle)
-\\[bmkp-reverse-multi-sort-order]\t- Complement sort predicate decisions  (repeat \
+`\\[bmkp-reverse-sort-order]'\t- Reverse current sort direction       (repeat to toggle)
+`\\[bmkp-reverse-multi-sort-order]'\t- Complement sort predicate decisions  (repeat \
 to toggle)
-\\[bmkp-bmenu-change-sort-order-repeat]\t- Cycle sort orders                    (repeat \
+`\\[bmkp-bmenu-change-sort-order-repeat]'\t- Cycle sort orders                    (repeat \
 to cycle)
 
-\\[bmkp-bmenu-sort-marked-before-unmarked]\t- Sort marked (`>') bookmarks first
-\\[bmkp-bmenu-sort-flagged-before-unflagged]\t- Sort flagged (`D') bookmarks first
-\\[bmkp-bmenu-sort-modified-before-unmodified]\t- Sort modified (`*') bookmarks first
-\\[bmkp-bmenu-sort-tagged-before-untagged]\t- Sort tagged (`t') bookmarks first
-\\[bmkp-bmenu-sort-annotated-before-unannotated]\t- Sort annotated (`a') bookmarks first
+`\\[bmkp-bmenu-sort-marked-before-unmarked]'\t- Sort marked (`>') bookmarks first
+`\\[bmkp-bmenu-sort-flagged-before-unflagged]'\t- Sort flagged (`D') bookmarks first
+`\\[bmkp-bmenu-sort-modified-before-unmodified]'\t- Sort modified (`*') bookmarks first
+`\\[bmkp-bmenu-sort-tagged-before-untagged]'\t- Sort tagged (`t') bookmarks first
+`\\[bmkp-bmenu-sort-annotated-before-unannotated]'\t- Sort annotated (`a') bookmarks first
 
-\\[bmkp-bmenu-sort-by-creation-time]\t- Sort by bookmark creation time
-\\[bmkp-bmenu-sort-by-last-buffer-or-file-access]\t- Sort by last buffer or file \
+`\\[bmkp-bmenu-sort-by-creation-time]'\t- Sort by bookmark creation time
+`\\[bmkp-bmenu-sort-by-last-buffer-or-file-access]'\t- Sort by last buffer or file \
 access
-\\[bmkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
-\\[bmkp-bmenu-sort-by-Gnus-thread]\t- Sort by Gnus thread: group, article, message
-\\[bmkp-bmenu-sort-by-Info-node-name]\t- Sort by Info manual, node, position in node
-\\[bmkp-bmenu-sort-by-Info-position]\t- Sort by Info manual, position in manual
-\\[bmkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
-\\[bmkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
-\\[bmkp-bmenu-sort-by-url]\t- Sort by URL
-\\[bmkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
+`\\[bmkp-bmenu-sort-by-last-bookmark-access]'\t- Sort by last bookmark access time
+`\\[bmkp-bmenu-sort-by-Gnus-thread]'\t- Sort by Gnus thread: group, article, message
+`\\[bmkp-bmenu-sort-by-Info-node-name]'\t- Sort by Info manual, node, position in node
+`\\[bmkp-bmenu-sort-by-Info-position]'\t- Sort by Info manual, position in manual
+`\\[bmkp-bmenu-sort-by-bookmark-type]'\t- Sort by bookmark type
+`\\[bmkp-bmenu-sort-by-bookmark-name]'\t- Sort by bookmark name
+`\\[bmkp-bmenu-sort-by-url]'\t- Sort by URL
+`\\[bmkp-bmenu-sort-by-bookmark-visit-frequency]'\t- Sort by bookmark visit frequency
 
-\\[bmkp-bmenu-sort-by-last-local-file-access]\t- Sort by last local file access
-\\[bmkp-bmenu-sort-by-local-file-type]\t- Sort by local file type: file, symlink, dir
-\\[bmkp-bmenu-sort-by-file-name]\t- Sort by file name
-\\[bmkp-bmenu-sort-by-local-file-size]\t- Sort by local file size
-\\[bmkp-bmenu-sort-by-last-local-file-update]\t- Sort by last local file update (edit)
+`\\[bmkp-bmenu-sort-by-last-local-file-access]'\t- Sort by last local file access
+`\\[bmkp-bmenu-sort-by-local-file-type]'\t- Sort by local file type: file, symlink, dir
+`\\[bmkp-bmenu-sort-by-file-name]'\t- Sort by file name
+`\\[bmkp-bmenu-sort-by-local-file-size]'\t- Sort by local file size
+`\\[bmkp-bmenu-sort-by-last-local-file-update]'\t- Sort by last local file update (edit)
 
 
 Hide/Show (Filtering `*Bookmark List*')
 ---------------------------------------
 
-\\[bmkp-bmenu-show-all]\t- Show all bookmarks
-\\[bmkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
-\\[bmkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
+`\\[bmkp-bmenu-show-all]'\t- Show all bookmarks
+`\\[bmkp-bmenu-toggle-show-only-marked]'\t- Toggle showing only marked bookmarks
+`\\[bmkp-bmenu-toggle-show-only-unmarked]'\t- Toggle showing only unmarked bookmarks
 
-\\[bmkp-bmenu-show-only-autonamed-bookmarks]\t- Show only autonamed bookmarks
-\\[bmkp-bmenu-show-only-autofile-bookmarks]\t- Show only autofile bookmarks
-\\[bmkp-bmenu-show-only-temporary-bookmarks]\t- Show only temporary bookmarks
+`\\[bmkp-bmenu-show-only-autonamed-bookmarks]'\t- Show only autonamed bookmarks
+`\\[bmkp-bmenu-show-only-autofile-bookmarks]'\t- Show only autofile bookmarks
+`\\[bmkp-bmenu-show-only-temporary-bookmarks]'\t- Show only temporary bookmarks
 
-\\[bmkp-bmenu-show-only-non-file-bookmarks]\t- Show only non-file (i.e. buffer) bookmarks
-\\[bmkp-bmenu-show-only-dired-bookmarks]\t- Show only Dired bookmarks
-\\[bmkp-bmenu-show-only-file-bookmarks]\t- Show only file & directory bookmarks     (`C-u': local only)
-\\[bmkp-bmenu-show-only-gnus-bookmarks]\t- Show only Gnus bookmarks
-\\[bmkp-bmenu-show-only-info-bookmarks]\t- Show only Info bookmarks
-\\[bmkp-bmenu-show-only-icicles-search-hits-bookmarks]\t- Show only Icicles search-hits bookmarks
-\\[bmkp-bmenu-show-only-non-invokable-bookmarks]\t- Show only non-invokable bookmarks
-\\[bmkp-bmenu-show-only-image-bookmarks]\t- Show only image-file bookmarks
-\\[bmkp-bmenu-show-only-orphaned-local-file-bookmarks]\t- Show only orphaned local file \
+`\\[bmkp-bmenu-show-only-non-file-bookmarks]'\t- Show only non-file (i.e. buffer) bookmarks
+`\\[bmkp-bmenu-show-only-dired-bookmarks]'\t- Show only Dired bookmarks
+`\\[bmkp-bmenu-show-only-file-bookmarks]'\t- Show only file & directory bookmarks     (`C-u': local only)
+`\\[bmkp-bmenu-show-only-gnus-bookmarks]'\t- Show only Gnus bookmarks
+`\\[bmkp-bmenu-show-only-info-bookmarks]'\t- Show only Info bookmarks
+`\\[bmkp-bmenu-show-only-icicles-search-hits-bookmarks]'\t- Show only Icicles search-hits bookmarks
+`\\[bmkp-bmenu-show-only-non-invokable-bookmarks]'\t- Show only non-invokable bookmarks
+`\\[bmkp-bmenu-show-only-image-bookmarks]'\t- Show only image-file bookmarks
+`\\[bmkp-bmenu-show-only-orphaned-local-file-bookmarks]'\t- Show only orphaned local file \
 bookmarks (`C-u': remote also)
-\\[bmkp-bmenu-show-only-desktop-bookmarks]\t- Show only desktop bookmarks
-\\[bmkp-bmenu-show-only-man-bookmarks]\t- Show only `man' page bookmarks
-\\[bmkp-bmenu-show-only-region-bookmarks]\t- Show only region bookmarks
-\\[bmkp-bmenu-show-only-function-bookmarks]\t- Show only function bookmarks
-\\[bmkp-bmenu-show-only-url-bookmarks]\t- Show only URL bookmarks
-\\[bmkp-bmenu-show-only-eww-bookmarks]\t- Show only EWW bookmarks
-\\[bmkp-bmenu-show-only-w3m-bookmarks]\t- Show only W3M bookmarks
-\\[bmkp-bmenu-show-only-variable-list-bookmarks]\t- Show only variable-list bookmarks
-\\[bmkp-bmenu-show-only-tagged-bookmarks]\t- Show only tagged bookmarks
-\\[bmkp-bmenu-show-only-untagged-bookmarks]\t- Show only untagged bookmarks
-\\[bmkp-bmenu-show-only-snippet-bookmarks]\t- Show only snippet bookmarks
-\\[bmkp-bmenu-show-only-bookmark-file-bookmarks]\t- Show only bookmark-file bookmarks
-\\[bmkp-bmenu-show-only-bookmark-list-bookmarks]\t- Show only bookmark-list bookmarks
+`\\[bmkp-bmenu-show-only-desktop-bookmarks]'\t- Show only desktop bookmarks
+`\\[bmkp-bmenu-show-only-man-bookmarks]'\t- Show only `man' page bookmarks
+`\\[bmkp-bmenu-show-only-region-bookmarks]'\t- Show only region bookmarks
+`\\[bmkp-bmenu-show-only-function-bookmarks]'\t- Show only function bookmarks
+`\\[bmkp-bmenu-show-only-url-bookmarks]'\t- Show only URL bookmarks
+`\\[bmkp-bmenu-show-only-eww-bookmarks]'\t- Show only EWW bookmarks
+`\\[bmkp-bmenu-show-only-w3m-bookmarks]'\t- Show only W3M bookmarks
+`\\[bmkp-bmenu-show-only-variable-list-bookmarks]'\t- Show only variable-list bookmarks
+`\\[bmkp-bmenu-show-only-tagged-bookmarks]'\t- Show only tagged bookmarks
+`\\[bmkp-bmenu-show-only-untagged-bookmarks]'\t- Show only untagged bookmarks
+`\\[bmkp-bmenu-show-only-snippet-bookmarks]'\t- Show only snippet bookmarks
+`\\[bmkp-bmenu-show-only-bookmark-file-bookmarks]'\t- Show only bookmark-file bookmarks
+`\\[bmkp-bmenu-show-only-bookmark-list-bookmarks]'\t- Show only bookmark-list bookmarks
 
-\\[bmkp-bmenu-filter-annotation-incrementally]\t- Incrementally show bookmarks whose \
+`\\[bmkp-bmenu-filter-annotation-incrementally]'\t- Incrementally show bookmarks whose \
 annotations match regexp
-\\[bmkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
+`\\[bmkp-bmenu-filter-bookmark-name-incrementally]'\t- Incrementally show only bookmarks \
 whose names match a regexp
-\\[bmkp-bmenu-filter-file-name-incrementally]\t- Incrementally show only bookmarks whose \
+`\\[bmkp-bmenu-filter-file-name-incrementally]'\t- Incrementally show only bookmarks whose \
 files match a regexp
-\\[bmkp-bmenu-filter-tags-incrementally]\t- Incrementally show only bookmarks whose tags \
+`\\[bmkp-bmenu-filter-tags-incrementally]'\t- Incrementally show only bookmarks whose tags \
 match a regexp
 
 
 Omit/Un-omit (`*Bookmark List*')
 --------------------------------
 
-\\[bmkp-bmenu-show-only-omitted-bookmarks]\t- Show (only) the omitted bookmarks
-\\[bmkp-bmenu-show-all]\t- Show the un-omitted bookmarks (all)
-\\[bmkp-bmenu-omit/unomit-marked]\t- Omit the marked bookmarks; un-omit them if after \
+`\\[bmkp-bmenu-show-only-omitted-bookmarks]'\t- Show (only) the omitted bookmarks
+`\\[bmkp-bmenu-show-all]'\t- Show the un-omitted bookmarks (all)
+`\\[bmkp-bmenu-omit/unomit-marked]'\t- Omit the marked bookmarks; un-omit them if after \
 `\\[bmkp-bmenu-show-only-omitted-bookmarks]'
-\\[bmkp-unomit-all]\t- Un-omit all omitted bookmarks
+`\\[bmkp-unomit-all]'\t- Un-omit all omitted bookmarks
 
 
 Define Commands for `*Bookmark List*'
 -------------------------------------
 
-\\[bmkp-bmenu-define-command]\t- Define a command to restore the current sort order & filter
-\\[bmkp-bmenu-define-full-snapshot-command]\t- Define a command to restore current bookmark list
-\\[bmkp-define-tags-sort-command]\t- Define a command to sort bookmarks by tags
-\\[bmkp-bmenu-define-jump-marked-command]\t- Define a command to jump to a bookmark that is \
-now marked
+`\\[bmkp-bmenu-define-command]'
+\t- Define a command to restore the current sort order & filter
+`\\[bmkp-bmenu-define-full-snapshot-command]'\t- Define a command to restore current bookmark list
+`\\[bmkp-define-tags-sort-command]'\t- Define a command to sort bookmarks by tags
+`\\[bmkp-bmenu-define-jump-marked-command]'
+\t- Define a command to jump to a bookmark that is now marked
 
 
 Options for `*Bookmark List*'
 -----------------------------
 
-bookmark-bmenu-file-column       - Bookmark width if files are shown
-bookmark-bmenu-toggle-filenames  - Show filenames initially?
+`bookmark-bmenu-file-column'       - Bookmark width if files are shown
+`bookmark-bmenu-toggle-filenames'  - Show filenames initially?
 
-bmkp-bmenu-omitted-bookmarks     - List of omitted bookmarks
-bmkp-bmenu-state-file            - File to save bookmark-list state
+`bmkp-bmenu-omitted-bookmarks'     - List of omitted bookmarks
+`bmkp-bmenu-state-file'            - File to save bookmark-list state
                                    (\"home\") nil: do not save/restore
-bmkp-sort-comparer               - Initial sort
-bmkp-sort-orders-for-cycling-alist - Sort orders that `\\[bmkp-bmenu-change-sort-order-repeat]'... cycles
+`bmkp-sort-comparer'               - Initial sort
+`bmkp-sort-orders-for-cycling-alist' - Sort orders that `\\[bmkp-bmenu-change-sort-order-repeat]'... cycles
 
 
 Other Options
 -------------
 
-bookmark-automatically-show-annotations  - Show annotation when visit?
-bookmark-completion-ignore-case  - Case-sensitive completion?
-bookmark-default-file            - File to save bookmarks in
-bookmark-menu-length             - Max size of bookmark-name menu item
-bookmark-save-flag               - Whether and when to save
-bookmark-use-annotations         - Edit annotation when set bookmark?
-bookmark-version-control         - Numbered backups of bookmark file?
+`bookmark-automatically-show-annotations'  - Show annotation when visit?
+`bookmark-completion-ignore-case'  - Case-sensitive completion?
+`bookmark-default-file'            - File to save bookmarks in
+`bookmark-menu-length'             - Max size of bookmark-name menu item
+`bookmark-save-flag'               - Whether and when to save
+`bookmark-use-annotations'         - Edit annotation when set bookmark?
+`bookmark-version-control'         - Numbered backups of bookmark file?
 
-bmkp-autoname-format        - Format of autonamed bookmark name
-bmkp-last-as-first-bookmark-file - Whether to start with last b. file
-bmkp-crosshairs-flag        - Highlight position when visit?
-bmkp-menu-popup-max-length  - Use menus to choose bookmarks?
-bmkp-save-new-location-flag - Save if bookmark relocated?
-bmkp-sequence-jump-display-function - How to display a sequence
-bmkp-sort-comparer          - Predicates for sorting bookmarks
-bmkp-su-or-sudo-regexp      - Bounce-show each end of region?
-bmkp-this-file/buffer-cycle-sort-comparer -  cycling sort for here
-bmkp-use-region             - Activate saved region when visit?"
+`bmkp-autoname-format'        - Format of autonamed bookmark name
+`bmkp-last-as-first-bookmark-file' - Whether to start with last b. file
+`bmkp-crosshairs-flag'        - Highlight position when visit?
+`bmkp-menu-popup-max-length'  - Use menus to choose bookmarks?
+`bmkp-save-new-location-flag' - Save if bookmark relocated?
+`bmkp-sequence-jump-display-function' - How to display a sequence
+`bmkp-sort-comparer'          - Predicates for sorting bookmarks
+`bmkp-su-or-sudo-regexp'      - Bounce-show each end of region?
+`bmkp-this-file/buffer-cycle-sort-comparer' -  cycling sort for here
+`bmkp-use-region'             - Activate saved region when visit?"
   (kill-all-local-variables)
   (use-local-map bookmark-bmenu-mode-map)
   (setq truncate-lines    t
@@ -3181,6 +3192,8 @@ for confirmation."
                                         ; Bound to `Y > -' in bookmark list
   "Move the marked bookmarks to bookmark file FILE.
 You are prompted for FILE.
+If FILE doesn't exist then you're prompted to confirm creating it.
+
 The marked bookmarks are removed from the current bookmark list and
 appended to those in FILE.  If any of them has the same name as a
 bookmark already in FILE then it is renamed by appending a numeric
@@ -4706,7 +4719,8 @@ the omit list and the sort & filter information."
                                                                  (convert-standard-filename
                                                                   (expand-file-name
                                                                    bmkp-current-bookmark-file))))
-                      ;; $$$$$$ (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list))) ; Sets *-latest-* also.
+                      ;; $$$$$$ Sets *-latest-* also:
+                      ;;   (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list)))
                       (let ((bookmark-alist  (or bmkp-latest-bookmark-alist
                                                  (bmkp-refresh-latest-bookmark-list)))) ; Sets *-latest-* also.
                         (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
@@ -4714,7 +4728,8 @@ the omit list and the sort & filter information."
                         (with-current-buffer (get-buffer bmkp-bmenu-buffer)
                           (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark)))
                       (when (interactive-p)
-                        (bmkp-msg-about-sort-order (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
+                        (bmkp-msg-about-sort-order
+                         (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-min)) ; Delete any preexisting defs of the same command.
