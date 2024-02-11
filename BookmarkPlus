@@ -35,7 +35,7 @@ Some keys you can use in your bookmarks list (from `C-x r l'):
 
 * Add/remove some tags to/from a bookmark: `##T +##', `T -'
 * Mark the bookmarks that have particular tags: `##T m +##'.  Hit `RET' to enter each tag you type, then hit `RET' with empty input when done.
-* Unmark all bookmarks: `M-DEL' (just like in Dired)
+* Unmark all bookmarks: `M-DEL' or `U' (just like in Dired)
 * Toggle marked/unmarked bookmarks: `t'
 * [[Dired]] the marked bookmarks: `##M-d >##'.  Enter a name for the Dired buffer.
 
@@ -2768,6 +2768,84 @@ their bookmarks together in a session.  Think of your bookmark
 files as independent modules that you can combine.
 
 See Also: [[#LoadOrder|Bookmark+ Load Order and Option `bookmark-default-file']].
+
+
+
+
+
+
+
+
+
+
+[:BookmarkFilesForBookmarkswithSpecificTags]
+=== Bookmark Files For Bookmarks with Specific Tags ===
+
+'''Bookmark+''' provides various features for creating, manipulating,
+and making use of bookmarks, but it generally doesn't provide
+predefined ways to use such features together to accomplish a
+particular goal.
+
+This includes uses of features to ''organize'' bookmarks and their
+destinations or results/effects.  But here's an example of using a
+couple features out of the box to do that: create a bookmark file
+for bookmarks with a given set of tags.
+
+You can have multiple bookmark files, which you can use separately
+or in combination.  If you use tags as a way of "categorizing"
+bookmarks then you might create one or more bookmark files for
+bookmarks tagged in particular ways.  For example, have a bookmark
+file that contains only bookmarks tagged both `travel' and `2024'.
+
+Loading that file alone gives you access to just those bookmarks,
+simplifying bookmark commands (jump, tag, filter, edit,...).
+Loading it together with another bookmark file, for example one
+for bookmarks with another set of tags, gives you access to both
+sets.
+
+Here's one way to create a bookmark file for bookmarks tagged in a
+particular way, using the bookmark-list display for a set of
+bookmarks that includes those bookmarks but also others: mark the
+bookmarks you want, then create a bookmark file from the marked
+bookmarks.
+
+1. Unmark all bookmarks, using `U' (or `M-DEL`).
+
+2. Mark the bookmarks that have the tags you're interested in.
+
+: You can do this using tags-command keys that mark according to
+their tags.  These keys all begin with prefix key `T m'.  For
+example, to mark bookmarks that are tagged with both `travel'
+and `2024' you can use `T m *' and enter `travel' and `2024'
+when prompted (end with an empty `RET').
+
+: Or if you want bookmarks with either `travel' or `2024' (or
+both), use `##T m +##'.  Another way to do this is to use `##T m %##'
+and enter the regexp `##\(travel\|2024\)##'.
+
+: (Marking and unmarking commands are also in menu '''Bookmark+''' >
+'''Mark'''.)
+
+3. Copy the marked bookmarks to a new bookmark file.
+
+: Use `##Y > 0##' to do this, entering the file name at the prompt.
+
+: Or if you want to move the bookmarks instead of copying them
+(i.e., remove them from the current bookmark file), use `##Y >
+-##'.
+
+: (Bookmark-file commands are also in menu '''Bookmark+''' >
+'''Bookmark File'''.)
+
+See Also: [[#TagCommandsAndKeys|Tag Commands And Keys]].
+
+
+
+
+
+
+
+
 
 
 
