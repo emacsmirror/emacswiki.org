@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 28 09:27:03 2022 (-0800)
+;; Last-Updated: Sat Feb 10 16:04:00 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 15405
+;;     Update #: 15414
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -146,6 +146,7 @@
 ;;      (@> "A Type-Aware `find-file'")
 ;;    (@> "Tagging Files")
 ;;    (@> "Using Multiple Bookmark Files")
+;;      (@> "Bookmark Files For Bookmarks with Specific Tags")
 ;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "The Bookmark List Display")
 ;;      (@> "Jumping To Bookmarks from the Bookmark List Display")
@@ -2471,6 +2472,68 @@
 ;;  See Also: (@> "Bookmark+ Load Order and Option `bookmark-default-file'").
 ;;
 ;;
+;;(@* "Bookmark Files For Bookmarks with Specific Tags")
+;;  *** Bookmark Files For Bookmarks with Specific Tags ***
+;;
+;;  Bookmark+ provides various features for creating, manipulating,
+;;  and making use of bookmarks, but it generally doesn't provide
+;;  predefined ways to use such features together to accomplish a
+;;  particular goal.
+;;
+;;  This includes uses of features to organize bookmarks and their
+;;  destinations or results/effects.  But here's an example of using a
+;;  couple features out of the box to do that: create a bookmark file
+;;  for bookmarks with a given set of tags.
+;;
+;;  You can have multiple bookmark files, which you can use separately
+;;  or in combination.  If you use tags as a way of "categorizing"
+;;  bookmarks then you might create one or more bookmark files for
+;;  bookmarks tagged in particular ways.  For example, have a bookmark
+;;  file that contains only bookmarks tagged both `travel' and `2024'.
+;;
+;;  Loading that file alone gives you access to just those bookmarks,
+;;  simplifying bookmark commands (jump, tag, filter, edit,...).
+;;  Loading it together with another bookmark file, for example one
+;;  for bookmarks with another set of tags, gives you access to both
+;;  sets.
+;;
+;;  Here's one way to create a bookmark file for bookmarks tagged in a
+;;  particular way, using the bookmark-list display for a set of
+;;  bookmarks that includes those bookmarks but also others: mark the
+;;  bookmarks you want, then create a bookmark file from the marked
+;;  bookmarks.
+;;
+;;  1. Unmark all bookmarks, using `U'.
+;;
+;;  2. Mark the bookmarks that have the tags you're interested in.
+;;
+;;     You can do this using tags-command keys that mark according to
+;;     their tags.  These keys all begin with prefix key `T m'.  For
+;;     example, to mark bookmarks that are tagged with both `travel'
+;;     and `2024' you can use `T m *' and enter `travel' and `2024'
+;;     when prompted (end with an empty `RET').
+;;
+;;     Or if you want bookmarks with either `travel' or `2024' (or
+;;     both), use `T m +'.  Another way to do this is to use `T m %'
+;;     and enter the regexp `\(travel\|2024\)'.
+;;
+;;     (Marking and unmarking commands are also in menu `Bookmark+' >
+;;     `Mark'.)
+;;
+;;  3. Copy the marked bookmarks to a new bookmark file.
+;;
+;;     Use `Y > 0' to do this, entering the file name at the prompt.
+;;
+;;     Or if you want to move the bookmarks instead of copying them
+;;     (i.e., remove them from the current bookmark file), use `Y >
+;;     -'.
+;;
+;;     (Bookmark-file commands are also in menu `Bookmark+' >
+;;     `Bookmark File'.)
+;;
+;;  See Also: (@> "Tag Commands and Keys").
+;;
+;;
 ;;(@* "Bookmark-File Bookmarks")
 ;;  *** Bookmark-File Bookmarks ***
 ;;
@@ -2546,9 +2609,11 @@
 ;;    ----------------------------
 ;;
 ;;  (Bookmark+ does not use the sliding header line of vanilla Emacs
-;;  24+, which means that option `bookmark-bmenu-use-header-line' has
-;;  no effect.  You do not need to see `Bookmark' and `File' column
-;;  headers as you scroll.)
+;;  24-27, which means that option `bookmark-bmenu-use-header-line'
+;;  has no effect.  You do not need to see `Bookmark' and `File'
+;;  column headers as you scroll.  Bookmark+ also does not use
+;;  tabulated-list-mode, as vanilla Emacs 28+ does.  That mode is too
+;;  limited.)
 ;;
 ;;  Bookmarks are highlighted to indicate their type. You can mark and
 ;;  unmark bookmarks, show or hide bookmarks of particular types, and
