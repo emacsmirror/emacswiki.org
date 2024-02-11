@@ -3,8 +3,7 @@
 It is widely used for teaching and research of *programming language semantics*, and was influential on the design of Common Lisp.
 
 == Implementations ==
-
-There are many implementations of Scheme including those below. See https://www.scheme.org/ for a longer list.
+There are dozens of implementations of Scheme including those below. See https://www.scheme.org/ and https://small.r7rs.org/wiki/ImplementationContrasts/ for longer lists.
 * Chez Scheme -- A Scheme currently maintained by Cisco Systems
 * Chibi -- Intended to be a small Scheme made to be a C extension language.
 * Chicken -- A compiler for R5RS and (soon) R7RS Scheme.
