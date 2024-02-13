@@ -104,4 +104,8 @@ I had a hard time figuring out how the escaping worked considering the double es
 
     (add-to-list 'compilation-error-regexp-alist '("^  \"\\(.+\.s?v\\)\",\n  \\([0-9]+\\)" 1 2)))
 
+[edit] a useful snippet I also used while debugging was to reset my compilation-error-regexp-alist back to the default:
+
+    (setq compilation-error-regexp-alist (eval (car (get 'compilation-error-regexp-alist 'standard-value))))
+
 -- Alec
