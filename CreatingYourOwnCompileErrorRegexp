@@ -98,3 +98,10 @@ I didn't try this example, but got no matches for my own regexp unless I used do
 -- Lukas
 ----
 CompilationMode
+
+[new]
+I had a hard time figuring out how the escaping worked considering the double escaped parentheses requirement (I'm still not sure why it's required)! Here's an example of a multiline match using \n, \., and escaping " for a filename in quotes (for VCS P-2019 errors):
+
+    (add-to-list 'compilation-error-regexp-alist '("^  \"\\(.+\.s?v\\)\",\n  \\([0-9]+\\)" 1 2)))
+
+-- Alec
