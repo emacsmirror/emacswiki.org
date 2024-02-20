@@ -1,4 +1,5 @@
 Ugh. Spam-fighting resulted in me adding a borked regular expression to [[BannedHosts]] on 2024-02-15.
+Regular users were unable to post as the script refused to save anything (and crashed).
 I hope it's fixed, now.
 
 – [[Alex Schroeder]]
