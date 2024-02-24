@@ -7,6 +7,8 @@ Place this in your InitFile:
 
     (ido-mode t)
 
+This will enable using Ido versions of <code>find-file</code>, <code>switch-to-buffer</code>, <code>dired</code>, <code>display-buffer</code>, <code>insert-buffer</code>, <code>kill-buffer</code>, <code>insert-file</code>, <code>write-file</code> and related commands, e.g. <code>find-file-other-frame</code>, when using the regular command key bindings.
+
 To customize ido-mode, do
 
     M-x customize-group RET ido RET
