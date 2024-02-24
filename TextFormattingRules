@@ -156,7 +156,7 @@ because the wiki doesn't know what case non-ASCII characters have.
 ** ##!NoLink## -> !NoLink
 * %%[[Words in double brackets]]%% are also transformed into
 links to other wiki pages.  This works for all characters except punctuation characters.
-* You can create PermanentAnchors to serve as targets of links, e.g. <code>[:MyHiddenAnchor]</code>. You can link to an anchor on the same page or on a different page, e.g. <code>[#MyHiddenAnchor]</code>.
+* You can create PermanentAnchors to serve as targets of links, e.g. <code>[:MyHiddenAnchor]</code>. You can link to an anchor on the same page or on a different page, e.g. <code>[[#MyHiddenAnchor]]</code>.
 * To create a new page, just add a link to it from an existing page and
 click on the question-mark link that appears after the page name.
 See CreateNewPages.
