@@ -1,23 +1,15 @@
 [[fr:FaireDesChosesIntÃ©ractivement]]
 
-'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version from the unofficial [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head%3A/lisp/ido.el bzr mirror] or [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/lisp/ido.el git mirror]. You may get a current version from the canonical emacs bzr repository at Savannah when it gains a web interface ([[BzrForEmacsDevs#toc6]]).
-
-= Overview of Ido =
-
-The ido.el package by KimStorm lets you interactively do things with buffers and files. As an example, while searching for a file with ##C-x C-f##, ido can helpfully suggest the files whose paths are closest to your current string, allowing you to find your files more quickly.
-
-To activate, place this in your InitFile:
-
-    (require 'ido)
-    (ido-mode t)
-
-Then do
-
-    M-x customize-group RET ido RET
-
-and configure ido-mode. Another good setting to enable is ido-enable-flex-matching.
+'''[::Ido]''' lets you interactively do things with buffers and files. As an example, while searching for a file with ##C-x C-f##, ido can suggest the files whose paths are closest to your current string, allowing you to find your files more quickly.  Created by KimStorm, it has been built into Emacs since version 22.
 
 == Using IDO ==
+Place this in your InitFile:
+
+    (ido-mode t)
+
+To customize ido-mode, do
+
+    M-x customize-group RET ido RET
 
 To switch between buffers, press "C-x b", then:
 
