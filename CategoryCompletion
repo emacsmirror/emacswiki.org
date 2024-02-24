@@ -1,16 +1,10 @@
 Click the heading to search for pages in this category.
 
-[new]
-See DiscussionCategoryCompletion if you are interested in discussing this page. Please do not discuss it here.
+See DiscussionCategoryCompletion if you are interested in discussing this page.
 
-[new]
 '''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the [[minibuffer]] and completing text in a [[buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
 
 Besides the question of ''where'' text is completed (minibuffer or other buffer) is the question of ''how''. Completion can be effected in various ways (e.g. using different kinds of matching, filtering, sorting), and it can be accomplished using various user interfaces (e.g. popup selection list/menu).
-
-
-
-
 
 [:MinibufferCompletion]
 == Minibuffer Input Completion ==
@@ -34,9 +28,6 @@ The following pages describe some libraries that extend or enhance minibuffer co
 * [[Marginalia]] -- Adds annotations to listed completion candidates.
 * [[Vertico]] -- Stands for "VERTical Interactive COmpletion".
 
-
-
-
 See also:
 
 * IcompleteMode's "Incremental completion" for interactive display of possible completion candidates based on what's typed so far.
@@ -46,12 +37,6 @@ See also:
 * ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
 * [[Synonyms]] -- Input completion for thesaurus lookup.
 * Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
-
-
-
-
-
-
 
 [:BufferTextCompletion]
 == Text Completion in a Buffer ==
@@ -80,17 +65,14 @@ The following libraries complete text in place (in a buffer other than the minib
 * DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
 * CaMode -- Defunct / unmaintained. Ca2+ is based on CompanyMode, similar sources to AutoComplete.
 
-
-
 === Programming-Specific Completion ===
-
-* HowSemanticFulfillsThoseNeeds -- Semantic (part of CEDET, which is part of Emacs from version 23.2) can "intellisense" style completion, but someone has to tell it how for different programming languages. (Different completion interfaces can display this information. Search for CEDET on this page.)
+* LanguageServerProtocol -- provides completion and other programming-related functionality for many programming languages, and is very popular.
+* HowSemanticFulfillsThoseNeeds -- Semantic (built into Emacs as part of CEDET) can provide "intellisense" style completion, but someone has to tell it how for different programming languages. (Different completion interfaces can display this information. Search for CEDET on this page.)
 * EmacsTags -- Command `complete-tag' (from `<code>etags.el</code>') -- Completes to a defined ''tag'' (that is, a defined name, such as function or variable name).
 * [[Icicles - Other Search Commands#IciclesImenu]] -- Like ImenuMode with regexp completion. Across multiple buffers, files, and saved regions, like EmacsTags.
 * ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
 * NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
 * SlimeMode -- provides multiple completion mechanisms that query the running Lisp program for candidates. Can be made to work with CompanyMode. See also SlimeCompleteLocals.
-
 
 [:OtherCompletion]
 == Other Completion ==
@@ -106,8 +88,5 @@ Some completions are available in modes that provide command interaction.
 * [[http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Clang]] -- Completion extension based on Clang.
 * [[https://github.com/abo-abo/function-args/ function-args]] -- C++ completion extension for CEDET.
 
-
 ----
 SiteMap
-
-
