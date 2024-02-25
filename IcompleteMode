@@ -8,9 +8,10 @@ Use command `icomplete-mode' to toggle icomplete mode on/off. To turn on the mod
 
     (icomplete-mode 1)
 
+==Related packages==
 [:IcompleteModePlus]
 [:IcompletePlus]
-== Icomplete Mode+ ==
+=== Icomplete Mode+ ===
 
 Library <tt>[[icomplete+.el]]</tt> (Icomplete+) provides the following enhancements to icomplete mode:
 
@@ -33,7 +34,7 @@ they do not show, for instance, the number of available completions or number of
 [[image:DrewsEmacsIcompleteImage]]
 [[image:DrewsEmacsIcompleteImageMatch]]
 
-== Apropos (Regexp) Icompletion ==
+=== Icicles' Apropos (Regexp) Icompletion ===
 
 '''[[Icicles]]''' provides a kind of ''apropos'' icompletion. As with standard icompletion, the candidate completions that match your input are displayed incrementally, as you type. The difference is that the matches are ''regular expression'' (regexp) matches. See [[Icicles - Icompletion]].
 
