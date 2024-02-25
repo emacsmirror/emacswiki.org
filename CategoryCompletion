@@ -13,7 +13,8 @@ The [[minibuffer]] is typically used to read user input (data) to control progra
 
 ===Built-in packages===
 * CompletingRead -- EmacsLisp function `completing-read' and similar.
-* InteractivelyDoThings -- Input completion without having to hit `TAB'.
+* IcompleteMode -- Fast minibuffer selection.
+* InteractivelyDoThings ("Ido") -- Input completion without having to hit `TAB'.
 
 ===External packages===
 The following pages describe some libraries that extend or enhance minibuffer completion in various ways. Sometimes a substantial such library is called a "completion framework" by some.
@@ -27,7 +28,6 @@ The following pages describe some libraries that extend or enhance minibuffer co
 * [[Vertico]] -- Stands for "VERTical Interactive COmpletion".
 
 ===See also===
-* IcompleteMode's "Incremental completion" for interactive display of possible completion candidates based on what's typed so far.
 * MinibufferHistory
 * Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
 * RecentFiles -- Complete recently used filenames.
