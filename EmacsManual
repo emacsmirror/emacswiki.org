@@ -32,7 +32,10 @@ You can also provide some *context* in parenthesis, after the link itself. If we
 * ##Manual:macros (elisp)## -> Manual:macros (elisp) links an entry in the EmacsLispReference, as its URLs contain "elisp".
 * ##Manual:point (concept)## -> Manual:point (concept) links to an entry from the concept index of the EmacsManual  
 * ##Manual:completion (emacs)## -> Manual:completion (emacs) links to three entries in different emacs manuals, as their URLs all contain "emacs".
-* ##Manual:completion (html_node/emacs)## -> Manual:completion (html_node/emacs) links to a single entry in the Emacs manual as its URLs contain "html_node/emacs".  "concept" could have been used instead of "html_node/emacs" here, e.g. Manual:completion (concept).
+* ##Manual:completion (html_node/emacs)## -> Manual:completion (html_node/emacs) links to a single entry in the Emacs manual as its URLs contain "html_node/emacs".
+* ##Manual:completion (concept)## -> Manual:completion (concept) also links to this entry.
+* ##Manual:Completion (concept)## (note the case change) -> Manual:Completion (concept) links to both this entry and an entry  in the AUCTeX manual.
+* ##Manual:Completion (manual/auctex)## -> Manual:Completion (manual/auctex) links only to the entry  in the AUCTeX manual.
 
 This features uses the
 [http://www.emacswiki.org/info-ref info-ref] script.
