@@ -2,8 +2,6 @@ See SubprocessCompletion for the background to this.
 
 To use this simply bind "spbc-readline-tab" to your TAB key in the relevant modes (eg shell / rlogin etc)
 
-NB, (should probably integrate with the default comint-dynamic-complete at some point)....
-
 Still need to upload this code properly (rather than have it as a page) when it's a bit more refined. But hopefully it could save some else some time if they've been wrestling with the same problem.
 
 
@@ -96,7 +94,7 @@ Still need to upload this code properly (rather than have it as a page) when it'
     		;;(accept-process-output proc 1)
     
     		;; At the moment when we type "ls tkt\t" we end up with:
-    		;; "ls tkt^[_kadm_1" on the command line at this stage
+    		;; "ls tkt^[  _kadm_1 " on the command line at this stage
     		;; of the code (with an echoed terminal)
     		;; So, we need to filter the ^[^H^H and the ^G out....
     		;; we can do that by changing 'spbc-input-line-filter to do this filtering...
