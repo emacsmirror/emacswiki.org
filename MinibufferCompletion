@@ -1,4 +1,12 @@
-The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is based on CompletingRead and explained in the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion.html Completion] section of the EmacsManual (<kbd>C-h i m Emacs RET m Completion RET</kbd>).
+Emacs's built-in minibuffer completion provides support when users provide input via the [[minibuffer]].
+
+It is used with `M-x', `C-x b', `C-x C-f', and many other commands that prompt for input.
+
+There are various standard options for input CompletionStyles.  Additionally, the packages mentioned below provide extensive support of different kinds.
+
+===Official documentation===
+* [[Manual:completion]] (concept) in the EmacsManual
+* [[Manual:Minibuffer Completion]] (elisp) in the EmacsLispReference
 
 ===Built-in packages===
 * CompletingRead -- EmacsLisp function `completing-read' and similar.
