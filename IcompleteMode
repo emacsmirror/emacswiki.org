@@ -1,12 +1,16 @@
 == Icomplete Mode ==
 
-Icomplete mode provides an incremental MiniBuffer [[Completion]] ''preview'': As you type in the minibuffer, a list of matching commands is echoed there so you can see how to complete a command. If no known commands match the input so far, "<code>(No match)</code>" is echoed.
+The built-in Icomplete minor mode provides an incremental MiniBuffer [[Completion]] ''preview'': As you type in the minibuffer, a list of matching commands is echoed there so you can see how to complete a command.
 
-You can also select one of the completion candidates.  See `C-h f icomplete-mode' for more details.
+You can also select one of the completion candidates.  See `C-h f icomplete-mode' and the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Icomplete.html Icomplete Emacs manual entry] for more details.
 
 Use command `icomplete-mode' to toggle icomplete mode on/off. To turn on the mode in your Emacs init file, do this:
 
     (icomplete-mode 1)
+
+Icomplete also includes
+* `fido-mode', which emulates [[Ido]]
+* `icomplete-vertical-mode', which toggles vertical candidate display in `icomplete-mode' or `fido-mode'.
 
 ==Related packages==
 [:IcompleteModePlus]
