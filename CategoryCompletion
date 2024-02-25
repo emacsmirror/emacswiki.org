@@ -17,13 +17,12 @@ The [[minibuffer]] is typically used to read user input (data) to control progra
 * InteractivelyDoThings ("Ido") -- Input completion without having to hit `TAB'.
 
 ===External packages===
-The following pages describe some libraries that extend or enhance minibuffer completion in various ways. Sometimes a substantial such library is called a "completion framework" by some.
+The following pages describe some well-known libraries that extend or enhance minibuffer completion in various ways. Sometimes a substantial such library is called a "completion framework" by some.
 
 * [[Helm]] -- Completion framework with many available modules.
 * [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application.
 * [[IvyCounselSwiper]] -- Minimalist, simple, customizable. Tries to help with discoverability.
 * [[VerticoConsultMarginaliaOrderlessEmbark]] - Completion framework composed of separate modular packages.
-* LightningCompletion -- Input completion without hitting `TAB'.
 
 ===See also===
 * MinibufferHistory
