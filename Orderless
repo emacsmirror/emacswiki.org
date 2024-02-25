@@ -1,0 +1,11 @@
+Orderless ([https://github.com/oantolin/orderless GitHub], [https://elpa.gnu.org/packages/orderless.html GNU ELPA]) provides a ''completion style'' "for matching regexps in any order".
+
+It can be used together with:
+* The default Emacs completion, IcompleteMode, or [[Vertico]].
+* [[Consult]]'s `consult-completion-in-region'
+* CompanyMode
+* [[Corfu]]
+* [[IvyCounselSwiper|Ivy]]
+
+----
+CategoryCompletion
