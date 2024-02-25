@@ -1,4 +1,7 @@
-Emacs comes with a comprehensive manual.  Access it through [[Info]], either with
+Emacs comes with a comprehensive manual.
+
+==Usage==
+Access it through [[Info]], either with
 the ##info## command in a shell window under GNU and Unix operating systems,
 or in Emacs, by typing `M-x info RET' (that's Meta- or ESC x, the word "info",
 followed by the return key), or by typing `C-h i' (that's Control-h followed by i).
@@ -10,6 +13,12 @@ The GNU Emacs manual is also available online from any GNU ftp mirror or from he
 * http://www.gnu.org/software/emacs/manual/
 * Available in print from the GnuPress.
 
+==Related==
+* EmacsLispReference for information on EmacsLisp
+* EmacsManualLicense for some discussion about the manual's license.
+* EmacsManualFormats for discussion about the manual's source markup language, output formats and usage.
+
+==Linking from this wiki==
 You can link to the index entries in the manual using the Manual prefix.
 Command, Variable, and Concept index entries can be linked.
 If the entries contain punctuation or whitespace characters, you will
@@ -20,37 +29,24 @@ need to put them in double square brackets:
 
 You can also provide some *context* in parenthesis, after the link itself. If we're linking to [[Manual:macros]] or [[Manual:point]], for example, we are shown two or more alternatives. You can provide context in parenthesis: it just needs to match somewhere in the URL or description of the particular entry you want to refer to.
 
-* ##Manual:macros (elisp)## -> Manual:macros (elisp)
-* ##[[Manual:point]] (concept)## -> [[Manual:point]] (concept)
+* ##Manual:macros (elisp)## -> Manual:macros (elisp) links an entry in the EmacsLispReference, as its URLs contain "elisp".
+* ##Manual:point (concept)## -> Manual:point (concept) links to an entry from the concept index of the EmacsManual  
+* ##Manual:completion (emacs)## -> Manual:completion (emacs) links to three entries in different emacs manuals, as their URLs all contain "emacs".
+* ##Manual:completion (html_node/emacs)## -> Manual:completion (html_node/emacs) links to a single entry in the Emacs manual as its URLs contain "html_node/emacs".  "concept" could have been used instead of "html_node/emacs" here, e.g. Manual:completion (concept).
 
 This features uses the
 [http://www.emacswiki.org/info-ref info-ref] script.
 You can download the [http://www.emacswiki.org/info-ref.dat database] used.
 
+==XEmacs==
 The XEmacs manuals are also available online from here:
 
 * http://www.xemacs.org/Documentation/
-
-EmacsLisp authors will want to look instead at the EmacsLispReference.
-
-See EmacsManualLicense for some discussion about the manual's license.
-
-See EmacsManualFormats for discussion about the manual's source markup language, output formats and usage.
-
-
-
-
-== Missing Manual? ==
-
-[new]
+== Missing manuals ==
 If you get this error message:
 
  Info-find-file: Info file emacs does not exist
 
-then you need to install the ##emacsXX-common-non-dfsg## [Emacs 25] or ## emacs-common-non-dfsg ## [Emacs 26.1] package (Debian) 
-
-
-
-
+On Debian  you need to install the ## emacs-common-non-dfsg ## package.  See https://packages.debian.org/sid/emacs-common-non-dfsg for background.
 ----
 CategoryDocumentation
