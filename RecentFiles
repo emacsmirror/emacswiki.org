@@ -300,7 +300,7 @@ I use Gnus in one process, and everything related to plain file editing in anoth
       (setq cmg:prevent-gnus-recentf-double-init t)))
 }}}
 
-==== LaCarte ====
+=== LaCarte ===
 
 You can take advantage of recentf filters (that is, structured menus) from the keyboard (with completion and so on) by using library [[LaCarte]].
 
