@@ -1,18 +1,16 @@
-Function `completing-read' prompts a user to select from a set of candidates, providing [[minibuffer]] [[completion]] to narrow and complete the user input.
+The built-in function `completing-read' prompts a user to select from a set of candidates, providing [[minibuffer]] [[completion]] to narrow and complete the user input.
 
-== `completing-read' Enhancements ==
-
-* [[Icicles]] -- In Icicle [[minor mode]], `completing-read' is itself enhanced in many ways, including these cited below for <tt>[[#auto-completing-read.el]]</tt> functions: (optionally) automatically completing as much as possible, and (optionally) automatically selecting the sole matching candidate.  Exiting Icicle mode returns `completing-read' to its original behavior.
-
-
-== Alternatives to `completing-read' (Replacement Functions) ==
-
-* [InteractivelyDoThings Ido] provides function `ido-completing-read', which is similar to but different from what `completing-read' does.  You can use it in your own commands as a replacement for `completing-read'.
-
+==Related built-in packages==
+===Ido===
+* [InteractivelyDoThings Ido] provides `ido-completing-read', which is similar to `completing-read'.  You can use it in your own commands as a replacement for `completing-read'.
+==Related external packages==
+===auto-completing-read===
 [:auto-completing-read.el]
-* <tt>[[auto-completing-read.el]]</tt> provides functions that are variants of `completing-read' and `ido-completing-read' designed to minimise the number of keystrokes needed to select an option by automatically completing as much as possible, and automatically selecting when only one option remains.  You can use these functions in your own commands as replacements for `completing-read' and `ido-completing-read'.
-
-* [EmacsWiki:id=Anything Anything/Helm] provides a different completion interface from `completing-read', and alternative completion functions.
+* <tt>[[auto-completing-read.el]]</tt> provides functions that are variants of `completing-read' and `ido-completing-read' designed to minimize the number of keystrokes needed to select an option.  You can use these functions in your own commands as replacements for `completing-read' and `ido-completing-read'.
+===Helm===
+* [[Helm]] provides a different completion interface from `completing-read', and alternative completion functions.
+===Icicles===
+* [[Icicles]] -- In Icicle [[minor mode]], `completing-read' is itself enhanced in many ways: optionally automatically completing as much as possible, and optionally automatically selecting the sole matching candidate.  Exiting Icicle mode returns `completing-read' to its original behavior.
 
 ----
 CategoryCompletion
