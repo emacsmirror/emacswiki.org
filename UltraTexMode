@@ -1,4 +1,4 @@
-Ultra-TeX mode  is a major mode for typing TeX documents written by JohnPalmieri.  One of its main features is dynamic completion through LightningCompletion on TeX commands.
+Ultra-!TeX mode  is a major mode for typing TeX documents written by JohnPalmieri.  One of its main features is dynamic completion through LightningCompletion on TeX commands.
 
 It is available at https://github.com/jhpalmieri/ultratex
 
