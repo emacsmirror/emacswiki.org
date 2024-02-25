@@ -3,7 +3,7 @@ The packages below are often combined to form an enhanced completion framework f
 * [[Consult]] -- Enhances CompletingRead, including live preview and asynchronous candidate generation.
 * [[Marginalia]] -- Adds annotations to  completion candidates.
 * [[Orderless]] -- A completion style that matches space-separated components in any order.
-* [[Embark]] - Stands for "Emacs Mini-Buffer Actions Rooted in Keymaps"
+* [[Embark]] -- Stands for "Emacs Mini-Buffer Actions Rooted in Keymaps"
 
 ----
 CategoryCompletion
