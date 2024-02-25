@@ -1,0 +1,24 @@
+The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is based on CompletingRead and explained in the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion.html Completion] section of the EmacsManual (<kbd>C-h i m Emacs RET m Completion RET</kbd>).
+
+===Built-in packages===
+* CompletingRead -- EmacsLisp function `completing-read' and similar.
+* IcompleteMode -- Fast minibuffer selection.
+* InteractivelyDoThings ("Ido") -- Input completion without having to hit `TAB'.
+
+===External packages===
+These packages or sets of complementary packages extend or enhance minibuffer completion. They are often referred to as ''completion frameworks''.
+* [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application.
+* [[Helm]] -- Completion framework with many available modules.
+* [[IvyCounselSwiper]] -- Minimalist, simple, customizable. Tries to help with discoverability.
+* [[VerticoConsultMarginaliaOrderlessEmbark]] - Completion framework composed of separate modular packages.
+
+===See also===
+* MinibufferHistory
+* Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
+* RecentFiles -- Complete recently used filenames.
+* ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
+* [[Synonyms]] -- Input completion for thesaurus lookup.
+* Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
+
+----
+CategoryCompletion
