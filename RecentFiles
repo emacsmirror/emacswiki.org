@@ -14,11 +14,6 @@ To enable `recentf-mode', put this in your `~/.emacs':
 
 This mode has been part of GNU Emacs since version 21. 
 
-
-
-
-
-
 == Periodically saving the list of files ==
 
 By default, Recentf saves the list of recent files on exiting Emacs (specifically, `recentf-save-list` is called on `kill-emacs-hook`).  If Emacs exits abruptly for some reason the recent file list will be lost - therefore you may wish to call `recentf-save-list` periodically, e.g. every 5 minutes: 
@@ -684,13 +679,6 @@ If you move a source directory with dired from A to B, by default there's no int
                                (slurp "~/.chpwd-recent-dirs") "\n" t))))
 
 }}}
-
-== History ==
-
-An older version is available here: 
-* http://perso.wanadoo.fr/david.ponce/downloads/recentf-1.23.zip
-
-
 
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion
