@@ -1,8 +1,6 @@
-Ultra-TeX mode http://www.math.washington.edu/~palmieri/Emacs/ultratex.html
-is a major mode for typing TeX documents written by JohnPalmieri.  One of its main features is dynamic completion through LightningCompletion on TeX commands.
+Ultra-TeX mode  is a major mode for typing TeX documents written by JohnPalmieri.  One of its main features is dynamic completion through LightningCompletion on TeX commands.
 
-[new:MatthewDarling:2013-02-25 21:31 UTC]The math.washington.edu page seems to be gone, but JohnPalmieri's homepage (http://www.math.washington.edu/~palmieri/programs.php) now links to a GitHub repo: https://github.com/jhpalmieri/ultratex
+It is available at https://github.com/jhpalmieri/ultratex
 
-Even though the readme claims it's an old version, the files say it's version 0.8.
 ----
 CategoryTex
