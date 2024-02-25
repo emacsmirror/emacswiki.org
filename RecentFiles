@@ -205,46 +205,16 @@ Lisp:recentf-buffer.el -- creates a buffer with the list of recently open files.
 '''[[Icicles]]''' gives you the list when you use `icicle-recent-file' or `icicle-recent-file-other-window' (see [[#RecentFilesWithCompletion]] above). Just hit `TAB' or `S-TAB'. If you type a regexp, `S-TAB' will give you the list of matching recent files. -- DrewAdams
 
 === recent-open-files-compl ===
-
-This command also provides completion for your recent files. It was written by Jerome B. and first posted in an article for http://www.emacsfr.org/:
-
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((all-files recentf-list)
-        (tocpl (mapcar (function
-           (lambda (x) (cons (file-name-nondirectory x) x))) all-files))
-        (prompt (append '("File name: ") tocpl))
-        (fname (completing-read (car prompt) (cdr prompt) nil nil)))
-        (find-file (cdr (assoc-ignore-representation fname tocpl)))))
-
-Jerome binds it to C-x C-r. (He rarely uses `find-file-read-only'.)
-
-    (global-set-key "\C-x\C-r" 'recentf-open-files-compl)
-
-Jerome uses this function more often than `find-file'.
-
-This function does not work on XEmacs 21.4.14 nor does it work with XEmacs/TrampMode, but it does with the following modifications:
-
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((all-files recentf-list)
-    	 (tocpl (mapcar (function
-    	(lambda (x) (cons (file-name-nondirectory x) x))) all-files))
-    	 (prompt (append '("Recent File name: ") tocpl))
-    	 (fname (completing-read (car prompt) (cdr prompt) nil nil)))
-        (find-file (or (cdr (assoc fname tocpl))
-    		   fname))))
-
-On modern Emacs, assoc-ignore-representation is deprecated and the lisp style of the functions above is somewhat odd. Here's a tidier version of the same (excellent) idea:
-
-    (defun recentf-open-files-compl ()
-      (interactive)
-      (let* ((tocpl (mapcar (lambda (x) (cons (file-name-nondirectory x) x))
-                            recentf-list))
-             (fname (completing-read "File name: " tocpl nil nil)))
-        (when fname
-          (find-file (cdr (assoc-string fname tocpl))))))
-
+This command provides completion for your recent files, based on code written by Jerome B. and posted in an article for http://www.emacsfr.org/:
+{{{
+(defun recentf-open-files-compl ()
+  (interactive)
+  (let* ((tocpl (mapcar (lambda (x) (cons (file-name-nondirectory x) x))
+                        recentf-list))
+         (fname (completing-read "File name: " tocpl nil nil)))
+    (when fname
+      (find-file (cdr (assoc-string fname tocpl))))))
+}}}
 === recentf and dired buffers ===
 After evaluating the following code the directories visited through dired buffers will also be put to recentf. -- vibrys.
 
@@ -484,12 +454,6 @@ overwriting each other's changes."
         (setq recentf-list result)))
 
 }}}
-
-=== Picklist ===
-
-[http://www.cbrunzema.de/software.html#picklist picklist] was once forked from recent-files when the latter didn't store positions in the file and has evolved since then.  It introduced merging of lists and a regexp based apropos.
-
-Please note, that it vanished from the internet but if someone wants the code I can still send it via Email -- StefanKamphausen
 
 === `recentf-ext.el' ===
 
