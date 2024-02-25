@@ -4,6 +4,7 @@ A SpreadSheet mode by GuillaumeMarceau, based on code and ideas from BenjaminPie
 
 * Groups:spread.el
 * http://gmarceau.qc.ca/spread.el
+* https://idiomdrottning.org/spread (port to modern Emacs)
 
 Allows to make a spreadsheet out of an ordinary text buffer. `Cells'
 are text of the form:
