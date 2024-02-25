@@ -1,0 +1,10 @@
+Consult ([https://github.com/minad/consult GitHub], [https://elpa.gnu.org/packages/con GNU ELPA]) "provides search and navigation commands based on the Emacs completion function completing-read."
+
+Notably
+* It enhances CompletingRead with live previews of candidates, additional narrowing capabilities to candidate groups and asynchronously generated candidate lists.
+* It comes with many commands, including `consult-grep' and `consult-ripgrep' for searching files, `consult-buffer' for switching buffers, etc.
+* It is compatible with completion systems centered around the standard Emacs CompletingRead API, including the default completion system, [[Vertico]], and IcompleteMode.
+* It is often combined with the complementary packages [[Marginalia]], [[Embark]] and [[Orderless]].
+
+----
+CategoryCompletion
