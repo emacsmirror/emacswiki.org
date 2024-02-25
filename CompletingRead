@@ -1,7 +1,7 @@
 The built-in function `completing-read' prompts a user to select from a set of candidates, providing [[minibuffer]] [[completion]] to narrow and complete the user input.
 
 ==Completion styles==
-See CompletionStyles for information on how minibuffer text is matched to completion alternatives, for example using prefix or substring matching.
+See CompletionStyles for how minibuffer text is matched to completion alternatives, for example using prefix or substring matching.
 ==Related built-in packages==
 ===Icomplete===
 * [IcompleteMode] provides incremental MiniBuffer completion with previews.
