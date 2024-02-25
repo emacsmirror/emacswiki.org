@@ -1,83 +1,37 @@
-The author, JohnPalmieri, says:
-: ''Lightning completion is an improvement on whatever completion emacs does already;''
-: ''it incorporates dynamic completion: completion without having to hit the TAB key''
-: ''or anything else. This is very useful when added to commands like find-file or''
-: ''switch-to-buffer or describe-lisp-function.''
+Lightning Completion is part of the [https://github.com/jhpalmieri/ultratex ultratex] repository, which also provides UltraTexMode.
 
-Lightning completion is available from http://www.math.washington.edu/~palmieri/Emacs/light.html.
-
-It has not been updated recently (30 September 2005).
-
-[new] The official page is defunct.
-
-[http://web.archive.org/web/20060205175757/http://www.math.washington.edu/~palmieri/Emacs/light.html web.archive.org] still has a copy of the file and its documentation. I've copied the file itself here:
-
-Lisp:light.el
-
-The HTML documentation is going to be more readable the web.archive.org link above, but I've preserved a copy of the raw HTML here:
-
-[[LighteningCompletionDocumentation]]
-
-[new] In fact John's code is now on !GitHub:
-
-https://github.com/jhpalmieri
-
-Lightening Completion is part of the [https://github.com/jhpalmieri/ultratex ultratex] repository.
-
-----
+===Usage===
 
 In your .emacs file, you need the following line:
 
  (require 'light)
 
-This lets you use the Lightning Completion package.
- 
-Customize the packages as desired, by using the command
+Customize via
  
  M-x customize-group lightning-completion
+===About===
 
-----
+From the GitHub repo
 
- Lightning completion package
- ----------------------------------
- (Version 0.60 of 1999/04/28)
- 
- The lightning completion package lets Emacs use "dynamic completion"
- on any number of things.  By dynamic completion, I mean that you don't
- need to hit the tab key to initiate completion: once it is on, it
- stays on until there is a unique completion or it is turned off.  This
- can be disconcerting at first, but once you get used to it, it is
- quite useful--especially when used with commands like find-file or
- describe-function.
- 
- The lightning completion package was written by Mark Haiman and Nick
- Reingold, then modified by John Palmieri (including getting everything
- to work with Emacs 19).  Many suggestions were made by various people
- at MIT, Yale, and elsewhere.
- 
- 
- The lightning completion distribution files are:
- 
-    Changelog:    A log of changes made to various parts of the package.
-    INSTALLATION: Installation instructions.
-    Makefile:     Helps you install the package.
-    README:       This file.
-    light.el:     The main file in the lightning completion package.
-    light.texi:   Lightning completion documentation, in texinfo format.
-    recent-changes.html:  A more verbose, less formal list of changes 
-		  than is in ChangeLog.
- 
- Actually, all you really need is the file light.el, unless you want to 
- read documentation or something like that.
- 
- -------------------------------------------------------------------
- 
- Suggestions or comments?  Contact me:
-   John Palmieri
-   e-mail: palmieri@math.washington.edu
-   URL:    http://www.math.washington.edu/~palmieri/
+  Lightning completion package
+  ----------------------------------
+  (Version 0.90 of 2022/07/28)
+  
+  The lightning completion package lets Emacs use "dynamic completion"
+  on any number of things.  By dynamic completion, I mean that you don't
+  need to hit the tab key to initiate completion: once it is on, it
+  stays on until there is a unique completion or it is turned off.  This
+  can be disconcerting at first, but once you get used to it, it is
+  quite useful--especially when used with commands like find-file or
+  describe-function.
+  
+  Please read the documenation (in the texi directory) for more
+  information.
+  
+  The lightning completion package was written by Mark Haiman and Nick
+  Reingold, then modified by John Palmieri (including getting everything
+  to work with Emacs 19).  Many suggestions were made by various people
+  at MIT, Yale, and elsewhere.
 
-----
-UltraTexMode use LightningCompletion.
 ----
 CategoryCompletion
