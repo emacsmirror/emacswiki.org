@@ -1,0 +1,27 @@
+== Overview==
+
+The following libraries provide text completion in buffers other than the minibuffer (which see MinibufferCompletion). A typical example is completing a function or variable name in source code.
+
+* [[TabCompletion]] -- to hit <code><tab></code> to auto-complete (like Bash does), using the completion libraries below
+* DynamicAbbreviations -- Complete a word in a text buffer using other words in the buffer (and perhaps in other buffers).
+* Command `complete' (from `<code>completion.el</code>') -- Completes to a previously typed word or uses DynamicAbbreviations if no other completions are found. Completions are saved (persistent) between sessions.
+* HippieExpand -- Dynamic abbreviations using more of Emacs's knowledge, and providing multiple "tries".  Notes on how to extend.
+* [[Icicles - Completion in Other Buffers]]
+** DynamicAbbreviations with cycling and regexp matching
+** Completion to words and phrases that are in a thesaurus (see also [[Synonyms]])
+** Yank text at the TextCursor into the minibuffer to complete input: filenames, URLs, anything
+* PredictiveMode -- Complete words as you type them. Context-sensitive ("IntelliSense"), and learns which words you use most!
+* CompletionUI -- Completion user-interface lisp library: your code just needs to define a function that returns completion candidates, and the rest is done for you!
+* Incomplete -- "Intelligent Completion" -- Part of [[Circe]]
+* PredictiveAbbreviation -- Completion/Expansion works based on the previously written text.  Unlike dynamic abbreviation, the text is analysed during idle time, while Emacs is doing nothing else.  
+* CompleteFileName -- Complete a file name when writing it in a buffer.
+* Thinking Machines' completion system TmcCompletion -- complete with M-RET based on buffer contents and auto-saved dictionary.  Simple to use, not invasive, and useful.  Focused on programming language completion, but useful for human languages as well.
+* MagpieExpansion provides a method for copying useful bits of text from the buffer to where you are editing. In particular, it provides dynamic expansion of acronyms to phrases previously typed. The code can be found in Lisp:magpie.el
+* CompanyMode -- Popup-menu completion which can get completions from multiple sources, including Semantic/CEDET (for C/C++), eclim (for Java), Xcode (for Objective C), Rope (for Python).
+* AutoComplete -- Completion based on popup menu.
+* AutoCompletePlus -- Enhancement of AutoComplete.
+* AutoJavaComplete -- A Java Complete based on AutoComplete.
+* DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
+* CaMode -- Defunct / unmaintained. Ca2+ is based on CompanyMode, similar sources to AutoComplete.
+----
+CategoryCompletion
