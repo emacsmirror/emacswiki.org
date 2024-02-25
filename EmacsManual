@@ -35,7 +35,7 @@ You can also provide some *context* in parenthesis, after the link itself. If we
 * ##Manual:completion (html_node/emacs)## -> Manual:completion (html_node/emacs) links to a single entry in the Emacs manual as its URLs contain "html_node/emacs".
 * ##Manual:completion (concept)## -> Manual:completion (concept) also links to this entry.
 * ##Manual:Completion (concept)## (note the case change) -> Manual:Completion (concept) links to both this entry and an entry  in the AUCTeX manual.
-* ##Manual:Completion (manual/auctex)## -> Manual:Completion (manual/auctex) links only to the entry  in the AUCTeX manual.
+* ##Manual:Completion (manual/auctex)## -> Manual:Completion (manual/auctex) links only to the entry  in the AUCTeX manual; its URLs contain "manual/auctex".
 
 This features uses the
 [http://www.emacswiki.org/info-ref info-ref] script.
