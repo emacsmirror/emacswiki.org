@@ -219,30 +219,6 @@ This command provides completion for your recent files, based on code written by
 After evaluating the following code the directories visited through dired buffers will also be put to recentf. -- vibrys.
 
 {{{
-(defun recentd-track-opened-file ()
-  "Insert the name of the directory just opened into the recent list."
-  (and (derived-mode-p 'dired-mode) default-directory
-       (recentf-add-file default-directory))
-  ;; Must return nil because it is run from `write-file-functions'.
-  nil)
-
-(defun recentd-track-closed-file ()
-  "Update the recent list when a dired buffer is killed.
-That is, remove a non kept dired from the recent list."
-  (and (derived-mode-p 'dired-mode) default-directory
-       (recentf-remove-if-non-kept default-directory)))
-
-(add-hook 'dired-after-readin-hook 'recentd-track-opened-file)
-(add-hook 'kill-buffer-hook 'recentd-track-closed-file)
-
-}}}
-
-Alternative solution is to redefine recentf-track-opened-file and recentf-track-closed-file core emacs functions.
-This solution is twice as fast (does it matter?), but the drawback is that emacs functions are redefined.
-
-For emacs 24.5.1 do the following:
-
-{{{
 (eval-after-load "recentf"
 '(progn
 (defun recentf-track-opened-file ()
@@ -262,9 +238,6 @@ That is, remove a non kept file from the recent list."
 
 (add-hook 'dired-after-readin-hook 'recentf-track-opened-file)))
 }}}
-
-Tip: when helm is used, use "someDir/$" to narrow to directory only pattern. "someDir" pattern also works of course, but it will display other paths containing "someDir" as well.
- -- vibrys
 
 === Updating recentf-list when renaming files in dired ===
 
