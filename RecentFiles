@@ -101,10 +101,6 @@ the option value to the numeric prefix value.
 
 The option value is a non-zero integer.  If positive then recent file names are included; if negative they are not.  The absolute value is the maximum number of recent-file candidates to include when turned on.  So for example, if the option value is 20 then the names of only the twenty most recently visited files are candidates.
 
-=== iswitch(b) ===
-
-See IswitchRecentFiles for using recent files with IswitchB.
-
 === Helm ===
 
 `helm-recentf' allows opening a file from the recent list using a [[Helm]] interface.
