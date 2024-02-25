@@ -2,13 +2,15 @@ The built-in function `completing-read' prompts a user to select from a set of c
 
 ==Related built-in packages==
 ===Ido===
-* [InteractivelyDoThings Ido] provides `ido-completing-read', which is similar to `completing-read'.  You can use it in your own commands as a replacement for `completing-read'.
+* [InteractivelyDoThings Ido] provides `ido-completing-read', which is similar to `completing-read'.
+===Icomplete===
+* [IcompleteMode] provides incremental MiniBuffer completion with previews.
 ==Related external packages==
 ===auto-completing-read===
 [:auto-completing-read.el]
 * <tt>[[auto-completing-read.el]]</tt> provides functions that are variants of `completing-read' and `ido-completing-read' designed to minimize the number of keystrokes needed to select an option.  You can use these functions in your own commands as replacements for `completing-read' and `ido-completing-read'.
 ===Helm===
-* [[Helm]] provides a different completion interface from `completing-read', and alternative completion functions.
+* [[Helm]] provides its own completion interface and completion functions.
 ===Icicles===
 * [[Icicles]] -- In Icicle [[minor mode]], `completing-read' is itself enhanced in many ways: optionally automatically completing as much as possible, and optionally automatically selecting the sole matching candidate.  Exiting Icicle mode returns `completing-read' to its original behavior.
 
