@@ -80,9 +80,7 @@ The following libraries complete text in place (in a buffer other than the minib
 Some completions are available in modes that provide command interaction.
 
 * EshellCompletion -- Input filename completion.
-* [[GCCSense]] -- Development tool for C/C++ using GCC's code analyzers.
 * SubprocessCompletion -- Handling completion by a subprocess such as a shell or a debugger, rather than by Emacs.
-* [[Anything]] -- Lisp:anything-complete.el replaces Emacs Completion.
 * [[CSense]] -- Completion extension.
 * [[irony-mode]] -- Completion based on clang
 * [[http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Clang]] -- Completion extension based on Clang.
