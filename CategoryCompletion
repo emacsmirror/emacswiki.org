@@ -2,70 +2,11 @@ Click the heading to search for pages in this category.
 
 The scope for this page encompasses any wiki page that relates in any way to Emacs completion. For discussion, see DiscussionCategoryCompletion.
 ==Overview==
-'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to completing input in the [[minibuffer]] and completing text in a [[buffer]] other than the minibuffer.   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  
+'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to 
+* [[MinibufferCompletion]], completing input in the [[minibuffer]].   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.  See for further information.
+* [[BufferTextCompletion]], completing text in a [[buffer]] other than the minibuffer.
 
 Besides the question of ''where'' text is completed (minibuffer or other buffer) is the question of ''how''. Completion can be effected in various ways (e.g. using different kinds of matching, filtering, sorting), and it can be accomplished using various user interfaces (e.g. popup selection list/menu).
-
-[:MinibufferCompletion]
-== Minibuffer Input Completion ==
-
-The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is based on CompletingRead and explained in the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion.html Completion] section of the EmacsManual (<kbd>C-h i m Emacs RET m Completion RET</kbd>).
-
-===Built-in packages===
-* CompletingRead -- EmacsLisp function `completing-read' and similar.
-* IcompleteMode -- Fast minibuffer selection.
-* InteractivelyDoThings ("Ido") -- Input completion without having to hit `TAB'.
-
-===External packages===
-These packages or sets of complementary packages extend or enhance minibuffer completion. They are often referred to as ''completion frameworks''.
-* [[Icicles]] -- ''Cycle'' among candidate default input values, according to their type. [[regexp|Regexp]] matching, in addition to standard prefix matching.  Carry out ''actions'' on input candidates; manipulate ''sets'' of candidates. Icicles [[completion]] works the same for any kind of input -- [[command]]s, buffer names, file names, [[key sequence]]s, whatever. There are also specific commands for [[bookmark]]s, [[buffer]]s, files, color themes, doc, fonts, [[face]]s, colors, search targets... Define input-matching behavior specific to your application.
-* [[Helm]] -- Completion framework with many available modules.
-* [[IvyCounselSwiper]] -- Minimalist, simple, customizable. Tries to help with discoverability.
-* [[VerticoConsultMarginaliaOrderlessEmbark]] - Completion framework composed of separate modular packages.
-
-===See also===
-* MinibufferHistory
-* Lisp:minibuffer-complete-cycle.el -- Cycle through the entries in the <code>*Completions*</code> buffer.
-* RecentFiles -- Complete recently used filenames.
-* ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
-* [[Synonyms]] -- Input completion for thesaurus lookup.
-* Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
-
-[:BufferTextCompletion]
-== Text Completion in a Buffer ==
-
-The following libraries complete text in place (in a buffer other than the minibuffer). A typical example is completing a function or variable name in source code.
-
-* [[TabCompletion]] -- to hit <code><tab></code> to auto-complete (like Bash does), using the completion libraries below
-* DynamicAbbreviations -- Complete a word in a text buffer using other words in the buffer (and perhaps in other buffers).
-* Command `complete' (from `<code>completion.el</code>') -- Completes to a previously typed word or uses DynamicAbbreviations if no other completions are found. Completions are saved (persistent) between sessions.
-* HippieExpand -- Dynamic abbreviations using more of Emacs's knowledge, and providing multiple "tries".  Notes on how to extend.
-* [[Icicles - Completion in Other Buffers]]
-** DynamicAbbreviations with cycling and regexp matching
-** Completion to words and phrases that are in a thesaurus (see also [[Synonyms]])
-** Yank text at the TextCursor into the minibuffer to complete input: filenames, URLs, anything
-* PredictiveMode -- Complete words as you type them. Context-sensitive ("IntelliSense"), and learns which words you use most!
-* CompletionUI -- Completion user-interface lisp library: your code just needs to define a function that returns completion candidates, and the rest is done for you!
-* Incomplete -- "Intelligent Completion" -- Part of [[Circe]]
-* PredictiveAbbreviation -- Completion/Expansion works based on the previously written text.  Unlike dynamic abbreviation, the text is analysed during idle time, while Emacs is doing nothing else.  
-* CompleteFileName -- Complete a file name when writing it in a buffer.
-* Thinking Machines' completion system TmcCompletion -- complete with M-RET based on buffer contents and auto-saved dictionary.  Simple to use, not invasive, and useful.  Focused on programming language completion, but useful for human languages as well.
-* MagpieExpansion provides a method for copying useful bits of text from the buffer to where you are editing. In particular, it provides dynamic expansion of acronyms to phrases previously typed. The code can be found in Lisp:magpie.el
-* CompanyMode -- Popup-menu completion which can get completions from multiple sources, including Semantic/CEDET (for C/C++), eclim (for Java), Xcode (for Objective C), Rope (for Python).
-* AutoComplete -- Completion based on popup menu.
-* AutoCompletePlus -- Enhancement of AutoComplete.
-* AutoJavaComplete -- A Java Complete based on AutoComplete.
-* DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
-* CaMode -- Defunct / unmaintained. Ca2+ is based on CompanyMode, similar sources to AutoComplete.
-
-=== Programming-Specific Completion ===
-* LanguageServerProtocol -- provides completion and other programming-related functionality for many programming languages, and is very popular.
-* HowSemanticFulfillsThoseNeeds -- Semantic (built into Emacs as part of CEDET) can provide "intellisense" style completion, but someone has to tell it how for different programming languages. (Different completion interfaces can display this information. Search for CEDET on this page.)
-* EmacsTags -- Command `complete-tag' (from `<code>etags.el</code>') -- Completes to a defined ''tag'' (that is, a defined name, such as function or variable name).
-* [[Icicles - Other Search Commands#IciclesImenu]] -- Like ImenuMode with regexp completion. Across multiple buffers, files, and saved regions, like EmacsTags.
-* ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
-* NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
-* SlimeMode -- provides multiple completion mechanisms that query the running Lisp program for candidates. Can be made to work with CompanyMode. See also SlimeCompleteLocals.
 
 [:OtherCompletion]
 == Other Completion ==
