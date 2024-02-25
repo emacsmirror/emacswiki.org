@@ -63,9 +63,8 @@ On the other hand, <code>C-M-n</code> puts the cursor in front of the
 last parenthesis. That is, the cursor jumped over the next parenthesis group,
 given by <code>(insert " \\emph{first chapter} ")</code>.
 
-== Jump to matching paren according to show-paren-mode ==
-<code>show-paren-mode</code> highlights corresponding pairs of parentheses, is distributed with Emacs, and enabled by default.  
-The following function jumps to the matching parenthesis that is highlighted by <code>show-paren-mode</code>.  <code>show-paren-mode</code> matches according to the "outside" of a list; an opening paren is only highlighted when point is before it and a closing paren is highlighted only if point is after it.  Call this function with a prefix to jump to the matching paren such that point is inside the list.
+== Jump to matching paren/brace according to show-paren-mode ==
+<code>show-paren-mode</code> highlights corresponding pairs of parentheses or braces, is distributed with Emacs, and enabled by default.  The following function jumps to the matching parenthesis that is highlighted by <code>show-paren-mode</code>.  <code>show-paren-mode</code> matches according to the "outside" of a list; an opening paren is only highlighted when point is before it and a closing paren is highlighted only if point is after it.  Call this function with a prefix to jump to the matching paren such that point is inside the list.
 
 <pre>
 (defun my-jump-to-paren-match (&optional arg)
