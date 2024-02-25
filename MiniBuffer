@@ -8,18 +8,7 @@ Everything you enter in the minibuffer using `RET' (commands, input arguments) i
 
 To cancel whatever you're doing in the minibuffer, use `C-g'. To cancel minibuffer if your focus is in another window, try the command `abort-recursive-edit' which by default is bound to `##C-]##'.  
 
-The following command returns the focus to the minibuffer, no matter which window is currently selected.  This avoids repeatedly using `C-x o' (`other-window').
-{{{
-(defun switch-to-minibuffer ()
-  "Switch to minibuffer window."
-  (interactive)
-  (if (active-minibuffer-window)
-      (select-frame-set-input-focus (window-frame (active-minibuffer-window)))
-      (select-window (active-minibuffer-window))
-    (error "Minibuffer is not active")))
-
-(global-set-key "\C-co" 'switch-to-minibuffer) ;; Bind to `C-c o'
-}}}
+The built-in command `switch-to-minibuffer' returns focus to the minibuffer no matter which window is currently selected.  This avoids repeatedly using `C-x o' (`other-window').
 
 ----
 CategoryGlossary
