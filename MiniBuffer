@@ -1,10 +1,10 @@
-The '''[::minibuffer]''' is a special [[buffer]] for entering [[command]]s or input arguments to commands.  It appears either in a separate, standalone [[frame]] or at the bottom of each frame. 
+The [::minibuffer] is a special buffer for entering commands or input arguments to commands.  It appears either in a separate, standalone frame or at the bottom of each frame. 
 
-Sometimes, the area where you input commands is used to display informative messages without requesting input (i.e., not just a prompt).  When this area is used this way, it is called the '''EchoArea''', not the minibuffer.
+Sometimes, the area where you input commands is used to display informative messages without requesting input (i.e., not just a prompt).  When this area is used this way, it is called the EchoArea, not the minibuffer.
 
 In many respects, the minibuffer is a buffer like any other: You can edit the text you are inputting there. Most editing [[KeySequence]]s are available for this, including SearchingTheMinibuffer.  It's also possible to [ResizeMinibuffer resize the minibuffer].
 
-Everything you enter in the minibuffer using `RET' (commands, input arguments) is added to a MinibufferHistory. There are generally different histories for the names of different object types that you enter: files, [[buffer]]s, [[command]]s... You can retrieve names from the currently used history to edit and reuse.
+Everything you enter in the minibuffer using `RET' (commands, input arguments) is added to a MinibufferHistory. There are generally different histories for the names of different object types that you enter: files, buffers, commands... You can retrieve names from the currently used history to edit and reuse.
 
 To cancel whatever you're doing in the minibuffer, use `C-g'. To cancel minibuffer if your focus is in another window, try the command `abort-recursive-edit' which by default is bound to `##C-]##'.  
 
