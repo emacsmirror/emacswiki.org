@@ -1,5 +1,7 @@
-= Overview =
 '''''Note:'''''  '''[::IswitchB]''' is part of GnuEmacs, but has been marked obsolete since Emacs 24.4 (see the mailing list message [https://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00501.html here]).  Emacs now recommends using IcompleteMode or [[InteractivelyDoThings]] instead.
+
+----
+= Overview =
 
 By default, `C-x b' calls `switch-to-buffer'. An alternative, `iswitchb-buffer', is also available.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  For example, you could type "tch" to switch to the "*scratch*" buffer.
 
