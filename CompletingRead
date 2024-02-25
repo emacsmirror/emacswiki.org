@@ -1,10 +1,10 @@
 The built-in function `completing-read' prompts a user to select from a set of candidates, providing [[minibuffer]] [[completion]] to narrow and complete the user input.
 
 ==Related built-in packages==
-===Ido===
-* [InteractivelyDoThings Ido] provides `ido-completing-read', which is similar to `completing-read'.
 ===Icomplete===
 * [IcompleteMode] provides incremental MiniBuffer completion with previews.
+===Ido===
+* [InteractivelyDoThings Ido] provides `ido-completing-read', which is similar to `completing-read'.
 ==Related external packages==
 ===auto-completing-read===
 [:auto-completing-read.el]
