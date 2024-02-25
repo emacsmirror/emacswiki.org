@@ -12,8 +12,6 @@ Besides the question of ''where'' text is completed (minibuffer or other buffer)
 The [[minibuffer]] is typically used to read user input (data) to control program execution dynamically.  The standard Emacs behavior for minibuffer input completion is explained in the `Completion' section of the EmacsManual (`C-h i m Emacs RET m Completion RET').  Of particular note, you need to press `TAB' to see the candidates (which are not displayed by default).  
 
 ===Built-in packages===
-These two pages describe some of the behavior provided by vanilla Emacs (no 3rd-party library needed):
-
 * CompletingRead -- EmacsLisp function `completing-read' and similar.
 * InteractivelyDoThings -- Input completion without having to hit `TAB'.
 
