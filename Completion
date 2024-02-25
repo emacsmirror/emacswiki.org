@@ -1,17 +1,6 @@
 The term "'''[::completion]'''" can mean different things in Emacs:
 
-'''1. Input completion --''' Completion of your input in the [[minibuffer]].  (See also [[Manual:Minibuffer Completion]] (lisp) in the manual.)
-
-* Input completion is built in. Use it with `M-x', `C-x b', `C-x C-f', and with many other commands that prompt for input. There are various kinds of input completion, including these:
-
-** [[prefix completion]] -- Completes your input as a prefix. This is the default method of completion.
-
-** '''[::partial completion]''' -- Completes each part of a name separately. See `partial-completion-mode' (standard library ##complete.el##). For example, command-name input `p-b' can complete to `print-buffer'.
-
-** substring completion -- Completes your input as a substring. Available in some libraries such as [[Ido]] and [[Icicles]].
-
-** regexp completion -- Completes your input as a [[regexp]]. Available in some libraries such as [[Icicles]].
-
+'''1. Input completion --''' Completion of your input in the [[minibuffer]].  See [[MinibufferCompletion]].
 
 '''2. Text completion --''' Completion of words or abbreviations in a buffer other than the minibuffer. Example commands:
 
