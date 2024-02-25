@@ -432,7 +432,6 @@ file to write to."
   (recentf-mode 1))
 }}}
 
-
 I wrote an alternative implementation that uses dash.el and supports recentf-cleanups -- ThomasFrössman
 
 {{{
@@ -486,95 +485,6 @@ overwriting each other's changes."
         (setq recentf-list result)))
 
 }}}
-
-
-
-== Entries for files that were never displayed ==
-
-If you, for example, use [[CEDET]], the recentf package may be fairly useless by default.  The problem is that CEDET can scan lots of source files and make files in the process of building a tags database or managing the build system.  The recentf list is then saturated with files you haven't displayed or edited on screen.
-
-[new]
-This is fixed in the CVS version of CEDET.
-
-[new]
-The following is a workaround.
-
-{{{
-(require 'recentf)
-(recentf-mode 1)
-
-(defsubst file-was-visible-p (file)
-  "Return non-nil if FILE's buffer exists and has been displayed."
-  (let ((buf (find-buffer-visiting file)))
-    (if buf
-      (let ((display-count (buffer-local-value 'buffer-display-count buf)))
-        (if (> display-count 0) display-count nil)))))
-
-(defsubst keep-default-and-visible-recentf-p (file)
-  "Return non-nil if recentf would, by default, keep FILE, and
-FILE has been displayed."
-  (if (recentf-keep-default-predicate file)
-      (file-was-visible-p file)))
-
-;; When a buffer is closed, remove the associated file from the recentf
-;; list if (1) recentf would have, by default, removed the file, or
-;; (2) the buffer was never displayed.  This is useful because, for
-;; example, CEDET opens a lot of files in the background to generate
-;; its tags database, etc.
-(setq recentf-keep '(keep-default-and-visible-recentf-p))
-}}}
-
-[new] While this works and solves problems with several packages that load files and do not need to be displayed, it has one drawback, namely that files saved to the recentf list in previous sessions will be deleted from the list if they have not been displayed in the current session before the list is cleaned up.  This is probably not what you want.  The following code gets round this:
-
-{{{
-(require 'recentf)
-(recentf-mode 1)
-
-(defsubst file-was-visible-p (file)
-  ;; as before
-  ;; ---
-)
-
-(let ((r-list recentf-list))
-  (defsubst keep-default-old-and-visible-recentf-p (file)
-    "Decide whether to keep file in recentf-list.
-Return non-nil if recentf would, by default, keep FILE, and
-either FILE name was loaded from recentf file on disk or FILE
-has been displayed in this session."
-    (if (recentf-keep-default-predicate file)
-      (or (member file r-list)
-      (file-was-visible-p file)))))
-
-;; And, of course, you now need:
-(setf recentf-keep '(keep-default-old-and-visible-recentf-p))		    
-}}}
-
-Note that the above code assumes lexical binding.  If you don't use this you will have to define a new global variable to hold the old recentf list.
-
-== Undo kill buffer ==
-The Opera web browser has a surprisingly useful feature called the "trash can".  After you close a tab you can "undo" the close with C-z.  As it turns out when I want a tab reopened it's usually one of the last few I closed, so I almost never end up looking in the history.  I missed this feature in Emacs, so I implemented it on top of recentf.
-
-{{{
-(defun undo-kill-buffer (arg)
-  "Re-open the last buffer killed.  With ARG, re-open the nth buffer."
-  (interactive "p")
-  (let ((recently-killed-list (copy-sequence recentf-list))
-	 (buffer-files-list
-	  (delq nil (mapcar (lambda (buf)
-			      (when (buffer-file-name buf)
-				(expand-file-name (buffer-file-name buf)))) (buffer-list)))))
-    (mapc
-     (lambda (buf-file)
-       (setq recently-killed-list
-	     (delq buf-file recently-killed-list)))
-     buffer-files-list)
-    (find-file
-     (if arg (nth arg recently-killed-list)
-       (car recently-killed-list)))))
-}}}
-
-
-See Also: GnomeIntegration for opening files in GNOME's recent-files list.
 
 == recentf and dired buffers ==
 After evaluating the following code the directories visited through dired buffers will also be put to recentf. -- vibrys.
