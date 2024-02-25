@@ -270,14 +270,6 @@ If you move a source directory with dired from A to B, by default there's no int
 }}}
 
 ==Misc extensions and integrations==
-==== A La Carte ====
-
-You can take advantage of recentf filters (that is, structured menus) from the keyboard (with completion and so on) by using library '''LaCarte'''.
-
-Assuming that you have `##ESC ESC x##' (that is, `##ESC M-x##') bound to `lacarte-execute-menu-command' (which you should ;-)), just type part of a recent file name (any part, or a regexp), then hit `S-TAB' to complete to matching recent files.
-
-If you use, say, the recentf filter `recentf-arrange-by-dir', then the '''File > Open Recent''' menu is organized by directory, and this is reflected in the completion candidates used by `lacarte-execute-menu-command'.
-
 === BufferMenuPlus: Visited Files Sorted by Access Date/Time ===
 
 This concerns buffers visiting files, so it is related to some of the topics on this page. But this does not concern a ''persistent'' visited-files list.
@@ -307,6 +299,14 @@ I use Gnus in one process, and everything related to plain file editing in anoth
       (load-file recentf-save-file)
       (setq cmg:prevent-gnus-recentf-double-init t)))
 }}}
+
+==== LaCarte ====
+
+You can take advantage of recentf filters (that is, structured menus) from the keyboard (with completion and so on) by using library [[LaCarte]].
+
+Assuming that you have `##ESC ESC x##' (that is, `##ESC M-x##') bound to `lacarte-execute-menu-command' (which you should ;-)), just type part of a recent file name (any part, or a regexp), then hit `S-TAB' to complete to matching recent files.
+
+If you use, say, the recentf filter `recentf-arrange-by-dir', then the '''File > Open Recent''' menu is organized by directory, and this is reflected in the completion candidates used by `lacarte-execute-menu-command'.
 
 === Merge recent lists from several Emacs sessions ===
 
