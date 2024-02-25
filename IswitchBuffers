@@ -1,38 +1,23 @@
 = Overview =
+'''''Note:'''''  '''[::IswitchB]''' is part of GnuEmacs, but has been marked obsolete since Emacs 24.4 (see the mailing list message [https://lists.gnu.org/archive/html/emacs-devel/2013-11/msg00501.html here]).  Emacs now recommends using IcompleteMode or [[InteractivelyDoThings]] instead.
 
-[new:DrewAdams:2014-05-04 19:56 UTC]
-'''''Note:'''''  '''[::IswitchB]''' was part of GnuEmacs, but it has been removed starting with Emacs 24.4.  The Emacs `NEWS' (`C-h N') says to use IcompleteMode instead, but for those wanting more familiar functionality, [[InteractivelyDoThings]] is a closer fit.  Emacs Devs have removed %%IswitchB%% from the product, and it is not available on GNU ELPA, but you can still find it here: http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/iswitchb.el
-[new]
+By default, `C-x b' calls `switch-to-buffer'. An alternative, `iswitchb-buffer', is also available.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  For example, you could type "tch" to switch to the "*scratch*" buffer.
 
+= Usage =
 
-
-By default, `C-x b' calls `switch-to-buffer'. An alternative, `iswitchb-buffer', is also available.  As you type the buffer name, the list of options is reduced to the buffers matching what you type.  And it is not limited to the beginning of the buffer name, either.  That means you could type "tch" to switch to the "*scratch*" buffer.
-
-= Install =
-
-For latest Emacs, use:
+Turn it on with:
 
     (iswitchb-mode 1)
-
-If you are using GNU Emacs older than 21, put this in your [[InitFile]]:
-
-    (iswitchb-default-keybindings)
-
-= Configuration =
 
 To prevent certain buffers from showing up in the completion list, set `iswitchb-buffer-ignore':
 
     (setq iswitchb-buffer-ignore '("^ " "*Buffer"))
 
-This one is useful if you want to lose the *...* special buffers from the list. It's helpful if you're using the JDEE for editing Java apps, as you end up with buffers named *org.whatever.package.Class* which you might want to eliminate:
-
-    (setq iswitchb-buffer-ignore '("^\\*"))
-
-To prevent switching to another frame, you can add the following to your configuration:
+To prevent switching to another frame:
 
      (setq iswitchb-default-method 'samewindow)
 
-For more about iswitch-buffer, see UseIswitchBuffer.
+For more, see UseIswitchBuffer.
 
 == Using the arrow keys to select a buffer ==
 
@@ -78,7 +63,6 @@ Additionally one can configure [[uniquify]] to rework the buffer names whenever 
 
 = See Also =
 
-* [[Anything]] -- QuickSilver on Emacs supports iswitchb.
 * [[FileNameCache]] -- Open cached files as if they are buffers.
 * [[Icicles]] -- Command `icicle-buffer' offers similar functionality, with either immediate buffer switching or switching-upon-confirmation. Like `iswitch-buffer', you can match any part of
   a buffer name. You can also use a [[regexp]] to match the name. And Icicles provides completion on buffer names.
