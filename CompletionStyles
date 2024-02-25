@@ -1,4 +1,4 @@
-''Completion styles''  are, per the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html associated manual page], sets of criteria for matching minibuffer text to completion alternatives, for example prefix or substring matching. The variable `completion-styles' specifies the completion styles to use.  This may be overridden by `completion-category-overrides'.
+''Completion styles''  are, per the [[Manual:Completion Styles]] manual page, sets of criteria for matching minibuffer text to completion alternatives, for example prefix or substring matching. The variable `completion-styles' specifies the completion styles to use.  This may be overridden by `completion-category-overrides'.
 
 ----
 CategoryCompletion
