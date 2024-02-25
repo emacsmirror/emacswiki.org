@@ -1,0 +1,9 @@
+The packages below are often combined to form an enhanced completion framework for Emacs.  In contrast to some earlier completion frameworks like [[Helm]], the component packages aim to support being combined with orthogonal packages in a modular way, and to work within core Emacs APIs rather than defining their own.
+* [[Vertico]] -- Stands for "VERTical Interactive COmpletion".
+* [[Consult]] -- Enhances CompletingRead, including live preview and asynchronous candidate generation.
+* [[Marginalia]] -- Adds annotations to  completion candidates.
+* [[Orderless]] -- A completion style that matches space-separated components in any order.
+* [[Embark]] - Stands for "Emacs Mini-Buffer Actions Rooted in Keymaps"
+
+----
+CategoryCompletion
