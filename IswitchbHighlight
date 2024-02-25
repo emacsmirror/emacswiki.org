@@ -1,3 +1,5 @@
+'''Note: IswitchBuffers has been marked obsolete since Emacs 24.4.'''
+----
 == Highlighting Buffer List Selection ==
 
 IswitchBuffers does wonders when you have a *pretty* good idea of what you're looking for.  But many times, what you think you're getting isn't what you'll really be getting.  The problem arises when the buffer names start to sound/look alike, and you're left wondering what'd happen when you select a particular buffer that *seems* like what you want.
