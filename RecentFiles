@@ -1,10 +1,12 @@
 [[fr:FichiersRécents]]
 
 Recentf is a minor mode that builds a list of recently opened files.
-This list is automatically saved across sessions on exiting Emacs - 
+This list is automatically saved across sessions on exiting Emacs -
 you can then access this list through a command or the menu.
+Recentf has been part of GNU Emacs since version 21.
 
-To enable `recentf-mode', put this in your `~/.emacs':
+==Usage==
+To enable `recentf-mode', put this in your InitFile:
 {{{
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
@@ -12,50 +14,28 @@ To enable `recentf-mode', put this in your `~/.emacs':
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 }}}
 
-This mode has been part of GNU Emacs since version 21. 
+The command `recentf-open-files' shows a dialog to open a file from the recent list.
 
-== Periodically saving the list of files ==
-
-By default, Recentf saves the list of recent files on exiting Emacs (specifically, `recentf-save-list` is called on `kill-emacs-hook`).  If Emacs exits abruptly for some reason the recent file list will be lost - therefore you may wish to call `recentf-save-list` periodically, e.g. every 5 minutes: 
+==Extensions and integrations==
+=== Periodically saving the list of files ===
+By default, Recentf saves the list of recent files on exiting Emacs (specifically, `recentf-save-list` is called on `kill-emacs-hook`).  If Emacs exits abruptly for some reason the recent file list will be lost - therefore you may wish to call `recentf-save-list` periodically, e.g. every 5 minutes:
 
     (run-at-time nil (* 5 60) 'recentf-save-list)
 
-
-
-
-
 [:RecentFilesWithCompletion]
-== Recentf Filters (Structured Menu) ==
+=== Recentf Filters (Structured Menu) ===
 
 Recentf lets you ''structure its menus'' in various ways, using what it calls ''filters''. This section describes ways to take advantage of that menu organization at the keyboard, with completion.
 
-
-
-
-
-
-
-
-
-
-=== A La Carte ===
+==== A La Carte ====
 
 You can take advantage of recentf filters (that is, structured menus) from the keyboard (with completion and so on) by using library '''LaCarte'''.
 
-Assuming that you have `##ESC ESC x##' (that is, `##ESC M-x##') bound to `lacarte-execute-menu-command' (which you should ;-)), just type part of a recent file name (any part, or a regexp), then hit `S-TAB' to complete to matching recent files. 
+Assuming that you have `##ESC ESC x##' (that is, `##ESC M-x##') bound to `lacarte-execute-menu-command' (which you should ;-)), just type part of a recent file name (any part, or a regexp), then hit `S-TAB' to complete to matching recent files.
 
 If you use, say, the recentf filter `recentf-arrange-by-dir', then the '''File > Open Recent''' menu is organized by directory, and this is reflected in the completion candidates used by `lacarte-execute-menu-command'.
 
-
-
-
-
-
-
-
-
-
-=== `recentf-minibuffer-dialog' ===
+==== `recentf-minibuffer-dialog' ====
 
 2006-03-15, SteveBerman posted some code to ##gnu-emacs-sources@gnu.org## that takes recentf filters into account in another way. Here is Steve's commentary, followed by his code. This requires enabling recursive minibuffer editing: (setq enable-recursive-minibuffers t). Steve: Why don't you upload this as an Emacs-Lisp library? -- DrewAdams
 
@@ -129,45 +109,26 @@ Otherwise, show the default maximum number of recent items."
     (funcall recentf-menu-action file))) ; find-file by default
 }}}
 
-
-
-
-
-
-
-
-
-
-
-== Icicles Recentf Support ==
+=== Icicles Recentf Support ===
 
 '''[[Icicles]]''' lets you take advantage of library ##recentf.el## in two ways.
 
-=== Multi-Command `icicle-recent-file' ===
+==== Multi-Command `icicle-recent-file' ====
 
 `recentf-mode' of vanilla Emacs forces you to open a file using a ''menu'' interface.  '''Icicles''' command `icicle-recent-file' lets you use the usual `find-file' [[minibuffer]] interface, with [[completion]] and cycling
-among your recent files. 
+among your recent files.
 
 `icicle-recent-file'  is also a [[multi-command]], so you can use it to open several recently used files at once.  And the completion candidates are two-part [[multi-completion]]s: (1) the (absolute) file name and (2) the file's last modification date. You can match your minibuffer input against either or both parts.
 This means that you can easily find those notes you took sometime last week...
 
-
-=== Including Recent Files for Buffer Completion ===
+==== Including Recent Files for Buffer Completion ====
 
 In ''Icicle'' mode, `C-x b' (command `icicle-buffer') can optionally include the names of recently accessed files as completion candidates (there need not currently be any buffers for the files).  The [option] for this is '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''. You can toggle the option value during buffer-name completion using `C-x R' (command `icicle-toggle-include-recent-files').  A [[prefix argument]] sets
 the option value to the numeric prefix value.
 
-The option value is a non-zero integer.  If positive then recent file names are included; if negative they are not.  The absolute value is the maximum number of recent-file candidates to include when turned on.  So for example, if the option value is 20 then the names of only the twenty most recently visited files are candidates. 
+The option value is a non-zero integer.  If positive then recent file names are included; if negative they are not.  The absolute value is the maximum number of recent-file candidates to include when turned on.  So for example, if the option value is 20 then the names of only the twenty most recently visited files are candidates.
 
-
-
-
-
-
-
-
-
-== ido (iswitchb ?) Completion ==
+=== ido (iswitchb ?) Completion ===
 
 Here is another version of recent-files completion, which use InteractivelyDoThings (ido). Not perfect, but seems to work ok. You first choose among filenames and if more than one filename matches, you are prompted to choose again among the matching files, but the path is added to the list.
 
@@ -190,8 +151,8 @@ It should work (untested -- see UseIswitchBuffer) using the IswitchBuffers packa
 	 (filename (ido-read-buffer "Find Recent File: "))
 	 (result-list (delq nil (mapcar (lambda (x) (if (string= (car x) filename) (cdr x))) file-assoc-list)))
 	 (result-length (length result-list)))
-         (find-file 
-	  (cond 
+         (find-file
+	  (cond
 	   ((= result-length 0) filename)
 	   ((= result-length 1) (car result-list))
 	   ( t
@@ -238,35 +199,31 @@ And this is a version with <code>file-name-nondirectory</code>.
 			     file-assoc-list))))))
 }}}
 
-
-
-
-== recent-open-files-compl ==
+=== recent-open-files-compl ===
 
 This command also provides completion for your recent files. It was written by Jerome B. and first posted in an article for http://www.emacsfr.org/:
 
     (defun recentf-open-files-compl ()
       (interactive)
       (let* ((all-files recentf-list)
-        (tocpl (mapcar (function 
+        (tocpl (mapcar (function
            (lambda (x) (cons (file-name-nondirectory x) x))) all-files))
         (prompt (append '("File name: ") tocpl))
         (fname (completing-read (car prompt) (cdr prompt) nil nil)))
-        (find-file (cdr (assoc-ignore-representation fname tocpl))))) 
+        (find-file (cdr (assoc-ignore-representation fname tocpl)))))
 
-Jerome binds it to C-x C-r. (He rarely uses `find-file-read-only'.) 
+Jerome binds it to C-x C-r. (He rarely uses `find-file-read-only'.)
 
     (global-set-key "\C-x\C-r" 'recentf-open-files-compl)
 
-Jerome uses this function more often than `find-file'.   
+Jerome uses this function more often than `find-file'.
 
 This function does not work on XEmacs 21.4.14 nor does it work with XEmacs/TrampMode, but it does with the following modifications:
 
-     
     (defun recentf-open-files-compl ()
       (interactive)
       (let* ((all-files recentf-list)
-    	 (tocpl (mapcar (function 
+    	 (tocpl (mapcar (function
     	(lambda (x) (cons (file-name-nondirectory x) x))) all-files))
     	 (prompt (append '("Recent File name: ") tocpl))
     	 (fname (completing-read (car prompt) (cdr prompt) nil nil)))
@@ -281,35 +238,26 @@ On modern Emacs, assoc-ignore-representation is deprecated and the lisp style of
                             recentf-list))
              (fname (completing-read "File name: " tocpl nil nil)))
         (when fname
-          (find-file (cdr (assoc-string fname tocpl)))))) 
+          (find-file (cdr (assoc-string fname tocpl))))))
 
-
-== Using iswitch(b) ==
+=== Using iswitch(b) ===
 
 See IswitchRecentFiles for using recent files with IswitchB.
 
+=== Helm ===
 
-== Use with Helm(Anything) ==
+`helm-recentf' allows opening a file from the recent list using a [[Helm]] interface.
 
-[[Anything]] is a candidate selection framework, now called Helm.
+=== TrampMode ===
 
-`M-x helm-for-files' will show a list of open buffers, recent files, and other filenames. Narrow the list by typing some patterns (multiple patterns are space-delimited strings);
-select with up/down/pgup/pgdn/C-p/C-n/C-v/M-v, choose with enter.
-With TAB actions can be selected if the selected files has more than one possible action.
-With C-z content of files is displayed without quitting the helm session.
-
-`M-x helm-recentf' will show only recently opened files (from recentf).
-
-== TrampMode ==
-
-When using TrampMode with recentf.el, it's advisable to turn off the cleanup feature of recentf that attempts to stat all the files and remove them from the recently accessed list if they are readable.  Tramp means that this requires recentf to open up a remote site which will block your emacs process at the most inopportune times. 
+When using TrampMode with recentf.el, it's advisable to turn off the cleanup feature of recentf that attempts to stat all the files and remove them from the recently accessed list if they are readable.  Tramp means that this requires recentf to open up a remote site which will block your emacs process at the most inopportune times.
 {{{
 (require 'recentf)
 (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
 (recentf-mode 1)
 }}}
 
-== Gnus ==
+=== Gnus ===
 
 I use Gnus in one process, and everything related to plain file editing in another emacs process.  My initial load starts recentf-mode but for gnus, I really needed the recentf to use a different history file.
 {{{
@@ -326,14 +274,14 @@ I use Gnus in one process, and everything related to plain file editing in anoth
       (load-file recentf-save-file)
       (setq cmg:prevent-gnus-recentf-double-init t)))
 }}}
-    
-== Picklist ==
 
-[http://www.cbrunzema.de/software.html#picklist picklist] was once forked from recent-files when the latter didn't store positions in the file and has evolved since then.  It introduced merging of lists and a regexp based apropos.  
+=== Picklist ===
+
+[http://www.cbrunzema.de/software.html#picklist picklist] was once forked from recent-files when the latter didn't store positions in the file and has evolved since then.  It introduced merging of lists and a regexp based apropos.
 
 Please note, that it vanished from the internet but if someone wants the code I can still send it via Email -- StefanKamphausen
 
-== Buffer with the list of recently open files. ==
+=== Buffer with the list of recently open files. ===
 
 Lisp:recentf-buffer.el -- creates a buffer with the list of recently open files. It's an addition to recentf.el. To install:
 
@@ -344,12 +292,10 @@ Lisp:recentf-buffer.el -- creates a buffer with the list of recently open files.
 
 -- EugeneMarkov
 
-
 [new:DrewAdams:2005-10-04 17:49 UTC]
 '''[[Icicles]]''' gives you the list when you use `icicle-recent-file' or `icicle-recent-file-other-window' (see [[#RecentFilesWithCompletion]] above). Just hit `TAB' or `S-TAB'. If you type a regexp, `S-TAB' will give you the list of matching recent files. -- DrewAdams
 
-
-== Library `recentf-ext.el' ==
+=== Library `recentf-ext.el' ===
 
 Lisp:recentf-ext.el extends recentf package.
 * `dired' buffers can be handled.
@@ -357,8 +303,7 @@ Lisp:recentf-ext.el extends recentf package.
 
 -- [[rubikitch]]
 
-
-== Visited Files Sorted by Access Date/Time ==
+=== Visited Files Sorted by Access Date/Time ===
 
 This concerns buffers visiting files, so it is related to some of the topics on this page. But this does not concern a ''persistent'' visited-files list.
 
@@ -370,7 +315,7 @@ This is especially useful if you have a large number of visited files, and you w
 
 Note that these two kinds of sort are ''not'' inverses. Example: if you opened a file yesterday that you are still visiting, and all other currently visited files were opened today, then that file is at the top (or bottom) when you sort by column '''CRM'''. When you sort by column '''Time''', its position depends on the last time it was accessed. -- DrewAdams
 
-== Merge Lists Of Several Emacsen ==
+=== Merge Lists Of Several Emacsen ===
 
 I wrote to the maintainer of recentf.el but received no feedback til now, so I might as well share my code here.
 
@@ -389,7 +334,7 @@ I have the habit to start one Emacs dedicated to Gnus first thing in the morning
   (setq recentf-max-saved-items 99)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Here I override some functions of recentf to get a merged list
-  ;; This seems to be stable (used it for approx two weeks at the time 
+  ;; This seems to be stable (used it for approx two weeks at the time
   ;; of this writing)
   (defun recentf-save-list ()
     "Save the recent list.
@@ -486,7 +431,7 @@ overwriting each other's changes."
 
 }}}
 
-== recentf and dired buffers ==
+=== recentf and dired buffers ===
 After evaluating the following code the directories visited through dired buffers will also be put to recentf. -- vibrys.
 
 {{{
@@ -537,7 +482,7 @@ That is, remove a non kept file from the recent list."
 Tip: when helm is used, use "someDir/$" to narrow to directory only pattern. "someDir" pattern also works of course, but it will display other paths containing "someDir" as well.
  -- vibrys
 
-== Updating recentf-list when renaming files in dired ==
+=== Updating recentf-list when renaming files in dired ===
 
 If you move a source directory with dired from A to B, by default there's no integration to make sure that an entry of <code>A/xxx</code> gets updated to <code>B/xxx</code>. This snippet of code makes this work properly (it uses the new Emacs advice functions; if you have an Emacs older than 24.4, you'll have to port it).
 
@@ -571,7 +516,7 @@ If you move a source directory with dired from A to B, by default there's no int
 (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
 }}}
 
-== Recent directories from zsh ==
+=== Recent directories from zsh ===
 
 {{{
 (defun slurp (f)
