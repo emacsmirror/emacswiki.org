@@ -8,12 +8,6 @@ Use command `icomplete-mode' to toggle icomplete mode on/off. To turn on the mod
 
     (icomplete-mode 1)
 
-
-
-
-
-
-
 [:IcompleteModePlus]
 [:IcompletePlus]
 == Icomplete Mode+ ==
@@ -39,14 +33,6 @@ they do not show, for instance, the number of available completions or number of
 [[image:DrewsEmacsIcompleteImage]]
 [[image:DrewsEmacsIcompleteImageMatch]]
 
-
-
-
-
-
-
-
-
 == Apropos (Regexp) Icompletion ==
 
 '''[[Icicles]]''' provides a kind of ''apropos'' icompletion. As with standard icompletion, the candidate completions that match your input are displayed incrementally, as you type. The difference is that the matches are ''regular expression'' (regexp) matches. See [[Icicles - Icompletion]].
@@ -56,15 +42,6 @@ Icompletion gives you an idea what completions are available. In '''[[Icicles]]'
 '''Example:''' You type `M-x char', and standard prefix icompletion shows you all of the commands that start with `char'. Apropos icompletion shows you all of the commands that contain `char' ''anywhere'' in their name, not just as a prefix, so you also see commands such as `forward-char'.
 
 The apropos icompletion of '''[[Icicles]]''' is displayed, not in the minibuffer, but in buffer `*Completions*'. This means that you can use both kinds of icompletion at the same time: library icomplete.el or Lisp:icomplete+.el shows the prefix completions in the minibuffer, while '''[[Icicles]]''' shows the apropos completions in buffer `*Completions*'.
-
-
-
-
-
-
-== Mcomplete Mode: Icomplete Mode + Iswitchb ==
-
-See McompleteMode
 
 -----
 CategoryCompletion CategoryHelp
