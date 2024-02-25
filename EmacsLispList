@@ -1,11 +1,12 @@
-The Emacs Lisp List ([::ELL]) is the authorative source of all Emacs packages.  It is maintained by StephenEglen.
+The Emacs Lisp List ([::ELL]) is a list of Emacs packages that was created and formerly maintained by StephenEglen.
 
-//Warning: as of 2012-01-13 The ELL is badly out of date. Out of the 1266 URLs 
-it contains, more than 50% are either dead, non-responding or moved.//
+//Warning: the ELL has not been actively maintained for many years.  Even as of 2012-01-13 more than 50% of the URLs in it were either dead, non-responding or moved.//
 
-Current locations:
+StephenEglen wrote that he hopes "most people will start using the various packaging systems (such as [[ELPA]] or [[MELPA]]) instead for modern elisp."
 
-* http://damtp.cam.ac.uk/user/sje30/emacs/ell.html (Edinburgh 1 - UK) 
+Location:
+
+* http://damtp.cam.ac.uk/user/sje30/emacs/ell.html 
 
 The major mode used to browse the ELL from emacsen is ell.el:
 
