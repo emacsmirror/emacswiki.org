@@ -226,6 +226,42 @@ i was switching from mutt/abook to wanderlust/bbdb, so i came up with this code.
           (message "abook's addressbook successfully imported."))))
     (provide 'bbdb-snarf-abook)
 
+awk script that will output a csv file with the fields: name, email, phone, address
+
+<pre>
+BEGIN {
+        FS = "=" # Field separator is =
+	    OFS = "," # Output field separator is ,
+    print "name,email,phone,address" # Print the header row
+}
+/^$/ { # If the line is empty, it means a new record
+    if (NR > 1) { # If not the first line, print the previous record
+        print name, email, phone, address
+    }
+    # Reset the variables for the new record
+    name = ""
+    email = ""
+    phone = ""
+    address = ""
+}
+/^name/ { # If the line starts with name, assign the value to name
+    name = $2
+}
+/^email/ { # If the line starts with email, assign the value to email
+    email = $2
+}
+/^phone/ { # If the line starts with phone, assign the value to phone
+    phone = $2
+}
+/^address/ { # If the line starts with address, assign the value to address
+    address = $2
+}
+END { # At the end of the file, print the last record
+    print name, email, phone, address
+}
+</pre>
+
+
 == Importing from OS X system Address Book ==
 
 I use Gnus as my mailer, but I live on a Macintosh.  To get the system AddressBook data into the BBDB, I've written a [http://www.homonculus.net/blog/by_name/bbdb_os_x_hackery.html short python script] that uses the PyObjC bridge to pull the relevant data directly.    Share and enjoy!
