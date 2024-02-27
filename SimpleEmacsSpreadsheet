@@ -45,12 +45,6 @@ Addons for SES,
 
 
 [new]
-I used SES for my classes: A list of students, points for all the
-exercises, totals over all exercises, averages for each exercise,
-calculate a grade based on the totals and some systematic hand-waving.
-It worked very nicely. -- AlexSchroeder
-
-[new]
 I'm trying to write a simple eLisp function to automaticaly open an SES file and export its whole content to value. I'm facing problems of ses-export-tsv and region. Does anyone know how to write a lisp function to export the whole content ? Thanks.
 
 [new]
