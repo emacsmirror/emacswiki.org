@@ -1,3 +1,4 @@
+[[ko:en.wikipedia.org]]
 <code>po-mode.el</code> is a major mode for editing [[Gettext]] <code>.po</code> message files.  The mode is included in the Gettext package,
 
 : http://www.gnu.org/software/gettext/
