@@ -1,5 +1,5 @@
 [[ja:アウトラインモード]]
-Outline mode is the default outline mode for Emacs.  Use <tt>M-x outline-mode</tt> to enter it.  See also OutlineMinorMode, AllOut.
+Outline mode is the default outline mode for Emacs.  Use <tt>M-x outline-mode</tt> to enter it.  See also OutlineMinorMode, AllOut, OutlineMagic.
 
 It distinguishes between different header levels and the plain text.  The default mechanism uses asterisks to determine header levels.  Use the NEWS file as an example (C-h n):
 
@@ -66,8 +66,17 @@ You can use hide-body (C-c C-t) to hide all the body text, leaving only the head
 
 And you can use show-all (C-c C-a) to redisplay everything and get back to where we started.
 
+== Cycling ==
+
+`outline-cycle' cycles through the most important states of an
+outline buffer.  By default, it is bound to the `TAB' key.  This saves a
+lot of typing and thinking while editing your outline.
+
+Similar features are provided by OutlineMagic, AllOut and OrgMode.
+
 == Customizing Heading Definition ==
 
+===Basics===
 You can also customize `outline-regexp' which indicates which lines are considered heading.  It is a regular expression to match the beginning of a heading.  The smaller the match, the higher the level of the heading.
 
 The default value matches asterisks and page breaks:
@@ -97,6 +106,62 @@ to give this result:
     -help   This causes xterm to print  out  a  verbose  message...
  
     -132    Normally, the VT102  DECCOLM  escape  sequence  that...
+
+=== Using Roman Numerals as Headings ===
+
+Here's how to make Emacs' outline mode use "I., A., 1., a., i." and so on as valid outline entries.  Put the following at the end of your document (or among your LocalVariables if you already have them):
+
+    Local Variables:
+    mode: outline-minor
+    outline-regexp: " *\\([A-Za-z]\\|[IVXivx0-9]+\\)\\. *"
+    End:
+
+There, now you can use normal outline notation.  If you use "outline" instead of "outline-minor" for mode, then you get font-lock as a bonus (but you lose whatever major mode you were in before).  Note that it is looking for any number of spaces, followed by either a single letter or a Roman or Arabic numeral (multiple digits allowed), followed by any number of spaces, and the length of all of that together determines the outline level.  So your outlines have to look like this:
+
+      I.  blah blah
+     II.  blah blah blah
+    III.  blah blah
+          A.  This
+          B.  That
+
+...for this to work correctly.  Interestingly enough, this didn't work for me on the very first line of the file; I had to skip one line (an extra carriage return above "I"), then it worked as planned.  Not sure why this is.
+
+=== Some hooks for special modes ===
+
+ (add-hook 'change-log-mode-hook
+  (lambda ()
+    (set (make-local-variable 'outline-regexp) "[[:digit:]]+")))
+ ; note that the "^" is *implicit* at the beginning of the regexp
+
+=== Vim-type outline marker ===
+
+Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are <code>{{{</code> and <code>}}}</code> for starting and ending a fold. A number after the marker determines the outline level (e.g., <code>{{{1</code>, <code>{{{2</code>, <code>{{{3</code> and so on).
+
+The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
+
+<pre>
+(defun set-vim-foldmarker (fmr)
+  "Set Vim-type foldmarkers for the current buffer"
+  (interactive "sSet local Vim foldmarker: ")
+  (if (equal fmr "")
+      (message "Abort")
+    (setq fmr (regexp-quote fmr))
+    (set (make-local-variable 'outline-regexp)
+         (concat ".*" fmr "\\([0-9]+\\)"))
+    (set (make-local-variable 'outline-level)
+         `(lambda ()
+            (save-excursion
+              (re-search-forward
+               ,(concat fmr "\\([0-9]+\\)") nil t)
+              (string-to-number (match-string 1)))))))
+</pre>
+
+While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
+
+<pre>
+(outline-minor-mode 1)
+(set-vim-foldmarker "{{{")
+</pre>
 
 == Customizing Outline ellipsis ==
 
@@ -135,64 +200,6 @@ If you're using Whitespace mode, you'll need to use this to change the ellipsis:
                               (string-to-vector " [...]"))))
   (add-hook 'whitespace-mode-hook #'whitespace-change-ellipsis)
 
-== Using Roman Numerals as Headings ==
-
-Here's how to make Emacs' outline mode use "I., A., 1., a., i." and so on as valid outline entries.  Put the following at the end of your document (or among your LocalVariables if you already have them):
-
-    Local Variables:
-    mode: outline-minor
-    outline-regexp: " *\\([A-Za-z]\\|[IVXivx0-9]+\\)\\. *"
-    End:
-
-There, now you can use normal outline notation.  If you use "outline" instead of "outline-minor" for mode, then you get font-lock as a bonus (but you lose whatever major mode you were in before).  Note that it is looking for any number of spaces, followed by either a single letter or a Roman or Arabic numeral (multiple digits allowed), followed by any number of spaces, and the length of all of that together determines the outline level.  So your outlines have to look like this:
-
-      I.  blah blah
-     II.  blah blah blah
-    III.  blah blah
-          A.  This
-          B.  That
-
-...for this to work correctly.  Interestingly enough, this didn't work for me on the very first line of the file; I had to skip one line (an extra carriage return above "I"), then it worked as planned.  Not sure why this is.
-
-== Some hooks for special modes ==
-
- (add-hook 'change-log-mode-hook
-  (lambda ()
-    (set (make-local-variable 'outline-regexp) "[[:digit:]]+")))
- ; note that the "^" is *implicit* at the beginning of the regexp
-
-== Cycling ==
-
-Instead of using many different commands to show and hide buffer
-parts, `outline-cycle' cycles through the most important states of an
-outline buffer.  By default, it is bound to the `TAB' key.  This saves a
-lot of typing and thinking while editing your outline.
-
-OrgMode includes cycling and many more features
-
-The outline-magic package by CarstenDominik provides the command
-`outline-cycle' which cycles the visibility / folding level of text and headings.
-
-In addition to outline cycling, this extension provides four commands
-for structure editing.  Using M-up, M-down, M-left, and M-right, you
-can easily move entries around:
-
-                               move up
-                                  ^
-                      promote  <- + ->  demote
-                                  v
-                              move down
-
-You can get it from one of the following:
-* http://www.astro.uva.nl/~dominik/Tools/outline-magic.el
-* http://www.emacswiki.org/emacs/outline-magic.el
-
-It seems that similar features are provided by AllOut.
-
-You can use outline-magic to fold python code:
-* [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
-* http://www.emacswiki.org/emacs/python-magic.el
-
 == Converting Emacs Outline to Other Formats ==
 
 Outline mode is helpful for organizing plain text documents and program
@@ -227,37 +234,6 @@ For me, the following a2ps style sheet (outline.ssh) does highlight the headers:
     end sequences
 
     end style
- 
-
-== Vim-type outline marker ==
-
-Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are <code>{{{</code> and <code>}}}</code> for starting and ending a fold. A number after the marker determines the outline level (e.g., <code>{{{1</code>, <code>{{{2</code>, <code>{{{3</code> and so on).
-
-The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
-
-<pre>
-(defun set-vim-foldmarker (fmr)
-  "Set Vim-type foldmarkers for the current buffer"
-  (interactive "sSet local Vim foldmarker: ")
-  (if (equal fmr "")
-      (message "Abort")
-    (setq fmr (regexp-quote fmr))
-    (set (make-local-variable 'outline-regexp)
-         (concat ".*" fmr "\\([0-9]+\\)"))
-    (set (make-local-variable 'outline-level)
-         `(lambda ()
-            (save-excursion
-              (re-search-forward
-               ,(concat fmr "\\([0-9]+\\)") nil t)
-              (string-to-number (match-string 1)))))))
-</pre>
-
-While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
-
-<pre>
-(outline-minor-mode 1)
-(set-vim-foldmarker "{{{")
-</pre>
 
 ----
 CategoryModes
