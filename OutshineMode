@@ -1,3 +1,2 @@
-'''Outshine''' is a minor mode that brings the look and feel of OrgMode to other major modes. It is an extension of OutlineMinorMode that lets you use the Tab key as in OrgMode to cycle visibility of subtrees. 
+'''Outshine''' ([https://melpa.org/#/outshine MELPA], [https://github.com/alphapapa/outshine GitHub])is a minor mode that brings the look and feel of OrgMode to other major modes. It is an extension of OutlineMinorMode that lets you use the Tab key as in OrgMode to cycle visibility of subtrees. 
 
-https://github.com/alphapapa/outshine
