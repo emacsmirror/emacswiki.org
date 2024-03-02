@@ -57,6 +57,9 @@ listed here:
 * LaTex: FlymakeTex:
 * HTML: FlymakeHtml:
 
+== Spellchecking ==
+Flymake also allow for spellchecking using tools like [https://languagetool.org/ LanguageTool] with help from [https://github.com/emacs-languagetool/flymake-languagetool flymake-languagetool]
+
 == Hints And Questions ==
 
 === Long Checks ===
