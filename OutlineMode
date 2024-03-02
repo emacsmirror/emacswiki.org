@@ -16,7 +16,7 @@ You can then use Headings, Show, and Hide menus to selectively show parts of the
 * C-c @ C-s show subtree at cursor location
 * C-c @ C-d hide subtree at cursor location
 
-See also [[Manual:Outline Mode]].
+See also [[Manual:Outline Mode]] in the Emacs manual.
 Screencasts for using the outline-mode is available at ScreencastSources and ScreencastRecordings.
 
 == Example ==
