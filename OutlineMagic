@@ -1,6 +1,4 @@
-Extends OutlineMode and OutlineMinorMode with the command <code>outline-cycle</code> -- a single command to toggle hiding/showing.
-
-Available at https://github.com/tj64/outline-magic
+The outline-magic package by CarstenDominik ([https://melpa.org/#/outline-magic MELPA], [https://github.com/tj64/outline-magic GitHub]) extends OutlineMode and OutlineMinorMode.
 
 After installing it into a location on your <code>load-path</code>, enable it with:
 
@@ -10,3 +8,17 @@ After installing it into a location on your <code>load-path</code>, enable it wi
     (require 'outline-magic)
     (define-key outline-minor-mode-map (kbd "<C-tab>") 'outline-cycle)))
 </pre>
+
+It provides four commands
+for structure editing.  Using M-up, M-down, M-left, and M-right, you
+can easily move entries around:
+
+                               move up
+                                  ^
+                      promote  <- + ->  demote
+                                  v
+                              move down
+
+You can also use outline-magic to fold python code:
+* [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
+* http://www.emacswiki.org/emacs/python-magic.el
