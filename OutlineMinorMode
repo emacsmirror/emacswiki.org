@@ -3,7 +3,7 @@ A built-in MinorMode version of OutlineMode.
 See also [[Manual:Outline Mode]] in the manual.
 
 == Summary ==
-<kbd>M-x outline-minor-mode</kbd> enables Outline minor mode, with OutlineMode commands bound to keys in `outline-minor-mode-map', which is bound to the prefix key <kbd>C-c @</kbd> by default.  The prefix key to use can be customized with `outline-minor-mode-prefix'.  See [[Keys]], searching for "outline" to view the key bindings in use, etc.
+<kbd>M-x outline-minor-mode</kbd> toggles Outline minor mode, which binds OutlineMode commands to keys in `outline-minor-mode-map', using the prefix key <kbd>C-c @</kbd> by default.  The prefix key can be customized with `outline-minor-mode-prefix'.  See [[Keys]], searching for "outline" to view the key bindings in use, etc.
 
 ==Cycling==
 Per [[Manual:Outline Mode|the manual]] setting `outline-minor-mode-cycle' makes the TAB and S-TAB keys cycle visibility on the outline heading lines for the current-section and entire buffer respectively.
