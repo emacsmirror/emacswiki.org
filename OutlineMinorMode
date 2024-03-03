@@ -1,36 +1,25 @@
-A MinorMode version of OutlineMode.
+A built-in MinorMode version of OutlineMode.
 
-See also [[Manual:Outline Mode]] in the manual.
+See also [[Manual:Outline Minor Mode]] in the manual.
 
-== Keys And Functions Summary ==
+== Summary ==
+<kbd>M-x outline-minor-mode</kbd> enables Outline minor mode, with OutlineMode commands bound to keys in `outline-minor-mode-map', which is bound to the prefix key <kbd>C-c @</kbd> by default.  The prefix key to use can be customized with `outline-minor-mode-prefix'.  See [[Keys]], searching for "outline" to view the key bindings in use, etc.
 
-||M-x outline-minor-mode||enable Outline minor mode||
-||C-c @ C-t||hide all of buffer except headings||
-||C-c @ C-a||show all of the text in the buffer||
-||C-c @ C-q||hide everything but top levels headers||
-||C-c @ TAB||show all direct subheadings of this heading||
-||C-c @ C-k||show all subheadings, but not bodies||
-||M-x outline-previous-heading||go to previous heading||
-||M-x outline-next-heading||go to next heading||
-||C-c @ C-p||go to previous visible heading||
-||C-c @ C-n||go to next visible heading||
+==Cycling==
+Per [[Manual:Outline Minor Mode|the manual]] setting `outline-minor-mode-cycle' makes the TAB and S-TAB keys cycle visibility on the outline heading lines for the current-section and entire buffer respectively.
+==Customizing Heading Definition==
+See OutlineMode
 
-== Cumbersome Key-Bindings  ==
+== Using less awkward key-bindings  ==
+The default `C-c @' bindings are awkward to use.  To address this one can follow one the approaches below
 
-Use OutshineMode - it extends OutlineMode and OutlineMinorMode with a single command to toggle hiding/showing (<code>outline-cycle</code>) which is bound to the Tab key as in OrgMode. It is based on an older mode, OutlineMagic. 
-
---
-
-I use outline-minor-mode  to see the skeleton of programs.
-To navigate between headings i rebound all the commands to 1-event long keys.
-Something like M-P/N  (meta and uppercase letters). Otherwise it's too long for my taste.
-
-[new]
-I second this. I find the prefix C-c @ (i.e., C-c Shift-2) too cumbersome. Any other suggestions for alternative key-bindings? - ShaiHirsch
-
-[new]
-I use `M-o', because that is not bound to anything by default, and "o" stands for "outline".  Here is a quote from my .emacs file:
-
+===Add an additional prefix key===
+    (add-hook 'outline-minor-mode-hook
+              (lambda () (local-set-key "\C-c\C-c"
+                                        outline-mode-prefix-map)))))
+===Create a new keymap manually===
+For example:
+{{{
  ; Outline-minor-mode key map
  (define-prefix-command 'cm-map nil "Outline-")
  ; HIDE
@@ -53,25 +42,9 @@ I use `M-o', because that is not bound to anything by default, and "o" stands fo
  (define-key cm-map "f" 'outline-forward-same-level)        ; Forward - same level
  (define-key cm-map "b" 'outline-backward-same-level)       ; Backward - same level
  (global-set-key "\M-o" cm-map)
-
-- Sue D. Nymme
-
-[new]
-Pseudonym,
-
-Another solution is to just define a hook for the minor mode that just
-defines an additional prefix key.
-
-    (add-hook 'outline-minor-mode-hook
-              (lambda () (local-set-key "\C-c\C-c"
-                                        outline-mode-prefix-map)))))
-
-Using `C-c C-c' was suggested by [[JesseW]] on the EmacsChannel. -- AaronHawley
-
-[new]
-
+}}}
+===Create a new keymap programmatically===
 Instead of rebinding keys one by one define:
-
 {{{
 (defun my-simplify-fold-keymap (mode)
   (let ((map (make-sparse-keymap)))
@@ -85,7 +58,7 @@ Instead of rebinding keys one by one define:
 
 Then just bind the result of the above function called with 'hs-minor-mode and/or 'outline-minor-mode.
 
-== Explorer like Key-Bindings ==
+=== Explorer like Key-Bindings ===
 
 {{{
 (defun body-p ()
@@ -147,124 +120,11 @@ Then just bind the result of the above function called with 'hs-minor-mode and/o
 --
 ovr
 
-== Using Meta + <arrow key> ==
+== Avoid hiding comments at beginning of lines ==
 
-This is a variation of the above Explorer-like keybindings.
+For _years_ i wanted to modify outline-minor-mode, so that comments starting at the beginning of line  were left visible.  Now I add the condition that they don't get marked as headers. 
 
-{{{
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; outline-mode-easy-bindings.el (2010-08-15)
-;;
-;; Outlines can be managed entirely with Meta + <arrow key>.
-;;
-;; Installation: Store this file as outline-mode-easy-bindings.el
-;; somewhere in your load-path and create hooks for outline modes to
-;; load this automatically, for example:
-
-;;     (add-hook 'outline-mode-hook 'my-outline-easy-bindings)
-;;     (add-hook 'outline-minor-mode-hook 'my-outline-easy-bindings)
-;;
-;;     (defun my-outline-easy-bindings ()
-;;       (require 'outline-mode-easy-bindings nil t))
-
-
-(defun outline-body-p ()
-  (save-excursion
-    (outline-back-to-heading)
-    (outline-end-of-heading)
-    (and (not (eobp))
-         (progn (forward-char 1)
-                (not (outline-on-heading-p))))))
-
-(defun outline-body-visible-p ()
-  (save-excursion
-    (outline-back-to-heading)
-    (outline-end-of-heading)
-    (not (outline-invisible-p))))
-
-(defun outline-subheadings-p ()
-  (save-excursion
-    (outline-back-to-heading)
-    (let ((level (funcall outline-level)))
-      (outline-next-heading)
-      (and (not (eobp))
-           (< level (funcall outline-level))))))
-
-(defun outline-subheadings-visible-p ()
-  (interactive)
-  (save-excursion
-    (outline-next-heading)
-    (not (outline-invisible-p))))
-
-(defun outline-hide-more ()
-  (interactive)
-  (when (outline-on-heading-p)
-    (cond ((and (outline-body-p)
-                (outline-body-visible-p))
-           (hide-entry)
-           (hide-leaves))
-          (t
-           (hide-subtree)))))
-
-(defun outline-show-more ()
-  (interactive)
-  (when (outline-on-heading-p)
-    (cond ((and (outline-subheadings-p)
-                (not (outline-subheadings-visible-p)))
-           (show-children))
-          ((and (not (outline-subheadings-p))
-                (not (outline-body-visible-p)))
-           (show-subtree))
-          ((and (outline-body-p)
-                (not (outline-body-visible-p)))
-           (show-entry))
-          (t
-           (show-subtree)))))
-
-(let ((map outline-mode-map))
-  (define-key map (kbd "M-<left>") 'outline-hide-more)
-  (define-key map (kbd "M-<right>") 'outline-show-more)
-  (define-key map (kbd "M-<up>") 'outline-previous-visible-heading)
-  (define-key map (kbd "M-<down>") 'outline-next-visible-heading)
-  (define-key map (kbd "C-c J") 'outline-hide-more)
-  (define-key map (kbd "C-c L") 'outline-show-more)
-  (define-key map (kbd "C-c I") 'outline-previous-visible-heading)
-  (define-key map (kbd "C-c K") 'outline-next-visible-heading))
-
-(let ((map outline-minor-mode-map)) 
-  (define-key map (kbd "M-<left>") 'outline-hide-more)
-  (define-key map (kbd "M-<right>") 'outline-show-more)
-  (define-key map (kbd "M-<up>") 'outline-previous-visible-heading)
-  (define-key map (kbd "M-<down>") 'outline-next-visible-heading)
-  (define-key map (kbd "C-c J") 'outline-hide-more)
-  (define-key map (kbd "C-c L") 'outline-show-more)
-  (define-key map (kbd "C-c I") 'outline-previous-visible-heading)
-  (define-key map (kbd "C-c K") 'outline-next-visible-heading))
-
-(provide 'outline-mode-easy-bindings)
-}}}
-
-== Another Outline Binding To Cursor Keys ==
-
-My bindings use ALT + arrows and CTRL + ALT + arrows to navigate outlines:
-
-{{{
-(global-set-key [M-left] 'hide-body)
-(global-set-key [M-right] 'show-all)
-(global-set-key [M-up] 'outline-previous-heading)
-(global-set-key [M-down] 'outline-next-heading)
-(global-set-key [C-M-left] 'hide-sublevels)
-(global-set-key [C-M-right] 'show-children)
-(global-set-key [C-M-up] 'outline-previous-visible-heading)
-(global-set-key [C-M-down] 'outline-next-visible-heading)
-}}}
-
-Nice - I bound M-right to show-subtree though, so it's easy to expand and hide individual sections of text with M-left and M-right. 
-
-
-== Code Editing ==
-
-For _years_ i wanted to modify outline-minor-mode, so that comments starting at the beginning of line  were left visible.  Now I add the condition that they don't get marked as headers. Here's the code:
+Here's the code.  Note that these definitions override built-in ones:  
 
 {{{
 (defun outline-flag-region-make-overlay (from to) ;mmc
@@ -298,42 +158,9 @@ If FLAG is nil then text is shown, while if FLAG is t the text is hidden."
 }}}
 --
 mmc
+==Extension packages==
+OutlineMagic and OutshineMode (newer, based on OutlineMagic) extend OutlineMode and OutlineMinorMode with extra commands and more convenient key bindings. 
 
-
-== Vim-type outline marker ==
-
-Vim editor has several different outlining (called folding) options. One of them is manual outlining in which user inserts predefined markers to the text and the outline level is determined by the markers. The default markers are ##{{{## and ##}}}## for starting and ending a fold. A number after the marker determines the outline level (e.g., ##{{{1##, ##{{{2##, ##{{{3## and so on).
-
-The following code adds an interactive function `set-vim-foldmarker' which can be used to set Vim-type opening outline marker for the current buffer.
-
-    (defun set-vim-foldmarker (fmr)
-      "Set Vim-type foldmarkers for the current buffer"
-      (interactive "sSet local Vim foldmarker: ")
-      (if (equal fmr "")
-          (message "Abort")
-        (setq fmr (regexp-quote fmr))
-        (set (make-local-variable 'outline-regexp)
-             (concat ".*" fmr "\\([0-9]+\\)"))
-        (set (make-local-variable 'outline-level)
-             `(lambda ()
-                (save-excursion
-                  (save-match-data
-                    (re-search-forward ,(concat fmr "\\([0-9]+\\)") nil t)
-                    (string-to-number (match-string 1))))))))
-
-While in outline-mode or outline-minor-mode you can call this interactively with `M-x set-vim-foldmarker' and enter the opening marker when asked. If you use outline-minor-mode and Vim-type outlining always with certain major mode you can add the following lines to the appropriate major mode hook:
-
-{{{
-(outline-minor-mode 1)
-(set-vim-foldmarker "{{{")
-}}}
-
-[new]
-== An  outline-regexp for Java ==
-
-{{{
-(setq outline-regexp "\\(?:\\([ \t]*.*\\(class\\|interface\\)[ \t]+[a-zA-Z0-9_]+[ \t\n]*\\({\\|extends\\|implements\\)\\)\\|[ \t]*\\(public\\|private\\|static\\|final\\|native\\|synchronized\\|transient\\|volatile\\|strictfp\\| \\|\t\\)*[ \t]+\\(\\([a-zA-Z0-9_]\\|\\( *\t*< *\t*\\)\\|\\( *\t*> *\t*\\)\\|\\( *\t*, *\t*\\)\\|\\( *\t*\\[ *\t*\\)\\|\\(]\\)\\)+\\)[ \t]+[a-zA-Z0-9_]+[ \t]*(\\(.*\\))[ \t]*\\(throws[ \t]+\\([a-zA-Z0-9_, \t\n]*\\)\\)?[ \t\n]*{\\)" )
-}}}
 
 ----
 CategoryModes
