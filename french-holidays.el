@@ -39,12 +39,14 @@
 (provide 'french-holidays)
 </pre>
 
-Replace (
-<pre>holiday-float 5 0 4 "Fête des mères")</pre>
+Replace
+<pre>
+(holiday-float 5 0 4 "Fête des mères")
+</pre>
 by
 <pre>
 (if (not (equal (calendar-nth-named-day -1 0 5 displayed-year) (caar (holiday-easter-etc 49))))
     (holiday-float 5 0 -1 "Fête des mères")
   (holiday-float 6 0 1 "Fête des mères"))
-<pre>
+</pre>
 to obtain the desired result. Note, this is the last sunday of may not the fourth.
