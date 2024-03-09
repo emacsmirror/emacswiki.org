@@ -4,13 +4,13 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2024, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 27 14:52:50 2023 (-0700)
+;; Last-Updated: Sat Mar  9 15:33:55 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 1141
+;;     Update #: 1144
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/03/09 dadams
+;;     Renamed (corrected) find-where* to imenup-find-where*.
 ;; 2023/09/27 dadams
 ;;     Require cl-lib when available, else defalias cl-case to case.
 ;; 2023/03/24 dadams
@@ -661,18 +663,18 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
 ;;
 (when (featurep 'find-where)
 
-  (defun find-where ()
+  (defun imenup-find-where ()
     "Function used as REGEXP entry of a generic-expression definition matcher.
 This uses `fw-to-previous-thing' to locate a THING beginning.  On
 first invocation it prompts for the THING.
 
 Instead of that prompting, which is one-time only, use this function
 only to define a function that uses a specific kind of THING.  An
-example of such a function is `find-where-list'."
-    (find-where-1))
+example of such a function is `imenup-find-where-list'."
+    (imenup-find-where-1))
 
-  (defun find-where-1 (&optional thing)
-    "Helper for defining `find-where-THING' function."
+  (defun imenup-find-where-1 (&optional thing)
+    "Helper for defining `imenup-find-where-THING' function."
     (let* ((res    (fw-to-previous-thing thing))
            (beg    (car res))
            (beg    (if imenu-use-markers (copy-marker beg) beg))
@@ -682,89 +684,89 @@ example of such a function is `find-where-list'."
       (when res (set-match-data (list beg end)))
       (and res  (format "%s" res))))    ; Convert to string.
 
-  (defun find-where-list ()
+  (defun imenup-find-where-list ()
     "Generic-expression definition matcher for Lisp lists.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Lists\" 'find-where-list 0)"
-    (find-where-1 'list))
+ \(list \"Lists\" 'imenup-find-where-list 0)"
+    (imenup-find-where-1 'list))
 
-  (defun find-where-string ()
+  (defun imenup-find-where-string ()
     "Generic-expression definition matcher for Lisp strings.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Strings\" 'find-where-string 0)"
-    (find-where-1 'string))
+ \(list \"Strings\" 'imenup-find-where-string 0)"
+    (imenup-find-where-1 'string))
 
-  (defun find-where-vector ()
+  (defun imenup-find-where-vector ()
     "Generic-expression definition matcher for Lisp vectors.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Vectors\" 'find-where-vector 0)"
-    (find-where-1 'vector))
+ \(list \"Vectors\" 'imenup-find-where-vector 0)"
+    (imenup-find-where-1 'vector))
 
-  (defun find-where-number ()
+  (defun imenup-find-where-number ()
     "Generic-expression definition matcher for numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Numbers\" 'find-where-number 0)"
-    (find-where-1 'number))
+ \(list \"Numbers\" 'imenup-find-where-number 0)"
+    (imenup-find-where-1 'number))
 
-  (defun find-where-decimal-number ()
+  (defun imenup-find-where-decimal-number ()
     "Generic-expression definition matcher for decimal numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Decimal Numbers\" 'find-where-decimal-number 0)"
-    (find-where-1 'decimal-number))
+ \(list \"Decimal Numbers\" 'imenup-find-where-decimal-number 0)"
+    (imenup-find-where-1 'decimal-number))
 
-  (defun find-where-hex-number ()
+  (defun imenup-find-where-hex-number ()
     "Generic-expression definition matcher for hexadecimal numbers.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Hex Numbers\" 'find-where-hex-number 0)"
-    (find-where-1 'hex-number))
+ \(list \"Hex Numbers\" 'imenup-find-where-hex-number 0)"
+    (imenup-find-where-1 'hex-number))
 
-  (defun find-where-symbol ()
+  (defun imenup-find-where-symbol ()
     "Generic-expression definition matcher for symbols.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Symbols\" 'find-where-symbol 0)"
-    (find-where-1 'symbol))
+ \(list \"Symbols\" 'imenup-find-where-symbol 0)"
+    (imenup-find-where-1 'symbol))
 
-  (defun find-where-sexp ()
+  (defun imenup-find-where-sexp ()
     "Generic-expression definition matcher for Lisp S-expressions.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Sexps\" 'find-where-sexp 0)"
-    (find-where-1 'sexp))
+ \(list \"Sexps\" 'imenup-find-where-sexp 0)"
+    (imenup-find-where-1 'sexp))
 
-  (defun find-where-color ()
+  (defun imenup-find-where-color ()
     "Generic-expression definition matcher for color names and hex RGB.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Colors\" 'find-where-color 0)"
-    (find-where-1 'color))
+ \(list \"Colors\" 'imenup-find-where-color 0)"
+    (imenup-find-where-1 'color))
 
-  (defun find-where-word ()
+  (defun imenup-find-where-word ()
     "Generic-expression definition matcher for words.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Words\" 'find-where-word 0)"
-    (find-where-1 'word))
+ \(list \"Words\" 'imenup-find-where-word 0)"
+    (imenup-find-where-1 'word))
 
-  (defun find-where-sentence ()
+  (defun imenup-find-where-sentence ()
     "Generic-expression definition matcher for sentences.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Sentences\" 'find-where-sentence 0)"
-    (find-where-1 'sentence))
+ \(list \"Sentences\" 'imenup-find-where-sentence 0)"
+    (imenup-find-where-1 'sentence))
 
-  (defun find-where-paragraph ()
+  (defun imenup-find-where-paragraph ()
     "Generic-expression definition matcher for paragraphs.
 Use it in an `imenu-generic-expression' value as follows:
 
- \(list \"Paragraphs\" 'find-where-paragraph 0)"
-    (find-where-1 'paragraph))
+ \(list \"Paragraphs\" 'imenup-find-where-paragraph 0)"
+    (imenup-find-where-1 'paragraph))
 
   )
 
