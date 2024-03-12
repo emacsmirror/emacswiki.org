@@ -90,6 +90,31 @@ which give me:
 
 -- RossLonstein
 
+[new]
+How can I achieve the following with cperl-mode?
+
+  use parent qw(
+      My::Package
+      My::Other::Package
+  );
+
+My current settings are:
+
+  (setq cperl-indent-level 4)
+  (setq perl-continued-statement-offset 0)
+  (setq cperl-indent-parens-as-block t)
+  (setq cperl-close-paren-offset -4)
+  (setq cperl-indent-subs-specially nil)
+
+which makes the above look like this:
+
+  use parent qw(
+                   My::Package
+           );
+
+-- Patrick
+
+
 == Continued indentation ==
 
 How do you solve this indenting problem? Notice the staircasing inside the "if()" after the first "print" and how the join and being outside the curly bracket doesnt have this problem. This occurs with cperl-mode, not perl-mode on every system I have access to.
@@ -250,7 +275,6 @@ Answering to myself (using up-to-date https://github.com/jrockway/cperl-mode)
     (set-q cperl-indent-subs-specially nil)
 
 [new]
-
 My fix to continued indentation when <code>cperl-indent-parens-as-block</code> is in effect (fixes staircase and I hope introduces less side effects than other snippets listed here).
 
   (defadvice cperl-backward-to-start-of-continued-exp (after indentation-fix)
