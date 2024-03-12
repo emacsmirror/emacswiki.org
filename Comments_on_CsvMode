@@ -4,3 +4,10 @@ Finally, and this might be a bit trickier, if the file extension is ".txt", the 
 
 -- epement 2014-03-07 13:47 UTC
 
+
+----
+
+Currently cl is deprecated. Shouldn't be used cl-lib instead?
+
+-- Iago 2024-03-12 08:13 UTC
+
