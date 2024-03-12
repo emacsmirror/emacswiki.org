@@ -11,3 +11,10 @@ Currently cl is deprecated. Shouldn't be used cl-lib instead?
 
 -- Iago 2024-03-12 08:13 UTC
 
+
+----
+
+The rewrite is done. Since <code>cl-loop</code> is now an autoloaded macro from <code>cl-macs.el</code>, no require is needed.
+
+-- LdBeth 2024-03-12 17:58 UTC
+
