@@ -31,22 +31,13 @@
         (holiday-easter-etc 39 "Ascension")
         (holiday-easter-etc 49 "Pentecôte")
         (holiday-easter-etc -47 "Mardi gras")
-	(holiday-float 5 0 4 "Fête des mères")
+        (if (not (equal (calendar-nth-named-day -1 0 5 displayed-year)
+                        (caar (holiday-easter-etc 49))))
+            (holiday-float 5 0 -1 "Fête des mères")
+          (holiday-float 6 0 1 "Fête des mères"))
 	;; dernier dimanche de mai ou premier dimanche de juin si c'est le
 	;; même jour que la pentecôte TODO
 	(holiday-float 6 0 3 "Fête des pères"))) ;; troisième dimanche de juin
 
 (provide 'french-holidays)
 </pre>
-
-Replace
-<pre>
-(holiday-float 5 0 4 "Fête des mères")
-</pre>
-by
-<pre>
-(if (not (equal (calendar-nth-named-day -1 0 5 displayed-year) (caar (holiday-easter-etc 49))))
-    (holiday-float 5 0 -1 "Fête des mères")
-  (holiday-float 6 0 1 "Fête des mères"))
-</pre>
-to obtain the desired result. Note, this is the last sunday of may not the fourth.
