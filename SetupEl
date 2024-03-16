@@ -735,6 +735,26 @@ if you just want to use setup config syntax: (:option ...), (:global ...), (:req
 
 You never use the original (setup ...), but always the macro (-setup ...) as above.
 
+At this point, if you want three packages to be elpaca-installed, you have
+to use -setup three times:
+{{{
+(-setup pkg1 ...)
+(-setup pkg2 ...)
+(-setup pkg3 ...)
+;; and then possibly configure them together w/
+(-setup nil ...)
+}}}
+Maybe it would not be too hard to improve upon the macro above to accept
+multiple pkgs - like so:
+
+{{{
+(-setup-improved (pkg1 pkg2 pkg3) ...)
+}}}
+
+This is not possible currently (not that I am aware of, anyway) - and really
+I think, -setup as above is not too bad: three (four) separate -setup macro calls
+are quite acceptable.
+
 Here is a complete working vertico/orderless/... initfile.
 
 {{{
