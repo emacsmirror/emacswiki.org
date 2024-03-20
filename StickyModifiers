@@ -48,10 +48,97 @@ Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One go
 
 ==== Sway Window Manager ====
 
-You can use [https://raw.githubusercontent.com/ne9z/ergo-keyboard-layout/main/swaywm-emacs-ergo-keymap.txt this keymap].  Right click the link and save the keymap as text file, then load it in sway config with
-<pre>
-    input "type:keyboard" xkb_file $HOME/path_to_key_map.txt
-</pre>
+In the Sway Window Manager sticky modifiers can be enabled by loading a custom keyboard configuration file defined using the X keyboard extension (xkb) standard.
+
+Although originally used for X11 a xkb file is Wayland compositor compatible and can be directly loaded in Sway through its configuration file.
+
+Firstly run the bash script below to create two sticky keyboard variant files:
+
+- keymap_with_sticky_modifiers.xkb - a latched sticky modifier setup in which a modifier is activated by a following key press.
+
+- keymap_with_locked_modifiers.xkb - a locking sticky modifier setup in which a modifier will be locked on a double tap and then unlocked with a single tap.
+
+  #!/bin/bash
+  DST=$HOME/.config
+  # Reset keyboard layout (to your preferred language)
+  setxkbmap gb
+  # Apply sticky modifier changes and save to a specific file
+  xkbcomp $DISPLAY -xkb - | \
+  sed 's|SetMods|LatchMods|g' > \
+  $DST/keymap_with_sticky_modifiers.xkb
+  # Reset keyboard layout (to your preferred language)
+  setxkbmap gb
+  # Apply locked modifiers changes and save to a specific file
+  xkbcomp $DISPLAY -xkb - | \
+  sed 's|SetMods|LatchMods|g' | \
+  sed 's|,clearLocks);|,clearLocks,latchToLock);|g' > \
+  $DST/keymap_with_locked_modifiers.xkb
+
+At this point you can activate Sticky Keys by loading the new xkb keymap in the Sway config as follows:
+
+  input "type:keyboard" {
+      xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
+  }
+
+Optionally modify the xkb file directly after generation to use the “Caps Lock” keyboard indicator LED for indicating a sticky modifier is active, like so :
+
+  indicator "Caps Lock" {
+      !allowExplicit;
+      whichModState= locked;
+      modifiers= Control+Mod1+Shift;
+  };
+
+This turns on the Caps Lock LED whenever a Control, Alt (Mod1) or Shift key is sticky locked giving a visual hint to any locked keys.  Although useful on a laptop if you are using a full sized keyboard each modifier can be linked to its own indicator LED, for example:
+
+  indicator "Caps Lock" {
+      !allowExplicit;
+      whichModState= locked;
+      modifiers= Control;
+  };
+  indicator "Num Lock" {
+      !allowExplicit;
+      whichModState= locked;
+      modifiers= Mod1;
+  };
+  indicator "Scroll Lock" {
+      whichModState= locked;
+      modifiers= Shift;
+  };
+
+As part of this keyboard redefinition it might also be useful to remap the Caps Lock key to the Control modifier.  One way to achieve this in Sway is to modify the config file as follows:
+
+  input type:keyboard {
+     xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
+     xkb_options ctrl:nocaps
+  }
+
+However, as we are redefining our keyboard layout we can directly modify the xkb configuration file in the following manner:
+
+replace:
+
+  key <CAPS> {         [       Caps_Lock ] };
+
+with
+
+  key <CAPS> {         [       Control_L ] };
+
+replace:
+
+  modifier_map Lock { <CAPS> };
+
+with
+
+  modifier_map Control { <CAPS> };
+
+For bonus points, and to ensure that the right Alt modifier functions like a regular Alt thereby distributing the keys more evenly between the left and right hands, perform the following steps:
+
+add:
+
+  modifier_map Mod1 { <RALT> };
+
+set the definition of key <RALT> to:
+
+  key <RALT> {         [           Alt_L,          Meta_L ] };
 
 ==== Console ====
 
