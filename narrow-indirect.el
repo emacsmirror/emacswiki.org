@@ -4,13 +4,13 @@
 ;; Description: Narrow using an indirect buffer that is a clone
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2024, Drew Adams, all rights reserved.
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul  5 14:59:59 2019 (-0700)
+;; Last-Updated: Sat Mar 23 15:47:49 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 211
+;;     Update #: 216
 ;; URL: https://www.emacswiki.org/emacs/download/narrow-indirect.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -109,7 +109,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `ni-buffer-substring-collapsed-visible'.
+;;    `ni-buffer-substring-collapsed-visible',
+;;    `ni--put-mode-line-buf-id-face'.
 ;;
 ;;  Acknowledgments:
 ;;
@@ -132,6 +133,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/03/23 dadams
+;;     ni-narrow-to-region-indirect-other-window: Handle list whose car is a list with string (e.g. Man buffers).
+;;     Added: ni--put-mode-line-buf-id-face.
 ;; 2019/07/05 dadams
 ;;     ni-narrow-to-region-indirect-other-window: Handle case where mode-line-buffer-identification is :eval form.
 ;; 2014/09/14 dadams
@@ -276,12 +280,33 @@ See `clone-indirect-buffer'."
     (let* ((buf  (or full-name  text  (ni-buffer-substring-collapsed-visible start end)))
            (buf  (or full-name  (concat ni-buf-name-prefix (buffer-name) ni-buf-name-separator buf)))
            (buf  (or full-name  (substring buf 0 (min (length buf) ni-narrowed-buf-name-max))))
-           (buf   (clone-indirect-buffer buf nil)))
+           (buf  (clone-indirect-buffer buf nil)))
       (with-current-buffer buf (narrow-to-region start end) (goto-char here))
       (pop-to-buffer buf)
-      (let ((strg  (car mode-line-buffer-identification)))
-        (when (and (consp strg)  (eq (car strg) ':eval)) (setq strg  (car (eval (cadr strg)))))
-        (setq mode-line-buffer-identification  (list (propertize strg 'face 'ni-mode-line-buffer-id)))))))
+      ;; Just handle (1) the typical case a singleton list with string, (2) an `:eval' list with a string, (3) just
+      ;; a string and (4) a list whose car is a singleton list with string.  Case 4 occurs in `Man' buffers.
+      (setq mode-line-buffer-identification
+            (let ((mlbi  mode-line-buffer-identification))
+              (if (and (consp mlbi)  (consp (car mlbi)))
+                  (cons (ni--put-mode-line-buf-id-face (car mlbi)) (cdr mlbi)) ; Multiple elts; use first.
+                (ni--put-mode-line-buf-id-face mlbi))))))) ; Usual case, elt is singleton list of string.
+
+(defun ni--put-mode-line-buf-id-face (elt)
+  "Put face on `mode-line-buffer-identification' string.
+If ELT is a STRING, propertize it.
+If ELT is a list ((:eval STRING)) or (STRING) then propertize STRING
+ and return (STRING).
+Otherwise, just return ELT."
+  (if (stringp elt)
+      (propertize elt 'face 'ni-mode-line-buffer-id)
+    (if (atom elt)                      ; E.g., symbol.
+        elt
+      (setq elt  (car elt))
+      (when (and (consp elt)  (eq (car elt) ':eval)  (stringp (cadr elt)))
+        (setq elt  (car (eval (cadr elt)))))
+      (if (stringp elt)
+          (list (propertize elt 'face 'ni-mode-line-buffer-id))
+        elt))))
 
 (defun ni-buffer-substring-collapsed-visible (start end)
   "Return a suitable string based on buffer content between START and END.
