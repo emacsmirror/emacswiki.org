@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Feb  1 13:48:02 2024 (-0800)
+;; Last-Updated: Sat Mar 23 21:36:20 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 9674
+;;     Update #: 9681
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -937,6 +937,7 @@
 (defvar eww-local-regex)                ; In `eww.el' (Emacs 25+)
 (defvar eww-search-prefix)              ; In `eww.el' (Emacs 25+)
 (defvar gnus-article-current)           ; In `gnus-sum.el'
+(defvar grep-history)                   ; In `grep.el' (Emacs 22+)
 (defvar icicle-bookmark-completing-p)   ; In `icicles-var.el'
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
 (defvar icicle-completion-candidates)   ; In `icicles-var.el'
@@ -11634,8 +11635,12 @@ BOOKMARK is a bookmark name or a bookmark record."
 You are prompted for the region bookmark.
 
 The region is selected as usual, in the bookmarked file/buffer.  A
-separate window is opened on the region text, for the cloned indirect
-buffer.
+separate window is opened on the region text (which is unselected),
+for the cloned indirect buffer.
+
+If the major-mode symbol of the buffer with the selected region has
+non-nil property `no-clone-indirect' then no indirect buffer clone is
+created.  But unlike `clone-indirect-buffer' no error is raised.
 
 You need library `narrow-indirect.el' to use this command."
   (interactive)
