@@ -267,7 +267,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * The bot is primarily meant to be an infobot, and everything is programmed with that (and irc-safety) in mind. You will run into disappointment and incorrect answers if you expect fslisp evals to always equal those of elisp.
 
 === Practical hints for programming your own botcommands ===
-* Remember that your botcommand will often be invoked from English usage: ,myfacility foo bar 1 2 orly? garbage_here
+* Remember that your botcommand will often be invoked by irc users via English usage: ##,myfacility foo bar 1 2 orly? more_garbage_here##
 * Try to make your facility fault-tolerant. Make sure it works whether invoked from English or from lisp. There will often be trailing garbage, or not enough args, or too many args. 
 * Thus, always use "&rest ignore" if you want to take in a handful of args to handle trailing garbage.
 * If not enough args, here's a sample response -  (error "Usage: ,myfacility [num_items] reason [more_reasons]").
