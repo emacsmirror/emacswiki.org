@@ -253,6 +253,29 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * A dunnet player
 * An interface to wtf
 * ,foo is lisp (lisp-form). If the notes for the term foo are of this form, then the lisp-form is evaluated. You might prefer to (defun foo(...)) instead. 
+
+
+
+
+
+
+=== Practical hints for users for best results === 
+* Don't try the fs- or fsi- prefix on your own. Leave them to the bot.
+* When edge-cases spoil the English parse, use (parse "non-edgy english-command") to see the lisp equivalent, and then use that instead.
+* Use ,dump for verbose output.
+* Don't confuse variables, functions, and terms. The latter are the nuggets of the knowledge-base of the infobot.
+* The bot is primarily meant to be an infobot. You will run into disappointment and incorrect answers if you expect its lisp evals to equal those of elisp.
+
+=== Practical hints for programming your own botcommands ===
+* Remember that your botcommand will often be invoked from English usage: ,myfacility foo bar 1 2 orly? garbage_here
+* Try to make your facility fault-tolerant. Make sure it works whether invoked from English or from lisp. There will often be trailing garbage, or not enough args, or too many args. 
+* Thus, always use "&rest ignore" if you want to take in a handful of args to handle trailing garbage.
+* If not enough args, here's a sample response -  (error "Usage: ,myfacility [num_items] reason [more_reasons]").
+* `stringifyd' almost always dtrt to interpret user-args in a dwimmy fashion from both English and lisp. For many usecases, your facility should often look like - (defun myfacility (&rest args) (setq args (stringifyd args)) (now do the actual work) ).
+* This will handle many edge cases, whether called from lisp or English. It will effectively convert (myfacility "aa bb" "cc" "1" 2) to (myfacility "aa" "bb" "cc" 1 2). It should also parse ,myfacility aa bb cc 1 2  correctly and do the same.
+* Remember that English parses (read) each arg in turn before sending it to your botcommand. So, (unless you use the above tricks), you might have to (format "%s") to convert them to strings. Also notice that user often means the integer 2 when they end up providing "2".
+
+
 ----
 
 ErBot
