@@ -264,7 +264,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * When edge-cases spoil the English parse, use (parse "non-edgy english-command") to see the lisp equivalent, and then use that instead.
 * Use ,dump for verbose output.
 * Don't confuse variables, functions, and terms. The latter are the nuggets of the knowledge-base of the infobot.
-* The bot is primarily meant to be an infobot. You will run into disappointment and incorrect answers if you expect its lisp evals to equal those of elisp.
+* The bot is primarily meant to be an infobot, and everything is programmed with that (and irc-safety) in mind. You will run into disappointment and incorrect answers if you expect fslisp evals to always equal those of elisp.
 
 === Practical hints for programming your own botcommands ===
 * Remember that your botcommand will often be invoked from English usage: ,myfacility foo bar 1 2 orly? garbage_here
