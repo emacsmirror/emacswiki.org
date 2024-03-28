@@ -255,7 +255,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * ,foo is lisp (lisp-form). If the notes for the term foo are of this form, then the lisp-form is evaluated. You might prefer to (defun foo(...)) instead. 
 
 
-
+== Practical Hints == 
 
 
 
