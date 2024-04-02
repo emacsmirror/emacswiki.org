@@ -286,7 +286,7 @@ As an irc user, you can not only add to the bots knowledge-base (terms), but als
 * Your facility may be invoked by the user via English, via lisp, or via other facilities that build upon your function. Or, the user might invoke several nested facilities within the same lisp command. Your botcommand might receive input args as integers, as strings, as symbol. It might even receive just one string comprising the actual args separated by spaces. Thus, a rough "universal" flowchart, (unless you use the above tricks such as ##stringifyd##), is to ##(format "%s")## each arg. And, after that, if its ##(read)## is an integer, interpret it as one. Or, if you are expecting a symbol, you go ahead and (read) to convert it to one.
 
 === Practical hints for developers ===
-This section applies if you have been given edit rights to the erbot software itself. Here are a few hints - 
+This section applies if you have been given edit rights to the erbot software itself. Here's a partial list - 
 
 * Your primary concern is to not introduce exploits.
 * It is best to leave the core sandbox, parsing, functionality alone. Because: (1) exploits; (2) In any case, it is a minefield, right?  You may think you are facilitating a new command-interpretation route, but you probably broke 50 other use cases developed over 20+ years.
