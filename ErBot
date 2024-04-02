@@ -283,7 +283,17 @@ As an irc user, you can not only add to the bots knowledge-base (terms), but als
 * `stringifyd' almost always dtrt to interpret user-args in a dwimmy fashion from both English and lisp. For many usecases, your facility should often look like - ##(defun myfacility (&rest args) (setq args (stringifyd args)) (now do the actual work) )##.
 * This will handle many edge cases, whether called from lisp or English. It will effectively convert ##(myfacility "aa bb" "cc" "1" 2)## to ##(myfacility "aa" "bb" "cc" 1 2)##. It should also parse ##,myfacility aa bb cc 1 2##  correctly and do the same. Notice how, among things, it also broke up "aa bb" into two args. 
 * Remember that English parses ##(read)## each arg in turn before sending it to your botcommand. So, you might receive symbols when you were actually expecting strings. Also notice that in some use-cases, myfacility may  receive  "2" after an English parse when the user actually meant the integer 2. 
-* Your facility may be invoked by the user via English, via lisp, or via other facilities that build upon your function. Or, the user might invoke several nested facilities within the same lisp command. Your botcommand might receive input args as integers, as strings, as symbol. It might even receive just one string comprising the actual args separated by spaces. Thus, a rough "universal" flowchart, (unless you use the above tricks such as ##stringifyd##), is to ##(format "%s")## each arg. And, after that, if its ##(read)## is an integer, interpret it as one. Or, if you are expecting a symbol, you go ahead and (read) to convert it to one. 
+* Your facility may be invoked by the user via English, via lisp, or via other facilities that build upon your function. Or, the user might invoke several nested facilities within the same lisp command. Your botcommand might receive input args as integers, as strings, as symbol. It might even receive just one string comprising the actual args separated by spaces. Thus, a rough "universal" flowchart, (unless you use the above tricks such as ##stringifyd##), is to ##(format "%s")## each arg. And, after that, if its ##(read)## is an integer, interpret it as one. Or, if you are expecting a symbol, you go ahead and (read) to convert it to one.
+
+=== Practical hints for developers ===
+This section applies if you have been given edit rights to the erbot software itself. Here are a few hints - 
+
+* Your primary concern is to not introduce exploits.
+* It is best to leave the core sandbox, parsing, functionality alone. Because: (1) exploits; (2) In any case, it is a minefield, right?  You may think you are facilitating a new command-interpretation route, but you probably broke 50 other use cases developed over 20+ years.
+* Most of your time will be spend introducing new core ##fsi-## functions or editing existing ones. But, even here, you can introduce exploits. The best way to avoid it is to simply use OTHER fs- or fsi- functions within your new shiny facility. That way, assuming there were no prior exploits, you can be sure you haven't introduced one.
+* A secondary concern is to ensure the bot doesn't go hang for an hour in response to a user-input. Ensure you use enough ##(sit-for 0.001)## in your code when executing loops. That will allow the core to take control back due to timeouts.
+ 
+
 
 ----
 
