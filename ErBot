@@ -255,11 +255,11 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * ,foo is lisp (lisp-form). If the notes for the term foo are of this form, then the lisp-form is evaluated. You might prefer to (defun foo(...)) instead. 
 
 
-== Practical Hints == 
+== Practical Hints for best results == 
 
 
 
-=== Practical hints for users for best results ===
+=== Practical hints for users ===
 
 
 * Don't try the fs- or fsi- prefix on your own. Leave them to the bot.
