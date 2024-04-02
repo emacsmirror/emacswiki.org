@@ -261,7 +261,6 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 
 === Practical hints for users for best results ===
 
-As an irc user, you can not only add to the bots knowledge-base (terms), but also modify the bot's behavior itself. You can program your own botcommands using the included ##(defun)##. Botcommands, when not done right, actually make the bot less useful. In certain cases, the bot will get directed to your command, and if it's not well executed, it will return errors needlessly. So, how do you dtrt?
 
 * Don't try the fs- or fsi- prefix on your own. Leave them to the bot.
 * When edge-cases spoil the English parse, use ##(parse "non-edgy english-command")## to see the lisp equivalent, and then use that instead.
@@ -270,6 +269,11 @@ As an irc user, you can not only add to the bots knowledge-base (terms), but als
 * The bot is primarily meant to be an infobot, and everything is programmed with that (and irc-safety) in mind. You will run into disappointment and incorrect answers if you expect fslisp evals to always equal those of elisp.
 
 === Practical hints for programming your own botcommands ===
+
+As an irc user, you can not only add to the bots knowledge-base (terms), but also modify the bot's behavior itself. You can program your own botcommands using the included ##(defun)##. Botcommands, when not done right, actually make the bot less useful. In certain cases, the bot will get directed to your command, and if it's not well executed, it will return errors needlessly. So, how do you dtrt?
+
+
+
 * Remember that your botcommand will often be invoked by irc users via English usage: ##,myfacility foo bar 1 2 orly? more_garbage_here##
 * Try to make your facility fault-tolerant. Make sure it works whether invoked from English or from lisp. There will often be trailing garbage, or not enough args, or too many args. 
 * Thus, when you want to accept N args, always use ##&rest ignore## so your botcommand will ignore trailing garbage and still output something useful. Your shiny new ##dict## should work even if user says: ##,dict combobulation might be it##. Here, clearly, ##might be it## is meant for other irc users. Your one-arg function receives multiple arguments. Instead of returning an error, you should ignore the trailing garbage.
