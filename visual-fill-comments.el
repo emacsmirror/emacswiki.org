@@ -91,7 +91,12 @@
           ;; Make sure we can break safely.
           (when (>= (- maxpos minpos)
                     (- fill-column prefixlen (length comstart)))
-            (throw 'done t))
+            ;; We can't break this line, so let it run long and break at the
+            ;; next opportunity.
+            (goto-char maxpos)
+            (unless (re-search-forward " +" (line-end-position) 'noerror)
+              (throw 'done t))
+            (skip-chars-backward " "))
           ;; Add the text properties.
           (add-text-properties (point) (match-end 0)
                                (list 'visual-fill-comment t
