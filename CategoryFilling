@@ -23,7 +23,8 @@ AutoFillMode -- MinorMode that lets Emacs break the line you are typing as soon 
 RefillMode -- fills the paragraph after each edit
 
 ==Adaptive Fill mode==
-[https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] --  "sets the fill prefix automatically from the text in each paragraph being filled rather than using a predetermined value"
+* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Adaptive Fill mode] --  "sets the fill prefix automatically from the text in each paragraph being filled rather than using a predetermined value"
+* Lisp:visual-fill-comments.el -- Visually wrap code comment lines which are longer than fill-column.
 
 Similar: FillAdapt
 
