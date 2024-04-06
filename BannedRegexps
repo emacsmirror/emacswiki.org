@@ -20,3 +20,6 @@ a\shref="?http # 2024-02-11 direct HTML links mean spam
 img\s+src= # 2024-02-11 direct HTML links mean spam
 URL=http # 2024-02-07 borked bbCode links mean spam
 (((customer(\scare)?|printer|tech(nical)?)\s(service|support)|toll\sfree|antivirus)(\sphone)?\s(number|n\.u\.m\.b\.e\.r)) # 2016-07-04 phone numbers usually means spam
+#
+saksx-diploms
+srednee24.com
