@@ -72,3 +72,12 @@ Are the official docs moved?
 
 -- anonymous 2022-04-16 15:46 UTC
 
+
+----
+
+Would be good to have a note about evil-collection but I can't seem to edit this page.
+
+* [https://github.com/emacs-evil/evil-collection evil-collection]: A collection of Evil bindings for the parts of Emacs that Evil does not cover properly by default, such as help-mode, M-x calendar, Eshell and more.
+
+-- [https://choffee.co.uk/ choffee] 2024-04-07 08:57 UTC
+
