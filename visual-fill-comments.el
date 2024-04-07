@@ -1,10 +1,10 @@
-;;; visual-fill-comments.el --- Auto-refill comments without modifying the buffer  -*- lexical-binding: t; -*-
+;;; visual-fill-comments.el --- Auto-wrap comments without modifying the buffer  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2024  Free Software Foundation, Inc.
 
 ;; Author: Phil Sainty
-;; Adapted from visual-fill.el by Stefan Monnier <monnier@iro.umontreal.ca>
-;; Version: 0.1
+;; Inspired by visual-fill.el by Stefan Monnier <monnier@iro.umontreal.ca>
+;; Version: 0.3
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,13 +22,11 @@
 
 ;;; Commentary:
 
-;; This `visual-fill-comments-mode' minor mode visually fills comments within
-;; jit-lock, hence without modifying the buffer.  Combined with the normal
-;; line-wrapping this performs a kind of "auto refill" which can be more or
-;; less sophisticated depending on the line-wrapping used.
+;; This `visual-fill-comments-mode' minor mode visually reformats long comment
+;; lines via jit-lock (hence without modifying the buffer), wrapping word-wise
+;; at `fill-column' in order to improve the comment readability.
 ;;
-;; Currently this is hard-coded only for /* ... */ block comments.
-;; See below: (commentstart " * ")
+;; Comments matching `visual-fill-comments-regexp' (see which) are processed.
 ;;
 ;; Related modes and/or GNU ELPA packages:
 ;; - `visual-line-mode'
@@ -37,7 +35,82 @@
 
 ;;; Code:
 
+(defvar visual-fill-comments-regexp
+  (rx (or (seq (group-n 1 (minimal-match (zero-or-more not-newline)))
+               (group-n 2 "//" (zero-or-more " ")))
+          (seq (group-n 2 (zero-or-more " ") "*" (zero-or-more " "))
+               (group-n 3 (opt (or (regexp "@param +\\([^ ]+ +\\)?\\$[^ ]+ +")
+                                   (regexp adaptive-fill-regexp)))))))
+  "Regexp matching a buffer line with a comment.
+
+The start of the match must be the start of the line.  The end of
+the match must be within the comment.  Subgroup 1 matches any
+prefix to the comment (to be replaced by equivalent spaces on
+subsequent continuation lines).  Subgroup 2 contains the comment
+syntax (to be repeated on each continuation line, following the
+prefix indentation).  Subgroup 3 matches any suffix to the
+comment syntax (to be replaced by equivalent spaces on subsequent
+continuation lines, following the comment syntax).
+
+\(Remember that you can repeat explicit group numbers when matching
+multiple sets of alternatives.)")
+
+(defun visual-fill-comments--jit (start end)
+  "Apply visual comment display properties in specified region."
+  (visual-fill-comments--cleanup start end)
+  (goto-char start)
+  (forward-line 0)
+  (let (comstart columns linestart longcomment maxpos minpos
+                 prefix suffix replacement)
+    ;; Process the specified region.
+    (while (< (point) end)
+      (when (looking-at visual-fill-comments-regexp)
+        (setq linestart (point)
+              prefix (make-string (length (match-string 1)) ?\s)
+              comstart (match-string 2)
+              suffix (make-string (length (match-string 3)) ?\s)
+              columns (- fill-column (- (match-end 0) (match-beginning 0)))
+              longcomment (format "%s.\\{%d\\}"
+                                  (regexp-quote (match-string 0)) columns)
+              replacement nil)
+        (catch 'done
+          ;; (message "%S" (list linestart prefix comstart suffix columns longcomment))
+          ;; (throw 'done t)
+          (while (looking-at longcomment)
+            (setq maxpos (match-end 0))
+            (goto-char maxpos)
+            ;; Confirm we're inside a comment.
+            (unless (nth 4 (syntax-ppss))
+              (throw 'done t))
+            ;; Don't break within a word.
+            (skip-chars-backward " ")
+            (or (looking-at " +")
+                (re-search-backward " +" linestart 'noerror)
+                (throw 'done t))
+            (setq minpos (match-end 0))
+            ;; Make sure we can break safely.
+            (when (>= (- maxpos minpos) columns)
+              ;; We can't break this line, so let it run long and break at the
+              ;; next opportunity.
+              (goto-char maxpos)
+              (unless (re-search-forward " +" (line-end-position) 'noerror)
+                (throw 'done t))
+              (skip-chars-backward " "))
+            ;; Calculate the replacement for this line.
+            (unless replacement
+              (setq replacement (concat "\n" prefix comstart suffix)
+                    longcomment (format ".\\{%d\\}" columns)))
+            ;; Add the text properties.
+            (add-text-properties (point) (match-end 0)
+                                 (list 'visual-fill-comment t
+                                       'display replacement))
+            ;; Continue in this line.
+            (goto-char (match-end 0)))))
+      ;; Process the next line.
+      (forward-line 1))))
+
 (defun visual-fill-comments--cleanup (start end)
+  "Remove the visual comment display properties."
   (while (and (< start end)
               (setq start (text-property-any start end
                                              'visual-fill-comment t)))
@@ -47,66 +120,6 @@
                                             'visual-fill-comment t)
                      end))
      '(visual-fill-comment nil display nil))))
-
-(defun visual-fill-comments--jit (start end)
-  (visual-fill-comments--cleanup start end)
-  (goto-char start)
-  (forward-line 0)
-  (let ((comstart " * ")
-        columns linestart longcomment maxpos minpos prefix prefixlen replacement)
-    ;; Process the specified region.
-    (while (< (point) end)
-      (setq linestart (point)
-            columns (- fill-column (length comstart))
-            longcomment (format "%s.\\{%d\\}"
-                                (regexp-quote comstart) columns)
-            replacement nil)
-      (catch 'done
-        (while (looking-at longcomment)
-          (setq maxpos (match-end 0))
-          (goto-char maxpos)
-          ;; Confirm we're inside a comment.
-          (unless (nth 4 (syntax-ppss))
-            (throw 'done t))
-          ;; Don't break within a word.
-          (skip-chars-backward " ")
-          (or (looking-at " +")
-              (re-search-backward " +" linestart 'noerror)
-              (throw 'done t))
-          (setq minpos (match-end 0))
-          ;; Calculate the prefix for this line.
-          (unless replacement
-            (setq prefix (if adaptive-fill-mode
-                             (save-excursion
-                               (forward-line 0)
-                               (save-match-data
-                                 (if (looking-at adaptive-fill-regexp)
-                                     (make-string (- (match-end 0)
-                                                     (point)
-                                                     (length comstart))
-                                                  ?\s)
-                                   ""))))
-                  prefixlen (length prefix)
-                  replacement (concat "\n" comstart prefix)))
-          ;; Make sure we can break safely.
-          (when (>= (- maxpos minpos)
-                    (- fill-column prefixlen (length comstart)))
-            ;; We can't break this line, so let it run long and break at the
-            ;; next opportunity.
-            (goto-char maxpos)
-            (unless (re-search-forward " +" (line-end-position) 'noerror)
-              (throw 'done t))
-            (skip-chars-backward " "))
-          ;; Add the text properties.
-          (add-text-properties (point) (match-end 0)
-                               (list 'visual-fill-comment t
-                                     'display replacement))
-          ;; Continue in this line, taking the prefix into account.
-          (goto-char (match-end 0))
-          (setq columns (- fill-column prefixlen)
-                longcomment (format ".\\{%d\\}" columns))))
-      ;; Process the next line.
-      (forward-line 1))))
 
 ;;;###autoload
 (define-minor-mode visual-fill-comments-mode
