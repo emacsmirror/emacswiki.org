@@ -63,5 +63,11 @@ The link text retains its crude ASCII formatting. -- VegardOye
 Yes, there is no recursive parsing of the link text.
 -- Alex
 
+== General Issues ==
+
+=== MeatBall links lead to a spam site now. ===
+
+It looks like usemod dot com domain has expired. Some of the MeatBall links now end up on spam sites eg: AppropriateMedia
+
 ----
 CategoryEmacsWikiSite
