@@ -93,6 +93,15 @@ like ~/.emacs.d
 (require 'colour-region)
 (colour-region-initialize)
 
+=== Bug ===
+The following line could be commented and replaced
+
+    ;;(defun* colour-region-in-colour-region-p (&optional (pos (point)))
+
+by
+
+    (defun colour-region-in-colour-region-p (&optional pos point)
+
 == Functions ==
 === Interactive Functions ===
 
