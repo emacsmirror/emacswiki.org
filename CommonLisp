@@ -13,7 +13,7 @@ Lisp vendors had adopted CommonLisp.  (AutoLisp remains a holdout.)
 
 The CommonLisp standard is available online as the CommonLispHyperspec.
 
-See http://www.lisp.org/ for a list of free and proprietary implementations for different platforms.
+See https://common-lisp.net/ or https://lisp-lang.org/ for a list of free and proprietary implementations for different platforms.
 
 == Why isn't more of CommonLisp in GNU Emacs? ==
 
