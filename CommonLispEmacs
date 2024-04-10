@@ -2,8 +2,12 @@ There is not yet an implementation of Emacs in CommonLisp.
 A lot of people would like to see one, however.
 It is often talked about on news:comp.lang.lisp. The [http://www.mikemac.com/mikemac/McCLIM/ McCLIM] source includes the beginning of an Emacs in CL, but it's not yet usable.
 
+The usable editor built in Common Lisp, while not an Emacs port, is [https://lem-project.github.io/ Lem].
+
 There's also a page over on the Common Lisp Wiki on the subject.
 CLiki:CL-Emacs
+
+== Old projects ==
 
 Hmm, what about HemLock, the editor distributed with CMUCL? It is
 written in CommonLisp, and in the tradition of the [[WikiPedia:Lisp machine]] editor
@@ -22,6 +26,15 @@ subsume both (Portable) Hemlock and Goatee.
 See also: [[LiCE]]
 
 There is also FRED (Fred Resembles Emacs Deliberately), which is an emacs implemented in CommonLisp.  It comes with [ftp://clozure.com/pub/MCL/ Macintosh Common Lisp], which means it is limited to running on Mac OS 9 or X on PPC machines.
+
+== Current projects ==
+
+Last but not least, [https://lem-project.github.io/ Lem] is an editor built in Common Lisp that, while not Emacs, is heavily inspired by it. It borrows its system of buffers, major and minor modes, etc. Lem works out of the box for Common Lisp development and other languages: Python, Rust, Go, Scala, Scheme, Nim, C, Elixir, Erlang, SQL… also for HTML, JSON… and with a directory mode (very much like Dired). Lem has a built-in LSP client.
+
+In March, 2024, Lem was added [https://lisp-journey.gitlab.io/blog/oh-no-i-started-a-magit-like-plugin-for-the-lem-editor/ the first version] of a Magit-like VCS package, for Git and, to a lower extent, Fossil and Mercurial. It allows to: see the project status, the latest commits, stage or unstage changes (files and diff hunks), start an interactive rebase…
+
+Lem works on the terminal and with a GUI.
+
 
 == Discussion ==
 
