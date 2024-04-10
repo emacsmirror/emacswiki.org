@@ -15,6 +15,32 @@ The CommonLisp standard is available online as the CommonLispHyperspec.
 
 See https://common-lisp.net/ or https://lisp-lang.org/ for a list of free and proprietary implementations for different platforms.
 
+== What are some differences between Elisp and Common Lisp? ==
+
+First, the two languages are very similar: they are Lisp-2, they have defun, defmacro, defvar, let… one shouldn't feel alienated when going from Elisp to Common Lisp.
+
+Still, there are some remarkable differences:
+
+* CL has namespaces (called a package)
+* CL has keyword arguments to functions
+* CL uses lexical scoping by default 
+* most CL implementations do tail call optimization, while Emacs 28 can do it with named-let or a specific package (tco.el).
+* CL has good threads support (see the bordeaux-threads library, lparallel or again the sento actor library, and more)
+* CL has a famous built-in object system (CLOS) and a meta-object protocol (MOP). Emacs' eieio library is modeled after it.
+* it is possible to compile one's program more incrementally in CL than in Elisp, such as function by function (C-c C-c in Slime).
+* some CL implementations, such as SBCL, bring more type warnings and errors at compile time (on a C-c C-c keypress) than Elisp.
+  * there is also a library named Coalton that brings Haskell-like type checking on top of CL.
+* believe it or not but developing in CL in Emacs is richer than developing with Elisp: compile one function, send a function to the REPL, print the argument list, interactively inspect objects, use cross-referencing (who is calling/using/defining… a function, a variable, a macro, a method), work with the interactive debugger…
+* CL has a rich and complex error handling system that, coupled with the interactive debugger, allows to restart computation from an individual frame, or to handle a condition (an exception) without unwinding the stack.
+* CL has different implementations with different strengths, and libraries on a wider variety of domains.
+* it is possible to build a binary of a CL program. SBCL compiles to machine code.
+* Elisp's edebug, when on a break-point, shows the value of the variable at point. Surprisingly this has turned difficult to get in CL, except with the proprietary `LispWorks' editor and Sly stickers that approach it.
+
+They also have some semantic differences:
+
+* the "else" branch of elisp's `if' is an implicit progn, it accepts multiple forms. In CL, both the "then" and "else" branches accept only one expression, so one must group multiple expressions in a `progn'.
+
+
 == Why isn't more of CommonLisp in GNU Emacs? ==
 
 EmacsLisp predates the CommonLisp standard; it is a MacLisp derivative.
