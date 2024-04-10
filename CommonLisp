@@ -54,9 +54,10 @@ SlimeMode.  Other useful packages include:
 
 * CommonLispHyperspec -- lookup functions and variables in the spec
 * CommonLispTheLanguage -- lookup functions and variables in the book
-* http://edward.oconnor.cx/elisp/hl-sexp.el -- useful for dealing with sexp all day
-* http://homepage1.nifty.com/bmonkey/emacs/elisp/cldoc.el -- database of parameters and results of Common Lisp's standard stuff (an "eldoc clone for Common Lisp", according to the file header)
-* http://homepage1.nifty.com/bmonkey/emacs/elisp/cl-lookup.tar.gz -- lookup various entries relating to Common Lisp in various sources
+* SlyMode -- a fork of Slime with some added features, like back references in the REPL and Sly Stickers, for debugging.
+* the slime-star extensions: https://github.com/mmontone/slime-star 
+* emacs4cl: https://github.com/susam/emacs4cl a small Emacs init file to quickly setup vanilla setup for Common Lisp programming.
+* Portacle: https://shinmera.github.io/portacle/ a portable version of Emacs that ships with SBCL (Common Lisp implementation), Quicklisp (the library manager), Slime, Git and some useful utilities (tree view, etc).
 
 
 == Using EmacsLisp Code in your CommonLisp implementation ==
@@ -78,6 +79,7 @@ See CommonLispEmacs.
 * [http://www.elwoodcorp.com/alu/table/Lisp-History.html Kent Pitman, Brief History of the Lisp Language]
 * [http://www-2.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html Guy L Steele, Common Lisp: The Language, 2nd Edition]
 * [http://www8.informatik.uni-erlangen.de/html/lisp/histlit1.html Herbert Stoyan, Early LISP History (1956-1959)]
+* [https://github.com/CodyReichert/awesome-cl awesome-cl]
 
 ----
 CategoryCode
