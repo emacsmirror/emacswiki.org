@@ -35,6 +35,7 @@ Still, there are some remarkable differences:
 * CL has different implementations with different strengths, and libraries on a wider variety of domains.
 * it is possible to build a binary of a CL program. SBCL compiles to machine code.
 * Elisp's edebug, when on a break-point, shows the value of the variable at point. Surprisingly this has turned difficult to get in CL, except with the proprietary `LispWorks' editor and Sly stickers that approach it.
+* CL doesn't have `defadvice' (but some implementations might have a non-portable version of it).
 
 They also have some semantic differences:
 
