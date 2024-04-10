@@ -47,7 +47,7 @@ See CommonLispForEmacs.
 
 Emacs has a simple interface to a running Lisp top-level.  Use `M-x run-lisp'.  This will run the `lisp' program on your system. See the (emacs)Running an External Lisp. node of the EmacsManual for details.
 
-If your program is not called `lisp' but `clisp' or `glisp' or whatever, customize the option `inferior-lisp-program'.
+If your program is not called `lisp' but `sbcl' or `clisp' or whatever, customize the option `inferior-lisp-program'.
 
 For a really good interface to an external lisp, check ILispMode,
 SlimeMode or VanillaLispShell.  Other useful packages include:
