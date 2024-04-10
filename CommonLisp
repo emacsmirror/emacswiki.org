@@ -49,8 +49,8 @@ Emacs has a simple interface to a running Lisp top-level.  Use `M-x run-lisp'.  
 
 If your program is not called `lisp' but `sbcl' or `clisp' or whatever, customize the option `inferior-lisp-program'.
 
-For a really good interface to an external lisp, check ILispMode,
-SlimeMode or VanillaLispShell.  Other useful packages include:
+For a really good interface to an external lisp, check 
+SlimeMode.  Other useful packages include:
 
 * CommonLispHyperspec -- lookup functions and variables in the spec
 * CommonLispTheLanguage -- lookup functions and variables in the book
