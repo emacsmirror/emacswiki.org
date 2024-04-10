@@ -1,0 +1,9 @@
+[https://github.com/joaotavora/sly Sly] is a fork of SlimeMode that contains multiple improvements, such as:
+
+* it is based on commit mode
+* it has backreferences on the REPL
+* it alloys another debugging technique with Sly stickers
+* multiple REPLs (mrepl)
+* etc
+
+The two projects are active, as such Sly should not be seen as a go-to replacement for Slime, one can choose one or the other.
