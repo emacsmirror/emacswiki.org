@@ -3,8 +3,8 @@
 ;; Copyright (C) 2024  Free Software Foundation, Inc.
 
 ;; Author: Phil Sainty
-;; Inspired by visual-fill.el by Stefan Monnier <monnier@iro.umontreal.ca>
-;; Version: 0.4
+;; Inspired by visual-fill.el by Stefan Monnier
+;; Version: 0.4.1
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,11 +22,14 @@
 
 ;;; Commentary:
 
-;; This `visual-fill-comments-mode' minor mode visually reformats long comment
+;; This `visual-fill-comments-mode' minor mode visually re-formats long comment
 ;; lines via jit-lock (hence without modifying the buffer), wrapping word-wise
 ;; at the edge of the window in order to improve the comment readability.
 ;;
-;; Comments matching `visual-fill-comments-regexp' (see which) are processed.
+;; Comment lines matching `visual-fill-comments-regexp' are processed.
+;;
+;; When `visual-fill-comments-dynamic' is non-nil, window width changes will
+;; cause comments to be re-wrapped accordingly.
 ;;
 ;; Related modes and/or GNU ELPA packages:
 ;; - `visual-line-mode'
@@ -99,7 +102,7 @@ the extent of the suffix.
 multiple sets of alternatives.)")
 
 (defvar visual-fill-comments-dynamic t
-  "When to automatically reformat when the window width changes.")
+  "Whether to automatically reformat when the window width changes.")
 
 (defvar-local visual-fill-comments--column nil)
 
@@ -178,17 +181,17 @@ multiple sets of alternatives.)")
 
 (defun visual-fill-comments-window-width-min ()
   "Return the minimum window width for windows displaying the current buffer."
-  (apply #'min (or (mapcar #'window-max-chars-per-line
-                           (get-buffer-window-list))
-                   visual-fill-comments--column
-                   fill-column)))
+  (if-let ((bufs (get-buffer-window-list)))
+      (apply #'min (mapcar #'window-max-chars-per-line bufs))
+    (or visual-fill-comments--column
+        fill-column)))
 
 (defun visual-fill-comments-window-width-max ()
   "Return the maximum window width for windows displaying the current buffer."
-  (apply #'max (or (mapcar #'window-max-chars-per-line
-                           (get-buffer-window-list))
-                   visual-fill-comments--column
-                   fill-column)))
+  (if-let ((bufs (get-buffer-window-list)))
+      (apply #'max (mapcar #'window-max-chars-per-line bufs))
+    (or visual-fill-comments--column
+        fill-column)))
 
 (defun visual-fill-comments-column ()
   "Return the column at which to wrap long comment lines."
