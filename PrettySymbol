@@ -1,4 +1,4 @@
-##prettify-symbols-mode## allows you to render certain strings as symbols, i.e. showing ##->## as -->.
+prettify-symbols-mode allows you to render certain strings as symbols, i.e. showing ##->## as -->.
 
 It is included as of Emacs 24.4. It can be customized by changing ##prettify-symbols-alist##.
 
@@ -6,6 +6,7 @@ It is included as of Emacs 24.4. It can be customized by changing ##prettify-sym
 
 You may wish to use different symbols depending on the major mode you're writing in; you can use a hook for specific modes.
 
+{{{
 (add-hook 'prog-mode-hook
   (lambda ()
    (setq prettify-symbols-alist
@@ -22,6 +23,7 @@ You may wish to use different symbols depending on the major mode you're writing
 	("sqrt"   . ?√)
 	("..."    . ?…))))
    (prettify-symbols-mode 1))
+}}}
 
 == Related Projects ==
 
