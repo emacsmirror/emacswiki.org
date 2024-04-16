@@ -1,4 +1,4 @@
-prettify-symbols-mode allows you to render certain strings as symbols, i.e. showing ##->## as -->.
+prettify-symbols-mode allows you to render certain strings as symbols, i.e. showing ##->## as ##→##.
 
 It is included as of Emacs 24.4. It can be customized by changing ##prettify-symbols-alist##.
 
