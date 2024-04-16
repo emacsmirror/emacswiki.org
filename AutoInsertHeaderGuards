@@ -1,19 +1,21 @@
 Insert Header guards constructed from the filename.  If you have blah.h opened up without any text then header guards and a simple class definition are inserted.  If there is already some text in the file then only the header guards are inserted.
 
   (defun maybe-add-newline-at-buf-start ()
-    (if (and (char-equal (char-after (point-min)) ?\n)
+    (if (and (not (= (point-min) (point-max)))
+             (char-equal (char-after (point-min)) ?\n)
              (char-equal (char-after (1+ (point-min))) ?\n))
         ""
       "\n"))
   (defun maybe-add-newline-at-buf-end ()
-    (if (and (char-equal (char-before (point-max)) ?\n)
+    (if (and (not (= (point-min) (point-max)))
+             (char-equal (char-before (point-max)) ?\n)
              (char-equal (char-before (1- (point-max))) ?\n))
         ""
       "\n"))
-  
+
   ; Create Header Guards with f12
-  (global-set-key [f12] 
-  		'(lambda () 
+  (global-set-key [f12]
+  		'(lambda ()
   		   (interactive)
   		   (if (buffer-file-name)
   		       (let*
@@ -32,7 +34,7 @@ Insert Header guards constructed from the filename.  If you have blah.h opened u
   				 (setq begin (point-marker))
   				 )
   			     )
-  			   
+
   					;Insert the Header Guard
   			   (goto-char (point-min))
   			   (insert ifDef)
@@ -69,7 +71,7 @@ May be it's better to make use of the "auto-insert" of emacs. Add following code
     	"// $Log:$\n"
     	"//\n"
     	))
-    
+
     ;; auto insert C/C++
     (define-auto-insert
       (cons "\\.\\([Cc]\\|cc\\|cpp\\)\\'" "My C++ implementation")
