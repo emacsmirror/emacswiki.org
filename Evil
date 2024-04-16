@@ -74,15 +74,13 @@ There is also a guide on Github made by Noctuid [https://github.com/noctuid/evil
 
 * [https://github.com/timcharper/evil-surround evil-surround]: Port of Vim's surround script.
 
-* [https://github.com/cofi/evil-numbers evil-numbers]: Vim-like increment and decrement.
+* [https://github.com/juliapath/evil-numbers evil-numbers]: Vim-like increment and decrement.
 
 * [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
 
 * [https://github.com/antono/evil-rails evil-rails]: Port of rails.vim.
 
 * [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
-
-* [https://github.com/linktohack/evil-commentary evil-commentary]: Port of [https://github.com/tpope/vim-commentary vim-commentary]
 
 * [https://github.com/redguardtoo/evil-mark-replace evil-mark-replace]: Replace the thing in EVIL way. The thing is either the symbol under cursor or the selected text.
 
@@ -429,7 +427,7 @@ You may find that the ESC key does not work as expected when running "emacs -nw"
 
     maptimeout 5
 
-See details on this [http://vim.wikia.com/wiki/GNU_Screen_integration|link]
+See details [http://vim.wikia.com/wiki/GNU_Screen_integration|here]
 
 === ESC key under tmux ===
 Like GNU Screen above, the ESC key may not work as expected when running emacs within tmux. This can be alleviated by setting the option 'escape-time' to 0. You can perform the following in runtime, or add it to your tmux configuration file:
