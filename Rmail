@@ -141,6 +141,24 @@ email addresses, so you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
 
+== Storing Passwords ==
+
+You can store your full inbox string in ##~/.mu-tickets## like so: 
+
+{{{
+pop://me%40example.com:Passw0rD@mail.example.com
+}}}
+
+Then, in ##rmail-primary-inbox-list##, you can omit the password field:
+
+{{{
+pop://me%40example.com@mail.example.com
+}}}
+
+Alternatively, you may store the whole string in the ##MAIL## environment variable and leave ##rmail-primary-inbox-list## as ##nil##.
+
+: (TODO - Specify how to encrypt the locally-stored password)
+
 == Mail Aliases ==
 
 You can create aliases by using this form in ##~/.mailrc##:
