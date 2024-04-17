@@ -2,6 +2,6 @@ The cmuscheme.el standard package provides support for interacting with various 
 
 The QuackPackage extends SchemeMode and CmuScheme.
 
-See GuileIde for information on using CmuScheme and other tools with the [[Guile]] dialect of [[Scheme]].
+See GuileIde for information on using !CmuScheme and other tools with the [[Guile]] dialect of [[Scheme]].
 
 See RunSchemeHere for an extension that allows you to run multiple inferior scheme processes .
