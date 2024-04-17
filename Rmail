@@ -141,6 +141,19 @@ email addresses, so you don't have to type the name of the file each time you
 press `o'.  If you set `rmail-automatic-folder-directives', filing happens
 automatically after the mail is received from the inbox.
 
+== Mail Aliases ==
+
+You can create aliases by using this form in ##~/.mailrc##:
+
+{{{
+alias me  "Me <me@example.com>"
+alias you "You <you@example.com"
+}}}
+
+Then simply write ##me## in the ##To: ## field then press ##TAB## to expand it to ##Me <me@example.com>##.
+
+You can also set ##mail-personal-alias-file## to specify a different file than ##~/.mailrc##
+
 == Non-ASCII Mail ==
 
 Emacs comes with ##rfc2047.el## to parse RFC 2047 encoded words:
