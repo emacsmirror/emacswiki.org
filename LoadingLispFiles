@@ -33,7 +33,7 @@ Note that when you start using files in the LoadPath, you may end up having to d
  (add-to-list 'load-path "~/path/folder")
   M-x load-library RET file
 
-This will add "~/path/folder" and its sub-directories to search path. When you load file it will <tt>(load "~/path/folder/file.el")</tt> and it's dependencies defined in <tt>require</tt> statements. 
+This will add "~/path/folder" and its sub-directories to search path. When you load file it will <tt>(load "~/path/folder/file.el")</tt> and it's dependencies defined in <tt>require</tt> statements. Be careful, it will load byte-compiled ".elc" files.
 
 [http://www.cb1.com/~john/computing/emacs/lisp/basics/load-directory.el load-directory.el] can be used to load all the .el or .elc files in a directory:
 
