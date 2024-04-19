@@ -116,6 +116,13 @@ Functions to read/write a CSV file.
       (write-region (point-min) (point-max) file))))
 }}}
 
+Note: the above code causes
+{{{
+(ses-cell A1 "-e:1:in `<main>': uninitialized constant CSV::Reader (NameError)" nil nil nil)
+(ses-cell A2 "Did you mean?  ThreadError" nil nil nil)
+}}}
+for me  in the ses file. I have no idea what that means, not being conversant with ruby. Quite why anyone would use ruby when lisp is available right there in emacs I don't know.
+
 ----
 CategoryCalculators
 CategoryModes
