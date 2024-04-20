@@ -617,11 +617,10 @@ If you now want to have a package installed from source, you just need to wrap t
 
 === Using Elpaca ===
 [https://github.com/progfolio/elpaca Elpaca] is an elisp package manager. It is a replacement for the built-in Emacs package manager, package.el. We can extend SetupEl's functionality using <code>setup-modifier-list</code> and wrap SetupEl bodies in an Elpaca call, this requires installing and processing the package first:
-*Note*: Initial startup will give the error <code>Symbol's value as variable is void: setup-modifier-list</code> as Elpaca doesnt have a way of doing a blocking install.
 {{{
 ;; <elpaca bootstrap goes here>
 (elpaca setup (require 'setup))
-(elpaca-process-queues)
+(elpaca-wait)
 }}}
 
 Then we can set up the wrapping functionality:
@@ -679,12 +678,7 @@ Don't install anything, but account for asynchronous installation:
 }}}
 See [https://github.com/progfolio/elpaca#installing-packages elpaca#installing-packages] for an explanation on a <code>nil</code> "order".
 
-[new:PhilipKaludercic:2023-05-18 15:25 UTC]
-
-This section was [https://www.emacswiki.org/emacs?action=browse&diff=1&id=SetupEl&Compare=Compare&revision=57&diffrevision=56 removed] by the author of Elpaca, but added back again for the sake of completness. Note that it might not work, but it could serve as a foundation for something that does.
-
-
-=== Elpaca - This works at least ===
+=== Elpaca - Alternative from the Elpaca author ===
 
 You add a macro, that enforces some order:
 {{{
