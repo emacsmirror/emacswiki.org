@@ -11,7 +11,7 @@ This port features extensive support for touch screen input and on-screen keyboa
  
 Regularly updated prebuilt snapshots of the in-development source code are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
 
-F-Droid also provides prebuilts, but they are outdated, have less dependencies included, and do not work on older systems.
+F-Droid also provides prebuilts, but they are outdated, have fewer dependencies bundled, and do not work on older systems.
 
 ===Emacs within a GNU/Linux chroot===
 Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
