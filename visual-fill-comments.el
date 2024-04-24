@@ -4,7 +4,7 @@
 
 ;; Author: Phil Sainty
 ;; Inspired by visual-fill.el by Stefan Monnier
-;; Version: 0.4.1
+;; Version: 0.5.0
 ;; Keywords: convenience
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -64,7 +64,7 @@ the related functions `visual-fill-comments-window-width-min' and
               (opt (minimal-match (zero-or-more not-newline))
                    (not (any ":")))) ;; Ignore "://" (probable URL).
             (group-n 2
-              "//" (zero-or-more " ")))
+              (regexp "//+") (zero-or-more (any " \t"))))
        ;; /**
        ;; (*) <comment>
        ;;  *  [continues]
@@ -74,15 +74,26 @@ the related functions `visual-fill-comments-window-width-min' and
        ;;  *                 [continues]
        ;;  */
        (seq (group-n 2
-              (zero-or-more " ") "*" (zero-or-more " "))
-            (opt (or (seq "@param" (one-or-more " ")
-                          (opt (group (one-or-more (not (any " ")))
-                                      (one-or-more " ")))
-                          "$" (one-or-more (not (any " ")))
-                          (one-or-more " "))
-                     (seq "@return" (one-or-more " ")
-                          (opt (group (one-or-more (not (any " ")))
-                                      (one-or-more " ")))))))))
+              (zero-or-more (any " \t")) "*" (zero-or-more (any " \t")))
+            (opt (or (seq "@param" (one-or-more (any " \t"))
+                          (opt (group (one-or-more (not (any " \t\n")))
+                                      (one-or-more (any " \t"))))
+                          "$" (one-or-more (not (any " \t\n")))
+                          (one-or-more (any " \t")))
+                     (seq "@return" (one-or-more (any " \t"))
+                          (opt (group (one-or-more (not (any " \t\n")))
+                                      (one-or-more (any " \t")))))
+                     (seq (any "a-z") "." (one-or-more (any " \t"))))))
+       ;; /** @var foo <comment>
+       ;;              [continues] */
+       (seq (group-n 1
+              (zero-or-more (any " \t"))
+              "/**")
+            (group-n 2)
+            (seq (zero-or-more (any " \t"))
+                 "@var" (one-or-more (any " \t"))
+                 (group (one-or-more (not (any " \t\n")))
+                        (one-or-more (any " \t")))))))
   "Regexp matching a buffer line with a comment.
 
 The start of the match must be the start of the line.  The end of
@@ -112,27 +123,38 @@ multiple sets of alternatives.)")
   (goto-char start)
   (forward-line 0)
   (let ((comregexp (if adaptive-fill-mode
-                       (concat "\\(?:" visual-fill-comments-regexp "\\)"
+                       (concat "\\=\\(?:" visual-fill-comments-regexp "\\)"
                                "\\(?:" adaptive-fill-regexp "\\)?")
-                     visual-fill-comments-regexp))
+                     (concat "\\=\\(?:" visual-fill-comments-regexp "\\)")))
         (fillcol (or visual-fill-comments--column
                      (setq-local visual-fill-comments--column
                                  (visual-fill-comments-column))))
-        comstart columns linestart longcomment maxpos minpos
+        matchcol comstart columns linestart longcomment maxpos minpos
         prefix suffix replacement)
     ;; Process the specified region.
     (while (< (point) end)
-      (when (looking-at comregexp)
+      (when (save-excursion
+              (re-search-forward comregexp (line-end-position) t))
         (setq linestart (point)
-              prefix (make-string (length (match-string 1)) ?\s)
+              matchcol (apply #'vector (mapcar (lambda (sub)
+                                                 (and (match-end sub)
+                                                      (goto-char (match-end sub))
+                                                      (current-column)))
+                                               '(0 1 2)))
+              prefix (if (aref matchcol 1)
+                         (make-string (aref matchcol 1) ?\s)
+                       "")
               comstart (match-string 2)
-              suffix (make-string (- (match-end 0) (match-end 2)) ?\s)
-              columns (- fillcol (- (match-end 0) (match-beginning 0)))
+              suffix (make-string (- (aref matchcol 0) (aref matchcol 2))
+                                  ?\s)
+              columns (- fillcol (aref matchcol 0))
               longcomment (format "%s.\\{%d\\}"
-                                  (regexp-quote (match-string 0)) columns)
+                                  (regexp-quote (match-string 0))
+                                  columns)
               replacement nil)
+        (goto-char linestart)
         (catch 'done
-          (unless (> columns 0)
+          (when (<= columns 0)
             (throw 'done t))
           (while (looking-at longcomment)
             (setq maxpos (match-end 0))
