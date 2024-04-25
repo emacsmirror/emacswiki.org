@@ -32,5 +32,9 @@ To see it in action, check out this [http://i.imgur.com/Sjzgx.gif short video].
 
 But indicators.el doesn't provide hook for flymake integration.
 
+== flymake-rfringe.el ==
+
+[https://github.com/adelplanque/flymake-rfringe flymake-rfringe.el] Based on rfringe.el, a fork focused on reporting flymake diagnostics. Emacs >= 27.1 compatible.
+
 ----
 CategoryDisplay
