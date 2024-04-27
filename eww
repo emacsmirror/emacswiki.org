@@ -44,6 +44,28 @@ From then, you should be able to load ##.onion## URLs Emacs-wide.
 
 [[ErcProxy]] has a lot of helpful advice.
 
+== Eww from the Terminal ==
+
+You can create an alias or function to call ##eww## from the command line:
+
+{{{
+# In ~/.bashrc
+
+eww() {
+ emacsclient -a '' -t -e '(eww-browse-url "'"$1"'")'
+}
+
+# Or from non-client Emacs:
+alias eww="emacs -f eww-browse $1"
+}}}
+
+Then use the command from your terminal:
+
+{{{
+eww "some search query"
+eww emacswiki.org
+}}}
+
 == Windows ==
 
 Windows may need ##libxml2## and ##GnuTLS## installed and added to ##%PATH%##. Both of these are provided by [[http://sourceforge.net/projects/ezwinports/files/ ezwinports]].
