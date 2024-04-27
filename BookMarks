@@ -119,10 +119,19 @@ Using this method you'll find frequently used bookmarks easily (cho-seiri-hou in
 
 == Org Mode as a Bookmark Manager ==
 
-I like to use OrgMode and RememberMode to keep my bookmarks for me. Just
-visit a file/web page/email and then do `M-x remember' and add the
-item to a ##bookmarks.org## file. With it's clever hierarchy handling you
-can keep bookmarks well organised for different projects.
+Use OrgMode and OrgCapture to store bookmarks. Just visit a file/website/email and do ##M-x org-capture##.  With its hierarchy structure, you
+can sort bookmarks into categories.
+
+{{{
+(setq org-capture-templates
+  '(("b"  "Bookmarks!")
+    ("bw" "Web"   plain (file "~/org/book.org") "%A"  :unnarrowed t)
+    ("bl" "Local" plain (file "~/org/book.org") "%A"  :unnarrowed t)))
+;;    Key  Label  Type        Access            Insert   Options
+}}}
+
+* See [[https://orgmode.org/manual/Capture-templates.html Templates]] at the Org manual.
+* And RememberMode, which org-capture takes inspiration from
 
 
 
