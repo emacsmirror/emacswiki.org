@@ -43,6 +43,30 @@ Some keys in `##*Bookmark List*##':
 
 You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual.
 
+== Multiple Bookmark Files ==
+
+You can separate bookmarks into multiple different files by
+
+* Setting ##bookmark-default-file##  to your string input.
+* Setting the ##overwrite## flag in ##bookmark-load## to ##t##.
+
+{{{
+(defun book-open (file)
+  (interactive (list (read-file-name "File: " "~/bookm/")))
+  (setq bookmark-default-file file)
+  (bookmark-load file t t t)
+  (bookmark-bmenu-list)
+  (switch-to-buffer "*Bookmark List*"))
+
+(defun book-add (file)
+  (interactive (list (read-file-name "File: " "~/bookm/")))
+  (setq bookmark-default-file file)
+  (bookmark-load file t t t)
+  (bookmark-set)
+  (bookmark-save))
+}}}
+
+: If you don't set the overwrite flag, ##bookmark-alist## will just grow bigger!
 
 == Access File Bookmarks from `C-x C-f' ==
 
