@@ -40,3 +40,12 @@ I no longer update it, but I keep a [[https://mutoshack.gitlab.io/ static versio
 
 -- [https://www.emacswiki.org/emacs/muto muto] 2023-12-19 04:36 UTC
 
+
+----
+
+i just changed ##rmail-primary-inbox-list## to ##rmail-inbox-list##.
+
+AFAIK, ##rmail-inbox-list## will not be overridden by any value if it is non-nil, so this *SHOULD* be safe. It's shorter and more readable but i am unsure if this is bad practice.
+
+-- [https://www.emacswiki.org/emacs/knit knit] 2024-04-28 19:44 UTC
+
