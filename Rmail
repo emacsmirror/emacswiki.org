@@ -19,8 +19,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
 (setq
  ;; The mail URL, specifying a remote mail account
  ;; (Omit this to read from /var/mail/user)
- rmail-inbox-list
-  '("pop://me%40example.com:Passw0rD@mail.example.com"))
+ rmail-inbox-list '("pop://me%40gnu.org:P45S@mail.gnu.org"))
 
  send-mail-function 'smtpmail-send-it       ; Send mail via SMTP
  rmail-preserve-inbox 1                     ; Don't delete mail from server
@@ -31,7 +30,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
  rmail-secondary-file-directory "~/mail"    ; The path to our other mbox files
  message-default-headers "Fcc: ~/mail/sent" ; Copy sent mail to the "sent" file
  user-full-name    "Susan"                  ; Our full name
- user-mail-address "me@example.com"         ; Our return address
+ user-mail-address "me@gnu.org"         ; Our return address
  message-signature "Plop! -S")              ; A signature
 </pre>
 
