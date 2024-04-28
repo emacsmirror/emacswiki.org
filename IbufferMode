@@ -35,58 +35,45 @@ Also try ibuffer's "limiting" feature (`/'), which allows you to just view a sub
 
 Ibuffer can show you the differences between an unsaved buffer and the file on disk with `='.
 
-== Gnus-style grouping ==
+== Filter Groups ==
 
-Ibuffer has an excellent implementation of Gnus-style grouping. Try this:
+Ibuffer has [[Gnus]]-like grouping. Each "Filter" is collapsable, and contains buffers related to it.
 
-    (setq ibuffer-saved-filter-groups
-          (quote (("default"
-                   ("dired" (mode . dired-mode))
-                   ("perl" (mode . cperl-mode))
-                   ("erc" (mode . erc-mode))
-                   ("planner" (or
-                               (name . "^\\*Calendar\\*$")
-                               (name . "^diary$")
-                               (mode . muse-mode)))
-                   ("emacs" (or
-                             (name . "^\\*scratch\\*$")
-                             (name . "^\\*Messages\\*$")))
-                   ("svg" (name . "\\.svg")) ; group by file extension
-                   ("gnus" (or
-                            (mode . message-mode)
-                            (mode . bbdb-mode)
-                            (mode . mail-mode)
-                            (mode . gnus-group-mode)
-                            (mode . gnus-summary-mode)
-                            (mode . gnus-article-mode)
-                            (name . "^\\.bbdb$")
-                            (name . "^\\.newsrc-dribble")))))))
+{{{
+;; '(("Group Title"
+;;   ("Label"   (type  . value))))
 
-    (add-hook 'ibuffer-mode-hook
-              (lambda ()
-                (ibuffer-switch-to-saved-filter-groups "default")))
+(setq ibuffer-saved-filter-groups
+ '(("MyList"
+    ("Unsaved" (modified))                      ; All unsaved buffers
+    ("Stars"   (starred-name))                  ; Group *starred*
+    ("Start"   (name          . "*scratch\\*")) ; By regexp
+    ("Dired"   (mode          . dired-mode))    ; Filter by mode
+    ("Org"     (filename      . ".org"))        ; By filename
+    ("Scheme"  (directory     . "~/scheme*"))   ; By directory
+    ("Gnus" (or                                 ; Or multiple!
+	       (saved        . "gnus")
+	       (derived-mode . bbdb-mode))))))
 
-Then ##M-x dired## then ##M-x ibuffer## and you should see your dired buffer in a group. Open more of them and they all endup in there. This means that when browsing buffers you can skip over the items you are used to seeing. Anything not grouped goes at the bottom of the ibuffer buffer. -- PhilJackson
+;; Tell ibuffer to load the group automatically
+(add-hook 'ibuffer-mode-hook
+ (lambda ()
+  (ibuffer-switch-to-saved-filter-groups "MyList")))
+}}}
 
+Then ##M-x dired##, then ##M-x ibuffer## and you'll see your [[Dired]] buffer in a group! All your dired buffers will be put here. This group is collapsable, if you don't want to see those buffers.
 
-It looks as though the default filterings are as follows:
+* ##C-h v ibuffer-filtering-alist##     -- List of accepted filter types
+* ##C-h v ibuffer-saved-filters##       -- List of values for the ##saved## type.
+* ##C-h v ibuffer-saved-filter-groups## -- List of currently-defined filter groups.
+* ##C-h m## (From in ibuffer) -- tutorial
+* See IbufferFilters for more
 
+If any file is not filtered, it is put into a "Default" filter at the bottom of the list.
 
-    predicate
-    content
-    size-lt
-    size-gt
-    filename
-    name
-    used-mode
-    mode
+##filename## accepts [RegularExpression regexp]; if your filter string is only a partial directory name, all files within that directory will be grouped:
 
-Since filename can work for any part of the path, if you filter on a partial (or complete) directory, anything you have open from the directory is now grouped:
-
-    ("journal" (filename . "/personal/journal/"))
-
-I'm not familiar with gnus, and have been unsuccessful tracking written docs on filtering -- I extracted the above from a reading of ##ibuf-ext.el## and then onto the contents of ##ibuffer-filtering-alist##. If there is anything out there, somebody please add it in, and edit this note. --OtherMichael
-
+    ("journal" (filename . "~/journal/"))
 
 == Get rid of title and summary ==
 
