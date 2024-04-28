@@ -30,7 +30,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
  rmail-secondary-file-directory "~/mail"    ; The path to our other mbox files
  message-default-headers "Fcc: ~/mail/sent" ; Copy sent mail to the "sent" file
  user-full-name    "Susan"                  ; Our full name
- user-mail-address "me@gnu.io"         ; Our return address
+ user-mail-address "me@gnu.io"              ; Our return address
  message-signature "Plop! -S")              ; A signature
 </pre>
 
