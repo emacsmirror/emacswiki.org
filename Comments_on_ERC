@@ -1,0 +1,4 @@
+Bug: using customize to set ##erc-spelling-dictionaries## saves the ##(buffername . dictionary)## elements as pairs instead of lists.
+
+-- [https://www.emacswiki.org/emacs/knit knit] 2024-04-28 20:07 UTC
+
