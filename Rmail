@@ -19,7 +19,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
 (setq
  ;; The mail URL, specifying a remote mail account
  ;; (Omit this to read from /var/mail/user)
- rmail-inbox-list '("pop://me%40gnu.org:P45S@mail.gnu.org"))
+ rmail-inbox-list '("pop://me%40gnu.io:P45S@mail.gnu.io"))
 
  send-mail-function 'smtpmail-send-it       ; Send mail via SMTP
  rmail-preserve-inbox 1                     ; Don't delete mail from server
@@ -30,7 +30,7 @@ Here is a detailed Rmail configuration. A simpler example is in [[GettingMail]].
  rmail-secondary-file-directory "~/mail"    ; The path to our other mbox files
  message-default-headers "Fcc: ~/mail/sent" ; Copy sent mail to the "sent" file
  user-full-name    "Susan"                  ; Our full name
- user-mail-address "me@gnu.org"         ; Our return address
+ user-mail-address "me@gnu.io"         ; Our return address
  message-signature "Plop! -S")              ; A signature
 </pre>
 
@@ -145,13 +145,13 @@ automatically after the mail is received from the inbox.
 You can store your full inbox string in ##~/.mu-tickets## like so: 
 
 {{{
-pop://me%40example.com:Passw0rD@mail.example.com
+pop://me%40gnu.io:P45S@mail.gnu.io
 }}}
 
 Then, in ##rmail-primary-inbox-list##, you can omit the password field:
 
 {{{
-pop://me%40example.com@mail.example.com
+pop://me%40gnu.io@mail.gnu.io
 }}}
 
 Alternatively, you may store the whole string in the ##MAIL## environment variable and leave ##rmail-primary-inbox-list## as ##nil##.
@@ -163,11 +163,11 @@ Alternatively, you may store the whole string in the ##MAIL## environment variab
 You can create aliases by using this form in ##~/.mailrc##:
 
 {{{
-alias me  "Me <me@example.com>"
-alias you "You <you@example.com"
+alias me  "Me <me@gnu.io>"
+alias you "You <you@gnu.io"
 }}}
 
-Then simply write ##me## in the ##To: ## field then press ##TAB## to expand it to ##Me <me@example.com>##.
+Then simply write ##me## in the ##To: ## field then press ##TAB## to expand it to ##Me <me@gnu.io>##.
 
 You can also set ##mail-personal-alias-file## to specify a different file than ##~/.mailrc##
 
