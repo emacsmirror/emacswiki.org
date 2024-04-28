@@ -1,0 +1,15 @@
+i'm eepy rn but here's stuff that i'll add about ibuffer filtering in the future:
+
+* ibuffer-saved-filter-groups
+* switching between groups
+* toggling filters
+* hiding buffers
+* hiding groups
+* sub-groups (maybe non-trivial)
+* what the HECK does ##ibuffer-filter-format-alist## do???
+* helpful filtering key bindings
+* moving Default to the top (or generally moving groups)
+* collapse / expand all / current
+
+----
+CategoryBufferSwitching
