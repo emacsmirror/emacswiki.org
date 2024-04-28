@@ -232,10 +232,7 @@ Note that the development & git branches of ERC and are not quite identical. The
 == External Links ==
 
 * [https://www.gnu.org/software/emacs/manual/html_node/erc/index.html ERC Manual]
-* [https://muto.ca/posts/my-emacs-configuration.html#irc-with-erc Muto's section on ERC]
+* [https://mutoshack.gitlab.io/posts/my-emacs-configuration.html#irc-with-erc Muto's section on ERC]
 
 ----
 CategoryChatClient InternetRelayChat
-
-[new]
-Bug: using customize to set erc-spelling-dictionaries saves the (buffername . dictionary) elements as pairs instead of lists.
