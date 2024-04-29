@@ -1,15 +1,173 @@
-i'm eepy rn but here's stuff that i'll add about ibuffer filtering in the future:
+[[IbufferMode|Ibuffer]] allows you to *filter* your buffers, so that you only see the content you want to see.
 
-* ibuffer-saved-filter-groups
-* switching between groups
-* toggling filters
-* hiding buffers
-* hiding groups
-* sub-groups (maybe non-trivial)
-* what the HECK does ##ibuffer-filter-format-alist## do???
-* helpful filtering key bindings
-* moving Default to the top (or generally moving groups)
-* collapse / expand all / current
+In Ibuffer, ##C-h m## will display many helpful key bindings.
+
+== Using Filters ==
+
+* ##/ i## -> Only show modified buffers.
+* ##/ v## -> Only show files (not starred/process buffers).
+* ##/ /## -> Remove all applied filters.
+* ##/ r## -> Add filter from a list of saved filters.
+* ##/ R## -> Switch to another filter group.
+
+Create your own filter by adding to ##ibuffer-saved-filters##:
+
+{{{
+(add-to-list 'ibuffer-saved-filters
+  '("lisp" (or (file-extension . "scm")
+	       (file-extension . "lisp")
+	       (file-extension . "el"))))
+}}}
+
+Then select it from the ##/ r## menu.
+
+== Configuring Groups ==
+
+Ibuffer allows you to organize your buffers into groups that can be collapsed/expanded.
+
+: Note: there are no subgroups by default.
+
+{{{
+ (setq ibuffer-saved-filter-groups
+   '(("home"
+      ("Emacs" (and (filename         . "config/emacs*")
+		    (visiting-file)))
+      ("Prog"  (and (filename         . "/home/me/prog*")
+		    (visiting-file)))
+      ("Org"   (or  (file-extension    . "org")
+		    (derived-mode      . org-mode)
+		    (derived-mode      . org-agenda-mode)))
+      ("Mail"  (or  (derived-mode      . rmail-mode)
+		    (derived-mode      . message-mode)))
+      ("Gnus"  (or  (derived-mode      . gnus-mode)
+		    (saved             . "gnus")))
+      ("Net"   (or  (mode              . eww-mode)
+		    (derived-mode      . rcirc-mode)
+		    (mode              . elpher-mode)))
+      ("Music"      (name              . "*MPC"))
+      ("Dired" (or  (derived-mode      . dired-mode)
+		    (derived-mode      . image-mode))
+      ("Proc"       (process))
+      ("Stars"      (starred-name))))))
+
+(add-hook 'ibuffer-mode-hook
+ (lambda ()
+  (ibuffer-switch-to-saved-filter-groups "home")))
+}}}
+
+Like sieves above sieves, higher groups will take priority over buffers. If your first group is ##("All" (name "*"))##, then none of the other groups will contain buffers.
+
+All unfiltered buffers will appear in the ##"Default"## group at the bottom of this list.
+
+== Multiple Sets of Groups ==
+
+In the previous example, we defined a ##home## group set. You can add different sets in this same list.
+
+{{{
+(setq ibuffer-saved-filter-groups
+  '(("home"
+     ("Emacs" (filename  . "config/emacs*"))
+     ("Gnus"  (mode      . gnus-mode)))
+   ("oops-all-lisp"
+     ("Elisp"  (mode     . emacs-lisp-mode))
+     ("Scheme" (mode     . scheme-mode)))))
+}}}
+
+Switch to the ##oops-all-lisp## group set with ##/ R##
+
+== Moving Default to the top ==
+
+You can use [[Advice]] to change where ibuffer puts the ##Default## group:
+
+{{{
+;; Move the first element of a list to the last position.
+(defun car-to-last (lst)
+  (append (cdr lst) (list (car lst))))
+
+;; Make ibuffer call this function, putting "Default"
+;; at the end of the list (the top of the buffer list).
+(advice-add 'ibuffer-generate-filter-groups
+	    :filter-return #'car-to-last)
+}}}
+
+== Hiding Buffers ==
+
+If you don't wish to see, say, the ##*Scratch*## and ##*Message*## buffers in Ibuffer, set ##ibuffer-never-show-predicates## to a list of [[RegularExpression|Regular Expressions]]
+
+{{{
+(setq ibuffer-never-show-predicates '("*Scratch\\*" "*Message\\*")
+}}}
+
+Or create a function to hide the buffer in the current session:
+
+{{{
+(defun hide-this-buffer ()
+  (interactive)
+  (add-to-list 'ibuffer-never-show-predicates
+	       (buffer-name (ibuffer-current-buffer)))
+  (ibuffer-update nil))
+
+(keymap-global-set "C-c h" 'hide-this-buffer)
+}}}
+
+== Hiding Groups ==
+
+You can omit certain groups from *ever* being displayed in ibuffer 
+
+{{{
+;; A list of groups you wish to hide.
+(defvar hidden-groups '("Org"))
+
+;; A function to remove them from a list
+(defun omit-hidden-groups (lst)
+  (dolist (i hidden-groups)
+    (setq lst (assoc-delete-all i lst)))
+  lst)
+
+;; Apply the function ibuffer's list generator
+(advice-add 'ibuffer-generate-filter-groups
+	    :filter-return #'omit-hidden-groups)
+}}}
+
+== Collapsing Groups by Default ==
+
+Instead of hiding a group entirely, you can make Ibuffer start with certain groups collapsed with ##ibuffer-hidden-filter-groups##:
+
+{{{
+(setq ibuffer-hidden-filter-groups '("Default" "Org"))
+}}}
+
+== Toggle Expand / Collapse ==
+
+Set a keybinding to this function for the ability to hide/unhide all filter groups.
+
+{{{
+(defun ibuffer-toggle-all ()
+  "Collapse / expand ALL filters in ibuffer."
+  (interactive)
+  (if ibuffer-hidden-filter-groups
+      (setq ibuffer-hidden-filter-groups '())
+    (setq ibuffer-hidden-filter-groups
+	  (mapcar #'car (ibuffer-current-filter-groups-with-position))))
+  (ibuffer-update nil t))
+}}}
+
+If you want to toggle the current group, even if your cursor is on a buffer line (not group header), you can do that too:
+
+{{{
+(defun ibuffer-toggle-current ()
+  "Collapse / expand the current filter group. If point is on a buffer name, expand the group it is in."
+  (interactive)
+  (unless (char-equal (char-after) ?\[)
+	  (ibuffer-backward-filter-group))
+	  (ibuffer-toggle-filter-group))
+}}}
+
+== To-do ==
+
+* Sub-grouping, OrgMode style
+* How the heck does ##ibuffer-filter-format-alist## work???
+* Hiding a single / list of flter groups.
 
 ----
 CategoryBufferSwitching
