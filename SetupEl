@@ -678,9 +678,15 @@ Don't install anything, but account for asynchronous installation:
 }}}
 See [https://github.com/progfolio/elpaca#installing-packages elpaca#installing-packages] for an explanation on a <code>nil</code> "order".
 
-=== Elpaca - Alternative from the Elpaca author ===
+=== Elpaca - this work (from Andreas - not from the elpaca author i.e.) ===
 
-You add a macro, that enforces some order:
+As elpaca keeps changing - for the better, hopefully - this recipe keeps changing as well:
+
+
+
+You can use macro, that enforces some order - at least if one wants to (elpaca-)install a package,
+and then configure it with setup.el:
+
 {{{
 (defmacro -setup (order &rest body)
   "Execute BODY in `setup' declaration after ORDER is finished.
@@ -708,7 +714,7 @@ This was from an earlier version of elpaca, for use-package there (called elpaca
 macro any way you want: elpaca-setup would be a suggestive name, but - you are going to use it a lot - and you are a grown up, and know what you are doing (right?) - and a lazy programmer after all - so I just called it -setup here
 (read this as elpaca-setup)
 
-Then basically you use it in either way
+Then basically you use like so:
 
 {{{
 (-setup somepkg
@@ -716,18 +722,29 @@ Then basically you use it in either way
 )
 }}}
 
-if you want somepkg to be installed by elpaca - before configuring it.
 
-or as 
+if you want some pkg to be installed by elpaca - before configuring it.
+
+
+The situation is different, if one want to just do some configuration,
+just use setup macros like (:option...), (:global...), (:require...) i.e.
+(without any particular package be elpaca-installed first)
+- the former (-setup nil ...) approach does not work any more - with a recent elpaca
+but one can just use setup, provided setup has it has been installed first, and
+then elpaca-wait does the trick:
+
+once
 {{{
-(-setup nil
+(elpaca setup (require 'setup))
+(elpaca-wait)
+}}}
+
+{{{
+(setup
    ;; config here
 )
 }}}
 
-if you just want to use setup config syntax: (:option ...), (:global ...), (:require ...), but don't need any particular package to be elpaca-installed first.
-
-You never use the original (setup ...), but always the macro (-setup ...) as above.
 
 At this point, if you want three packages to be elpaca-installed, you have
 to use -setup three times:
@@ -736,8 +753,10 @@ to use -setup three times:
 (-setup pkg2 ...)
 (-setup pkg3 ...)
 ;; and then possibly configure them together w/
-(-setup nil ...)
+(elpaca-wait)
+(setup ...)
 }}}
+
 Maybe it would not be too hard to improve upon the macro above to accept
 multiple pkgs - like so:
 
@@ -833,7 +852,7 @@ The expansion is a string indicating the package has been disabled."
 
 
 (elpaca setup (require 'setup))
-
+(elpaca-wait)
 
 
 (-setup vertico
@@ -844,8 +863,8 @@ The expansion is a string indicating the package has been disabled."
     ))
 
 
-(-setup nil
-  (savehist-mode)
+(setup
+    (savehist-mode)
   )
 
 
@@ -889,20 +908,21 @@ The expansion is a string indicating the package has been disabled."
 (-setup elisp-slime-nav)
 
 (-setup rainbow-delimiters)
+(elpaca-wait)
 
+(setup
+    (:with-feature emacs-lisp-mode
+      (:hook elisp-slime-nav-mode)
+      
+      (:with-feature elisp-slime-nav
+	(:bind
+	 "s-." my-elisp-find-thing-at-point
+	 "s-," pop-tag-mark
+	 ;; "s-t" my-elisp-mode-generate-tags
+	 ))
+      
+      ))
 
-(-setup nil
-  (:with-feature emacs-lisp-mode
-    (:hook elisp-slime-nav-mode)
-
-    (:with-feature elisp-slime-nav
-      (:bind-into elisp-slime-nav-mode-map
-	"s-." my-elisp-find-thing-at-point
-	"s-," pop-tag-mark
-	;; "s-t" my-elisp-mode-generate-tags
-	))
-  
-    ))
 
 
 
