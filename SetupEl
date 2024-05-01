@@ -728,9 +728,7 @@ if you want some pkg to be installed by elpaca - before configuring it.
 The situation is different, if one want to just do some configuration,
 just use setup macros like (:option...), (:global...), (:require...) i.e.
 (without any particular package be elpaca-installed first)
-- the former (-setup nil ...) approach does not work any more - with a recent elpaca
-but one can just use setup, provided setup has it has been installed first, and
-then elpaca-wait does the trick:
+
 
 once
 {{{
@@ -738,6 +736,7 @@ once
 (elpaca-wait)
 }}}
 
+and then 
 {{{
 (setup
    ;; config here
