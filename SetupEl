@@ -684,7 +684,7 @@ As elpaca keeps changing - for the better, hopefully - this recipe keeps changin
 setup has been (elpaca-) installed first, and then (elpaca-wait) does the trick.
 
 
-One can use macro, that enforces some order - at least if one wants to (elpaca-)install a package indeed, and then configure it with setup.el:
+One can use a macro, that enforces some order - at least if one wants to (elpaca-)install a package indeed, and then configure it with setup.el:
 
 {{{
 (defmacro -setup (order &rest body)
