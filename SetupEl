@@ -713,7 +713,7 @@ This was from an earlier version of elpaca, for use-package there (called elpaca
 macro any way you want: elpaca-setup would be a suggestive name, but - you are going to use it a lot - and you are a grown up, and know what you are doing (right?) - and a lazy programmer after all - so I just called it -setup here
 (read this as elpaca-setup)
 
-Then basically you use like so:
+Then basically you use it like so:
 
 {{{
 (-setup somepkg
