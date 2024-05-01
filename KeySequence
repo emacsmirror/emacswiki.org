@@ -4,7 +4,7 @@ A '''[::key]''', or more properly a '''[::key sequence]''', is similar to what i
 * A key sequence can be short for any [[Command | command]] or [[KeyboardMacros | keyboard macro]]; it is not necessarily short for a menu item.
 * A key sequence is not necessarily a sequence of keyboard key presses. It can be any combination of the following:
 ** A sequence of ''keyboard'' key pressings and releases. Any element in such a sequence can be a [[Chord | chord]] composed of a non-modifier key and one or more modifier keys pressed at the same time. 
-** A seqence of ''mouse'' button or wheel actions. Any element in such a sequence can be a chord composed of a mouse-button pressing or mouse-wheel motion and one or more modifier keys pressed at the same time. In addition to pressing and releasing a mouse button, a button can be pressed and the mouse ''dragged'' before releasing. Such a drag operation can also be part of a key sequence.
+** A sequence of ''mouse'' button or wheel actions. Any element in such a sequence can be a chord composed of a mouse-button pressing or mouse-wheel motion and one or more modifier keys pressed at the same time. In addition to pressing and releasing a mouse button, a button can be pressed and the mouse ''dragged'' before releasing. Such a drag operation can also be part of a key sequence.
 ** A sequence of ''menu'' choices, including from the MenuBar.
 ** A ToolBar icon choice.
 
