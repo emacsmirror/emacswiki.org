@@ -680,12 +680,11 @@ See [https://github.com/progfolio/elpaca#installing-packages elpaca#installing-p
 
 === Elpaca - this work (from Andreas - not from the elpaca author i.e.) ===
 
-As elpaca keeps changing - for the better, hopefully - this recipe keeps changing as well:
+As elpaca keeps changing - for the better, hopefully - this recipe keeps changing as well: in short: the (-setup ...) macro is still useful, but not with nil: (-setup nil ...) does not work any more with recent elpaca, instead use a pure (setup ...), provided
+setup has been (elpaca-) installed first, and then (elpaca-wait) does the trick.
 
 
-
-You can use macro, that enforces some order - at least if one wants to (elpaca-)install a package,
-and then configure it with setup.el:
+One can use macro, that enforces some order - at least if one wants to (elpaca-)install a package indeed, and then configure it with setup.el:
 
 {{{
 (defmacro -setup (order &rest body)
