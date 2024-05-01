@@ -973,8 +973,7 @@ necessary really, but this works at least:
 
 combined example: setup & leaf removed for now: this has yet to be updated to
 recent elpaca - in principle however (similar to the above example)
-{{{
-}}}
+
 
 == Transforming Configuration Errors Into Warnings ==
 
