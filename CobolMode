@@ -1,20 +1,23 @@
-There are at least 4 independently written major modes that handle COBOL source files.
+The most actively updated Cobol mode for Emacs is [https://elpa.gnu.org/packages/cobol-mode.html cobol-mode] (GNU ELPA). It provides:
 
-----
+* Syntax highlighting for Cobol 85, 2002, 2012, 2014, and dialects supported by Micro Focus
+* (Rudimentary) indentation for fixed or free style formats.
+* Skeleton templates for some language structures.
+* Rulers and basic formatting functions,
 
-The **most recent Cobol mode** is [https://elpa.gnu.org/packages/cobol-mode.html available on GNU ELPA] and is the most up-to-date and featureful of the available cobol-modes. (An older version is also available at [https://gist.github.com/Edward-H/6768e7dc53ea3dd2adca its original site].) It has:
-* *syntax highlighting* for most modern COBOL dialects (in particular, COBOL 2014 and dialects supported by Micro Focus),
-* (rudimentary) *code indentation*,
-* code skeletons,
-* rulers and basic formatting functions,
-* and the ability to handle both free- and fixed-format code (using the M-x customize menu).
+== Usage ==
 
--------
-Both the [http://www.emacswiki.org/elisp/cobol-mode.el cobol-mode here] and 
-the [http://www.emacswiki.org/elisp/nmcobol-mode.el nmcobol-mode here] are 
-fairly older [circa 2005] and still a work-in-progress.  The first is for ANSI Cobol 
-while the second is for TANDEM Cobol.  See TandemNskSupport for other 
-TANDEM specific modes.
+You can use ##M-x customize-group cobol## to browse settings. In particular, see ##cobol-format-style## and ##cobol-source-format##.
+
+From then on, you can 
+
+== Other Cobol Modes ==
+
+There is a [https://github.com/eclipse-che4z/che-che4z-lsp-for-cobol Che4z Language Server] for Cobol, though it is untested on [[Eglot]].
+
+An older version of cobol-mode can be found at [https://gist.github.com/Edward-H/6768e7dc53ea3dd2adca its original site].
+
+-----
 
 [http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski I'm] writing these
 because I didn't like the only other Cobol mode I could find.  I'm not a
@@ -26,29 +29,28 @@ Scobol and Tandem Cobol so these modes should handle the extensions
 implemented by those compilers.  They may fail to correctly handle
 features not implemented by those compilers.  Help appreciated.
 
-For ?ANSI format:    Lisp:cobol-mode.el
+* ANSII:    Lisp:cobol-mode.el
+* TANDEM:  Lisp:nmcobol-mode.el
 
-For ?TANDEM format:  Lisp:nmcobol-mode.el
+To install it, put the ##.el## file into a directory in your LoadPath and add
+the appropriate lines to your ##~/.emacs## file:
 
-To install, put the .el file into a directory in your LoadPath and add
-the appropriate lines to your ~/.emacs file:
+{{{
+(autoload 'cobol-mode    "cobol-mode"    "A major mode for editing ANSI Cobol/Scobol files."    t nil)
+(autoload 'NMCobol-mode "nmcobol-mode" "A major mode for editing Tandem format Cobol files." t nil)
+}}}
 
-    (autoload 'cobol-mode "cobol-mode" "A major mode for editing ANSI Cobol/Scobol files." t nil)
-    (autoload 'NMCobol-mode "nmcobol-mode" "A major mode for editing Tandem format Cobol files." t nil)
+When you are visiting a Cobol or Scobol source file you can use ##M-x
+cobol-mode## or ##M-x nmcobol-mode## to activate the appropriate mode.
 
-
-When you are visiting a Cobol or Scobol source file you can use 'M-x
-cobol-mode' or 'M-x nmcobol-mode' to activate the appropriate mode.
-
-For best performance you should byte compile .el files but it's not required.  
-A CompiledFile usually runs faster.  
-There should be no warnings when compiling either file.  
+For the best performance you could [[CompiledFile|byte compile]] these files, but it's not required.  
 
 See the TandemNskSupport page for a method of automatically recognizing
 the language of Tandem files since they don't have an extension and
-coders often can't stick a -*-cobol-*- comment in line 1.
+coders often can't stick a ##-*-cobol-*-## comment in line 1.
 
 -------
+
 *Another cobol-mode* (aka clomo).
 
 You can find it on the Azundris site but I don't think it's a good idea
@@ -66,16 +68,11 @@ my new one doesn't.  After fixing it's syntax table a given individual
 may decide either is the lesser of two evils.
 
 ----
-There is another cobol.el from the (apparently defunct) *COBOL for
-GCC* project.  See [http://sourceforge.net/projects/cobolforgcc/ here].
-It includes syntax highlighting.  It is based on a cobol.el dated June
-21, 1988, which is itself based on a FORTRAN mode for Emacs.
+There is ##cobol.el## from the
+[http://sourceforge.net/projects/cobolforgcc/ COBOL for GCC] project,
+with syntax highlighting. It is based on an older ##cobol.el## dated
+June 21, 1988, which is itself based on a FORTRAN mode for Emacs.
 
-[new]
-
-Unfortunately this link seems to be broken (2006-12-26) and I'm unable to
-locate any archive copies.  Perhaps such things should be dumped into the
-gnu.emacs.sources newsgroup so Google will archive them for all eternity.
 
 ----
 ProgrammingModes
