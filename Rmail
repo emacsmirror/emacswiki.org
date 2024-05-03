@@ -148,13 +148,13 @@ You can store your full inbox string in ##~/.mu-tickets## like so:
 pop://me%40gnu.io:P45S@mail.gnu.io
 }}}
 
-Then, in ##rmail-primary-inbox-list##, you can omit the password field:
+Then, in ##rmail-inbox-list##, you can omit the password field:
 
 {{{
 pop://me%40gnu.io@mail.gnu.io
 }}}
 
-Alternatively, you may store the whole string in the ##MAIL## environment variable and leave ##rmail-primary-inbox-list## as ##nil##.
+Alternatively, you may store the whole string in the ##MAIL## environment variable and leave ##rmail-inbox-list## as ##nil##.
 
 : (TODO - Specify how to encrypt the locally-stored password)
 
