@@ -24,22 +24,22 @@ Contributors: AlexSchroeder, UlfJasper, DougGerecht
 
     (defvar metar-report-location nil
       "Location of the current buffer.")
-
+    
     (make-variable-buffer-local 'metar-report-location)
-
+    
     (defun metar-report (location)
       "Return a weather report based on the location indicator.
     This LOCATION is a four letter code that is unique to a weather
     station.  Practically all airports have one.  The code \"LSZH\", for
     example, is for the airport in Zürich, Switzerland.
-
+    
     In order to find a station near you, see
     http://www.nws.noaa.gov/tg/siteloc.shtml.  Note that you can use only
     the stations that have a four letter code.
-
+    
     For an explanation of the METAR report returned, see
     http://www.ofcm.gov/fmh-1/fmh1.htm.
-
+    
     For the wind chill calculation, see
     http://www.nws.noaa.gov/om/windchill/index.shtml."
       (interactive "sLocation: ")
@@ -53,13 +53,13 @@ Contributors: AlexSchroeder, UlfJasper, DougGerecht
                             1.0)))
         (set-buffer (process-buffer proc))
         (setq metar-report-location location)))
-
+    
     (defun metar-report-knots-to-kmh (knots)
       "Convert KNOTS to km/h and return it as a string."
       (unless (numberp knots)
         (setq knots (string-to-number knots)))
       (concat (number-to-string (round (* knots 1.852))) " km/h"))
-
+    
     (defun metar-report-wind-chill (celsius knots)
       "Return wind-chill based on TEMPERATURE in Celsius and WINDSPEED in knots."
       ;; Formula uses Wind Chill Temperature Index for Winter 2001-2002.
@@ -75,12 +75,12 @@ Contributors: AlexSchroeder, UlfJasper, DougGerecht
                        (* .4275 farenheit (expt mph 0.16)))))
         ;; Return Celsius
         (concat (number-to-string (round (/ (- chill 32) 1.8)))  " °C")))
-
+    
     ;; Test Data: -10F, 40mph => -43F, dh. SOLL: -41.666667C
     ;; Parameter umformen: -23.333333C, 34.75905 knots => (metar-report-wind-chill -23.333333 34.75905)
     ;; Test Data: 35F, 55mph => 18F, dh. SOLL: -7.7777778C
     ;; Parameter umformen: 1.6666667C, 47.793693 knots => (metar-report-wind-chill 1.6666667 47.793693)
-
+    
     (defun metar-report-print (proc str)
       "Sentinel for `metar-report'."
       (set-buffer (process-buffer proc))
@@ -236,14 +236,14 @@ Example:
     This LOCATION is a four letter code that is unique to a weather
     station.  Practically all airports have one.  The code \"LSZH\", for
     example, is for the airport in Zürich, Switzerland.
-
+    
     In order to find a station near you, see
     http://www.nws.noaa.gov/tg/siteloc.shtml.  Note that you can use only
     the stations that have a four letter code.
-
+    
     For an explanation of the Terminal Aerodrome Forecast (TAF) report
     returned, see http://www.ofcm.gov/fmh-1/fmh1.htm.
-
+    
     For the wind chill calculation, see
     http://www.nws.noaa.gov/om/windchill/index.shtml."
       (interactive "sLocation: ")
