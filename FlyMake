@@ -218,6 +218,11 @@ I've made a CMake minor-mode, [https://github.com/alamaison/emacs-cmake-project|
 
 -- AlexanderLamaison
 
+=== Meson Build system ===
+
+[https://github.com/adelplanque/flymake-meson-build|flymake-meson-build] is an experimental package supporting C and C++ codes under a meson build. This is limited to using ninja backend in the build process and has only been tested with gcc. This works by extracting the compile command from the ninja configuration, and then passing it to flymake with -fsyntax-only flag.
+
+
 === Mozart/Oz ===
 
 Here are instructions how to make flymake work with Mozart/Oz: 
