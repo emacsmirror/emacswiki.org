@@ -464,7 +464,7 @@ If you have multiple emacs daemons running, use the following to make sure the e
 
 Click inside Zathura while pressing Control button to locate the text inside emacs.
 
-Zathura has vi-like key map by default.  An Emacs-like key map configuration can be found [[https://gist.github.com/ne9z/8778d614b90b85dfe8f6b698ad758f36|here]].
+Zathura has vi-like key map by default.  An Emacs-like key map configuration can be found [[https://web.archive.org/web/20220815064614/https://gist.github.com/ne9z/8778d614b90b85dfe8f6b698ad758f36|here]].
 
 Does not work with zathura strict sandbox mode.
 == Synctex and Evince ==
@@ -475,8 +475,7 @@ and the left mouse button within a PDF document to be taken back to the correspo
 Since AUCTeX 11.87, enabling this feature is as easy as enabling ##TeX-source-correlate-mode##.
 The following is only needed with older AUCTeX.
 
-(Original solution due to Tassilo Horn:
-http://permalink.gmane.org/gmane.emacs.auctex.general/4074)
+(Original solution due to Tassilo Horn)
 
 Evince works by sending a message via DBus that we can configure Emacs to pick up on. Unfortunately, the contents of the message seem to have changed somewhere between versions 2.32 and 3.2. The following code works for me with the newer version.
 
@@ -690,7 +689,7 @@ Rest of discussion moved to [[AutoPairs#Discussion|AutoPairs]].
 
 == Internal version of TeX-texify ==
 To run LaTeX and BibTeX on a document one has to press C-c C-c multiple times.
-On the page [[http://www.emacswiki.org/emacs/TN]] there is a section ''TeX-texify: Get everything done for a LaTeX-file'' with the elisp function !TeX-texify which gets this job done. [[http://comments.gmane.org/gmane.emacs.auctex.general/3805|Someone]] asked me whether this function can be included into AUCTeX.
+On the page [[http://www.emacswiki.org/emacs/TN]] there is a section ''TeX-texify: Get everything done for a LaTeX-file'' with the elisp function !TeX-texify which gets this job done. Someone asked me whether this function can be included into AUCTeX.
 
 Should it?
 
