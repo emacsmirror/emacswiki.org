@@ -5,7 +5,7 @@ This page collects information for creating a usable Python programming environm
 The quickest way to start is just to open a Python file in Emacs -- `python-mode' has a nice feature-set as is -- see below for details.
 
 Beyond that, as people ask for recommendations fairly often, the following is a reasonable approach:
-* If you already use one of the StarterKits like [[Spacemacs]] or DoomEmacs, then use its Python configuration.
+* If you already use one of the StarterKits like [[Spacemacs]] or [[DoomEmacs|Doom Emacs]], then use its Python configuration.
 * If you want to set up a relatively complete environment quickly, and have someone else choose individual packages and handle combining them, then use one of the IDE packages listed below.  Elpy appears to be the most popular Python-specific IDE package, while the [LanguageServerProtocol] supports many languages and has become very popular since c. 2019.
 * If you want complete control then select the packages you want from the Support Features section.  
 
@@ -18,8 +18,8 @@ Some history: the built-in `python-mode' comes from the [ProgrammingWithPythonDo
 These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them. 
 ===Spacemacs===
 * [https://develop.spacemacs.org/layers/+lang/python/README.html Python layer] for [[Spacemacs]].  Builds on anaconda-mode and several other packages.
-===Doom===
-* [https://github.com/hlissner/doom-emacs/blob/91ced7997537cc692e2a06294a428c5b4037d687/modules/lang/python/README.org Python module] for DoomEmacs.  
+===Doom Emacs===
+* [https://github.com/doomemacs/doomemacs/blob/9620bb45ac4cd7b0274c497b2d9d93c4ad9364ee/modules/lang/python/README.org Python module] for [[DoomEmacs|Doom Emacs]].
 ===Language Server Protocol===
 The main [LanguageServerProtocol] clients support Python programming with various LSP servers.
 ====LSP clients====
