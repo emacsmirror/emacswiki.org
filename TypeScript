@@ -14,6 +14,13 @@ There are two (related?) highlight modes for TypeScript:
 * [http://blogs.msdn.com/b/interoperability/archive/2012/10/01/sublime-text-vi-emacs-typescript-enabled.aspx typescript_support_for_emacs.zip] (blogs.msdn.com)
 * [https://github.com/mattdeboard/dotfiles-emacs/blob/master/typescript-mode/typescript-mode.el typescript-mode.el] (mattdeboard @ github)
 
+== IDE packages==
+These provide powerful and relatively complete environments by combining and customizing other packages. 
+===Spacemacs===
+* [https://develop.spacemacs.org/layers/+lang/typescript/README.html TypeScript layer] for [[Spacemacs]]. It also supports TSX.
+===Doom Emacs===
+* [https://github.com/doomemacs/doomemacs/tree/master/modules/lang/javascript JavaScript module] for [[DoomEmacs|Doom Emacs]] includes supports for TypeScript. 
+
 == Other Extension ==
 
 * [https://github.com/aki2o/emacs-tss tss.el] provides Intellisense-like completion, as well as syntax-checking for Typescript. Also includes a modified version of <code>typescript-mode.el</code>
