@@ -1,5 +1,12 @@
-Since 2014, I've been using Emacs for a majority of my code and text editing and I enjoy it. I have a [[https://www.topbug.net Homepage and Personal Blog]], with an [[https://www.topbug.net/blog/category/programming-tools/emacs/ Emacs category]]. I also run the [[https://8hob.io 8 Hobbies Tech Blog]]. You can also find me on various social networks:
+== About Me ==
 
+Since 2014, I've been using Emacs for a majority of my code and text editing and I enjoy it. I created [[https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/ dired-quick-sort]], an Emacs extension for sorting [[DiredMode|Dired]] buffers quickly. Additionally, I've been making minor contributions to Emacs itself and [[Spacemacs]] from time to time. My personal blog also includes an [[https://www.topbug.net/blog/category/programming-tools/emacs/ Emacs category]].
+
+Outside the Emacs community, you can also find me on:
+
+* [[https://www.topbug.net Homepage and Personal Blog]]
+* [[https://www.topbug.net/projects/ Open Source Projects]]
+* [[https://8hob.io 8 Hobbies Tech Blog]] (mostly on Web Development)
 * [[https://github.com/xuhdev GitHub]]
 * [[https://gitlab.com/xuhdev GitLab]]
 * [[https://stackexchange.com/users/1174007/xuhdev StackExchange]]
