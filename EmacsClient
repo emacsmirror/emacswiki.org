@@ -77,6 +77,18 @@ WThirtyTwoFileAssociations to see how to associate file extensions to open with 
 
 ExternalDotExe shows a way to edit text fields in many applications with Emacs client.
 
+=== OSX ===
+
+You can create a OSX Quick Action that receives *files or folders* in the Finder.app with a single *Run Shell Script* action
+
+<pre>
+for f in "$@"
+do
+	/usr/local/bin/emacsclient -n -s $HOME/.emacs.d/server/server -- "$f"
+done
+</pre>
+
+[[image:EmacsclientOSXQuickAction]]
 
 = Custom commands and configurations =
 
