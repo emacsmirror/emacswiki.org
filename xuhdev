@@ -1,6 +1,6 @@
 == About Me ==
 
-Since 2014, I've been using Emacs for a majority of my code and text editing and I enjoy it. I created [[https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/ dired-quick-sort]], an Emacs extension for sorting [[DiredMode|Dired]] buffers quickly. Additionally, I've been making minor contributions to Emacs itself and [[Spacemacs]] from time to time. My personal blog also includes an [[https://www.topbug.net/blog/category/programming-tools/emacs/ Emacs category]].
+Since 2014, I've been using Emacs for a majority of my code and text editing and I enjoy it. I created [[https://www.topbug.net/blog/2016/08/17/dired-quick-sort-sort-dired-buffers-quickly-in-emacs/ dired-quick-sort]], an Emacs extension for sorting [[DiredMode|Dired]] buffers quickly. I'm also one of the main maintainers of the [[https://github.com/editorconfig/editorconfig-emacs EditorConfig Emacs extension]]. Additionally, I've been making minor contributions to Emacs itself and [[Spacemacs]] from time to time. My personal blog also includes an [[https://www.topbug.net/blog/category/programming-tools/emacs/ Emacs category]].
 
 Outside the Emacs community, you can also find me on:
 
@@ -14,3 +14,8 @@ Outside the Emacs community, you can also find me on:
 == My Contributions to EmacsWiki ==
 
 [https://www.emacswiki.org/emacs?action=rc&all=1&showedit=1&from=1&rcuseronly=xuhdev All wiki contributions]
+
+== My TODO for EmacsWiki ==
+
+* Improve [[TypeScript]], which I'm actively editing in Emacs.
+* Add an [[EditorConfig]] page.
