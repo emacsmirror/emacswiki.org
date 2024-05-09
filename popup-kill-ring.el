@@ -1,6 +1,6 @@
 ;;; popup-kill-ring.el --- interactively insert item from kill-ring
 
-;; Copyright (C) 2010-2015  HAMANO Kiyoto
+;; Copyright (C) 2010-2024  HAMANO Kiyoto
 
 ;; Author: HAMANO Kiyoto <khiker.mail+elisp@gmail.com>
 ;; Keywords: popup, kill-ring, pos-tip
@@ -26,7 +26,7 @@
 
 ;;; Requirement:
 ;;
-;; * popup.el   http://github.com/m2ym/auto-complete
+;; * popup.el   http://github.com/auto-complete/popup-el
 ;; * pos-tip.el http://www.emacswiki.org/emacs/PosTip
 
 ;;; Setting:
@@ -40,7 +40,7 @@
 ;;   (require 'pos-tip)
 ;;   (require 'popup-kill-ring)
 ;;
-;;   (global-set-key "\M-y" 'popup-kill-ring) ; For example.
+;;   (global-set-key (kbd "M-y") 'popup-kill-ring) ; For example.
 ;;
 ;; * If you insert a selected item interactively, add following line to
 ;;   your .emacs.
@@ -50,14 +50,19 @@
 ;;; Tested:
 ;;
 ;; * Emacs
-;;   * 24.4
+;;   * 29.3
 ;; * popup.el
-;;   * 0.5.2
+;;   * 0.5.9
 ;; * pos-tip.el
-;;   * 0.4.6
+;;   * 0.4.7
 ;;
 
 ;;; ChangeLog:
+;;
+;; * 0.2.12 (2024/05/08)
+;;   Support Emacs 29. Included a part of changes of following PR (Thank
+;;   you.).
+;;   - https://github.com/waymondo/popup-kill-ring/pull/4
 ;;
 ;; * 0.2.11 (2015/03/22)
 ;;   Minor fixes (apply diffs of EmacsWiki, use defcustom and so on ...)
@@ -149,6 +154,7 @@
 
 (require 'popup)
 (require 'pos-tip)
+(require 'seq)
 
 (eval-when-compile
   (require 'cl-lib))
@@ -162,7 +168,7 @@
   :prefix "popup-kill-ring-")
 
 
-(defconst popup-kill-ring-version "0.2.11"
+(defconst popup-kill-ring-version "0.2.12"
   "Version of `popup-kill-ring'")
 
 
@@ -320,6 +326,7 @@ and `pos-tip.el'"
                                            :margin-left popup-kill-ring-popup-margin-left
                                            :margin-right popup-kill-ring-popup-margin-right
                                            :scroll-bar t
+                                           :symbol 'popup-kill-ring
                                            :isearch popup-kill-ring-isearch))
                    (when item
                      (setq num (popup-kill-ring-get-index item))
@@ -344,7 +351,7 @@ and `pos-tip.el'"
 
 (defun popup-kill-ring-select ()
   (interactive)
-  (let* ((m (with-no-warnings menu))
+  (let* ((m (popup-kill-ring-get-current-popup))
          (num (popup-cursor m))
          (lst (popup-list m))
          (item (popup-item-value-or-self (nth num lst)))
@@ -363,9 +370,7 @@ and `pos-tip.el'"
 
 (defun popup-kill-ring-next ()
   (interactive)
-  ;; Variable `menu' is contents of popup.
-  ;; See: `popup-menu-event-loop'
-  (let* ((m (with-no-warnings menu))
+  (let* ((m (popup-kill-ring-get-current-popup))
          (num (1+ (popup-cursor m)))
          (lst (popup-list m))
          (len (length lst))
@@ -398,9 +403,7 @@ and `pos-tip.el'"
 
 (defun popup-kill-ring-current ()
   (interactive)
-  ;; Variable `menu' is contents of popup.
-  ;; See: `popup-menu-event-loop'
-  (let* ((m (with-no-warnings menu))
+  (let* ((m (popup-kill-ring-get-current-popup))
          (num (popup-cursor m))
          (lst (popup-list m))
          (len (length lst))
@@ -416,9 +419,7 @@ and `pos-tip.el'"
 
 (defun popup-kill-ring-previous ()
   (interactive)
-  ;; Variable `menu' is contents of popup.
-  ;; See: `popup-menu-event-loop'
-  (let* ((m (with-no-warnings menu))
+  (let* ((m (popup-kill-ring-get-current-popup))
          (num (1- (popup-cursor m)))
          (lst (popup-list m))
          (len (length lst))
@@ -482,6 +483,10 @@ and `pos-tip.el'"
       (when (and p (listp p))
         (delete-region (car p) (cdr p))
         (goto-char (car p))))))
+
+(defun popup-kill-ring-get-current-popup ()
+  (seq-find (lambda (p) (eq (popup-symbol p) 'popup-kill-ring))
+            popup-instances))
 
 (provide 'popup-kill-ring)
 
