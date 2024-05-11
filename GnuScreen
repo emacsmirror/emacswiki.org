@@ -59,6 +59,9 @@ I ([[piyo]]) use C-T because it doesn't collide with anything else other than M-
   # second letter defines the literal insert key.
   escape "^T^T"
 
+I use C-q, it's bind to `quoted-insert` in emacs and bash, but I rarely use it (Anonymous):
+
+    escape ^q^q
 
 Is there anyway to use C-; ?? I've tried a million combinations including RTFM but can't seem to get it working ([[nimms]]).
 
