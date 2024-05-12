@@ -15,6 +15,8 @@ Additional package archives such as [[MELPA]] exist to supplement what is in [[G
 
 Type <code>M-x list-packages</code> to open the package list.  Press `i' to mark for installation, `u' to unmark, and `x' to perform the installation.  Press `RET' to read more about installing and using each package.
 
+The list can be easily filtered by name, description, status, keywords and more, using the keybindings starting with `/'. The corresponding commands have names starting with `package-menu-filter-'. For example, to filter by status use keybinding `/s' or `M-x package-menu-filter-by-status'. `//' removes all filters.
+
 You may want to start by installing the <code>paradox</code> package.  This will allow you to use the command <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.
 
 If there is a package that you want, but it's not listed, you may need to [[#package-archives|add another package source]].
