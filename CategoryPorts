@@ -3,6 +3,7 @@ Click on the title to list all pages related to porting to other operating syste
 For various other platforms where compilation is required, see CategoryBuilding.
 Here are the pages for platforms / distributions with binary packages:
 
+* DoomEmacsOnAndroid -- Use Doom Emacs in Android Emacs
 * GnuEmacs source code for Unix and Windows NT.
 * EmacsImplementations -- A list of Emacs clones and implementations.
 * EmacsForDebian -- peculiarities of Emacs on Debian systems
