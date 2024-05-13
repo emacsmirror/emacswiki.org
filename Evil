@@ -253,6 +253,18 @@ Another way is to use keychords.el as a basis for an escape key sequence. For ex
    (key-chord-define evil-insert-state-map ",," 'evil-normal-state)
    (key-chord-define evil-replace-state-map ",," 'evil-normal-state)
 
+If you use org-mode or other packages that define C-c prefixes a lot, you may want to remap C-c in all modes except normal mode. This way, you can exit out of insert/visual/replace modes, but then still use C-c keybindings in normal mode.
+
+   (defun my-esc (prompt)
+     "Functionality for escaping from Evil insert/visual/replace state using C-c but otherwise leaving C-c intact."
+     (cond
+      ((or (evil-insert-state-p) (evil-replace-state-p) (evil-visual-state-p)) [escape])
+      (t (kbd "C-c"))))
+   (define-key key-translation-map (kbd "C-c") 'my-esc)
+   (define-key evil-operator-state-map (kbd "C-c") 'keyboard-quit)
+   (set-quit-char "C-c")
+
+
 == CapsLock as both Control and Escape ==
 
 A lot of emacs users remap their CapsLock key to Control.  A number of vim users remap their CapsLock to Escape.  In Evil mode, it can be useful to do both at once.  When in insert mode, you hit CapsLock and get dropped back to command mode.  If you do C-x C-; you'll toggle commenting on the current line.  It's the best of both worlds.
