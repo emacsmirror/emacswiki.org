@@ -121,12 +121,20 @@ The automatic semicolon detection enables the "download" link and syntax highlig
 Any way to have both worlds?
 It's OK if the unformatted section must come in the middle and the formatted sections must come at either end.
 
+[new]
+I don't understand. Do you have an example of such a page where a category or link cannot be added? – [[Alex Schroeder]]
 
 == Small problems ==
 
 The horizontal-line feature isn't documented as well as it could be -- I only found a passing mention.
 
+[new]
+Please add something appropriate. – [[Alex Schroeder]]
+
 I wanted a command name and an apostrophe: ##`undo''s state## but I got a command name and an open quote: `undo''s state
+
+[new]
+This is a limitation of the software. Special code was added to use code markup whenever the terrible Emacs convention for quotes in documentation strings is used. At the time it seemed like people writing doc-strings and Emacs documentation would appreciate it. – [[Alex Schroeder]]
 
 == Custom title of a page? ==
 
