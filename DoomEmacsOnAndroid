@@ -1,0 +1,186 @@
+This page is about how to install, and update, the [https://github.com/doomemacs/doomemacs Doom Emacs] starter kit in [https://sourceforge.net/projects/android-ports-for-gnu-emacs/ Android Emacs].
+For an overview of the different alternatives for running emacs on Android, see EmacsOnAndroid.
+
+Android Emacs can be used with various StarterKits, for example Spacemacs and Doom Emacs.
+
+Doom Emacs works well in Android Emacs, except that installing and updating takes a long time: The script that does the installation or update runs for a long time. This is due to that the script executes emacs as a subprocess multiple times, and Android has poor support for executing an app as a subprocess under itself. Other starter kits do not have this issue, they perform the installation or update without starting a lot of new emacs subprocesses.
+
+=Installation=
+To get started install the Termux APK and the Android Emacs APK in [https://sourceforge.net/projects/android-ports-for-gnu-emacs/files/termux/ Sourceforge]. Follow the instructions in the README under the same URL. Do not forget to run:
+[code]
+$ pkg update && pkg upgrade
+[/code]
+
+You may need to install additional packages in Termux, such as <tt>git</tt> and <tt>ssh</tt> (<tt>scp</tt>). To check if they are already available:
+[code]
+$ which git
+$ which scp
+[/code]
+
+You will need access to Androids internal storage in Termux:
+* Make sure permission 'Files and media' is enabled in Permissions for Termux (Android Settings -> Apps -> Termux -> Permissions).
+* In termux run <tt>termux-setup-storage</tt>
+* You will be prompted to "Allow Termux access photos, media and files on your device", which you should allow.
+* Symbolic links to various folders in Android storage, should now be available in directory <tt>~/storage</tt>.
+
+We need to install a symbolic link <tt>emacs</tt> in termux <tt>bin</tt> directory, pointing to an executable that will start Android emacs as a command line application. In Termux:
+[code]
+$ cd
+$ cd ../usr/bin/
+$ ln -s /data/data/org.gnu.emacs/lib/libandroid-emacs.so emacs
+[/code]
+
+To verify that the link points is not broken:
+[code]
+$ ls -lL emacs
+[/code]
+
+This should give a result similar to:
+[code]
+ -rwxr-xr-x 1 system system 8112 Jan 1 1980 emacs
+[/code]
+
+Now run Android emacs. Start a shell in emacs:
+[code]
+ M-x shell
+[/code]
+
+One can normally use both tilde <tt>'~'</tt> and <tt>$HOME</tt> to refer to emacs home directory, but tilde might not work in certain situations during the Doom Emacs installation or update process, especially when something has failed. But <tt>$HOME</tt> always seems to work.
+
+The default emacs configuration directory is <tt>$HOME/.emacs.d/</tt>
+
+We will install the Doom Emacs files under <tt>$HOME/.config/emacs/</tt>, and our personal config files under <tt>$HOME/.config/doom/</tt>
+
+Create <tt>$HOME/.config</tt> if it has not already been created. In emacs shell:
+[code]
+$ mkdir -p $HOME/.config
+[/code]
+
+Now follow the install instructions on the Doom Emacs github home page. At the time of writing this page, it was:
+[code]
+$ git clone --depth 1 https://github.com/doomemacs/doomemacs $HOME/.config/emacs
+[/code]
+
+There is an additional step, but we must first fix the shebang path in the scripts under <tt>$HOME/.config/emacs/bin/</tt>
+
+Create a directory <tt>$HOME/bin</tt>:
+[code]
+$ mkdir -p $HOME/bin
+[/code]
+
+Create a shell script <tt>$HOME/bin/fix-shell-path</tt>, with the following content:
+[code]
+#!/system/bin/sh
+for i in $@;
+do
+  grep -q '^#!/usr/bin/env sh' $i && sed -i '1 s;/usr/bin/env sh;/system/bin/sh;' $i
+done
+[/code]
+
+Make the script executable:
+[code]
+$ chmod +x $HOME/bin/fix-shell-path
+[/code]
+
+Fix the shebang path in the scripts:
+[code]
+$ cd $HOME/.config/emacs/bin
+$ $HOME/bin/fix-shell-path *
+[/code]
+
+Check that the scripts have been modified:
+[code]
+$ ls -l
+[/code]
+
+All scripts except <tt>doom.cmd</tt> should have been updated.
+
+Now execute the next step in the installation of Doom Emacs:
+* Connect your Android device to a charger. This will avoid that the device tries to save battery, which could slow the installation process, and also make network access less reliable during the installation.
+
+[code]
+$ cd
+$ $HOME/.config/emacs/bin/doom install
+[/code]
+
+This will also create and populate <tt>$HOME/.config/doom/</tt>, if it does not already exist.
+
+Now edit <tt>$HOME/doom/init.el</tt> and add the following near the top, before the line <tt>(doom! :input</tt>:
+[code]
+(when (string-equal system-type "android")
+  ;; Add Termux binaries to PATH environment
+  ;; It is important that termuxpath is prepended, not appended.
+  ;; Otherwise we will get Androids incompatible diff executable, instead of the one in Termux.
+  (let ((termuxpath "/data/data/com.termux/files/usr/bin"))
+    (setenv "PATH" (format "%s:%s" termuxpath
+		       (getenv "PATH")))
+    (push termuxpath exec-path)
+    (push "~/.config/emacs/bin" exec-path)))
+[/code]
+
+The final step is now to change Android Emacs configuration folder from <tt>~/.emacs.d</tt> to <tt>~/.config/emacs</tt>:
+[code]
+$ cd
+$ mkdir -p save
+$ mv .emacs.d save/; ln -s $HOME/.config/emacs .emacs.d
+[/code]
+
+Now you can restart emacs, and you should see the Doom start page.
+
+=Updating Android emacs=
+To update Android Emacs:
+* Download the new Android Emacs APK from sourceforge. This can be done on a computer, or directly using a web browser in Android.
+  If the APK was downloaded to a computer, then use Termux <tt>scp</tt> command to transfer the emacs APK to e.g. directory <tt>/storage/emulated/0/Downloads/emacs/</tt>
+  which in Termux has path <tt>~/storage/downloads/emacs/</tt>
+* Exit Android Emacs, to ensure that useful state is saved before the update.
+* Install the APK using an Android file manager.
+  For example file manager "Solid Explorer", available in Google Play.
+  If one selects the emacs APK in Solid Explorer, Solid will ask if it should update Android Emacs. Answer yes.
+  Then Solid will ask if it should start Android Emacs. Answer yes.
+
+Doom Emacs keeps a record of shell environment variables, in file <tt>$HOME/.config/emacs/.local/env</tt>
+
+This file must be regenerated when Android Emacs has been updated. Otherwise the <tt>$HOME/.config/emacs/bin/doom</tt> script will no longer work: <tt>doom</tt> will complain that it can not find emacs.
+
+In Android Emacs:
+[code]
+$ M-x shell
+$ cd $HOME/.config/emacs/.local
+$ mv env old.env
+[/code]
+
+Restart emacs. Now regenerate the <tt>env</tt> file:
+[code]
+$ M-x shell
+$ $HOME/.config/emacs/bin/doom env
+[/code]
+
+=Updating Doom Emacs=
+To upgrade to a new git version of Doom Emacs, in Android Emacs:
+[code]
+$ M-x shell
+$ doom upgrade --force
+[/code]
+
+To update after changes to <tt>$HOME/.config/doom/init.el</tt> or <tt>$HOME/.config/packages.el</tt>:
+[code]
+$ M-x shell
+$ doom sync
+[/code]
+
+To update all emacs packages that have got new versions in their repos on the internet:
+[code]
+$ M-x shell
+$ doom sync -u
+[/code]
+
+If you use a literary config file, i.e. if your configuration is in <tt>$HOME/.config/doom/config.org</tt>, then Doom Emacs should automatically tangle this file to <tt>$HOME/.config/doom/config.el</tt>, when you save <tt>config.org</tt>.
+This can take a long time, say 10 minutes, so be patient. You should get a message that the file has been tangled. But this tangling may not work if there are configuration errors, so check that <tt>config.el</tt> has been updated, if you are unsure. Running:
+[code]
+$ doom sync
+[/code]
+
+should tangle the file, if the automatic tangling seems to hang.
+
+
+CategoryPorts
