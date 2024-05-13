@@ -13,6 +13,8 @@ Regularly updated prebuilt snapshots of the in-development source code are avail
 
 F-Droid also provides prebuilts, but they are outdated, have fewer dependencies bundled, and do not work on older systems.
 
+Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
+
 ===Emacs within a GNU/Linux chroot===
 Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
 
