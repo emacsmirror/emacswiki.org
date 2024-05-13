@@ -19,7 +19,11 @@ These provide powerful and relatively complete environments by combining and cus
 ===Spacemacs===
 * [https://develop.spacemacs.org/layers/+lang/typescript/README.html TypeScript layer] for [[Spacemacs]]. It also supports TSX.
 ===Doom Emacs===
-* [https://github.com/doomemacs/doomemacs/tree/master/modules/lang/javascript JavaScript module] for [[DoomEmacs|Doom Emacs]] includes supports for TypeScript. 
+* [https://github.com/doomemacs/doomemacs/tree/master/modules/lang/javascript JavaScript module] for [[DoomEmacs|Doom Emacs]] includes supports for TypeScript.
+==Language Server Protocol==
+===LSP Clients===
+* [[Eglot]]: Supports various [[https://github.com/joaotavora/eglot/blob/db91d58374627a195b731a61bead9b4f84a7e4bc/eglot.el#L231-L234 TypeScript-related modes]].
+* [[LspMode]]: Supports [[https://emacs-lsp.github.io/lsp-mode/page/lsp-typescript/ TypeScript]].
 
 == Other Extension ==
 
