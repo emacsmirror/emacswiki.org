@@ -62,21 +62,21 @@ This is a rant by [[Alex Schroeder]], taken from [https://alexschroeder.ch/view/
 
 Every year or so, I read about suggested changes to the Emacs Wiki. The complaints are the same, year after year.
 
-1. The pages are confusing.
-2. The code snippets are wrong.
-3. The site is badly organized.
-4. The information is out of date.
+# The pages are confusing.
+# The code snippets are wrong.
+# The site is badly organized.
+# The information is out of date.
 
 The solutions invariably have nothing to do with the problem.
 
-1. Switch to MediaWiki, the software used to run Wikipedia.
-2. Use a database or a distributed version control system as the back-end.
-3. Change the text formatting rules to Markdown, MediaWiki markup, or something else that is better known.
-4. Separate discussion from the main page.
-5. Delete stuff that is outdated.
-6. Fix errors.
-7. Organize.
-8. Moderate.
+# Switch to MediaWiki, the software used to run Wikipedia.
+# Use a database or a distributed version control system as the back-end.
+# Change the text formatting rules to Markdown, MediaWiki markup, or something else that is better known.
+# Separate discussion from the main page.
+# Delete stuff that is outdated.
+# Fix errors.
+# Organize.
+# Moderate.
 
 Why are these suggestions not helpful?
 
