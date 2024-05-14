@@ -32,13 +32,11 @@ If anyone is serious about setting up a mirror, fork or re-engineered emacswiki,
 
 == Engine Switching ==
 
-*OtherMichael notes he doesn't advocate switching engines, but that if we do, there's a [[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse PmWikiMode]] available
+OtherMichael notes he doesn't advocate switching engines, but that if we do, there's a [[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse PmWikiMode]] available
 
 [new]
-*XavierMaillard is opened to eventually use [[http://www.ikiwiki.info
+XavierMaillard is opened to eventually use [[http://www.ikiwiki.info
 ikiwiki]] (at the very least).
-
--- XavierMaillard 2008-10-24 19:49 UTC
 
 [new]
 Switching engine means, if I read correctly, replacing Alex. Honestly, I would rather keep a buggy software (which is not what Oddmuse is) and Alex than see Emacs Wiki run by someone else, even if they set up an alternative.
