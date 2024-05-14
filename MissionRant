@@ -141,6 +141,11 @@ Perhaps one of the Emacs Wiki critics will one day set up an alternate site, pul
 
 The [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works original blog post] had some comments.
 
+[new]
+Oh my, people are still unhappy! As seen [https://www.reddit.com/r/emacs/comments/7e3jfe/the_current_emacs_website/ on Reddit], complaining about the website but also mentioning Emacs Wiki...
+
+– Alex 2017-11-20 09:47 UTC
+
 == Code on the wiki ==
 
 I see the problem! I think people like me don’t feel bad about keeping code that consists of a single file on the wiki because we usually don’t think of these files as requiring maintenance. After all, that’s how [gnu.emacs.sources](http://lists.gnu.org/archive/html/gnu-emacs-sources/) used to work. The wiki has the benefit of providing a stable URL, but the process remains essentially the same: post & forget, possibly have discussions with other people via email, followed by another post & forget.
@@ -217,11 +222,6 @@ There are many bad things our mankind has went through. We will manage to go ove
 Perhaps you are right and eventually Stackoverflow will degenerate into a “worse is better” than [https://en.wikipedia.org/wiki/Usenet Usenet]. Old answers will disappear. The same questions will be asked again and again. But at least we’ll have rudimentary scoring. Perhaps this would be a simple thing for a wiki to add. Like little +1 or _I like_ buttons – but for every section, or paragraph, or code snippet. Essentially, this would make it easier for people to keep the good stuff and delete the useless stuff.
 
 – Alex Schroeder 2015-04-23 07:43 UTC
-
-[new]
-Oh my, people are still unhappy! As seen [https://www.reddit.com/r/emacs/comments/7e3jfe/the_current_emacs_website/ on Reddit], complaining about the website but also mentioning Emacs Wiki...
-
-– Alex 2017-11-20 09:47 UTC
 
 [new]
 Then again:
