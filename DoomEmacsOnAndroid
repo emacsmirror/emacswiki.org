@@ -166,6 +166,7 @@ Fix the shebang path in the scripts:
 [code]
 $ cd $HOME/.config/emacs/bin
 $ $HOME/bin/fix-shell-path *
+$ doom sync -u
 [/code]
 
 To update after changes to <tt>$HOME/.config/doom/init.el</tt> or <tt>$HOME/.config/packages.el</tt>:
