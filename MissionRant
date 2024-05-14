@@ -56,7 +56,7 @@ I'd like to emphasize a point Alex is subtly making about the current setup:  Wh
 
 == How Emacs Wiki Works ==
 
-This is a rant by [[Alex Schroeder]], taken from [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works his blog].
+This is a rant by [[Alex Schroeder]], taken from [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works his blog]. Feel free to edit it.
 
 (**TL;DR**: People that don’t like the wiki as it is ought look at the official Emacs documentation instead. I wrote this so that I’d have something to link to in the future. This post was inspired by [[2012-03-20]].)
 
@@ -154,8 +154,9 @@ If people would take popular code from the wiki to a forge, repackage it as a re
 
 – [[Alex Schroeder]] 2012-03-24 12:11 UTC
 
-[new]
-As for the attempt at starting a new wiki, there's [[WikEmacs]]!
+== A new wiki appears!
+
+As for the attempt at starting a new wiki, there's [[WikEmacs]].
 
 - [https://batsov.com/articles/2012/03/26/wikemacs-the-other-emacs-wiki/ WikEmacs: The Other Emacs Wiki]
 - [https://batsov.com/articles/2013/01/27/the-wikemacs-experiment-is-over/ The WikEmacs Experiment is Over!]
@@ -163,7 +164,7 @@ As for the attempt at starting a new wiki, there's [[WikEmacs]]!
 
 It's still up!
 
--– [[Alex Schroeder]]
+== Stack Overflow
 
 [new]
 _This comment was extracted to [https://alexdaniel.org/2016-01-21_Suckoverflow my blog]:_
@@ -222,6 +223,11 @@ Perhaps you are right and eventually Stackoverflow will degenerate into a “wor
 Oh my, people are still unhappy! As seen [https://www.reddit.com/r/emacs/comments/7e3jfe/the_current_emacs_website/ on Reddit], complaining about the website but also mentioning Emacs Wiki...
 
 – Alex 2017-11-20 09:47 UTC
+
+[new]
+Then again:
+
+"Stack Overflow, a legendary internet forum for programmers and developers, is coming under heavy fire from its users after it announced it was partnering with OpenAI to scrub the site's forum posts to train ChatGPT. Many users are removing or editing their questions and answers to prevent them from being used to train AI — decisions which have been punished with bans from the site's moderators." – [https://www.tomshardware.com/tech-industry/artificial-intelligence/stack-overflow-bans-users-en-masse-for-rebelling-against-openai-partnership-users-banned-for-deleting-answers-to-prevent-them-being-used-to-train-chatgpt Stack Overflow bans users en masse for rebelling against OpenAI partnership — users banned for deleting answers to prevent them being used to train ChatGPT], by Dallin Grimm, on Tom's Hardware
 
 ----
 CategoryEmacsWikiSite
