@@ -141,8 +141,7 @@ Perhaps one of the Emacs Wiki critics will one day set up an alternate site, pul
 
 The [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works original blog post] had some comments.
 
-[new]
-On the question of code being kept on the wiki:
+== Code on the wiki ==
 
 I see the problem! I think people like me don’t feel bad about keeping code that consists of a single file on the wiki because we usually don’t think of these files as requiring maintenance. After all, that’s how [gnu.emacs.sources](http://lists.gnu.org/archive/html/gnu-emacs-sources/) used to work. The wiki has the benefit of providing a stable URL, but the process remains essentially the same: post & forget, possibly have discussions with other people via email, followed by another post & forget.
 
@@ -154,7 +153,7 @@ If people would take popular code from the wiki to a forge, repackage it as a re
 
 – [[Alex Schroeder]] 2012-03-24 12:11 UTC
 
-== A new wiki appears!
+== A new wiki appears! ==
 
 As for the attempt at starting a new wiki, there's [[WikEmacs]].
 
@@ -164,7 +163,7 @@ As for the attempt at starting a new wiki, there's [[WikEmacs]].
 
 It's still up!
 
-== Stack Overflow
+== Stack Overflow ==
 
 [new]
 _This comment was extracted to [https://alexdaniel.org/2016-01-21_Suckoverflow my blog]:_
