@@ -34,9 +34,11 @@ If anyone is serious about setting up a mirror, fork or re-engineered emacswiki,
 
 *OtherMichael notes he doesn't advocate switching engines, but that if we do, there's a [[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse PmWikiMode]] available
 
-[new:XavierMaillard:2008-10-24 19:49 UTC]
+[new]
 *XavierMaillard is opened to eventually use [[http://www.ikiwiki.info
 ikiwiki]] (at the very least).
+
+-- XavierMaillard 2008-10-24 19:49 UTC
 
 [new]
 Switching engine means, if I read correctly, replacing Alex. Honestly, I would rather keep a buggy software (which is not what Oddmuse is) and Alex than see Emacs Wiki run by someone else, even if they set up an alternative.
@@ -44,12 +46,6 @@ Switching engine means, if I read correctly, replacing Alex. Honestly, I would r
 Alex has been paying for the site (which is ad free), has always justified every choice he made, has welcomed every new user personally, has always responded to every demands made for an enhancement on the site, has written more pages than anyone else which is why emacswiki still exists in the first place etc.etc....I honestly doubt we can find someone half as good for the job as Alex...
 
 -- PierreGaston 2008-10-25 00:04 UTC
-
-[new:XavierMaillard:2008-10-25 04:57 UTC]
-I agree with Pierre. Alex is good at this job as already said on the mailing-list.
-
-[new]
-A absolutely agree, too.  Actually I started that booth because I am convinced that the keeping of Oddmuse will receive an overwhelming success. -- StefanKamphausen
 
 [new]
 'Unstructured' is not an argument really. Most Wikis are not very well structured. However, it's easy to find stuff. The search and categorisation is quite neat on this site. A general Google search for and Emacs related issue and the wiki is almost always in the top 5 hits. In that sense, it is pretty authoritative and reliable. As for moving to a new engine, I don't see any reason why we should. Unless there's some kind of technical limitation or performance problem with oddmuse, there's no real reason to move. I'm not aware of any till now. Finally, replacing Alex as the 'owner' (in some loose sense) of emacs wiki will be a real dumb move. His involvement with the whole project is the single strongest reason that the site has grown so much. -- NoufalIbrahim
