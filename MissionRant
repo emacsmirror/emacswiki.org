@@ -30,15 +30,7 @@ But I'm not willing to do the work for somebody else. They need to do it themsel
 [new]
 If anyone is serious about setting up a mirror, fork or re-engineered emacswiki, the content is available via various methods detailed on the WikiDownload page. 
 
-== Engine Voting Booth ==
-
-We might just as well start voting here.  If you consider this inappropriate 
-just delete this part of the page.
-
-|| '''OddMuse'''    || '''MediaWiki''' || '''PmWiki'''  || 
-|| GiorgosKeramidas ||                 ||               ||
-|| StefanKamphausen ||                 || OtherMichael* ||
-|| XavierMaillard*  ||                 ||               ||
+== Engine Switching ==
 
 *OtherMichael notes he doesn't advocate switching engines, but that if we do, there's a [[http://www.pmichaud.com/wiki/Cookbook/EmacsPmWikiMode?action=browse PmWikiMode]] available
 
@@ -47,8 +39,7 @@ just delete this part of the page.
 ikiwiki]] (at the very least).
 
 [new:PierreGaston:2008-10-25 00:04 UTC]
-Why I don't think a vote is appropriate: 
-Because switching engine means, if i read correctly, replacing Alex. Honestly, I would rather keep a buggy software (which is not what oddmuse is) and Alex than see emacswiki run by someone else, even if they set up an alternative.
+Switching engine means, if I read correctly, replacing Alex. Honestly, I would rather keep a buggy software (which is not what Oddmuse is) and Alex than see Emacs Wiki run by someone else, even if they set up an alternative.
 
 Alex has been paying for the site (which is ad free), has always justified every choice he made, has welcomed every new user personally, has always responded to every demands made for an enhancement on the site, has written more pages than anyone else which is why emacswiki still exists in the first place etc.etc....I honestly doubt we can find someone half as good for the job as Alex...
 
@@ -65,13 +56,175 @@ A absolutely agree, too.  Actually I started that booth because I am convinced t
 I'd like to emphasize a point Alex is subtly making about the current setup:  Whether Oddmuse or some other WikiEngine, the EmacsWiki -- a collection of both software *and* authored works -- is from top-to-bottom FreeSoftware and FreeDocumentation and it should continue to be.  Most online resources are not socially responsible in this manner.  Through the measured work of Alex -- and a cast of hundreds, he's given the community the ability and the RightToFork (!WriteToFork?).  Obviously, he's contributed immensely to a useful community resource, but most impressive in my opinion is his commitment to software freedom and transparency.  This quality of EmacsWiki has enabled Emacs users to emphatically contribute back, and also provides the community the freedom to upgrade EmacsWiki down the road.  Thanks, Alex /et al/!  -- AaronHawley
 [new]
 
-== The 2012 Rant ==
+== The 2012 Rant: How Emacs Wiki Works ==
 
-More ranting by AlexSchroeder!
+More ranting by AlexSchroeder, taken from [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works his blog].
 
-<include "https://alexschroeder.ch/wiki/raw/2012-03-24_How_Emacs_Wiki_Works">
+(**TL;DR**: People that don’t like the wiki as it is ought look at the official Emacs documentation instead. I wrote this so that I’d have something to link to in the future. This post was inspired by [[2012-03-20]].)
 
-You can leave [https://alexschroeder.ch/wiki/2012-03-24_How_Emacs_Wiki_Works comments on the original blog post].
+Every year or so, I read about suggested changes to the Emacs Wiki. The complaints are the same, year after year.
+
+1. The pages are confusing.
+2. The code snippets are wrong.
+3. The site is badly organized.
+4. The information is out of date.
+
+The solutions invariably have nothing to do with the problem.
+
+1. Switch to MediaWiki, the software used to run Wikipedia.
+2. Use a database or a distributed version control system as the back-end.
+3. Change the text formatting rules to Markdown, MediaWiki markup, or something else that is better known.
+4. Separate discussion from the main page.
+5. Delete stuff that is outdated.
+6. Fix errors.
+7. Organize.
+8. Moderate.
+
+Why are these suggestions not helpful?
+
+The first problem is _the mistaken belief that technology can substitute for social change_. Yes, the wiki is badly organized and many of the pages are outdated. Changing the wiki engine, the back-end or the formatting rules will not change this, however.
+
+The back-end used by the wiki engine can influence performance and resource use, it can make the software harder or easier to maintain and backup—but it will not induce somebody to edit a messy page and fix it.
+
+The second problem is _the mistaken belief that moderation can be commanded_. You can complain about bad editing and a lack of moderation all day. But since nobody is paying people to do a boring job, we must rely on obsessive compulsive people to fix typos and tag pages.
+
+Maybe we could attract more people by gamifying the experience—offer rewards, badges, scores. But Stack Overflow already does this. It’s the best social question answering machine currently known. The wiki doesn’t need to imitate something better. The wiki needs to do what it does best. We’ll come to that.
+
+The third problem is _the mistaken belief that quality control and volunteers go well together_. Just compare Wikipedia and [Citizendium](https://en.wikipedia.org/wiki/Citizendium) and consider the animosity generated by [Deletionism](https://en.wikipedia.org/wiki/Deletionism) on Wikipedia. How will you encourage authors to contribute if you are telling them that their contributions are lacking the quality you are looking for instead of simply accepting their text and working on it?
+
+You fight spam, you rework text occasionally, you encourage others, you welcome newbies, you lead by example. That’s how you lead.
+
+An abrasive personality, radical change involving a lot of work—those are not the tools you are looking for.
+
+Let me return to the issue of _commanding change_. Things people have said:
+
+> “the content editing should be one with the goal of creating a comprehensive, coherent, article that gives readers info or tutorial about the subject.” – Xah Lee (2008)
+>
+> “I favor a major reorganization of the wiki material.” – Neil Smithline (2011)
+>
+> “The articles are littered with crappy advice confusing beginners, have little structure and are filled with ridiculous questions” – Bozhidar Batsov (2012)
+>
+> “Wiki is a hydra you cannot cut enough heads off to make it die. I tried, and failed miserably. I suggest you don’t waste your efforts and time on that.” – Eli Zaretskii (2014)
+>
+> “What I propose is starting anew and getting rid of a few common complaints at once.” – wasamasa (2015)
+
+The critics can be unhappy about it all they want, and they can complain about it all they want—but in the end, one needs to understand the forces at work, here. There is no chain of command.
+
+It works just like a free software project. If it doesn’t scratch someone’s itch, nobody is going to add it. I think it’s a fundamental issue with our business model: there is no pay for boring stuff. Plus, documentation is of no direct use for anything—unlike code. Thus, people are mostly motivated to keep their own code and its documentation up to date. I don’t think there is anything we can do about that. That’s why the MissionStatement does not mention organization and quality. It cannot be commanded.
+
+Once we accept that this is the sand upon which we are building our house, we necessarily need to scale down our expectations. Personally, I think the wiki exists somewhere between the official documentation, Stack Overflow, the FAQ, the newsgroups, the mailing lists, and IRC. It’s certainly nowhere near the quality of organization and writing that the Emacs documentation has—and I don’t think this is the right medium to aim for this level of quality. I think the people willing to invest that amount of energy to write quality stuff ought to be writing the real Emacs documentation—and they probably are.
+
+What remains are the people using Emacs Wiki for their own pet projects, questions asked, answers given, sometimes organized, sometimes rewritten, sometimes linked to the rest of the site.
+
+Wikipedia works because of its universal appeal. When I added an image to an obscure Indian temple we visited when I was staying in Mysore, the photo was terrible. But it was a start, and enough people cared about the page and it grew, and it found people to tend it, and now it’s big and beautiful.
+
+There just aren’t enough Emacs users and authors out there and the best of us will be contributing to the official Emacs documentation. The wiki exists somewhere between the official documentation and the mailing lists. Lower your expectations.
+
+Given all that, why does the wiki exist at all?
+
+When I started it, I had several reasons:
+
+1. The wikis I knew, C2 and Meatball Wiki, had attracted a particular community and they had created a particular subculture I liked. We talked about the Wiki Now and many other things that made wikis work. The medium itself was interesting.
+2. I had been posting on the newsgroups for a long time, and slowly I realized that the same questions kept being asked again and again. The newsgroups and mailing lists were failing as a medium because they were ephemeral. Sure, we kept telling people to search the archives. But the medium _afforded_ asking questions instead of searching.
+3. When I looked for Frequently Asked Questions, I found a document online, maintained by a single person. This person was a bottleneck. The FAQ updated slowly.
+4. At the time I was getting into Internet Relay Chat. On IRC, conversation is even more ephemeral than on the mailing list. This time, however, “searching the archives” was out of the question. We needed our own archive. And thus I started answering questions on IRC and posting the answers on the wiki.
+
+I think this last point bears consideration: I was creating pages or adding information to pages because it was pertinent on IRC. An index, linking to the page, categorization, returning to the page later and reworking it, all these quality related tasks were _not_ pertinent on IRC. All I needed was a pastebin that I could go back to and rewrite _if I felt like it_. Often I did not—and I still don’t.
+
+The wiki being on the web, updated every now and then, with pertinent answers to specialized questions, unorganized and raw, ended up being a good resource for the search engines out there. These search engines bring new people to the site. People that don’t understand how wikis work in general and how this wiki grew to be where it is in particular. They are shocked. So many pages outdated! Such a mess in style and quality!
+
+I think those people are better served reading the official documentation. They don’t want this mess, they don’t benefit from it’s loose rules, they don’t understand how cool it is to have a site with no login required. They are better served elsewhere.
+
+I’m sure that one day the Emacs Wiki will have become irrelevant. But just like the old newsgroups never disappeared entirely, so will the wiki transform into something else and remain part of our information landscape.
+
+Perhaps one of the Emacs Wiki critics will one day set up an alternate site, pull all the pages (more than 8500 pages last time I checked), extract the quality content—or rewrite it from scratch—and produce something better. Perhaps they will build an organization that can keep the quality up, encourage new authors to join, provide more value to their readers. But I don’t think complaining about the existing Emacs Wiki is a step in the right direction. Build it, and they will come—elsewhere.
+
+⁂
+
+The [https://alexschroeder.ch/view/2012-03-24_How_Emacs_Wiki_Works original blog post] had some comments.
+
+[new]
+On the question of code being kept on the wiki:
+
+I see the problem! I think people like me don’t feel bad about keeping code that consists of a single file on the wiki because we usually don’t think of these files as requiring maintenance. After all, that’s how [gnu.emacs.sources](http://lists.gnu.org/archive/html/gnu-emacs-sources/) used to work. The wiki has the benefit of providing a stable URL, but the process remains essentially the same: post & forget, possibly have discussions with other people via email, followed by another post & forget.
+
+To me, creating a separate project on Savannah or Source Forge is an unacceptable overhead for files like [[rcirc-color.el]] or [[rcirc-controls.el]]. But if somebody _else_ felt like taking those files, putting them up on some other site – excellent! At first, color-theme.el was hosted on Emacs Wiki. Eventually somebody took it, moved it elsewhere, and started a real project. Great!
+
+I still think that the Emacs Wiki can act as a low barrier-to-entry incubator for all those small little files that need a place on the web. I don’t read gnu.emacs.sources anymore, and I don’t think many other people do. At the same time, I think there still are a lot of people without their own web pages out there. They can’t post code on Facebook or Google+ and I imagine uploading code to Wordpress and Blogspot sites is also unwieldy. For all those people, the Emacs Wiki offers an alternative. It’s a bit better than gnu.emacs.sources and [Lisppaste](http://paste.lisp.org/) but a far cry from a software forge.
+
+If people would take popular code from the wiki to a forge, repackage it as a real project, that would be great.
+
+– [[Alex Schroeder]] 2012-03-24 12:11 UTC
+
+[new]
+As for the attempt at starting a new wiki, there's [[WikEmacs]]!
+
+- [https://batsov.com/articles/2012/03/26/wikemacs-the-other-emacs-wiki/  WikEmacs: The Other Emacs Wiki]
+- [https://batsov.com/articles/2013/01/27/the-wikemacs-experiment-is-over/  The WikEmacs Experiment is Over!]
+- [https://batsov.com/articles/2013/04/24/wikemacs-lives-on-under-new-stewardship/ WikEmacs lives on under new stewardship]
+
+It's still up!
+
+-– [[Alex Schroeder]]
+
+[new]
+_This comment was extracted to my blog:_ [https://alexdaniel.org/2016-01-21\_Suckoverflow](https://alexdaniel.org/2016-01-21_Suckoverflow)
+
+This might be different in emacs stack exchange, but it just shows how such systems are defective by design. And I believe that emacswiki will stay as good as it is now, even if thousands of idiots start migrating to it.
+
+– [AlexDaniel](http://alexdaniel.org/About) 2014-11-16 17:24 UTC
+
+[new]
+And I see no reason why something like [Ask Page Extension](http://oddmuse.org/wiki/Ask_Page_Extension) couldn’t be installed on emacswiki. Even tagging extension can be integrated with it. You will get the same ask button, questions feed and no scoring system – PERFECT. And as a bonus this will be highly integrated with the wiki, so that you can link stuff back and forth without throwing users to another website.
+
+– [AlexDaniel](http://alexdaniel.org/About) 2014-11-29 21:14 UTC
+
+[new]
+And I’m not alone: [http://michael.richter.name/blogs/why-i-no-longer-contribute-to-stackoverflow/](http://michael.richter.name/blogs/why-i-no-longer-contribute-to-stackoverflow/)
+
+– [AlexDaniel](http://alexdaniel.org/About) 2015-01-31 23:48 UTC
+
+[new]
+The section on poor community aptly describes what I feel towards Stackexchange and Wikipedia. But I still participate. Maybe less enthusiastically than before, and avoiding the authoritarian feedback, but I still write and vote. Simple answers to stupid questions are still useful. I will learn or not, on my own terms. Not every question needs to be a learning experience. But poor community bites. 🙁
+
+[new]
+Now and then I stumble upon thoughts like this:
+
+“I don’t chase reputation points any longer: it interferes with the writing of a good answer.” – Borodin [¹](http://stackoverflow.com/questions/19234209/perl-subroutine-arguments)
+
+But then I start thinking – how can we undo this mess? It is very unlikely that someone running Stackoverflow will decide to make it better, these guys are doing their business there. If they wanted it to be good they wouldn’t implement their score-based system. First of all, they need something that attracts users in any way, and a game-like experience works best right now. Great for them.
+
+But since the whole thing will become a big pile of mess eventually, they will probably start **deleting old answers**. Yeah. Since they have a stable flow of questions (which are repeated over and over) this is not a big problem for them – every question out there still will have an answer. If not – ask it again and get an answer. And this kinda makes sense, in their system, improving old answers is hard and not appreciated. Therefore deleting old answers will solve _everything_.
+
+Do you think that deleting old answers is OK? Or can you see any other way to keep their income without doing that?
+
+But for the moment, let’s list mentioned emacswiki problems (copied from this page!):
+
+1. The pages are confusing.
+2. The code snippets are wrong.
+3. The site is badly organized.
+4. The information is out of date.
+
+What about stackoverflow?
+
+1. The pages are confusing. – One page has a question and a bunch of answers. Every answer answers the same question. You don’t know which one is better, there is a scoring system but it does not always reflect the quality. Even worse, new answers are placed on top (like if they were somehow better), but later they fall down anyway (like if they became worse or what? Of course, they are trying to fix their lack of Recent Changes by doing that, but maybe implementing Recent Changes can fix their lack of Recent Changes?). Some pages have useful answers but are locked (you cannot contribute and fix problems even if you want to). Some pages are turned into something weird, where every contributor name is hidden. It is called “community wiki”. WTF is that I still don’t know. However, it works OK most of the time, but that’s pretty confusing, don’t you think?
+2. The code snippets are wrong. – yes, the code snippets are wrong. For example, think about Bash answers – instead of giving a link to well written wikis people write their own shitty code. Most of the time, these snippets have errors. It is not better with other languages – although these answers _might_ work, the solutions are frequently very ugly.
+3. The site is badly organized. – not organized _at all_.
+4. The information is out of date. – yes. Some of the stuff is already out of date, but we will see it becoming much worse a bit later. Stackoverflow is very young, not enough time has passed until we can say “it is out of date”, but there is nothing else you can expect from a system that does not encourage improvements and refactoring _by design_.
+
+There are many bad things our mankind has went through. We will manage to go over this one as well, eventually.
+
+– [AlexDaniel](http://alexdaniel.org/About) 2015-04-23 00:02 UTC
+
+[new]
+Perhaps you are right and eventually Stackoverflow will degenerate into a “worse is better” than [Usenet](https://en.wikipedia.org/wiki/Usenet "Wikipedia"). Old answers will disappear. The same questions will be asked again and again. But at least we’ll have rudimentary scoring. Perhaps this would be a simple thing for a wiki to add. Like little +1 or _I like_ buttons – but for every section, or paragraph, or code snippet. Essentially, this would make it easier for people to keep the good stuff and delete the useless stuff.
+
+– Alex Schroeder 2015-04-23 07:43 UTC
+
+[new]
+Oh my, people are still unhappy! As seen [on Reddit](https://www.reddit.com/r/emacs/comments/7e3jfe/the_current_emacs_website/), complaining about the website but also mentioning Emacs Wiki...
+
+– Alex 2017-11-20 09:47 UTC
 
 ----
 CategoryEmacsWikiSite
