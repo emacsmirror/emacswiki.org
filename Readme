@@ -1,34 +1,15 @@
-This page describes [[Readme.org]].
+
+== Installation ==
+
+To use without using a package manager:
+
+* Put the library in a directory in the emacs load path, like ~/.emacs.d
+* Add (require 'README) in your ~/.emacs file
+* If you have [http://www.marmalade-repo.org/ marmalade-repo.org], this README is part of the emacs packges you can install.  Just type M-x package-install README marmalade 
+
+This is in emacswiki, so this package can also be installed using el-get.
+
+After installing el-get, Type M-x el-get-install README.
 
 
-
-
-
-
-== Library Information ==
-== Using org-readme ==
-Org readme is used to:
-
-* Create/Update a "History" section in the Readme.org based on the changelog
-section of the Emacs Log.
-* Create/Update a "Library Information" Section Based on the Emacs lisp header.
-* Create/Update a "Possible Dependencies" Section Based on the Emacs
-lisp header.
-
-All other sections of the Readme.org are then put into the
-"Commentary" section of the readme.org.
-
-In addition this library defines <tt>org-readme-sync</tt>,  a convenience function that:
-
-* Asks for a commentary about the library change.
-* Syncs the Readme.org with the lisp file as described above.
-* Updates emacswiki with the library description and the library itself.
-* Updates the git repository with the differences that you posted.
-
-== History ==
-
-* <b>06-Aug-2012 </b> --   Added the ability to call = = from Readme.org (Matthew L. Fidler)
-* <b>05-Aug-2012 </b> --   Added git pushing to org-readme (Matthew L. Fidler)
-* <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is = = (Matthew L. Fidler)
-* <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
-* <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
