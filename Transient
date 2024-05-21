@@ -4,6 +4,36 @@ From the code comments: "When the user calls a transient prefix command, then a 
 are added to `pre-command-hook' and `post-command-hook'.  The available suffix and infix commands and their state are shown in the echo area until the transient is exited by invoking a suffix command."
 
 Transient is unrelated to TransientMarkMode.
+
+== Demonstration ==
+
+You can define a simple transient menu like so:
+
+{{{
+(defun my-message ()
+  (interactive)
+  (message "meow uwu"))
+
+(transient-define-prefix test-transient ()
+  "A demo transient menu."
+  [["First Group"
+    ("a" "action a" my-message)
+    ("b" "action b" my-message)
+    ("c" "action c" my-message)]
+   ["More Actions"
+    ("x" "Do X"     my-message)
+    ("y" "Do Y"     my-message)
+    ("z" "Do Z"     my-message)]])
+
+(test-transient)
+}}}
+
+First we define ##my-message##, which just prints text to the minibuffer. Then we define a popup menu with ##transient-define-prefix##, every selection in which runs the same function.
+
+== See Also ==
+
+* ReadMultipleChoice is also built-into emacs and is a lighter, similar interface for making quick single-char selections.
+
 ----
 
 CategoryModalEditing
