@@ -30,44 +30,5 @@ A week later - I helped out finishing the 4GL UI in the meantime and completed t
 Pro tip: don't look in the kitchen when governments brew up safety critical systems. I was scared to fly over Germany for a while...
 [/quote]
 
-=== Emacs in batch mode used to "transpile" VMS Pascal to modern Pascal ===
-
-From https://news.ycombinator.com/item?id=40426453 :
-[quote]
-Speaking of crazy applications of Emacs... Long long time ago, my team was tasked with rebuilding an MBS analytics system for one of the leading fintech companies. The original system ran on DEC VAX and was written in VMS Pascal (let's just say, a very unique flavor of Pascal). Rewriting it from scratch was not an option (it would take decades to implement all that complexity and to make sure it worked correctly). Instead, we utilized a combination of tools that first transformed the Pascal code into the form that was closer to more popular Pascal dialects (which included using a Scheme compiler and (drum roll) Emacs in batch mode), applied a set of hand-made patches, translated into C using p2c, and finally built on Linux. As crazy as it sounds, it worked well enough to be used as a foundation for the next gen of mortgage analytics.
-[/quote]
-
-=== Emacs as a Customer-Email Processing Application used by Customer Service at Amazon ===
-
-From https://sites.google.com/site/steveyegge2/tour-de-babel :
-[quote]
-The original brilliant guys and gals here only allowed two languages in Amazon's hallowed source repository: C and Lisp.
-
-Go figure.
-
-They all used Emacs, of course. Hell, Eric Benson was one of the authors of XEmacs1. All of the greatest engineers in the world use Emacs. The world-changer types. Not the great gal in the cube next to you. Not Fred, the amazing guy down the hall. I'm talking about the greatest software developers of our profession, the ones who changed the face of the industry. The James Goslings, the Donald Knuths, the Paul Grahams2, the Jamie Zawinskis, the Eric Bensons. Real engineers use Emacs. You have to be way smart to use it well, and it makes you incredibly powerful if you can master it. Go look over Paul Nordstrom's shoulder while he works sometime, if you don't believe me. It's a real eye-opener for someone who's used Visual Blub .NET-like IDEs their whole career.
-
-Emacs is the 100-year editor.
-
-Shel, Eric, Greg, and others like them that I wasn't fortunate enough to work with directly: they didn't allow C++ here, and they didn't allow Perl. (Or Java, for that matter). They knew better.
-
-Now C++, Java and Perl are all we write in. The elders have moved on to greener pastures too.
-
-Shel wrote Mailman in C, and Customer Service wrapped it in Lisp. Emacs-Lisp. You don't know what Mailman is. Not unless you're a longtime Amazon employee, probably non-technical, and you've had to make our customers happy. Not indirectly, because some bullshit feature you wrote broke (because it was in C++) and pissed off our customers, so you had to go and fix it to restore happiness. No, I mean directly; i.e., you had to talk to them. Our lovely, illiterate, eloquent, well-meaning, hopeful, confused, helpful, angry, happy customers, the real ones, the ones buying stuff from us, our customers. Then you know Mailman.
-
-Mailman was the Customer Service customer-email processing application for ... four, five years? A long time, anyway. It was written in Emacs. Everyone loved it.
-
-People still love it. To this very day, I still have to listen to long stories from our non-technical folks about how much they miss Mailman. I'm not shitting you. Last Christmas I was at an Amazon party, some party I have no idea how I got invited to, filled with business people, all of them much prettier and more charming than me and the folks I work with here in the Furnace, the Boiler Room of Amazon. Four young women found out I was in Customer Service, cornered me, and talked for fifteen minutes about how much they missed Mailman and Emacs, and how Arizona (the JSP replacement we'd spent years developing) still just wasn't doing it for them.
-
-It was truly surreal. I think they may have spiked the eggnog.
-
-Shel's a genius. Emacs is a genius. Even non-technical people love Emacs. I'm typing in Emacs right now. I'd never voluntarily type anywhere else. It's more than just a productivity boost from having great typing shortcuts and text-editing features found nowhere else on the planet. I type 130 to 140 WPM, error-free, in Emacs, when I'm doing free-form text. I've timed it, with a typing-test Emacs application I wrote. But it's more than that.
-
-Emacs has the Quality Without a Name.
-
-We retired Mailman. That's because we have the Quality With a Name — namely, Suckiness. We suck. We couldn't find anyone who was good enough at Emacs-Lisp to make it work. Nowadays it would be easy; Amazon's filled up with Emacs Lisp hackers, but back then, CS Apps couldn't get the time of day from anyone, so they did what they could with what they had, and there weren't enough Emacs-Lisp folks. For a while, they even had Bob Glickstein on contract, the guy who wrote the O'Reilly "giraffe" book Writing Gnu Emacs Extensions, sitting there writing Gnu Emacs Extensions for Mailman in this little office in the Securities building.
-[/quote]
-
-
 ----
 CategoryHistory CategoryHumor
