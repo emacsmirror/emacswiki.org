@@ -36,6 +36,7 @@ Here are some libraries I wrote:
 * '''Lisp:extract-text.el''' -- Functions for extracting/scraping text from buffers
 * '''Lisp:ido-choose-function.el''' -- Use ido to select functions and (partially) apply arguments
 * '''Lisp:erc-list-cache.el''' -- Cache IRC channel lists so they load faster
+* '''Lisp:org-table-jb-extras.el''' -- Extra commands & functions for working with org-tables
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
