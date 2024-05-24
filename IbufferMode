@@ -83,7 +83,7 @@ the contents of the columns. I don't find these headers so useful and didn't
 find a quick way to turn them off. So here is an advice that does the trick:
 
   (defun ibuffer--remove-column-titles-after (_format)
-    "DOCSTRING"
+    "Remove column headers from Ibuffer buffer."
     (save-excursion
       (set-buffer "*Ibuffer*")
       (let ((inhibit-read-only t))
