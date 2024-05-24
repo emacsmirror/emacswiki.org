@@ -82,19 +82,18 @@ These two lines may be hidden by setting the <code>ibuffer-display-summary</code
 the contents of the columns. I don't find these headers so useful and didn't
 find a quick way to turn them off. So here is an advice that does the trick:
 
-  (defadvice ibuffer-update-title-and-summary (after remove-column-titles)
-   (save-excursion
+  (defun ibuffer--remove-column-titles-after (_format)
+    "DOCSTRING"
+    (save-excursion
       (set-buffer "*Ibuffer*")
-      (toggle-read-only 0)
-      (goto-char 1)
-      (search-forward "-\n" nil t)
-      (delete-region 1 (point))
-      (let ((window-min-height 1)) 
+      (let ((inhibit-read-only t))
+        (goto-char 1)
+        (search-forward "-\n" nil t)
+        (delete-region 1 (point)))
+      (let ((window-min-height 1))
         ;; save a little screen estate
-        (shrink-window-if-larger-than-buffer))
-      (toggle-read-only)))
-  
-  (ad-activate 'ibuffer-update-title-and-summary)
+        (shrink-window-if-larger-than-buffer))))
+  (advice-add 'ibuffer-update-title-and-summary :after #'ibuffer--remove-column-titles-after)
 
 == Group by version-control parent directory, and show vc status ==
 
