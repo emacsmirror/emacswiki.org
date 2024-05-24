@@ -189,5 +189,12 @@ $ doom sync
 
 should tangle the file, if the automatic tangling seems to hang.
 
+=Directories for fonts=
+Applications may look for fonts in directories <tt>$HOME/fonts</tt> and <tt>$HOME/.local/share/fonts</tt>. Make a symbolic link from one to another, to have a unique font directory:
+[code]
+$ M-x shell
+$ mkdir -p $HOME/.local/share/fonts
+$ ln -s $HOME/.local/share/fonts $HOME/fonts
+[/code]
 
 CategoryPorts
