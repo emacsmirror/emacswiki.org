@@ -37,6 +37,7 @@ Here are some libraries I wrote:
 * '''Lisp:ido-choose-function.el''' -- Use ido to select functions and (partially) apply arguments
 * '''Lisp:erc-list-cache.el''' -- Cache IRC channel lists so they load faster
 * '''Lisp:org-table-jb-extras.el''' -- Extra commands & functions for working with org-tables
+* '''Lisp:org-columns-jb-extras.el''' -- Extra functions & macros for working with org-columns
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
