@@ -9,7 +9,7 @@ I think it fits very well in the GNU project. It gives me the freedom to (1) use
 I am interested in software quality and usability, and while I think that Emacs is in general stable, I also see that it suffers many shortcomings.
 * Most useful things are off by default, and users don't notice it
 * Little documentation for many complex functions
-* Rudimentary development tools: no normal and easy-to-use bug/patch tracker (after 30 years!); repositories still with CVS; the main tool is just a mailing list with too many off-topics and personal attacks; no automated testing
+* Rudimentary development tools: no normal and easy-to-use bug/patch tracker (after 30 years!); [s]repositories still with CVS[/s]; the main tool is just a mailing list with many off-topics and sometimes heated discussions; no automated testing
 * Delayed inclusion of common features; too long release cycles
 * Only available in 1 language
 * Little effort on usability and on what the users need. Many usual and reasonable tasks don't come optimally preconfigured; ex: working shell, IDE, HTML editor, ...
@@ -20,10 +20,12 @@ For instance, moving people to take part in GoogleSummerOfCode 2009 in GNU Emacs
 
 Until now, I improved some documentation: [[FloatingPoint]], symbol glossary at [[CategoryGlossary]], [[GnusGmail]], [[GnusEncryptedAuthInfo]], [[GnusSpeed]], [[EmacsLispReference]], [[FakeClosures]], [[EmacsMemoryDebugging]], [[GnusDemon]], [[GnusNotify]], … and did content reorganization and maintenance (ex: at [[JavaDevelopmentEnvironment]], [[JdeeVsEclipse]]). I'm writting also my first patches while I learn [[EmacsLisp]].
 
-I use GNU Emacs, [[OrgMode]], [[Gnus]], [[Icicles]], [[emacs-w3m]], [[EmacsMuse]], [[Rcirc]], [[TabBarMode]], [[JabberEl]].
+I use GNU Emacs, [[OrgMode]], [[Wanderlust]], [[Helm]], [[emacs-w3m]], [[OrgMode]], [[Rcirc]], [[JabberEl]].
 
 I'm user <code>clemente</code> in [[EmacsChannel]]. My web site is at http://www.danielclemente.com/
+My configuration is at https://www.danielclemente.com/emacs/confi.html
 
+I want to export my org-mode notes to WWW but I'm finding a lot of questions; I'll document them at https://www.danielclemente.com/hiper/
 
 ----
 CategoryHomepage
