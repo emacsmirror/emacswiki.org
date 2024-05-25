@@ -10,6 +10,8 @@
 * ##C-c <letter>## is reserved for the user to bind
 * ##f5## to ##f9## are also reserved for you :3
 * ##f3## starts recording a key macro. ##f4## stops it
+* ##C-x n n## - [[Narrowing|narrow]] buffer to current region
+* ##C-x n w## - widen (undoes narrowing)
 * i bind arrow keys to select frames
 * i dont deviate a lot from vanilla emacs
 * i try to stay cozy :3
