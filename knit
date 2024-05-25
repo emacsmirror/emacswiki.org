@@ -20,7 +20,7 @@ portrait:https://www.emacswiki.org/pics/static/knit_portrait
 * i try to stay cozy :3
 
 [:faves]
-=== favourites ===
+=== favourite pages ===
 
 * [[IbufferMode|ibuffer]]
 * [[OrgCapture|org-capture]]
@@ -31,13 +31,20 @@ portrait:https://www.emacswiki.org/pics/static/knit_portrait
 * [[Eshell|eshell]]
 * [[Dired|dired]]
 
+some emacswiki specific pages:
+
+* [[UsingPortraits|image portrait]]
+* [[CSS|css themes]]
+* [[StyleGuide|page style guide]]
+* [[TextFormattingRules|wiki syntax guide]]
+
 == theming ==
 
 i use ModusThemes because they're really cute :D
 
 i install the package from melpa because it's a newer version.
 
-[[https://tildegit.org/knit/init-el/src/branch/main/config/theme.el#L42 see my theme config here!]]
+[[https://tildegit.org/knit/init-el/src/branch/main/config/theme.el see my theme config here!]]
 
 as for fonts i use [[https://github.com/protesilaos/iosevka-comfy iosevka comfy]]:
 
