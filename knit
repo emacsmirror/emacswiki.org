@@ -1,12 +1,7 @@
-[font=Comic Sans MS][center][[https://tilde.green/~knit/ web]] - *im knit!* - [[https://tildegit.org/knit/init-el init.el]]
-
-[font=Comic Sans MS][i]i use scheme & write poems and i love love love bikeshedding[/i][/center]
-
-[center]
-portrait:https://www.emacswiki.org/pics/static/knit_portrait
-[/center]
-
------
+[font=Comic Sans MS]
+: *knit* - [[https://tilde.green/~knit/ web]] - [[https://tildegit.org/knit/init-el init.el]]
+: [[image:knit_portrait]]
+: [font=Comic Sans MS][i]i use scheme & write poems[/i]
 
 [:Tips]
 == little tips ==
