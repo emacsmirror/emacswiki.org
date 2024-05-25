@@ -1,0 +1,23 @@
+What is specpdl?
+
+You can find references to it in the Emacs source code.
+
+
+From lisp.h:
+
+  /* Elisp uses multiple stacks:
+   - […]
+   - The specpdl stack keeps track of backtraces, unwind-protects and
+     dynamic let-bindings.  It is allocated from the 'specpdl' array,
+     a manually managed stack.
+   - […]
+
+
+What does specpdl mean?
+
+Please document specpdl here or link to documentation. Or add comments to the C code.
+
+
+In lisp.h you can also find: ~~union specbinding~~, ~~enum specbind_tag~~.
+
+The variable max-specpdl-size is now obsolete and you should use max-lisp-eval-depth
