@@ -8,6 +8,8 @@ Melonesque (Melon-esque, as in "reminiscent of melons") is a theme for the Emacs
 * Automatic dark / light themes
 * Modern CSS, including color variables.
 * Minimalistic and hopefully easy on the eyes.
+* Printable.
+* External <u>links˺</u> are marked with ##˺##.
 * Does not play around with font sizes.
 * Does not play around with animations.
 * WCAG AAA compliant!
