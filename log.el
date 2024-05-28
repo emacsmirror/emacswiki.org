@@ -1,3 +1,5 @@
+DeletedFile
+
 ;;; logr.el Simple logging tool
 
 ;;
