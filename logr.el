@@ -46,6 +46,8 @@
 ;;    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 
+;;; Code:
+
 (defvar logr-file "~/.logfile"
   "Save log entries to file")
 
