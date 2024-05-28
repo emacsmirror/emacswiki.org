@@ -1,16 +1,11 @@
-Emacs is distributed with printable reference cards.
+Printable reference cards for Emacs are [[https://www.gnu.org/software/emacs/refcards/ available online]].
 
-A file, `refcard.tex' (and `refcard.ps' in
-<nowiki>PostScript</nowiki> format), which gives most of the
-keybindings for basic editing.
+The ##.tex## source files are in the [[https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/refcards etc/refcards]] directory of the [[https://savannah.gnu.org/projects/emacs/ Emacs source code]].
 
-If you do not have access to TeX or some sort of
-<nowiki>PostScript</nowiki> interpreter like GhostScript, then http://refcards.com/ has PDF
-versions of this, an XEmacs card, and one for AdvancedDeskCalculator as well.
-
-An alternate Emacs reference card is available at http://www.mitchr.me/ as a PDF file.
-
-I generated an Emacs 22 reference card from refcard.tex. Available at http://marc-abramowitz.com/archives/2006/04/10/emacs-22-reference-card/
+* [[https://www.csd.uoc.gr/~hy255/refcards/xemacs-refcard.pdf Xemacs reference card]] by [[https://www.xemacs.org/People/ben.wing/ Ben Wing]].
+* [[https://web.archive.org/web/20100331153209/http://refcards.com/docs/gildeas/gnu-emacs/emacs-refcard-a4.pdf GNU Emacs reference card]] by Stephen Gildea.
+* [[https://www.mitchr.me/SS/refc/index.html#refc_emacs Emacs reference card]] by Mitch Richling
+* Emacs 22 reference card, from ##refcard.tex##. [[http://marc-abramowitz.com/archives/2006/04/10/emacs-22-reference-card/ Available here]] (dead?)
 
 ----
 
@@ -21,25 +16,25 @@ sheet to the most common shortcuts of emacs and its extensions.
 
 * the emacs reference card in several languages (one sheet, 3-fold)
 
-  refcard.pdf -- english
-  fr-refcard.pdf -- french
-  de-refcard.pdf -- german
-  pl-refcard.pdf -- polish
-  ru-refcard.pdf -- russian
-  cs-refcard.pdf -- czech
+  refcard.pdf       -- english
+  fr-refcard.pdf    -- french
+  de-refcard.pdf    -- german
+  pl-refcard.pdf    -- polish
+  ru-refcard.pdf    -- russian
+  cs-refcard.pdf    -- czech
   pt-br-refcard.pdf -- portuguese
  
 * Mode specific reference cards 
 
-  survival.tex -- another reference card for emacs (2-fold)
-  dired-ref.pdf -- reference card for dired
-  calccard.pdf -- reference card for calc mode
-  orgcard.pdf -- reference card for org mode
+  survival.tex     -- another reference card for emacs (2-fold)
+  dired-ref.pdf    -- reference card for dired
+  calccard.pdf     -- reference card for calc mode
+  orgcard.pdf      -- reference card for org mode
   gnus-refcard.pdf -- reference card for gnus
   gnus-booklet.pdf -- extended list of shortcuts for gnus
-  vipcard.tex -- reference card for VIP, also known as vi-mode
-  vipercard.tex -- reference card for viper mode
-  tex-ref.pdf.gz -- reference card for auctex
+  vipcard.tex      -- reference card for VIP, also known as vi-mode
+  vipercard.tex    -- reference card for viper mode
+  tex-ref.pdf.gz   -- reference card for auctex
 
 Other refcards include {fr,sk,cs}-dired-ref.pdf, {fr,sk,cs}-survival.tex.
 
