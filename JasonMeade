@@ -8,7 +8,7 @@ Here are a list of files that I've uploaded:
 
 [[slurp.el]] Search for files using regular expressions.
 
-[[log.el]]. A simple logging tool.
+[[logr.el]]. A simple logging tool.
 
 
 ----
