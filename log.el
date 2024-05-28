@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;
 ;; log.el
 ;; Author: Jason Meade <jemeade@gmail.com>
@@ -28,7 +28,6 @@
 ;; as a timesheet app or for jotting down quick notes while
 ;; working.
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;    Copyright (C) 2024  Jason Meade <jemeade@gmail.com>
 ;;
@@ -45,7 +44,6 @@
 ;;    You should have received a copy of the GNU General Public License
 ;;    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar log-file "~/.logfile"
   "Save log entries to file")
