@@ -14,11 +14,11 @@ See the [[https://tvraman.github.io/emacspeak/applications.html Applications Lis
 
 An alternative guide is available in [[http://tvraman.github.io/emacspeak/manual/Quick-Installation.html the manual]].
 
+Requirements:
+
 * A computer running Linux (no Windows support)
 * The Emacspeak package
 * A Voice Synthesizer ([[https://espeak.sourceforge.net/ Espeak]] or [[https://voxin.oralux.net/prices.php Voxin]])
-
-
 
 === Installing Espeak ===
 
@@ -41,6 +41,14 @@ To build from source, enter the downloaded directory and write
 {{{
 make config && make
 }}}
+
+=== Connecting Emacs to Emacspeak ===
+
+Once you installed Emacspeak, point emacs to load the setup file:
+* If you installed Emacspeak by source, this is ##emacspeak/lisp/emacspeak-setup.el##
+* If you got Emacspeak from a package manager, it may be in ##/usr/share/emacs/site-lisp/emacspeak/lisp/emacspeak-setup.el##
+
+== Outdated Content ==
 
 === Installing ViaVoice ===
 
@@ -92,7 +100,7 @@ Be careful, it may be necessary that you use the CVS version of Emacspeak for th
    (emacspeak-toggle-auditory-icons 1))
 
 
-== Emacspeak on Windows ==
+=== Emacspeak on Windows ===
 
 There are several packages that aim to port Emacspeak to Windows. Notes included are for ##Emacs 29## on ##Windows 11##
 
@@ -109,14 +117,9 @@ install Emacspeak and get a gratis binary only version of *viavoice*
 from IBM to use it as a software speech synthesizer on your i386 linux
 box. At least a *200mhz pentium* or above is recommended.
 
-== Discussion ==
-
-Moved to the [[Comments_on_EmacSpeak|Talk]] page.
-
 == See Also ==
 
 * [[FestivalSpeechSynthesisSystem|Festival]] -- Another TTS option for Emacs.
-
 
 == External Links ==
 * http://gnu.manticore.es -- For Spanish speaking users (deadlink)
