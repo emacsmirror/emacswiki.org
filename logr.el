@@ -24,7 +24,7 @@
 ;; Usage:
 ;;    M-x logr<ret> Enter your one-line log message<ret>
 ;;
-;; The logr feature is intended to for users to write simple
+;; The logr feature is intended for users to write simple
 ;; one-line log entries. For example, this could be useful
 ;; as a timesheet app or for jotting down quick notes while
 ;; working.
@@ -66,7 +66,7 @@
        nil))))
 
 (defun logr-time ()
-  "Returns current time in MM/DD/YYYY MM:HH format"
+  "Returns current time in MM/DD/YYYY HH:MM format"
   (let ((log-time (decode-time (current-time))))
     (format "%02d/%02d/%04d %02d:%02d"
             (car (cddddr log-time))
