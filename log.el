@@ -49,6 +49,11 @@
 (defvar log-file "~/.logfile"
   "Save log entries to file")
 
+;;
+;; Please note: This will replace the Emacs mathematical log function...
+;; You may want to rename this if you need to perform logarithmic calculations.
+;; ;-D
+;;
 (defun log ()
   "Usage: M-x log<ret> Enter your one-line log message<ret>"
   (interactive
