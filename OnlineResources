@@ -4,34 +4,40 @@ If you are looking for information about Emacs, the first place to look is Emacs
 
 A lot of information can be found online:
 
-* EmacsNewsgroups, EmacsMailingLists, EmacsForums.
-* The EmacsLispList -- http://www.anc.ed.ac.uk/~stephen/emacs/ell.html.
+== General ==
+
+* EmacsNewsgroups 
+* EmacsMailingLists
+* EmacsForums.
 * EmacsFaq -- Frequently asked questions of Emacs.
-* The NT Emacs FAQ -- http://www.gnu.org/software/emacs/windows/.
-* The annotated EmacsLispReference online, and EmacsLispIntro for beginners.
-* Tutorial Collection by KaiGrossjohann -- ftp://ftp.is.informatik.uni-duisburg.de/pub/src/emacs/tutorials/tutorials_toc.html.
-* Emacs references and faqs by JariAalto -- http://www.nongnu.org/emacs-tiny-tools/resources/index.html.
-* Emacs KeybindingGuide by JariAalto.
-* Why Emacs?  A tour of Emacs from a newbie's perspective, by CharlesSebold -- http://www.livingtorah.org/~csebold/emacs/why.phtml. [That link seems to be broken.]
-* [http://web.mit.edu/olh/Emacs/Emacs.html MIT's Emacs Introduction]
-* [http://jeremy.zawodny.com/emacs/emacs.html Emacs Beginner's HOWTO]
-* The [http://en.chainki.org/index.php?title=Emacs_(Computers/Open_Source/Software/Editors)
-Emacs pages on the Chainki wiki]. This is a general purpose wiki of links
-based on the [http://dmoz.org Open Directory Project] but reworked into wiki format.
-* PlanetEmacsen -- An aggregation of the blogs of Emacs users.
-* [http://www.emacsblog.org/ M-x all-things-emacs] -- A place for both Emacs
-n00bs and hax0rz to gain a little more out of Emacs.
-* ElispCookbook -- This page contains snippets of code that demonstrate basic
-elisp programming operations in the spirit of the o'reilly cookbook series of
-books.
-* [http://web.psung.name/emacs/ Being Productive With Emacs] by Phil Sung
+* [[http://www.gnu.org/software/emacs/windows/ The Windows NT Emacs FAQ]] 
+* [http://emacs.dreamwidth.org/ emacs community on Dreamwidth]
+* [https://www.reddit.com/r/emacs/ r/emacs] -- Many interesting discussions and resources. Check out the [https://www.reddit.com/r/emacs/search?q=Weekly%20tips&restrict_sr=on&sort=new&t=all Weekly tips threads]
+* [[ftp://ftp.is.informatik.uni-duisburg.de/pub/src/emacs/tutorials/tutorials_toc.html Tutorial Collection]] by KaiGrossjohann (FTP)
+* [http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Beyond the tutorial] -- Consise summary of [[key]]s, [[command]]s, terminology, [[regexp]] syntax....
+
+== Lisp ==
+
+* The annotated EmacsLispReference online
+* EmacsLispIntro for beginners.
+* ElispCookbook -- This page contains snippets of code that demonstrate basic elisp programming operations in the spirit of the o'reilly cookbook series of books.
+
+== Historical / Unmaintained / Archived ==
+
+Anything relatively old or abandoned goes here. Still some good links :3
+
+* (1978) [[http://http://hdl.handle.net/1721.1/5748 Ciccarelli's MIT Emacs Introduction]]
+* (2000) [[https://web.archive.org/web/20040219133814/http://www.livingtorah.org/~csebold/emacs/why.phtml Why Emacs?]] -- A tour of Emacs from a newbie's perspective, by CharlesSebold [Web Archive].
+* (2001) [http://jeremy.zawodny.com/emacs/emacs.html Emacs Beginner's HOWTO] by Jeremy Zawodny
+* (2006) [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html Stevey's Blog Rants: Shiny and New: Emacs 22] -- It has good tips about Emacs, especially about <code>replace-regexp</code> use.
+* (2007) [[https://web.archive.org/web/20070422140850/http://en.chainki.org/index.php?title=Emacs_(Computers/Open_Source/Software/Editors) Emacs on the Chainki wiki]] (Web Archive) -- Based on content from [[https://en.wikipedia.org/wiki/DMOZ DMOZ]] but reworked into wiki format.
+* (2008) [[http://www.nongnu.org/emacs-tiny-tools/resources/index.html Emacs references]] and faqs by JariAalto
+* (2009) [http://web.psung.name/emacs/ Being Productive With Emacs] by Phil Sung
 ** [http://web.psung.name/emacs/2009/part1.html Introduction]: why Emacs?; overview of editing commands; macros; major and minor modes.
 ** [http://web.psung.name/emacs/2009/part2.html Emacs lisp]: rebinding keys; hooks; extending Emacs with your own commands.
 ** Older stuff - ''Seems to have moved''
-*** [http://web.psung.name/emacs/2007/emacs-slides-1.pdf
-Being Productive With Emacs - Part 1 (PDF)] -- ''"Emacs is the extensible,
-customizable, selfdocumenting realtime display editor."''
-It's a good Emacs tutorial.
+*** [http://web.psung.name/emacs/2007/emacs-slides-1.pdf Being Productive With Emacs - Part 1 (PDF)] 
+-- ''"Emacs is the extensible, customizable, selfdocumenting realtime display editor."'' It's a good Emacs tutorial.
 (Working quickly in Emacs; modes; macros; useful features; how to learn more.)
 *** [http://web.psung.name/emacs/2007/emacs-slides-2.pdf
 Being Productive With Emacs - Part 2 (PDF)] -- Emacs Lisp for implementation,
@@ -41,11 +47,8 @@ defining interactive functions.)
 *** [http://web.psung.name/emacs/2007/emacs-slides-3.pdf
 Being Productive With Emacs - Part 3 (PDF)] -- Extending Emacs.
 (Interactive arguments; advice; defining new modes.)
-* [http://emacs.dreamwidth.org/ emacs community on Dreamwidth]
-* [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html
-Stevey's Blog Rants: Shiny and New: Emacs 22] -- It has good tips about Emacs,
-specially about <code>replace-regexp</code> use.
-* [http://www.cb1.com/~john/computing/emacs/beyond-tutorial.html Beyond the tutorial] -- Consise summary of [[key]]s, [[command]]s, terminology, [[regexp]] syntax....
-* [https://www.reddit.com/r/emacs/ r/emacs] -- Many interesting discussions and resources. Check out the [https://www.reddit.com/r/emacs/search?q=Weekly%20tips&restrict_sr=on&sort=new&t=all Weekly tips threads]
+
+
+
 ----
 CategoryHelp, CategoryDocumentation 
