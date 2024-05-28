@@ -16,6 +16,9 @@ If you omit CLOSE, it will reuse OPEN."
 }}}
 
 
+== Related work ==
+
+Also see [[https://arialdomartini.github.io/emacs-surround|this series of blog posts]], as well as [[https://gist.github.com/dandrake/864f642850acaa3534cf5029868d12eb|this gist]] which handles nesting the surrounded region with repeated calls to the command.
 
 
 ----
