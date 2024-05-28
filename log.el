@@ -22,9 +22,9 @@
 ;;    (require 'log)
 ;;
 ;; Usage:
-;;    M-x log<ret> Enter your one-line log message<ret>
+;;    M-x logr<ret> Enter your one-line log message<ret>
 ;;
-;; The log feature is indended to for users to write simple
+;; The log feature is intended to for users to write simple
 ;; one-line log entries. For example, this could be useful
 ;; as a timesheet app or for jotting down quick notes while
 ;; working.
@@ -49,13 +49,8 @@
 (defvar log-file "~/.logfile"
   "Save log entries to file")
 
-;;
-;; Please note: This will replace the Emacs mathematical log function...
-;; You may want to rename this if you need to perform logarithmic calculations.
-;; ;-D
-;;
-(defun log ()
-  "Usage: M-x log<ret> Enter your one-line log message<ret>"
+(defun logr ()
+  "Usage: M-x logr<ret> Enter your one-line log message<ret>"
   (interactive
    (let* ((log-message (read-from-minibuffer "Log: "))
           (log-entry (format "%s :: %s\n" (log-time) log-message))
