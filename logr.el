@@ -21,6 +21,9 @@
 ;;    Add the following to your .emacs file:
 ;;    (require 'logr)
 ;;
+;;    Optionally set the logfile name (default is "~/.logfile")
+;;    (setq logr-file "~/Work/logfile")
+;;
 ;; Usage:
 ;;    M-x logr<ret> Enter your one-line log message<ret>
 ;;
