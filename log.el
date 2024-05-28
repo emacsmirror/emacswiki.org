@@ -1,4 +1,5 @@
-;;;
+;;; log.el Simple logging tool
+
 ;;
 ;; log.el
 ;; Author: Jason Meade <jemeade@gmail.com>
@@ -16,7 +17,7 @@
 ;;
 ;;    You may need to update your .emacs file with the above location.
 ;;    For example: (add-to-list 'load-path "~/.emacs.d/elisp/")
-
+;;
 ;;    Add the following to your .emacs file:
 ;;    (require 'log)
 ;;
@@ -73,3 +74,5 @@
             (cadr log-time))))
 
 (provide 'log)
+
+;;; log.el ends here
