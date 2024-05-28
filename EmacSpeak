@@ -3,12 +3,9 @@
 to read the contents of the buffer using a *speech synthesizer*. It is helpful
 for visually-impaired users.
 
+!EmacSpeak has special features for many common modes (see the [[https://tvraman.github.io/emacspeak/applications.html Applications List]])
+
 [[https://emacspeak.sourceforge.net/ Homepage]]
-
-== Overview ==
-
-Emacspeak implements special features for nearly every widespread mode.
-See the [[https://tvraman.github.io/emacspeak/applications.html Applications List]] for details.
 
 == Installation ==
 
