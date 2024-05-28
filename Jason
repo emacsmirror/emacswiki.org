@@ -1,17 +1,2 @@
 DeletedFile
 
-I'm just another hacker.
-
-Here are a list of files that I've uploaded:
-
-[[bug.el]] An antiquated file for compiling ant based Java projects.
-
-[[fetch.el]] Another antiquated file for hyperlinking between class files in Java projects.
-
-[[slurp.el]] Search for files using regular expressions.
-
-[[log.el]]. A simple logging tool.
-
-
-----
-CategoryHomepage
