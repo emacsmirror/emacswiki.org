@@ -1,12 +1,19 @@
-I wanted to use the 'dynamic symbol with my linum-format but I also wanted a vertical bar separator between the linum and my code.  I took a look at what dynamic does and just added the following to my .emacs file and it works great.
-(setq linum-format (propertize (format " %%%dd \u2502" (length (number-to-string (count-lines (point-min) (point-max)))))))
+I wanted to use the ##'dynamic## symbol with my ##linum-format## but I also wanted a vertical bar separator between the linum and my code.  I took a look at what ##dynamic## does and just added the following to my ##.emacs## file and it works great.
+
+{{{
+(setq linum-format
+  (propertize
+   (format " %%%dd \u2502"
+	   (length (number-to-string
+		    (count-lines (point-min)
+				 (point-max)))))))
+}}}
 
 -- [http://github.com/localredhead localredhead] 2013-05-15 00:39 UTC
 
 
 ----
 
-Add your comment here.
 your patch to display last line num doesn't work.
 
 -- 匿名者 2013-07-13 00:02 UTC
