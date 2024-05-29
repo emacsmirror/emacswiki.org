@@ -16,6 +16,7 @@ Requirements:
 * A computer running *Linux* (no Windows support)
 * The *Emacspeak* package
 * A *Voice Synthesizer* ([[https://espeak.sourceforge.net/ Espeak]] or [[https://voxin.oralux.net/prices.php Voxin]])
+* A 200Mhz Pentium or above
 
 === Installing Espeak ===
 
@@ -52,20 +53,13 @@ Once you installed Emacspeak, point emacs to *load the setup file*:
 * If you got Emacspeak from a *package manager*, it may be in ##/usr/share/emacs/site-lisp/emacspeak/lisp/emacspeak-setup.el##
 
 
-=== Emacspeak on Windows ===
+== Emacspeak on Windows ==
 
 There are several packages that aim to port Emacspeak to Windows. Notes included are for ##Emacs 29## on ##Windows 11##
 
 * [[https://sourceforge.net/projects/emacspeakwin emacspeakwin]] -- Throws the error ##Emacs does not seem to be working##
 * [[https://github.com/serezlan/emacspeak4windows emacspeak4windows]] -- Throws the error ##No such file emacspeak-loaddefs.el##
 
-== For Seeing Users ==
-
-Emacspeak is not limited to the blind. it
-could be useful for all users, too. You can 
-install Emacspeak and get a gratis binary only version of *viavoice*
-from IBM to use it as a software speech synthesizer on your i386 linux
-box. At least a *200mhz pentium* or above is recommended.
 
 == See Also ==
 
