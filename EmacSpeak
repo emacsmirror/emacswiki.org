@@ -13,27 +13,33 @@ An alternative guide is available in [[http://tvraman.github.io/emacspeak/manual
 
 Requirements:
 
-* A computer running Linux (no Windows support)
-* The Emacspeak package
-* A Voice Synthesizer ([[https://espeak.sourceforge.net/ Espeak]] or [[https://voxin.oralux.net/prices.php Voxin]])
+* A computer running *Linux* (no Windows support)
+* The *Emacspeak* package
+* A *Voice Synthesizer* ([[https://espeak.sourceforge.net/ Espeak]] or [[https://voxin.oralux.net/prices.php Voxin]])
 
 === Installing Espeak ===
 
-If ##espeak## isn't available from your package manager, download it from [[https://espeak.sourceforge.net/ the espeak website]].
+If ##espeak## isn't available from your *package manager*, download it from [[https://espeak.sourceforge.net/ the espeak website]].
 
-In your Emacspeak directory, you'll need to build the espeak server
+In your Emacspeak directory, you'll need to *build the espeak server*
 
 {{{
 cd servers/native-espeak
 make
 }}}
 
+Test espeak by making it say something:
+
+{{{
+espeak meow
+}}}
+
 === Installing Emacspeak ===
 
-* Your package manager may have an ##emacspeak## package.
+* Your /package manager/ may have an ##emacspeak## package.
 * You can get the source code from [[https://emacspeak.sourceforge.net/ the website]]
 
-To build from source, enter the downloaded directory and write
+To *build from source*, enter the downloaded directory and write
 
 {{{
 make config && make
@@ -41,9 +47,9 @@ make config && make
 
 === Connecting Emacs to Emacspeak ===
 
-Once you installed Emacspeak, point emacs to load the setup file:
-* If you installed Emacspeak by source, this is ##emacspeak/lisp/emacspeak-setup.el##
-* If you got Emacspeak from a package manager, it may be in ##/usr/share/emacs/site-lisp/emacspeak/lisp/emacspeak-setup.el##
+Once you installed Emacspeak, point emacs to *load the setup file*:
+* If you installed Emacspeak by *source*, this is ##emacspeak/lisp/emacspeak-setup.el##
+* If you got Emacspeak from a *package manager*, it may be in ##/usr/share/emacs/site-lisp/emacspeak/lisp/emacspeak-setup.el##
 
 == Outdated Content ==
 
@@ -51,12 +57,10 @@ Once you installed Emacspeak, point emacs to load the setup file:
 
 : Note: IBM no longer distributes [[http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html Viavoice]]. Use espeak or voxin.
 
-Some requirements for this setup:
+Some requirements for this setup (good luck finding these):
 
 * The [b]IBM !ViaVoice TTS Runtime-kit for Linux[/b]
 * The [b]IBM !ViaVoice TTS SDK for Linux[/b]
-
-You may try searching the Web for the above two packages.
 
 From them, you'll need ##viavoice_tts_rtk.tar##. Getting the ##sdk.tar## file isn't necessary.
 
