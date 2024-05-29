@@ -1,0 +1,48 @@
+: Note: IBM no longer distributes [[http://www-4.ibm.com/software/speech/dev/ttssdk_linux.html Viavoice]]. Use espeak or voxin.
+
+This page describes installing IBM's !ViaVoice for use with EmacSpeak.
+
+=== Installing ViaVoice ===
+
+Some requirements for this setup (good luck finding these):
+
+* The [b]IBM !ViaVoice TTS Runtime-kit for Linux[/b]
+* The [b]IBM !ViaVoice TTS SDK for Linux[/b]
+
+From them, you'll need ##viavoice_tts_rtk.tar##. Getting the ##sdk.tar## file isn't necessary.
+
+They contain ##.rpm## files, which you can install on RedHat or use [[https://wiki.debian.org/Alien Debian Alien]] to convert them to ##.deb##s:
+
+{{{
+# Perform RPM -> DEB file conversion + installation.
+alien -i filename.rpm
+}}}
+
+=== The Outloud Speech Server ===
+
+Required: ##tclx##, so on Debian, ##apt-get install tclx8.3 tclx8.3-dev## first.
+
+The Emacspeak *Outloud speech server* allows Emacspeak to interface with !ViaVoice. It
+is in the ##servers/linux-outloud## folder in Emacspeak. The ##NOTES## file in this directory describes compilation.
+
+: You may need to change the ##-ltcl## option in the Makefile to something like ##-ltcl8.3##.
+
+You may have to add an *include path* so that ##tcl.h## gets found, or edit the ##tcleci.cpp## file to make the <code>#include <tcl.h></code> line fit to your systems needs. (e.g. on my system, I put ##tcl8.3/tcl.h## there).
+
+Make and install the speech server.
+
+You should now be able to invoke ##emacspeak -o## (##-o## calls the Outloud speech server).
+Look at the emacspeak script to see how this works; basicly setting ##DTK_PROGRAM=outloud## in your shells environment should do the trick too.
+
+Getting Auditory Icons working:
+
+You may have noticed that the outloud speech server tries to use a /usr/bin/stdiosynth to generate auditory icons.
+This will work on some systems which have /dev/synth0. My sblive doesn't have that, and so stdiosynth doesn't work.
+But my sblive is multichannel capable. So I can use /dev/dsp concurrently. Here is my .emacs setup to make this work.
+Be careful, it may be necessary that you use the CVS version of Emacspeak for this to work right.
+
+ (when (featurep 'emacspeak)
+   (require 'emacspeak-aumix)
+   (setq emacspeak-auditory-icon-function 'emascpeak-play-auditory-icon)
+   (setq emacspeak-aumix-multichannel-capable-p t)
+   (emacspeak-toggle-auditory-icons 1))
