@@ -1,3 +1,5 @@
+: I took my website down, sorry. A lot of it was awkwardly written. I put most of my content here on the wiki anyway, so we didn't lose much :3
+
 [font=Comic Sans MS] I'm a programmer from Canada. I like tea 🍵[/font]
 
 [:Tips]
@@ -23,16 +25,16 @@ M-m      - First non-whitespace character
 [:Email]
 == Email 💌 ==
 
-I '''LOVE''' rmail. rmail is small, and simple. it uses emacs' built-in sendmail-mode for composition, and emacs' bulilt-in SMTP facility. But...:
+is nice but...
 
-* It lacks maildir support (only mbox)
-* It lacks thread-nesting by default.
-* Mailutils oddities, i.e. ##%40## in place of the ##@## symbol.
+* Only mbox; no maildir.
+* No thread-nesting
+* Mailutils oddities, i.e. ##%40## in place of ##@##.
 
 So I looked for some other options...
 
-* //Alpine// -- Only mbox. Perfect threading. NNTP inbox
-* //Notmuch// -- maildir. No deleting OOTB. 
+* //Alpine// -- Only mbox. Threading. NNTP inbox
+* //Notmuch// -- maildir. No deleting OOTB, but can be scripted. 
 * //Mu4e// -- maildir. Ok threads. Overall very clean
 
 I tried MH-E for a while. It uses MH files, which are OK, but: 
