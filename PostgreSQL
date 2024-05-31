@@ -1,5 +1,7 @@
 == Elisp Interface ==
 
+[[https://github.com/emarsden/pgmacs|PGmacs]] is an Emacs interface for browsing and editing data in PostgreSQL. It connects to PostgreSQL over the network or a Unix socket using the pg-el library.
+
 Code by EricMarsden for a [[https://github.com/emarsden/pg-el/|socket-level Emacs Lisp interface to the PostgreSQL database]].
 
 NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
