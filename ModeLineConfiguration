@@ -74,7 +74,7 @@ The default `mode-line-format' (as of Emacs 27.1, circa 2020) is:
 
 The leading ##"%e"## is a string containing a [PercentConstruct %-construct]; it will be replaced with any active out-of-memory error message, or an empty string otherwise.
 
-##(vc-mode vc-mode)## is a conditional, which will display the value of `vc-mode' only if `vc-mode' is non-##nil##.  (FIXME explain why this is needed, since nil values are normally ignored anyway)
+##(vc-mode vc-mode)## is a conditional, which will evaluate the function `vc-mode' and display the resulting information only if `vc-mode' is non-##nil##.
 
 The remaining elements are described in the next section.
 
