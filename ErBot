@@ -262,10 +262,13 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 A very large percentage of time, fsbot is invoked incorrectly, but still manages to dtrt because of this sensible design philosophy that we have emphasized throughout this document. And, fsbot, programmed in 2000s, managed to do this with pre-llm tech! Here are a few examples -
 
 * <deego> you might want to see if ,,envrc helps you.
+
+
+Here, the user forgot the closing ,, after envrc, and thus, asked fsbot to search for "envrt dtrt for you" instead of "envrc". However, fsbot returns the term for envrc. Here's another example - 
+
 * <technomancy> kickingvegas: is "package" here a package.el thing or a ,,df featurep thing?
 
-
-Here, the user forgot the closing ,, after envrc, and thus, asked fsbot to search for "envrt dtrt for you" instead of "envrc". However, fsbot returns the term for envrc.
+Next - 
 
 * <deego> fsbot do you like me? <fsbot> fsbot loves you!
 
