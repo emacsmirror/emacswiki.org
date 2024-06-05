@@ -259,7 +259,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 
 
 == Sensible Fallback Design ==
-A very large percentage of time, fsbot is invoked incorrectly, but still manages to dtrt because of this design philosophy that we have emphasised throughout this document. And, fsbot was programmed in 2000s. All this uses pre-llm tech. Here are just a few eaxmples -
+A very large percentage of time, fsbot is invoked incorrectly, but still manages to dtrt because of this sensible design philosophy that we have emphasized throughout this document. And, fsbot, programmed in 2000s, managed to do this with pre-llm tech! Here are a few examples -
 
 * <deego> you might want to see if ,,envrc helps you.
 
