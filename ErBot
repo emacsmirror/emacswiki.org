@@ -267,11 +267,15 @@ Here, the user forgot the closing ,, after envrt, and thus, asked fsbot to searc
 
 * <deego> fsbot do you like me? <fsbot> fsbot loves you!
 
+In some cases, as above, it returns a vaguely sensible response, even though "fsbot do you like me" matches nothing in its database.
+
 * <deego> fsbot: emacs?
+
 There's no term "emacs?" in its db but it figures out you are looking for the notes for the term emacs.
 
-* <deego> EmaCs
-There's no term EmaCs but again, the bot dtrt.
+* <deego> , EmaCs
+
+There's no term " EmaCs". Notice the extraneous leading space, and the funny case. But again, the bot dtrt.
 
 There are numerous other cases, and in due time, I will populate some more examples above. In each case, the user doesn't notice, but fsbot tried various approaches, finding no match. It eventually landed on doing what the user actually intended.
 
