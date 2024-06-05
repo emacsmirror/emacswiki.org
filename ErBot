@@ -255,6 +255,26 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * ,foo is lisp (lisp-form). If the notes for the term foo are of this form, then the lisp-form is evaluated. You might prefer to (defun foo(...)) instead. 
 
 
+
+
+
+== Sensible Fallback Design ==
+A very large percentage of time, fsbot is invoked incorrectly, but still manages to dtrt because of this design philosophy that we have emphasised throughout this document. And, fsbot was programmed in 2000s. All this uses pre-llm tech. Here are just a few eaxmples -
+
+* <deego> you might want to see if ,,envrc helps you.
+
+Here, the user forgot the closing ,, after envrt, and thus, asked fsbot to search for "envrt dtrt for you" instead of "envrc" but fsbot returns the term for envrc.
+
+* <deego> fsbot do you like me? <fsbot> fsbot loves you!
+
+* <deego> fsbot: emacs?
+There's no term "emacs?" in its db but it figures out you are looking for the notes for the term emacs.
+<deego> EmaCs
+There's no term EmaCs but again, the bot dtrt.
+
+In each case, the user doesn't notice but fsbot tried various approaches but found no match. It eventually landed on doing what the user actually intended.
+
+
 == Practical Hints for best results == 
 
 
