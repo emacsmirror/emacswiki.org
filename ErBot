@@ -282,6 +282,12 @@ There's no term "emacs?" in its db but it figures out you are looking for the no
 
 There's no term " EmaCs". Notice the extraneous leading space, and the funny case. But again, the bot dtrt.
 
+* <verbatim>
+<deego> what is vi?                                                                                                                                                                     
+<fsbot> vi: [0/6] a visual editor (see ,viper ,vim ,nvi) ;;[ ,more / ,dump]
+</verbatim>
+
+
 There are numerous other cases, and in due time, I will populate some more examples above. In each case, the user doesn't notice, but fsbot tried various approaches, finding no match. It eventually landed on doing what the user actually intended.
 
 
