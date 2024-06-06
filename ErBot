@@ -264,11 +264,11 @@ A very large percentage of time, fsbot is invoked "incorrectly," but still manag
 * <deego> you might want to see if ,,envrc helps you.
 
 
-Here, the user forgot the closing ,, after envrc, and thus, asked fsbot to search for "envrt dtrt for you" instead of "envrc". However, fsbot returns the term for envrc. Here's another example - 
+Here, the user forgot the closing ,, after envrc. The user ended up asking fsbot to search for "envrt dtrt for you" rather than for "envrc". However, fsbot returns the term for envrc anyway! Here's another example - 
 
 * <technomancy> kickingvegas: is "package" here a package.el thing or a ,,df featurep thing?
 
-Next - 
+Here, the user accidentally asked fsbot to (describe-function 'feature 'thing), thus supplying an extraneous gibberish argument, but fsbot dtrt. Next - 
 
 * <deego> fsbot do you like me? <fsbot> fsbot loves you!
 
@@ -288,7 +288,7 @@ There's no term " EmaCs". Notice the extraneous leading space, and the funny cas
 
 
 
-There are numerous other cases, and in due time, I will populate some more examples above. In each case, the user doesn't notice, but fsbot tried various approaches, finding no match. It eventually landed on doing what the user actually intended.
+There are numerous other cases, and at some point, I will populate some more examples above. In each case, the user doesn't notice, but fsbot tried various approaches, till it found something sensible.
 
 
 == Practical Hints for best results == 
