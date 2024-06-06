@@ -306,7 +306,7 @@ There are numerous other cases, and at some point, I will populate some more exa
 
 === Practical hints for programming your own botcommands ===
 
-As an irc user, you can not only add to the bots knowledge-base (terms), but also modify the bot's behavior itself. You can program your own botcommands using the included ##(defun)##. Botcommands, when not done right, actually make the bot less useful. In certain cases, the bot will get directed to your command, and if it's not well executed, it will return errors needlessly. So, how do you dtrt?
+As an irc user, you can not only add to the bot's knowledge-base (terms), but also modify the bot's behavior itself. You can program your own botcommands using the included ##(defun)##. Botcommands, when not done right, actually make the bot less useful. In certain cases, the bot will get directed to your command, and if it's not well executed, it will return errors needlessly. So, how do you dtrt?
 
 
 
