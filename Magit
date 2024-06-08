@@ -29,6 +29,7 @@ You might also want to read the [https://magit.vc/manual/magit/Getting-Started.h
 
 == Screencasts ==
 
+* 2024.05 [https://www.youtube.com/watch?v=1Jp_EdRf4rs A tour of Magit by Kyle Meyer] (20:45)
 * 2016.03 [https://www.youtube.com/watch?v=mtliRYQd0j4 Rewrite git history with Emacs, magit and git rebase] (15:04)
 * 2016.03 [https://www.youtube.com/watch?v=LDafmAJa-4w Emacs Tutorial - Introduction to Magit] (13:15)
 * 2015.10 [https://www.youtube.com/watch?v=vQO7F2Q9DwA Magit introduction and demonstration] (14:10)
@@ -52,6 +53,7 @@ Various packages exist which extend Magit, including:
 * [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
 * [https://www.tsdh.org/posts/2022-08-01-difftastic-diffing-with-magit.html Integrating difftastic]
+* [https://github.com/alphapapa/magit-todos magit-todos by alphapapa] - view your repo todos along with git status.
 
 You can find even more extensions by searching for "magit" on
 https://melpa.org.  You might also want to search for "git".
