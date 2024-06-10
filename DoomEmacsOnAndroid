@@ -197,4 +197,12 @@ $ mkdir -p $HOME/.local/share/fonts
 $ ln -s $HOME/.local/share/fonts $HOME/fonts
 [/code]
 
+=Path name in HOME dir, in config file=
+To reliably use <tt>$HOME<tt> in a path name, in emacs config file:
+[code]
+(expand-file-name "storage/shared/stardict" (getenv "HOME"))
+[/code]
+
+should expand to <tt>/data/data/org.gnu.emacs/files/storage/shared/stardict</tt>
+
 CategoryPorts
