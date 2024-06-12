@@ -22,6 +22,7 @@ You will need access to Androids internal storage in Termux:
 * In termux run <tt>termux-setup-storage</tt>
 * You will be prompted to "Allow Termux access photos, media and files on your device", which you should allow.
 * Symbolic links to various folders in Android storage, should now be available in directory <tt>~/storage</tt>.
+* The user files (Documents, Download, etc) are also available under <tt>/sdcard</tt>. On my Oneplus, the user files are read only under <tt>storage/shared</tt>, but read/write under <tt>/sdcard</tt>
 
 We need to install a symbolic link <tt>emacs</tt> in termux <tt>bin</tt> directory, pointing to an executable that will start Android emacs as a command line application. In Termux:
 [code]
