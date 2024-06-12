@@ -1,128 +1,179 @@
-;;; this is slime-loads-GNU.el --- stub to indirect slime/swank configs on GNU
-;; -*- mode: EMACS-LISP; -*-
-
-;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
-;;; ================================================================
-
-;; FILENAME: slime-loads-GNU.el
-;; AUTHOR: MON KEY
-;; MAINTAINER: MON KEY
-;; CREATED: 2009-09-06T10:19:19-04:00Z
-;; VERSION: 1.0.0
-;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: environment, external, lisp, programming, processes
-
-;;; ================================================================
-
-;;; COMMENTARY: 
-
-;; =================================================================
-;; DESCRIPTION:
-;; slime-loads-GNU is a stub. It indirects loading of slime/swank configs on GNU
-;; systems and is an attempt at easing transitions when slime-devels make
-;; breaking changes.
-;; :SEE :FILE slime-loads-GNU-clbuild.el
-;; :SEE (URL `http://www.emacswiki.org/emacs/')
-;;
-;; FUNCTIONS:►►►
-;;
-;; FUNCTIONS:◄◄◄
-;;
-;; MACROS:
-;;
-;; METHODS:
-;;
-;; CLASSES:
-;;
-;; CONSTANTS:
-;;
-;; FACES:
-;;
-;; VARIABLES:
-;;
-;; ALIASED/ADVISED/SUBST'D:
-;;
-;; DEPRECATED:
-;;
-;; RENAMED:
-;;
-;; MOVED:
-;;
-;; TODO:
-;;
-;; NOTES:
-;;
-;; SNIPPETS:
-;;
-;; REQUIRES:
-;; 
-;; THIRD-PARTY-CODE:
-;;
-;; URL: http://www.emacswiki.org/emacs/slime-loads-GNU.el
-;; FIRST-PUBLISHED: <Timestamp: #{2010-09-07T11:31:22-04:00Z}#{10362} - by MON>
-;;
-;; EMACSWIKI: { URL of an EmacsWiki describing slime-loads-GNU. }
-;;
-;; FILE-CREATED: <Timestamp: #{2009-09-06T10:19:19-04:00Z}#{09367} - by MON KEY>
-;; 
-;;
-;; =================================================================
-
-;;; LICENSE:
-
-;; =================================================================
-;; This file is not part of GNU Emacs.
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 3, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-;; =================================================================
-;; Permission is granted to copy, distribute and/or modify this
-;; document under the terms of the GNU Free Documentation License,
-;; Version 1.3 or any later version published by the Free Software
-;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;; and no Back-Cover Texts. A copy of the license is included in
-;; the section entitled ``GNU Free Documentation License''.
-;; 
-;; A copy of the license is also available from the Free Software
-;; Foundation Web site at:
-;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009 2010 MON KEY 
+;;; SLIME w32 setup - 
+;;; GNU setup should _always_ be maintained seperately.
+;;; If not, problems inevitable arise whenever we synch up the HG repos.
+;;; ==============================
+;;; :SBCL-W32
+;;; sb-win32::*core-pathname*
+;;; sb-win32::*tty*
+;;; sb-win32::directory 
+;;; (sb-win32::directory-namestring 
+;;; (sb-win32::*ansi-codepage*)
+;;; (sb-win32::get-system-info)
+;;;  (sb-ext::posix-getenv "SBCL_HOME")
+;;; (getenv "SBCL_HOME")
+;;; (setenv "SBCL_HOME" "C:/home/sp/bin/sbcl")
 ;;; ==============================
 
-;;; CODE:
 
-(eval-when-compile (require 'cl))
-
-;;; ==============================
-;;; Stub everything is elswhere now.
-;;; :CHANGESET 1917
-;;; :CREATED <Timestamp: #{2010-06-23T21:08:20-04:00Z}#{10253} - by MON KEY>
-(unless (featurep 'slime-loads-GNU-clbuild)
-  (require 'slime-loads-GNU-clbuild))
+;;; (unless (equal current-language-environment "UTF-8")
+;;;   (set-language-environment "UTF-8"))
 
 ;;; ==============================
-(provide 'slime-loads-GNU)
+;; (setq slime-net-coding-system (car (slime-find-coding-system 'utf-8-unix)))
+(setq slime-net-coding-system  'utf-8-unix)
+
+;;; :NOTE On w32 when using the above coding system I had to change the value of 
+;;;  keyword :coding-system in `swank:create-server' from 
+;;;  :coding-system "iso-latin-1-unix" -> :coding-system "utf-8-unix"
+;;  to get `slime-repl' working.
+
+;;; ==============================
+(add-to-list 'load-path (mon-build-path-for-load-path *mon-site-lisp-root* "slime"))
+(add-to-list 'load-path (mon-build-path-for-load-path *mon-site-lisp-root* "slime/contrib"))
+
+;;; ==============================
+;; :LOAD-SLIME
+(load (concat *mon-site-lisp-root* "/slime/slime"))
+
+;;; ==============================
+;; :SET-INFERIOR-LISP
+
+;;; (setq inferior-lisp-program "allegro-express")
+;;; (setq inferior-lisp-program "clisp")
+;;; (setq inferior-lisp-program "wx86cl")
+
+(let ((ilp (executable-find (executable-find "sbcl"))))
+  (setq inferior-lisp-program
+        (concat ilp " --core " (file-name-directory ilp) "sbcl.core")))
+
+;;; ==============================
+;; :SET-SLIME-LISP-IMPLEMENTATIONS
+;;
+(let ((ilp-sbcl  (executable-find "sbcl"))
+      (ilp-clisp (executable-find "clisp")))
+  (setq slime-lisp-implementations
+        `((sbcl (,ilp-sbcl "--core " ,(concat (file-name-directory ilp-sbcl) "sbcl.core"))
+                :coding-system utf-8-unix)
+          (clisp (,ilp-clisp)))))
+;;
+;;; :TEST-ME slime-lisp-implementations
+;;
+;; (setq slime-default-lisp
+
+;;; ==============================
+;; :CONFIG-LOCAL-SLIME
+
+;;; ==============================
+;; (require 'slime)
+;; (require 'slime-autoloads)
+;; (require 'slime-asdf)
+;; (require 'slime-scratch)
+;; (require 'slime-repl)
+;; (require 'slime-autodoc)
+;; (require 'slime-c-p-c)
+;; (require 'slime-editing-commands)
+;; (require 'slime-fancy-inspector)
+;; (require 'slime-fuzzy)
+;; (require 'slime-fontifying-fu)
+;; (require 'slime-package-fu)
+;; (require 'slime-mdot-fu)
+;; (require 'slime-references)
+;; (require 'slime-xref-browser)
+;; (require 'slime-highlight-edits)
+;; ;; WHEN sbcl
+;; (require 'slime-sbcl-exts)
+;; (require 'slime-references)
+;; (require 'slime-presentations)
+;; (require 'slime-presentation-streams)
+;;; ==============================
+;;
+;;(when (equal (getenv "LISPTYPE") "sbcl")
+;;               slime-sbcl-exts ;)
+;;               slime-repl
+;;               slime-scratch
+;;               slime-asdf
+;;               slime-tramp
+;;               )) 
+;;
+;;; ==============================
+(require 'slime-autoloads)
+(slime-setup '(slime-fancy
+               slime-repl
+               slime-scratch
+               slime-sbcl-exts
+               slime-tramp
+               slime-asdf))
+;;
+(slime-require :swank-listener-hooks) ; :NOTE This was in the clbuild script
+
+;;; ==============================
+;; :SLIME-HOOKS
+
+;; (add-hook 'slime-load-hook #'(lambda () (require 'slime-fancy)))
+;; (remove-hook 'slime-load-hook #'(lambda () (require 'slime-fancy)))
+
+(add-hook 'lisp-mode-hook #'(lambda () (slime-mode t)))
+
+(add-hook 'slime-mode-hook
+	  (function (lambda () 
+            (set (make-local-variable 'lisp-indent-function)  'common-lisp-indent-function))))
+
+;;; ==============================
+;;; :NOTE slime-autodoc is easier on the eyes by simply calling C-c C-d C-a (slime-autodoc-manually)
+;; (setq slime-autodoc-mode nil)
+;;; (when (featurep 'slime-autodoc) (setq slime-autodoc-delay 3.0))
+;;; (setq slime-autodoc-delay 0.2)
+;;; (setq asdf-install:*verify-gpg-signatures* nil)
 ;;; ==============================
 
- 
-;; Local Variables:
-;; generated-autoload-file: "./mon-loaddefs.el"
-;; End:
 
-;;; ====================================================================
-;;; slime-loads-GNU.el ends here
+;;; ==============================
+;;;Use this with same steingold's CLOCC
+;;;(URL `http://clocc.sourceforge.net/')
+;;(setenv "LISPTYPE" inferior-lisp-program) 
+;;(getenv "LISPTYPE")
+
+;;; ==============================
+;;; ==============================
+;;; Allegro
+;; (push "c:/home/sp/bin/acl81-express/eli" load-path)
+;; (load "fi-site-init.el")
+
+;; (setq fi:common-lisp-image-name "c:/home/sp/bin/acl81-express/allegro-express.exe")
+;; (setq fi:common-lisp-image-file "c:/home/sp/bin/acl81-express/allegro-express.dxl")
+;; (setq fi:common-lisp-directory  "c:/home/sp/bin/acl81-express")
+
+;; (defun run-allegro-lisp ()
+;;   (interactive)
+;;   (fi:common-lisp "*common-lisp*"
+;;                   "c:/home/sp/bin/acl81-express/"                     
+;;                   "c:/home/sp/bin/acl81-express/allegro-express.exe" 
+;;                   '("+B" "+cn")
+;;                   "localhost"
+;;                   "c:/home/sp/bin/acl81-express/allegro-express.dxl" 
+;;                   ))
+;;; ==============================
+
+;;; ==============================
+;; (URL `http://article.gmane.org/gmane.lisp.slime.devel/8712')
+;; (URL `http://thread.gmane.org/gmane.lisp.slime.devel/8442')
+;; >> *STANDARD-OUTPUT* of functions called from the REPL is going to
+;; >> *inferior-lisp* not to the REPL as it used to.  I noticed this when
+;; >> calling DISASSEMBLE; the disassembly appears in the *inferior-lisp*
+;; >> buffer.
+;; > This is a known bug, but unfortunately it's still not fixed. As a quick
+;; > workaround you can evaluate:
+;
+; (setf *standard-output*
+;       (swank::connection.user-output swank::*emacs-connection*)) 
+;
+; > at the REPL.
+;;; ==============================
+
+;;; ==============================
+(provide 'slime-loads)
+;;; ==============================
+
+;;; ==============================
 ;;; EOF
