@@ -2,13 +2,13 @@
 = :MON-CLONE =
 MON finally got git-ified!
 
-As of 2011-04-20 the .el files referenced below can be found in their most current form at:
-https://github.com/mon-key/mon-emacs
+As of 2024-06-12 the .el files referenced below can be found in their most current form at:
+https://github.com/monkpearman/mon-emacs
 
 You can clone MON with:
 
- shell> git clone git://github.com/mon-key/mon-emacs.git
- shell> git clone https://github.com/mon-key/mon-emacs.git
+ shell> git clone git://github.com/monkpearman/mon-emacs.git
+ shell> git clone https://github.com/monkpearman/mon-emacs.git
 
 [:MON-PACKAGES]
 = :MON-PACKAGES =
@@ -19,7 +19,7 @@ Following is organized roughly according to the load order.
 
 * Lisp:monDOTemacs.el --
   Points to a local directory and for loading mon-site-local-defaults.el
-** :SEE https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/.emacs
+** :SEE https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/.emacs
 
 * Lisp:mon-site-local-defaults.el -- 
   An example configuration of MON's `site-local-private.el' which acts
@@ -28,16 +28,16 @@ Following is organized roughly according to the load order.
 
 * Lisp:mon-default-loads.el -- 
   Setup the globals and base system portability.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el github mon-default-loads.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-default-loads.el github mon-default-loads.el]
 
 * Lisp:mon-default-start-loads.el -- 
   Setup any Emacs and Third party packages required.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-default-start-loads.el github mon-default-start-loads.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-default-start-loads.el github mon-default-start-loads.el]
 
 * Lisp:mon-w32-load.el -- 
   Provides w32 specific features which must be present or are better
   left segregated.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-w32-load.el github mon-w32-load.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-w32-load.el github mon-w32-load.el]
 
 * Lisp mon-GNU-load.el -- 
   GNU/Linux specific features. Mostly for quick reconfiguration of
@@ -49,15 +49,15 @@ Following is organized roughly according to the load order.
 
 * Lisp:slime-loads-GNU-clbuild.el -- 
   MON's Slime related extensions.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el github slime-loads-GNU-clbuild.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/slime-loads-GNU-clbuild.el github slime-loads-GNU-clbuild.el]
 
 * Lisp:mon-keybindings.el --
   Provides MON prefered keybindings and mode specific stuff.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el github mon-keybindings.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-keybindings.el github mon-keybindings.el]
 
 * Lisp:mon-post-load-hooks.el -- 
   Provides functions to evaluate after initializing MON Emacsen.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el github mon-post-load-hooks.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/mon-post-load-hooks.el github mon-post-load-hooks.el]
 
 [:MON-UTILS]
 == :MON-UTILS ==
@@ -67,287 +67,287 @@ system and specifically any mon-*.el and naf-mode-*.el packages.
 
 * Lisp:mon-utils.el -- (MonUtils) 
   This package is the entry point that loads everything else below.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-utils.el github mon-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-utils.el github mon-utils.el]
 
 * Lisp:mon-text-property-utils.el --
   Provides functions for working with and manipulating text properties
   and overlays.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-text-property-utils.el github mon-text-property-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-text-property-utils.el github mon-text-property-utils.el]
 
 * Lisp:mon-error-utils.el --
   Provides extensions for conditions and error handling.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-error-utils.el github mon-error-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-error-utils.el github mon-error-utils.el]
 
 * Lisp:mon-alphabet-list-utils.el --
   Provides list generation function which returns alphabetic sequences
   in various formats.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-alphabet-list-utils.el github mon-alphabet-list-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-alphabet-list-utils.el github mon-alphabet-list-utils.el]
 
 * Lisp:mon-aliases.el --
   Provides single consolidated file for def(var)aliases across MON packages.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-aliases.el github mon-aliases.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-aliases.el github mon-aliases.el]
 
 * Lisp:mon-dir-locals-alist.el --
   MON global vars bound to commonly used local-site paths.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-locals-alist.el github mon-dir-locals-alist.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-locals-alist.el github mon-dir-locals-alist.el]
 
 * Lisp:mon-dir-utils.el -- 
   Provides a collection of handy functions and interactive commands
   for working with directories and files.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el github mon-dir-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils.el github mon-dir-utils.el]
 
 * Lisp:mon-dir-utils-local.el --
   Provides functions for working with directories and files mostly
   specific to MON systems.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils-local.el github mon-dir-utils-local.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-dir-utils-local.el github mon-dir-utils-local.el]
 
 * Lisp:mon-insertion-utils.el --
   Provides insertion related utilities, templates and string
   building/manipulation procedures that ease routine chores and
   interactive command invocation.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-insertion-utils.el github mon-insertion-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-insertion-utils.el github mon-insertion-utils.el]
 
 * Lisp:mon-replacement-utils.el --
   Provides a collection of routines and commands and abstracts some
   commonly encountered procedures for processing regexps with their
   replacements.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-replacement-utils.el github mon-replacement-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-replacement-utils.el github mon-replacement-utils.el]
 
 * Lisp:mon-regexp-symbols.el --
   Provides a collection of Symbols bound to lisp lists of
   regexp/replacement pairs. Allows simple easy interactive command
   invocation using symbols as arguments to containing lists of regexps.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-regexp-symbols.el github mon-regexp-symbols.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-regexp-symbols.el github mon-regexp-symbols.el]
 
 * Lisp:mon-time-utils.el -- (EbayTime)
   Provides procedures for frobbing time.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-time-utils.el github mon-time-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-time-utils.el github mon-time-utils.el]
 
 * Lisp:mon-testme-utils.el --
   Provides `mon-*' tests and template for inserting them
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-testme-utils.el github mon-testme-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-testme-utils.el github mon-testme-utils.el]
 
 * Lisp:mon-plist-utils.el --
   Provides procedures for frobbing plist-like seqs
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-plist-utils.el github mon-plist-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-plist-utils.el github mon-plist-utils.el]
 
 * Lisp:mon-macs.el --
   Provides macros.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-macs.el github mon-macs.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-macs.el github mon-macs.el]
 
 * Lisp:mon-type-utils.el --
   Provides procedures useful for interrogating lisp objects.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-type-utils.el github mon-type-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-type-utils.el github mon-type-utils.el]
 
 * Lisp:mon-type-utils-vars.el --
   Provides variables useful for interrogating lisp objects.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-type-utils-vars.el github mon-type-utils-vars.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-type-utils-vars.el github mon-type-utils-vars.el]
 
 * Lisp:mon-window-utils.el --
   Provides window related procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-window-utils.el github mon-window-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-window-utils.el github mon-window-utils.el]
 
 * Lisp:mon-word-syntax-utils.el --
   Provides procedures for counting things with word syntax.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-word-syntax-utils.el github mon-word-syntax-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-word-syntax-utils.el github mon-word-syntax-utils.el]
 
 * Lisp:mon-buffer-utils.el --
   Provides buffer related procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el github mon-buffer-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-buffer-utils.el github mon-buffer-utils.el]
 
 * Lisp:mon-event-utils.el --
   Provides event related procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-event-utils.el github mon-event-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-event-utils.el github mon-event-utils.el]
 
 * Lisp:mon-line-utils.el --
   Provides line centric procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-line-utils.el github mon-line-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-line-utils.el github mon-line-utils.el]
 
 * Lisp:mon-region-utils.el --
   Provides region oriented procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-region-utils.el github mon-region-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-region-utils.el github mon-region-utils.el]
 
 * Lisp:mon-seq-utils.el --
   Provides procedures for frobbing sequences.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-seq-utils.el github mon-seq-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-seq-utils.el github mon-seq-utils.el]
 
 * Lisp:mon-string-utils.el -- 
   Provides string frobbing procedures.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-string-utils.el github mon-string-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-string-utils.el github mon-string-utils.el]
 
 * Lisp:mon-env-proc-utils.el --
   Provides procedures for interacting w/ process environment.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-env-proc-utils.el github mon-env-proc-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-env-proc-utils.el github mon-env-proc-utils.el]
 
 * Lisp:mon-randomize-utils.el --
   Provides procedures for generating pseudo randomness.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-randomize-utils.ell github mon-randomize-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-randomize-utils.ell github mon-randomize-utils.el]
 
 * Lisp:mon-rectangle-utils.el --
   Provides procedures for manipulating rectangles.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rectangle-utils.el github mon-rectangle-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rectangle-utils.el github mon-rectangle-utils.el]
 
 * Lisp:mon-button-utils.el --
   Provides utilities for examining button properties.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el github mon-button-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-button-utils.el github mon-button-utils.el]
 
 * Lisp:mon-cl-compat.el -- 
   This is intended to be used as a drop-in replacement for the
   cl-seq.el When compiling your packages: 
    (eval-when-compile (require 'mon-cl-compat))
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cl-compat.el github mon-cl-compat.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cl-compat.el github mon-cl-compat.el]
 
 * Lisp:mon-cl-compat-regexps.el -- 
   Provides regular expressions for replacing the symbol-names from the
   cl-seq.el package with a `cl::' prefix
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cl-compat-regexps.el github mon-cl-compat-regexps.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cl-compat-regexps.el github mon-cl-compat-regexps.el]
 
 * Lisp:mon-empty-registers.el (EmptyRegisters) -- 
   Provides utilities for filling/emptying register locations en
   masse. Also provides interactive tools for register centric
   coercion, manipulation, round-tripping of chars, strings, etc.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-empty-registers.el github mon-empty-registers.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-empty-registers.el github mon-empty-registers.el]
 
 * Lisp:mon-hash-utils.el --
   Provides a collection of procedures to extend Emacs lisp hash table functionality.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-hash-utils.el github mon-hash-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-hash-utils.el github mon-hash-utils.el]
 
 * Lisp:mon-name-utils.el --
   Provides procedures to rotate, combine, and permute string-like name forms.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-name-utils.el github mon-name-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-name-utils.el github mon-name-utils.el]
 
 * Lisp:mon-image-utils.el --
   Provides procedures for interfacing with image manipulation processes.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-image-utils.el github mon-image-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-image-utils.el github mon-image-utils.el]
 
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- 
   Provides utility functions for working with images and EmacsImageManipulation.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rename-image-utils.el github mon-rename-image-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-rename-image-utils.el github mon-rename-image-utils.el]
 
 * Lisp:mon-boxcutter.el -- 
   For initializing w32 screen captures from Emacs using Matthew
   D. Rasmussen's Boxcutter screen-capture executables:
   boxcutter-fs.exe and boxcutter.exe
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-boxcutter.el github mon-boxcutter.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-boxcutter.el github mon-boxcutter.el]
 
 * Lisp:mon-color-utils.el --
   Provides an assembled set of routines for manipulations/examinations
   of 'color'.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-color-utils.el github mon-color-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-color-utils.el github mon-color-utils.el]
 
 * Lisp:mon-mysql-utils.el (MySqlHelp) -- 
   Provides interactive procedures for stripping content from MySQL
   query result tables.  Also, provides an alist of MySQL help
   categories and topics and a rudimentary completion functionality for
   accessing MySQL's `mysql' client help facility.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-mysql-utils.el github mon-mysql-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-mysql-utils.el github mon-mysql-utils.el]
 
 * Lisp:mon-url-utils.el --
   Provides utilities for interactively calling URL data lookups and
   for in buffer modification of web/internet scrapes.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-url-utils.el github mon-url-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-url-utils.el github mon-url-utils.el]
 
 * Lisp:mon-jg-directory-creator.el -- 
   Provides utils for massive directory hierarchy creation.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-jg-directory-creator.el github mon-jg-directory-creator.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-jg-directory-creator.el github mon-jg-directory-creator.el]
 
 * Lisp:mon-wget-utils.el -- 
   Provides lightweight routines for pulling files with wget.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-wget-utils.el github mon-wget-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-wget-utils.el github mon-wget-utils.el]
 
 * Lisp:mon-get-freenode-lisp-logs --
   Pull freenode logs for #lisp with wget.
-** :SEE https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-get-freenode-lisp-logs
+** :SEE https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-get-freenode-lisp-logs
 
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) 
   Provides utilities for mapping and mounting a CIFS domain using
   auth-source. Common Internet File System protocol, e.g. successor to
   the SMB (Server Message Block) protocol with the Samba Server.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cifs-utils.el github mon-cifs-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-cifs-utils.el github mon-cifs-utils.el]
 
 * Lisp:mon-tramp-utils.el --
   Provides cross platform utilities for working with tramp. This
   package should be compatible with both GNU/LINUX and w32 systems and
   helps MON with Emacs portability across environments.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-tramp-utils.el github mon-tramp-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-tramp-utils.el github mon-tramp-utils.el]
 
 * Lisp:google-define-redux.el --
   Extends Lisp:google-define.el
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/google-define-redux.el github google-define-redux.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/google-define-redux.el github google-define-redux.el]
 
 * Lisp:mon-color-occur.el --
   A patched version of Matsushita Akihisa's color-cccur.el 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-color-occur.el github mon-color-occur.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-color-occur.el github mon-color-occur.el]
 
 * Lisp:mon-css-check.el -- 
   This is Niels Giss css-check.el with MON documentation features and
   minor changes.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-check.el github mon-css-check.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-check.el github mon-css-check.el]
 
 * Lisp:mon-css-color.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-color.el github mon-css-color.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-color.el github mon-css-color.el]
 
 * Lisp:mon-css-complete.el --
   This is a highly modified version of Niels Giesen's css-complete.el
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-complete.el github mon-css-complete.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-css-complete.el github mon-css-complete.el]
 
 * Lisp:mon-drive-transfer-utils.el --
   Template builder for transferring backing up large hard-drives.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-drive-transfer-utils.el github mon-drive-transfer-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-drive-transfer-utils.el github mon-drive-transfer-utils.el]
 
 * Lisp:mon-doc-help-utils.el -- (ReferenceSheetHelpUtils) (MonDocHelpUtilsDictionary)
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el github mon-doc-help-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-utils.el github mon-doc-help-utils.el]
 
 * Lisp:mon-doc-help-char-encoding-lossage.el --
   Show lossage across encoding points
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-char-encoding-lossage.el github mon-doc-help-char-encoding-lossage.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-char-encoding-lossage.el github mon-doc-help-char-encoding-lossage.el]
 
 * Lisp:mon-doc-help-css.el --
   Extends Lisp:mon-doc-help-utils.el with CSS related docs
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el github mon-doc-help-css.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-css.el github mon-doc-help-css.el]
 
 * Lisp:mon-doc-help-mail.el --
   Extends mon-doc-help-utils package with mail xrefs.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-mail.el github mon-doc-help-mail.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-mail.el github mon-doc-help-mail.el]
 
 * Lisp:mon-doc-help-pacman.el --
   Some help functions for using the package manager with the GNU/Linux
   Arch distribution.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-pacman.el github mon-doc-help-pacman.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-pacman.el github mon-doc-help-pacman.el]
 
 * Lisp:mon-doc-help-tidy.el --
   Extends Lisp:mon-doc-help-utils.el package with HTML Tidy docs.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-tidy.el github mon-doc-help-tidy.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-tidy.el github mon-doc-help-tidy.el]
 
 * Lisp:mon-doc-help-CL.el --
   Some Emacs Lisp help functions for using Common-Lisp functions (loop, do, etc.)
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-CL.el github mon-doc-help-CL.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-CL.el github mon-doc-help-CL.el]
 
 * Lisp:mon-doc-help-proprietary.el --
   Extends mon-doc-help-utils with ms w32 related docs.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-proprietary.el github mon-doc-help-proprietary.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-doc-help-proprietary.el github mon-doc-help-proprietary.el]
 
 * Lisp:mon-iptables-regexps.el --
   Provides interactive utilities for converting iptables short flags
   to long flags.  Also provides procedures for using Emacs help-mode
   to document the order of position for the symbols, flags, etc. used
   with `iptables' AKA `netfilter'.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-iptables-regexps.el github mon-iptables-regexps.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-iptables-regexps.el github mon-iptables-regexps.el]
 
 * Lisp:mon-iptables-vars.el --
   Provides gigantic alist `*mon-iptables-alst*' needed for use with
   mon-iptables-regexps.el
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-iptables-vars.el github mon-iptables-vars.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/mon-iptables-vars.el github mon-iptables-vars.el]
 
 * Lisp:perlisisms.el (Perlisisms) -- 
 
 * Lisp:STING-software-engineering-glossary.el --
 
 * Lisp:ebay-template-mode.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/ebay-template-mode/ebay-template-mode.el github ebay-template-mode.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/ebay-template-mode/ebay-template-mode.el github ebay-template-mode.el]
 
 * Lisp:ebay-template-tools.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/ebay-template-mode/ebay-template-tools.el github ebay-template-tools.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/ebay-template-mode/ebay-template-tools.el github ebay-template-tools.el]
 
 [:NAF-MODE]
 === :NAF-MODE ====
@@ -359,101 +359,101 @@ system and specifically any mon-*.el and naf-mode-*.el packages.
   ULAN, OCLC, Wikipedia, IMDB, etc. This package provides the core
   naf-mode facilities and require statements for loading the other
   naf-mode-*.el packages below.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode.el github naf-mode.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode.el github naf-mode.el]
 
 * Lisp:naf-mode-faces.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-faces.el github naf-mode-faces.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-faces.el github naf-mode-faces.el]
 
 * Lisp:naf-mode-insertion-utils.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-insertion-utils.el github naf-mode-insertion-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-insertion-utils.el github naf-mode-insertion-utils.el]
 
 * Lisp:naf-mode-replacements.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-replacements.el github naf-mode-replacements.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-replacements.el github naf-mode-replacements.el]
 
 * Lisp:naf-mode-classes.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-classes.el github naf-mode-classes.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-classes.el github naf-mode-classes.el]
 
 * Lisp:naf-mode-db-fields.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-db-fields.el github naf-mode-db-fields.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-db-fields.el github naf-mode-db-fields.el]
 
 * Lisp:naf-mode-db-flags.el --
   keyword lists and regexps for font-locking in `naf-mode'
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-db-flags.el github naf-mode-db-flags.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-db-flags.el github naf-mode-db-flags.el]
 
 * Lisp:naf-mode-dates.el --
   regexp variables for matching dates in `naf-mode' Name Authority files
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-dates.el github naf-mode-dates.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-dates.el github naf-mode-dates.el]
 
 * Lisp:naf-mode-french-months.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-french-months.el github naf-mode-french-months.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-french-months.el github naf-mode-french-months.el]
 
 * Lisp:naf-mode-nation-english.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nation-english.el github naf-mode-nation-english.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nation-english.el github naf-mode-nation-english.el]
 
 * Lisp:naf-mode-nation-french.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nation-french.el github naf-mode-nation-french.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nation-french.el github naf-mode-nation-french.el]
 
 * Lisp:naf-mode-nationality-english.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nationality-english.el github naf-mode-nationality-english.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nationality-english.el github naf-mode-nationality-english.el]
 
 * Lisp:naf-mode-nationality-french.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nationality-french.el github naf-mode-nationality-french.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-nationality-french.el github naf-mode-nationality-french.el]
 
 * Lisp:naf-mode-intnl-city-names.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-intnl-city-names.el github naf-mode-intnl-city-names.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-intnl-city-names.el github naf-mode-intnl-city-names.el]
 
 * Lisp:naf-mode-city-names-us.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-city-names-us.el github naf-mode-city-names-us.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-city-names-us.el github naf-mode-city-names-us.el]
 
 * Lisp:naf-mode-state-names.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-state-names.el github naf-mode-state-names.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-state-names.el github naf-mode-state-names.el]
 
 * Lisp:naf-mode-regions.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-regions.el github naf-mode-regions.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-regions.el github naf-mode-regions.el]
 
 * Lisp:naf-mode-publications-periodicals-english.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-english.el github naf-mode-publications-periodicals-english.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-english.el github naf-mode-publications-periodicals-english.el]
 
 * Lisp:naf-mode-publications-periodicals-french.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-french.el github naf-mode-publications-periodicals-french.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-french.el github naf-mode-publications-periodicals-french.el]
 
 * Lisp:naf-mode-publications-periodicals-intnl.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-intnl.el github naf-mode-publications-periodicals-intnl.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-publications-periodicals-intnl.el github naf-mode-publications-periodicals-intnl.el]
 
 * Lisp:naf-mode-institution.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-institution.el github naf-mode-institution.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-institution.el github naf-mode-institution.el]
 
 * Lisp:naf-mode-students-of-julian.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-students-of-julian.el github naf-mode-students-of-julian.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-students-of-julian.el github naf-mode-students-of-julian.el]
 
 * Lisp:naf-mode-events.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-events.el github naf-mode-events.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-events.el github naf-mode-events.el]
 
 * Lisp:naf-mode-english-roles.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-english-roles.el github naf-mode-english-roles.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-english-roles.el github naf-mode-english-roles.el]
 
 * Lisp:naf-mode-french-roles.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-french-roles.el github naf-mode-french-roles.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-french-roles.el github naf-mode-french-roles.el]
 
 * Lisp:naf-mode-awards-prizes.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-awards-prizes.el github naf-mode-awards-prizes.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-awards-prizes.el github naf-mode-awards-prizes.el]
 
 * Lisp:naf-mode-group-period-styles.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-group-period-styles.el github naf-mode-group-period-styles.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-group-period-styles.el github naf-mode-group-period-styles.el]
 
 * Lisp:naf-mode-art-keywords.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-art-keywords.el github naf-mode-art-keywords.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-art-keywords.el github naf-mode-art-keywords.el]
 
 * Lisp:naf-mode-benezit-flags.el -- 
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-benezit-flags.el github naf-mode-benezit-flags.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-benezit-flags.el github naf-mode-benezit-flags.el]
 
 * Lisp:naf-mode-ulan-utils.el --
   Provides utility procedures for converting ULAN data for naf-mode.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-ulan-utils.el github naf-mode-ulan-utils.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-ulan-utils.el github naf-mode-ulan-utils.el]
 
 * Lisp:naf-mode-xrefs.el -- 
   Provides xrefing variable list of corelated naf-mode symbols.
-** :SEE [https://github.com/mon-key/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-xrefs.el github naf-mode-xrefs.el]
+** :SEE [https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/naf-mode/naf-mode-xrefs.el github naf-mode-xrefs.el]
 
  =]
 
