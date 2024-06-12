@@ -17,7 +17,7 @@ Following is organized roughly according to the load order.
 [:MON-STARTUP-FILES]
 == :MON-STARTUP-FILES ==
 
-* Lisp:monDOTemacs.el --
+* monDOTemacs.el --
   Points to a local directory and for loading mon-site-local-defaults.el
 ** :SEE https://github.com/monkpearman/mon-emacs/raw/master/emacs-load-files/.emacs
 
