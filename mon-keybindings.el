@@ -1,4 +1,5 @@
-;;; :FILE /Users/monkpearman/Documents/HG-Repos/SDP_EMACS/emacs-load-files/mon-keybindings.el;;; mon-keybindings.el --- MON keybindings for fncns used across sites
+;;; :FILE $DEVHOME/SDP_EMACS/emacs-load-files/mon-keybindings.el
+;;; mon-keybindings.el --- MON keybindings for fncns used across sites
 ;;; ==============================
 ;; -*- mode: EMACS-LISP; no-byte-compile: t -*-
 
