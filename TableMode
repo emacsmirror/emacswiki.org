@@ -170,7 +170,7 @@ Contains a string. All characters in string
 are valid horizontal delimiters for the table. The first character of the
 string is used for output.
 
- table-cell-horizontal-char    
+ table-cell-vertical-char    
 
 Contains the character used as the vertical 
 delimiter. "|" by default.
