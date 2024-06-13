@@ -33,6 +33,9 @@
 
 ;; [*] Added above not about other `fetch.el' and fixed header.
 
+;; If you find yourself here then do yourself a favor and read about etags.
+;; That's essentially what I had attempted to achieve with this program ...
+
 ;;; Code:
 
 (defconst *fetch-step* 5000)
