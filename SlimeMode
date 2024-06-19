@@ -84,7 +84,7 @@ To remove slime's keybinding, and expose your original keybinding, add the follo
                      (message "slime keybinding on C-c x has been sanitized"))
                     ('t (message "slime keybindings not sanitized")))))
 
-== Integrate yas/expend to TAB key ==
+== Integrate yas/expand to TAB key ==
 slime-indent-and-complete-symbol is a good function to bind to TAB key, but if you use Yasnippet, you can let TAB do indent, complete and yas/expand.
 
     (defun slime-tab ()
