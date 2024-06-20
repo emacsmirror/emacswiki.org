@@ -14,6 +14,11 @@ There are two (related?) highlight modes for TypeScript:
 * [http://blogs.msdn.com/b/interoperability/archive/2012/10/01/sublime-text-vi-emacs-typescript-enabled.aspx typescript_support_for_emacs.zip] (blogs.msdn.com)
 * [https://github.com/mattdeboard/dotfiles-emacs/blob/master/typescript-mode/typescript-mode.el typescript-mode.el] (mattdeboard @ github)
 
+Since Emacs 29, Emacs has typescript-ts-mode and tsx-ts-mode builtin.
+
+For Emacs < 29, [https://github.com/emacs-typescript/typescript.el typescript.el] is available.
+
+
 == IDE packages==
 These provide powerful and relatively complete environments by combining and customizing other packages. 
 ===Spacemacs===
