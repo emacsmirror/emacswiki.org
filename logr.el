@@ -69,14 +69,14 @@
        nil))))
 
 (defun logr-time ()
-  "Returns current time in MM/DD/YYYY HH:MM format"
+  "Returns current time in MM/DD/YYYY MM:HH format"
   (let ((log-time (decode-time (current-time))))
     (format "%02d/%02d/%04d %02d:%02d"
-            (car (cddddr log-time))
-            (cadddr log-time)
-            (cadr (cddddr log-time))
-            (caddr log-time)
-            (cadr log-time))))
+            (nth 4 log-time)
+            (nth 3 log-time)
+            (nth 5 log-time)
+            (nth 2 log-time)
+            (nth 1 log-time))))
 
 (provide 'logr)
 
