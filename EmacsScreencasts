@@ -48,14 +48,16 @@ workflows that can help you use Emacs more effectively.
 ** [https://www.youtube.com/watch?v=2Cl_aiUkkG0 Kurt Schwehr CCOM Research Tools Screencast 04 - emacs part 4 - yet more emacs]
 ** [https://www.youtube.com/watch?v=LLhSroiMexE Kurt Schwehr CCOM Research Tools Emacs part 5 - modes]
 * [https://www.youtube.com/watch?v=mQDbHZi-KNk&list=PLMe_NuipfzWhO5zDitkQ9s4-weglAo3Sg&pp=iAQB Emacs fundamentals playlist] - by Emacs Elements
+* [https://www.youtube.com/watch?v=e9Ucb1JHUfQ&list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6&index=2&pp=iAQB OrgMode basics] - by Protesilaos Stavrou (48:31)
 
 === Video channels and screencast series ===
 
-* [https://www.youtube.com/channel/UC0uTPqBCFIpZxlz_Lv1tk_g Protesilaos Stavrou]
+* [https://www.youtube.com/playlist?list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6 Emacs Playlist - Protesilaos Stavrou]
+** [https://www.youtube.com/playlist?list=PL8Bwba5vnQK0F6gR0AGOQH48xbLRe_qWC Denote package playlist - Protesilaos Stavrou]
 * [https://www.youtube.com/c/SystemCrafters System Crafters]
 * https://www.twitch.tv/jordigh
 * [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts
-* [https://www.youtube.com/channel/UCwuyodzTl_KdEKNuJmeo99A Youtube: Emacs conferences and hangouts]
+* [https://www.youtube.com/channel/UCwuyodzTl_KdEKNuJmeo99A Youtube: Emacs hangouts] and EmacsConf videos
 * [http://emacsnyc.org/videos.html EmacsNYC videos]
 * [http://emacsrocks.com Emacs Rocks!] is a series of short videos showing why Emacs does indeed rock
 * [http://vimeo.com/timvisher/videos/page:1/sort:newest VimGolf in Emacs] - where Tim Visher does [http://vimgolf.com/ vimgolf challenges] in Emacs
@@ -82,7 +84,7 @@ workflows that can help you use Emacs more effectively.
 * [https://www.youtube.com/playlist?list=PLX2044Ew-UVV0CNIrlst0MkKbu85O7_QT Uncle Dave's Org-mode tutorials]
 * EmacsMuse: [http://greens.org/~ringo0 Managing websites] - DavidEsposito
 * [https://www.youtube.com/watch?v=FtieBc3KptU Emacs for writers] (1:01:06)
-* [https://www.youtube.com/watch?v=e9Ucb1JHUfQ&list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6&index=2&pp=iAQB OrgMode basics] - by Protesilaos (48:31)
+
 
 === Programming-related ===
 
