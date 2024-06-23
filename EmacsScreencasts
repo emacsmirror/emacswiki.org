@@ -24,6 +24,7 @@ with the newer videos at the top.
 * [[https://www.youtube.com/watch?v=yi913Hk7xhQ Getting Started with Emacs Org Mode on Windows]] (2024, 31:19, Saeed Langarudi) - includes installation
 * [https://www.youtube.com/watch?v=mQDbHZi-KNk&list=PLMe_NuipfzWhO5zDitkQ9s4-weglAo3Sg&pp=iAQB Your Emacs Init file] (2023, 8:43, Emacs Elements)
 * [https://www.youtube.com/watch?v=vq_YZvgRLeY On using Emacs Help] (2023, 14:52, Emacs Elements)
+* [https://www.youtube.com/watch?v=48JlgiBpw_I The Absolute Beginner's guide to Emacs] (2021, 1:11:55, System Crafters)
 * [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (2014, 36:34, HowardAbrams)
 * [https://www.youtube.com/watch?v=hbmV1bnQ-i0 Basic Emacs tutorial] (2014, 37:14, Molly Rocket)
 * [https://www.youtube.com/watch?v=ujODL7MD04Q Emacs Tutorial (Beginners) - Part 1 - File commands, cut/copy-paste, cursor commands] (2014, 5:59, b yuksel)
@@ -59,23 +60,22 @@ with the newer videos at the top.
 
 * [https://www.youtube.com/playlist?list=PL8Bwba5vnQK14z96Gil86pLMDO2GnOhQ6 GNU Emacs Playlist - Protesilaos Stavrou] (124+ videos on various aspects of Emacs including beginner friendly content)
 ** [https://www.youtube.com/playlist?list=PL8Bwba5vnQK0F6gR0AGOQH48xbLRe_qWC Denote package focused playlist - Protesilaos Stavrou]
-* [https://www.youtube.com/playlist?list=PL9KxKa8NpFxIcNQa9js7dQQIHc81b0-Xg Using Emacs  playlist - Mike Zamansky] (83+ videos on various aspects of Emacs including beginner friendly content)
-* [https://www.youtube.com/playlist?list=PLMe_NuipfzWhO5zDitkQ9s4-weglAo3Sg Emacs Fundamentals playlist - Emacs Elements] (9+ videos focused on Emacs fundamentals including beginner friendly content)
+* [https://www.youtube.com/playlist?list=PL9KxKa8NpFxIcNQa9js7dQQIHc81b0-Xg Using Emacs playlist - Mike Zamansky] (83+ videos on various aspects of Emacs including beginner friendly content)
+* [https://www.youtube.com/@emacselements/playlists Emacs Playlist - Emacs Elements] (Several playlists from beginner to advanced topics revolving around Emacs)
+** [https://www.youtube.com/playlist?list=PLMe_NuipfzWhO5zDitkQ9s4-weglAo3Sg Emacs Fundamentals playlist - Emacs Elements] (9+ videos focused on Emacs fundamentals including beginner friendly content)
 * [https://www.youtube.com/c/SystemCrafters System Crafters]
-* https://www.twitch.tv/jordigh
-* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts
-* [https://www.youtube.com/channel/UCwuyodzTl_KdEKNuJmeo99A Youtube: Emacs hangouts] and EmacsConf videos
+* [https://www.youtube.com/playlist?list=PLVTf7YrBO1Jiu1-CZkqUUsbDg1KQUYofo Emacs Beginners Guide by 3Max] (8 videos on fundamental Emacs with beginner friendly content, last published in 2023)
+* [https://www.youtube.com/channel/UCwuyodzTl_KdEKNuJmeo99A Youtube: Emacs hangouts] including EmacsConf videos
 * [http://emacsnyc.org/videos.html EmacsNYC videos]
 * [http://emacsrocks.com Emacs Rocks!] is a series of short videos showing why Emacs does indeed rock
 * [http://vimeo.com/timvisher/videos/page:1/sort:newest VimGolf in Emacs] - where Tim Visher does [http://vimgolf.com/ vimgolf challenges] in Emacs
-* [http://www.youtube.com/user/emailataskcom/videos?query=emacs Screencasts by Programothesis].
+* [http://www.youtube.com/user/emailataskcom/videos?query=emacs Screencasts by Programothesis] - videos from circa 2010
 * http://emacsmovies.org/
 * Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
 * [http://www.cinsk.org/emacs/ Seongkook's screencasts] (CinSK)
-* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3E0OjExoI7vlCAVygj6S4I Video series on using 'Scimax' (Emacs starterkit)] by jKitchin
+* [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3E0OjExoI7vlCAVygj6S4I Video series on using Scimax] - an Emacs StarterKits by jKitchin
 * [https://www.youtube.com/playlist?list=PL0sMmOaE_gs3GbuZV_sNjwMREw9rfElTV
 * Videos on using OrgMode and related packages] by jKitchin
-* [https://www.youtube.com/@emacselements/videos Emacs Elements] Many vidoes covering the fundamentals of Emacs.
 * [https://www.youtube.com/playlist?list=PLSxeivFT4JIpjJK7H2MbWywhyUNCoTa9r Straightforward Emacs] - videos covering different aspects of Emacs and OrgMode
 
 === Configuration ===
