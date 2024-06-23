@@ -1,82 +1,13 @@
 With XFT support, GnuEmacs is able to use anti-aliased fonts in the X11 UI
-since version 23.1. Note that GnuEmacs already supported anti-aliased fonts for
-the Carbon and W32 UIs before.
+since version 23.1, released on 2009-07-29. Note that GnuEmacs already
+supported anti-aliased fonts for the Carbon and W32 UIs before.
 
 == Status ==
 
 Xft support is included and enabled by default since emacs 23.1.
 
-== GNU Emacs 23 ==
-* release - Emacs 23.x
-** ftp://ftp.gnu.org/pub/gnu/emacs/
-** http://ftp.gnu.org/pub/gnu/emacs/
 
-== Ubuntu Packages ==
-
-=== Hardy, Intrepid, Jaunty ===
-
-For 2008 and 2009 releases of Ubuntu (Hardy Heron 8.04, Intrepid Ibex 8,10, Jaunty Jackalope 9.04) install the emacs-snapshot package:
-
-  $ sudo apt-get install emacs-snapshot-gtk
-  $ echo "Emacs.FontBackend: xft" >> ~/.Xresources
-  $ echo "Emacs.font: Monospace-10" >> ~/.Xresources
-
-From http://ubuntuforums.org/showpost.php?p=4737273&postcount=100
-
-AlexandreVassalotti also provides a Hardy package, although this is
-not stated in his blog posting (see below).  A manual search of his
-ppa archive will show the Hardy packages.
-
-To enable it, follow the instructions below, replacing RELEASE with hardy.
-
----
-In Jaunty, latest emacs-snapshot version seems to render fonts rather thinner compared to Mac OS X. The simple fix for this would be set embolden property on. like:
- 
-  (custom-set-faces '(default ((t (:height 110 :family "Consolas" :embolden t)))))
-
-But the :embolden specification seems to be ignored by emacs-snapshot one. I didn't check it out on emacs-23 but chances are that it might not work there neither. Simple fix for this is:
-
- Xft.embolden: true
-
-on ~/.Xresources or similar hack for .font.conf. 
---- jay
-
-=== Older Versions ===
-
-Pre-built binaries are available for Ubuntu. For Dapper, see
-http://g33k.wordpress.com/2006/11/06/gnu-emacs-with-xft-goodness/
-
-[Note: the emacs-unicode-2 is now obsolete (merged into the CVS trunk);
-are these packages still valid, and tracking the trunk, or are they
-obsolete too?]
-
-AlexandreVassalotti maintains Edgy, Dapper, Feisty and Gutsy packages
-of the emacs-unicode-2 branch. It is updated about once a week. Add
-the following lines to your /etc/apt/sources.list file:
-
-  deb     http://ppa.launchpad.net/avassalotti/ubuntu RELEASE main
-  deb-src http://ppa.launchpad.net/avassalotti/ubuntu RELEASE main
-
-Where RELEASE is one of dapper, edgy, feisty or gutsy.  More
-information on his [http://peadrop.com/blog/2007/01/06/pretty-emacs/
-blog].
-
-Some instruction
-[http://www.chmouel.com/blog/2007/01/21/emacs-nighly-cvs-snapshot-with-xft-on-ubuntu-edgy/
-here] on how to generate nightly packages of CVS on Ubuntu Edgy.
-
-
-== Fedora/RHEL Packages ==
-
-Install the YUM repository hosted by Chip Coldwell, Redhat's Emacs maintainer:
-
-== Getting the code ==
-
-In order to get anti-aliased fonts in emacs on X11 you can get the cvs version:
-
-  $ cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
-
-== Prerequisites ==
+== Debian Prerequisites ==
 
 A GNOME emacs from cvs for Debian:
 
@@ -192,9 +123,7 @@ Please update this section with further occurrences of this behaviour.
 === Font specification/quality ===
 
 Fonts can be specified on the command line, in
-<code>.Xresources</code> or in <code>.emacs</code>. There was an issue
-with regression, see http://article.gmane.org/gmane.emacs.devel/58987
-and http://permalink.gmane.org/gmane.emacs.pretest.bugs/14278
+<code>.Xresources</code> or in <code>.emacs</code>.
 
 With the GTK UI, it is possible that settings are being picked up from
 somewhere in your environment, most likely gnome-settings-daemon,
