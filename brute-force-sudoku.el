@@ -133,7 +133,7 @@
                       0 5 0 0 0 0 0 3 0
                       ))
 
-;;   time emacsclient -e '(sudoku-solve sudoku-puzzle)'
+;;   $ time emacsclient -e '(sudoku-solve sudoku-puzzle)'
 ;;   (:act 972417 :puzzle
 ;;         (6 8 9 2 7 1 3 4 5
 ;;          7 1 3 5 8 4 9 6 2
