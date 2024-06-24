@@ -8,7 +8,9 @@ Here are a list of files that I've uploaded:
 
 [[slurp.el]] Search for files using regular expressions.
 
-[[logr.el]]. A simple logging tool.
+[[logr.el]] A simple logging tool.
+
+[[lisp:brute-force-sudoku.el]] A brute force approach to solving Sudoku.
 
 GNU Emacs is my editor of choice.
 
