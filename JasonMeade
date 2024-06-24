@@ -10,7 +10,7 @@ Here are a list of files that I've uploaded:
 
 [[logr.el]] A simple logging tool.
 
-[[lisp:brute-force-sudoku.el]] A brute force approach to solving Sudoku.
+[[brute-force-sudoku.el]] A brute force approach to solving Sudoku.
 
 GNU Emacs is my editor of choice.
 
