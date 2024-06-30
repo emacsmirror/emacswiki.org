@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2023.11.23
+;; Version: 2024.06.30
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 23 10:59:03 2023 (-0800)
+;; Last-Updated: Sun Jun 30 14:15:25 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 13690
+;;     Update #: 13749
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -390,12 +390,12 @@
 ;;
 ;;  How to tell whether a Dired listing is a snapshot or an ordinary
 ;;  one that's the output from `ls'?  The mode-line of a snapshot
-;;  Dired buffer prefixes `Dired' with `*/': `*/Dired'.
+;;  Dired buffer prefixes `Dired' with `@/': `@/Dired'.
 ;;
 ;;  The mode-line of a listing that's in WDired mode (that is, it's
 ;;  editable) uses the prefix `W'.  For a regular Dired listing the
 ;;  mode-line shows `W/Dired'; for a snapshot listing it shows
-;;  `W*/Dired'.
+;;  `W@/Dired'.
 ;;
 ;;  The mode-line also shows you the number of files and dirs marked
 ;;  with `*', and the number that are flagged for deletion (marked
@@ -1046,6 +1046,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/06/29 dadams
+;;     dired-do-find-regexp(-and-replace): Redefine for Emacs 25+, not (fboundp 'xref-collect-matches).
+;;     dired-do-find-regexp:
+;;       regexp -> ',regexp in constructed lambda.  Raise error even if not interactive.  Show progress messages.
+;;     dired-do-find-regexp-and-replace: Updated for Emacs 28+: Require xref.el.  Use with-current-buffer.
+;;     Added custom--standard-value definition for Emacs < 28.  Used in dired-do-find-regexp-and-replace.
+;; 2023/11/24 dadams
+;;     Use @/, not */, in mode-line to indicate explicit listing of arbitrary files.
+;;     diredp-nb-marked-in-mode-name: Support WDired mode also.  Don't add prop dired+-mode-name to any :eval part.
+;;     diredp--set-mode-name-for-explicit-listing: Add prop dired+-mode-name to @/ (and rest of mode-name).
+;;     diredp--to-wdired-mode-advice, diredp--from-wdired-mode-advice:
+;;       Remove prop dired+-mode-name from mode-name.  Call diredp-nb-marked-in-mode-name.
 ;; 2023/11/23 dadams
 ;;     diredp-nb-marked-in-mode-name: Ensure the Dired buffer is current for :eval's.
 ;; 2023/11/11 dadams
@@ -2622,46 +2634,9 @@ of that nature."
 (defmacro diredp-user-error (&rest args)
   `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
 
-;; Define these for Emacs 20 and 21.
-(unless (fboundp 'dired-get-file-for-visit) ; Emacs 22+
-  (defun dired-get-file-for-visit ()    ; Not bound
-    "Get the current line's file name, with an error if file does not exist."
-    (interactive)
-    (let ((raw  (dired-get-filename nil 'NO-ERROR)) ; No error for `.' and `..'.
-          file-name)
-      (unless raw (error "No file on this line"))
-      (setq file-name  (file-name-sans-versions raw t))
-      (if (file-exists-p file-name)
-          file-name
-        (if (file-symlink-p file-name)
-            (error "File is a symlink to a nonexistent target")
-          (error "File no longer exists; type `g' to update Dired buffer")))))
-
-  (defun dired-find-alternate-file ()   ; Not bound
-    "In Dired, visit this file or directory instead of the Dired buffer."
-    (interactive)
-    (set-buffer-modified-p nil)
-    (find-alternate-file (dired-get-file-for-visit))))
-
-(defun diredp-make-obsolete (obsolete-name current-name &optional when)
-  "Same as `make-obsolete', but usable also prior to Emacs 23."
-  (if (< emacs-major-version 23)
-      (make-obsolete obsolete-name current-name)
-    (make-obsolete obsolete-name current-name when)))
-
-(defun diredp-make-obsolete-variable (obsolete-name current-name &optional when access-type)
-  "Same as `make-obsolete-variable', but usable also prior to Emacs 23."
-  (cond ((< emacs-major-version 23) (make-obsolete-variable obsolete-name current-name))
-        ((< emacs-major-version 27) (make-obsolete-variable obsolete-name current-name when))
-        (t (make-obsolete-variable obsolete-name current-name when access-type))))
-
-;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(provide 'dired+)
-(require 'dired+)                       ; Ensure loaded before compile this.
 
 ;; Quiet the byte-compiler.
+;;
 (defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
 (defvar bookmark-default-file)                    ; In `bookmark.el'
@@ -2743,6 +2718,310 @@ of that nature."
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
 (defvar widget-keymap)                            ; In `wid-edit.el'
+
+
+;; Define these for Emacs 20 and 21.
+(unless (fboundp 'dired-get-file-for-visit) ; Emacs 22+
+  (defun dired-get-file-for-visit ()    ; Not bound
+    "Get the current line's file name, with an error if file does not exist."
+    (interactive)
+    (let ((raw  (dired-get-filename nil 'NO-ERROR)) ; No error for `.' and `..'.
+          file-name)
+      (unless raw (error "No file on this line"))
+      (setq file-name  (file-name-sans-versions raw t))
+      (if (file-exists-p file-name)
+          file-name
+        (if (file-symlink-p file-name)
+            (error "File is a symlink to a nonexistent target")
+          (error "File no longer exists; type `g' to update Dired buffer")))))
+
+  (defun dired-find-alternate-file ()   ; Not bound
+    "In Dired, visit this file or directory instead of the Dired buffer."
+    (interactive)
+    (set-buffer-modified-p nil)
+    (find-alternate-file (dired-get-file-for-visit)))
+  )
+
+;; Define for Emacs < 28.
+(unless (fboundp 'custom--standard-value)
+  (defun custom--standard-value (variable)
+    "Return the standard value of VARIABLE."
+    (eval (car (get variable 'standard-value)) t)))
+
+;; Provide Emacs 27+ handling of hiding subdir listings.
+;;
+;; Except for `diredp--add-dired-to-invisibility-hook', these are from vanilla Emacs 27.1, `dired.el' and
+;; `dired-aux.el' - no changes, except as noted.
+;;
+;; The non-"internal" ones here (no `--') OVERRIDE any versions from earlier Emacs versions.  Earlier Emacs versions
+;; used selective display, which is extremely slow (pretty much hangs Emacs) for a large subdir listing.
+;;
+(when (< emacs-major-version 27)
+
+  (defun diredp--add-dired-to-invisibility-hook ()
+    (when (and (< emacs-major-version 22)  (eq buffer-invisibility-spec t))
+      (setq buffer-invisibility-spec (list t)))
+    (add-to-invisibility-spec '(dired . t)))
+  (add-hook 'dired-mode-hook 'diredp--add-dired-to-invisibility-hook)
+
+  (defun dired--find-hidden-pos (start end) ; Emacs 27.1 `dired.el'
+    (text-property-any start end 'invisible 'dired))
+
+  (defun dired--hidden-p (&optional pos) ; Emacs 27.1 `dired.el'
+    (eq (get-char-property (or pos  (point)) 'invisible) 'dired))
+
+  (defun dired--hide (start end)        ; Emacs 27.1 `dired.el'
+    ;; The old code used selective-display which only works at
+    ;; a line-granularity, so it used start and end positions that were
+    ;; approximate ("anywhere on the line is fine").
+    (save-excursion
+      (put-text-property (progn (goto-char start) (line-end-position))
+                         (progn (goto-char end)   (line-end-position))
+                         'invisible 'dired)))
+
+  ;; Fixed to support older Emacs versions, which don't have `remove-list-of-text-properties'.
+  (defun dired--unhide (start end)      ; From Emacs 27.1 `dired.el'.
+    ;; The Emacs < 27 code used selective-display which only works at a line-granularity, so it used start and end
+    ;; positions that were approximate ("anywhere on the line is fine").
+    ;;
+    ;; FIXME: This also removes other invisible properties!
+    (save-excursion
+      (remove-text-properties (progn (goto-char start) (line-end-position))
+                              (progn (goto-char end) (line-end-position))
+                              '(invisible _DUMMY))))
+
+  (defun dired-unhide-subdir ()         ; Emacs 27.1 `dired-aux.el'
+    (with-silent-modifications (dired--unhide (dired-subdir-min) (dired-subdir-max))))
+
+  (defun dired-subdir-hidden-p (dir)    ; Emacs 27.1 `dired-aux.el'
+    (save-excursion (dired-goto-subdir dir) (dired--hidden-p)))
+
+  ;; Fixed to support older Emacs versions.
+  ;;
+  (defun dired-add-entry (filename &optional marker-char relative) ; Emacs 27.1 `dired-aux.el'
+    "Add a new dired entry for FILENAME.
+Optionally mark it with MARKER-CHAR (a character, else uses
+`dired-marker-char').  Note that this adds the entry `out of order'
+if files are sorted by time, etc.
+Skips files that match `dired-trivial-filenames'.
+Exposes hidden subdirectories if a file is added there.
+
+If `dired-x' is loaded and `dired-omit-mode' is enabled, skips
+files matching `dired-omit-regexp'."
+    (if (or (not (featurep 'dired-x))
+            (and (boundp 'dired-omit-mode) ; Emacs 22+.
+                 (not dired-omit-mode))
+            ;; Avoid calling `ls' for files that are going to be omitted anyway.
+            (let ((omit-re  (dired-omit-regexp)))
+              (or (string= omit-re "")
+                  (not (diredp-string-match-p omit-re (cond ((eq 'no-dir dired-omit-localp) filename)
+                                                            ((eq t dired-omit-localp) (dired-make-relative filename))
+                                                            (t (dired-make-absolute
+                                                                filename (file-name-directory filename)))))))))
+        ;; Do it!
+        (progn
+          (setq filename  (directory-file-name filename))
+          ;; Entry is always for files, even if they happen to also be directories.
+          (let* ((opoint     (point))
+                 (cur-dir    (dired-current-directory))
+                 (directory  (if relative cur-dir (file-name-directory filename)))
+                 reason)
+            (setq filename  (if relative (file-relative-name filename directory) (file-name-nondirectory filename))
+                  reason    (catch 'not-found
+                              (if (string= directory cur-dir)
+                                  (progn
+                                    (end-of-line)
+                                    (when (dired--hidden-p) (dired-unhide-subdir))
+                                    ;; Where we should be, unless point is before subdir line or its total line.
+                                    (let ((p  (dired-after-subdir-garbage cur-dir)))
+                                      (when (< (point) p) (goto-char p))))
+                                ;; Else try to find correct place to insert
+                                (if (dired-goto-subdir directory)
+                                    (progn                    ; Unhide if necessary
+                                      (when (dired--hidden-p) ; Point is at end of subdir line.
+                                        (dired-unhide-subdir))
+                                      ;; Found - skip subdir and `total' line and uninteresting files like . and ..
+                                      ;; This had better not move into the next subdir!
+                                      (dired-goto-next-nontrivial-file))
+                                  ;; Not found
+                                  (throw 'not-found "Subdir not found")))
+                              (let (buffer-read-only  opoint)
+                                (beginning-of-line)
+                                (setq opoint  (point))
+                                ;; Don't expand `.'.  Show just the file name within directory.
+                                (let ((default-directory  directory))
+                                  (dired-insert-directory
+                                   directory (concat dired-actual-switches " -d") (list filename)))
+                                (goto-char opoint)
+                                ;; Put in desired marker char.
+                                (when marker-char
+                                  (let ((dired-marker-char  (if (integerp marker-char)
+                                                                marker-char
+                                                              dired-marker-char)))
+                                    (dired-mark nil)))
+                                ;; Compensate for a bug in `ange-ftp'.  It inserts the file's absolute name, rather
+                                ;; than the relative one.  That may be hard to fix since it is probably
+                                ;; controlled by something in FTP.
+                                (goto-char opoint)
+                                (let ((inserted-name  (dired-get-filename 'verbatim)))
+                                  (if (file-name-directory inserted-name)
+                                      (let (props)
+                                        (end-of-line)
+                                        (forward-char (- (length inserted-name)))
+                                        (setq props  (text-properties-at (point)))
+                                        (delete-char (length inserted-name))
+                                        (let ((pt  (point)))
+                                          (insert filename)
+                                          (set-text-properties pt (point) props))
+                                        (forward-char 1))
+                                    (forward-line 1)))
+                                (forward-line -1)
+                                (if dired-after-readin-hook
+                                    ;; The subdir-alist is not affected...
+                                    (save-excursion ; ...so we can run it right now:
+                                      (save-restriction
+                                        (beginning-of-line)
+                                        (narrow-to-region (point) (line-beginning-position 2))
+                                        (run-hooks 'dired-after-readin-hook))))
+                                (dired-move-to-filename))
+                              ;; Return nil if all went well
+                              nil))
+            (when reason (goto-char opoint)) ; don't move away on failure
+            (not reason)))                   ; return t on success, else nil
+      ;; Don't do it (`dired-omit-mode').
+      ;; Return t for success (perhaps we should return `file-exists-p').
+      t))
+
+  ;; Fixed to support older Emacs versions: Don't use `pcase-dolist'.
+  ;;
+  (defun dired-remember-hidden ()       ; Emacs 27.1 `dired.el'
+    "Return a list of names of subdirs currently hidden."
+    (let (result)
+      ;; ORIGINAL:
+      ;;       (pcase-dolist (`(,dir . ,pos) dired-subdir-alist)
+      ;;         (goto-char pos)
+      ;;         (end-of-line)
+      ;;         (when (dired--hidden-p) (push dir result)))
+      ;;       result))
+      (let (dir pos)
+        (dolist (dir.pos  dired-subdir-alist)
+          (setq dir  (car dir.pos)
+                pos  (cdr dir.pos))
+          (goto-char pos)
+          (end-of-line)
+          (when (dired--hidden-p) (push dir result)))
+        result)))
+
+  (defun dired-move-to-end-of-filename (&optional no-error) ; Emacs 27.1 `dired.el'
+    ;; Assumes point is at beginning of filename,
+    ;; thus the rwx bit re-search-backward below will succeed in *this*
+    ;; line if at all.  So, it should be called only after
+    ;; (dired-move-to-filename t).
+    ;; On failure, signals an error (with non-nil NO-ERROR just returns nil).
+    ;; This is the UNIX version.
+    (if (get-text-property (point) 'dired-filename)
+        (goto-char (next-single-property-change (point) 'dired-filename))
+      (let ((opoint  (point))
+            (used-F  (dired-check-switches dired-actual-switches "F" "classify"))
+            (eol     (line-end-position))
+            (hidden  (dired--hidden-p))
+            file-type executable symlink)
+        (if hidden
+            nil
+          (save-excursion               ; Find out what kind of file this is.
+            ;; Restrict permission bits to non-blank, otherwise this matches one char too early (looking backward):
+            ;; "l---------" (some systems make symlinks that way)
+            ;; "----------" (plain file with zero perms)
+            (if (re-search-backward dired-permission-flags-regexp nil t)
+                (setq file-type   (char-after (match-beginning 1))
+                      symlink     (eq file-type ?l)
+                      ;; Only with -F we need to know whether it's an executable
+                      executable  (and used-F  (string-match
+                                                "[xst]" ;; execute bit set anywhere?
+                                                (concat (match-string 2) (match-string 3) (match-string 4)))))
+              (unless no-error (error "No file on this line"))))
+          ;; Move point to end of name:
+          (if symlink
+              (when (search-forward " -> " eol t)
+                (forward-char -4)
+                (and used-F  dired-ls-F-marks-symlinks  (eq (preceding-char) ?@) ; `ls' really marked the link
+                     (forward-char -1)))
+            ;; Else not a symbolic link, `ls -lF' marks dirs, sockets, fifos and executables with exactly one
+            ;; trailing char.  (Executable bits on symlinks don't mean a thing, even to `ls', but we know it's
+            ;; not a symlink.)
+            (goto-char eol)
+            (and used-F  (or (memq file-type '(?d ?s ?p))  executable)
+                 (forward-char -1))))
+        (or no-error
+            (not (eq opoint (point)))
+            (error "%s" (if hidden
+                            (substitute-command-keys "File line is hidden, type \\[dired-hide-subdir] to unhide")
+                          "No file on this line")))
+        (if (eq opoint (point)) nil (point)))))
+
+  (unless (fboundp 'dired-check-switches)                       ; < Emacs 24
+    (defun dired-check-switches (switches short &optional long) ; Emacs 27.1 `dired.el'
+      "Return non-nil if the string SWITCHES matches LONG or SHORT format."
+      (let (case-fold-search)
+        (and (stringp switches)
+             (diredp-string-match-p (concat "\\(\\`\\| \\)-[[:alnum:]]*" short
+                                            (if long (concat "\\|--" long "\\>") ""))
+                                    switches)))))
+
+  (defun dired-hide-subdir (arg)        ; Emacs 27.1 `dired-aux.el'
+    "Hide or unhide the current subdirectory and move to next directory.
+Optional prefix arg is a repeat factor.
+Use \\[dired-hide-all] to (un)hide all directories."
+    (interactive "p")
+    (with-silent-modifications
+      (while (>=  (setq arg  (1- arg)) 0)
+        (let* ((cur-dir   (dired-current-directory))
+               (hidden-p  (dired-subdir-hidden-p cur-dir))
+               (elt       (assoc cur-dir dired-subdir-alist))
+               (end-pos   (1- (dired-get-subdir-max elt)))
+               buffer-read-only)
+          ;; Keep header line visible, hide rest
+          (goto-char (cdr elt))
+          (end-of-line)
+          (if hidden-p (dired--unhide (point) end-pos) (dired--hide (point) end-pos)))
+        (dired-next-subdir 1 t))))
+
+  (defun dired-hide-all (&optional ignored) ; Emacs 27.1 `dired-aux.el'
+    "Hide all subdirectories, leaving only their header lines.
+If there is already something hidden, make everything visible again.
+Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
+    (interactive "P")
+    (with-silent-modifications
+      (if (text-property-any (point-min) (point-max) 'invisible 'dired)
+          (dired--unhide (point-min) (point-max))
+        (let ((pos  (point-max)))        ; Position of end of last directory
+          (dolist (subdir dired-subdir-alist)
+            (let ((start  (cdr subdir))  ; Position of prev dir
+                  (end    (save-excursion
+                            (goto-char pos) ; Current dir.  We're somewhere on current dir's line.
+                            (forward-line -1)
+                            (point))))
+              (dired--hide start end))
+            (setq pos  (cdr subdir))))))) ; Previous dir gets current dir
+  )
+
+(defun diredp-make-obsolete (obsolete-name current-name &optional when)
+  "Same as `make-obsolete', but usable also prior to Emacs 23."
+  (if (< emacs-major-version 23)
+      (make-obsolete obsolete-name current-name)
+    (make-obsolete obsolete-name current-name when)))
+
+(defun diredp-make-obsolete-variable (obsolete-name current-name &optional when access-type)
+  "Same as `make-obsolete-variable', but usable also prior to Emacs 23."
+  (cond ((< emacs-major-version 23) (make-obsolete-variable obsolete-name current-name))
+        ((< emacs-major-version 27) (make-obsolete-variable obsolete-name current-name when))
+        (t (make-obsolete-variable obsolete-name current-name when access-type))))
+
+;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(provide 'dired+)
+(require 'dired+)                       ; Ensure loaded before compile this.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -10972,7 +11251,7 @@ Emacs 26 or prior)."
       (fileloop-continue))))
 
 
-(when (fboundp 'xref-collect-matches)   ; Emacs 25+
+(when (> emacs-major-version 24)        ; Emacs 25+
 
 
   ;; REPLACE ORIGINAL in `dired-aux.el':
@@ -11030,16 +11309,17 @@ REGEXP should use constructs supported by your local `grep' command."
                                             (setq files  (nconc (project--files-in-directory file ignores "*")
                                                                 files))
                                           (push file files)))
-                                      (nreverse ',marked))
-                                (setq xrefs  (xref-matches-in-files regexp files))
-                                (when (and (null xrefs)  `,interactivep)
-                                  (diredp-user-error "No matches for: %s" regexp))
+                                      (nreverse ',marked)) ; Vanilla Emacs uses `reverse', but should be OK.
+                                (when ',interactivep (message "Searching..."))
+                                (setq xrefs  (xref-matches-in-files ',regexp files))
+                                (unless xrefs (diredp-user-error "No matches for: %s" ',regexp))
+                                (when ',interactivep (message "Searching...done"))
                                 xrefs)))))
-      (if fetcher
+      (if (> emacs-major-version 26)
           (xref--show-xrefs fetcher nil) ; Emacs 27+
-        (if xrefs-26                     ; Emacs < 27
+        (if xrefs-26
             (xref--show-xrefs xrefs-26 nil t)
-          (when interactivep (diredp-user-error "No matches for: %s" regexp))))))
+          (diredp-user-error "No matches for: %s" regexp)))))
 
 
   ;; REPLACE ORIGINAL in `dired-aux.el':
@@ -11047,10 +11327,18 @@ REGEXP should use constructs supported by your local `grep' command."
   ;; 1. Added optional arg ARG, so you can act on next ARG files or on all files.
   ;; 2. Added optional arg INTERACTIVEP.
   ;; 3. Do not raise error if no files when not INTERACTIVEP.
+  ;; 4. Usable also with versions of Emacs starting with Emacs 25.
   ;;
 ;;;###autoload
   (defun dired-do-find-regexp-and-replace (from to &optional arg interactivep)
     "Replace matches of FROM with TO, in all marked files.
+As each match is found, the user must type a character saying
+what to do with it.  Type SPC or `y' to replace the match,
+DEL or `n' to skip and go to the next match.  For more directions,
+type \\[help-command] at that time.
+
+With no files marked and no prefix arg, use the file under point.
+
 For any marked directory, matches in all of its files are replaced,
 recursively.  However, files matching `grep-find-ignored-files'
 and subdirectories matching `grep-find-ignored-directories' are skipped
@@ -11064,7 +11352,10 @@ A prefix arg behaves as follows:
 
 When invoked interactively, raise an error if no files are marked.
 
-REGEXP should use constructs supported by your local `grep' command."
+REGEXP should use constructs supported by your local `grep' command.
+
+Also see `query-replace' for user options that affect how this
+function works."
     (interactive (let* ((common  (query-replace-read-args "Query replace regexp in marked files" t t))
                         (arg     current-prefix-arg)
                         (C-u     (and (consp arg)  arg)))
@@ -11073,7 +11364,15 @@ REGEXP should use constructs supported by your local `grep' command."
                          (nth 1 common)
                          arg
                          t)))
-    (with-current-buffer (dired-do-find-regexp from arg interactivep)
+    (require 'xref)
+    (defvar xref-show-xrefs-function)
+    (defvar xref-auto-jump-to-first-xref)
+    (with-current-buffer
+        ;; The `let'-binding vars don't exist in Emacs < 27 -- innocuous.
+        (let (;; Some future-proofing (Emacs BUG #44905).
+              (xref-show-xrefs-function      (custom--standard-value 'xref-show-xrefs-function))
+              (xref-auto-jump-to-first-xref  nil)) ; Disable auto-jumping because messes up replacement logic.
+          (dired-do-find-regexp from arg interactivep))
       (xref-query-replace-in-results from to)))
 
   )
@@ -11587,264 +11886,6 @@ descendant of any directory in the buffer, then put it at the end."
   (unless (eobp) (forward-line -1))
   (insert "\n")
   (point))
-
-
-;; Provide Emacs 27+ handling of hiding subdir listings.
-;;
-;; Except for `diredp--add-dired-to-invisibility-hook', these are from vanilla Emacs 27.1, `dired.el' and
-;; `dired-aux.el' - no changes, except as noted.
-;;
-;; The non-"internal" ones here (no `--') OVERRIDE any versions from earlier Emacs versions.  Earlier Emacs versions
-;; used selective display, which is extremely slow (pretty much hangs Emacs) for a large subdir listing.
-;;
-(when (< emacs-major-version 27)
-
-  (defun diredp--add-dired-to-invisibility-hook ()
-    (when (and (< emacs-major-version 22)  (eq buffer-invisibility-spec t))
-      (setq buffer-invisibility-spec (list t)))
-    (add-to-invisibility-spec '(dired . t)))
-  (add-hook 'dired-mode-hook 'diredp--add-dired-to-invisibility-hook)
-
-  (defun dired--find-hidden-pos (start end) ; Emacs 27.1 `dired.el'
-    (text-property-any start end 'invisible 'dired))
-
-  (defun dired--hidden-p (&optional pos) ; Emacs 27.1 `dired.el'
-    (eq (get-char-property (or pos  (point)) 'invisible) 'dired))
-
-  (defun dired--hide (start end)        ; Emacs 27.1 `dired.el'
-    ;; The old code used selective-display which only works at
-    ;; a line-granularity, so it used start and end positions that were
-    ;; approximate ("anywhere on the line is fine").
-    (save-excursion
-      (put-text-property (progn (goto-char start) (line-end-position))
-                         (progn (goto-char end)   (line-end-position))
-                         'invisible 'dired)))
-
-  ;; Fixed to support older Emacs versions, which don't have `remove-list-of-text-properties'.
-  (defun dired--unhide (start end)      ; From Emacs 27.1 `dired.el'.
-    ;; The Emacs < 27 code used selective-display which only works at a line-granularity, so it used start and end
-    ;; positions that were approximate ("anywhere on the line is fine").
-    ;;
-    ;; FIXME: This also removes other invisible properties!
-    (save-excursion
-      (remove-text-properties (progn (goto-char start) (line-end-position))
-                              (progn (goto-char end) (line-end-position))
-                              '(invisible _DUMMY))))
-
-  (defun dired-unhide-subdir ()         ; Emacs 27.1 `dired-aux.el'
-    (with-silent-modifications (dired--unhide (dired-subdir-min) (dired-subdir-max))))
-
-  (defun dired-subdir-hidden-p (dir)    ; Emacs 27.1 `dired-aux.el'
-    (save-excursion (dired-goto-subdir dir) (dired--hidden-p)))
-
-  ;; Fixed to support older Emacs versions.
-  ;;
-  (defun dired-add-entry (filename &optional marker-char relative) ; Emacs 27.1 `dired-aux.el'
-    "Add a new dired entry for FILENAME.
-Optionally mark it with MARKER-CHAR (a character, else uses
-`dired-marker-char').  Note that this adds the entry `out of order'
-if files are sorted by time, etc.
-Skips files that match `dired-trivial-filenames'.
-Exposes hidden subdirectories if a file is added there.
-
-If `dired-x' is loaded and `dired-omit-mode' is enabled, skips
-files matching `dired-omit-regexp'."
-    (if (or (not (featurep 'dired-x))
-            (and (boundp 'dired-omit-mode) ; Emacs 22+.
-                 (not dired-omit-mode))
-            ;; Avoid calling `ls' for files that are going to be omitted anyway.
-            (let ((omit-re  (dired-omit-regexp)))
-              (or (string= omit-re "")
-                  (not (diredp-string-match-p omit-re (cond ((eq 'no-dir dired-omit-localp) filename)
-                                                            ((eq t dired-omit-localp) (dired-make-relative filename))
-                                                            (t (dired-make-absolute
-                                                                filename (file-name-directory filename)))))))))
-        ;; Do it!
-        (progn
-          (setq filename  (directory-file-name filename))
-          ;; Entry is always for files, even if they happen to also be directories.
-          (let* ((opoint     (point))
-                 (cur-dir    (dired-current-directory))
-                 (directory  (if relative cur-dir (file-name-directory filename)))
-                 reason)
-            (setq filename  (if relative (file-relative-name filename directory) (file-name-nondirectory filename))
-                  reason    (catch 'not-found
-                              (if (string= directory cur-dir)
-                                  (progn
-                                    (end-of-line)
-                                    (when (dired--hidden-p) (dired-unhide-subdir))
-                                    ;; Where we should be, unless point is before subdir line or its total line.
-                                    (let ((p  (dired-after-subdir-garbage cur-dir)))
-                                      (when (< (point) p) (goto-char p))))
-                                ;; Else try to find correct place to insert
-                                (if (dired-goto-subdir directory)
-                                    (progn                    ; Unhide if necessary
-                                      (when (dired--hidden-p) ; Point is at end of subdir line.
-                                        (dired-unhide-subdir))
-                                      ;; Found - skip subdir and `total' line and uninteresting files like . and ..
-                                      ;; This had better not move into the next subdir!
-                                      (dired-goto-next-nontrivial-file))
-                                  ;; Not found
-                                  (throw 'not-found "Subdir not found")))
-                              (let (buffer-read-only  opoint)
-                                (beginning-of-line)
-                                (setq opoint  (point))
-                                ;; Don't expand `.'.  Show just the file name within directory.
-                                (let ((default-directory  directory))
-                                  (dired-insert-directory
-                                   directory (concat dired-actual-switches " -d") (list filename)))
-                                (goto-char opoint)
-                                ;; Put in desired marker char.
-                                (when marker-char
-                                  (let ((dired-marker-char  (if (integerp marker-char)
-                                                                marker-char
-                                                              dired-marker-char)))
-                                    (dired-mark nil)))
-                                ;; Compensate for a bug in `ange-ftp'.  It inserts the file's absolute name, rather
-                                ;; than the relative one.  That may be hard to fix since it is probably
-                                ;; controlled by something in FTP.
-                                (goto-char opoint)
-                                (let ((inserted-name  (dired-get-filename 'verbatim)))
-                                  (if (file-name-directory inserted-name)
-                                      (let (props)
-                                        (end-of-line)
-                                        (forward-char (- (length inserted-name)))
-                                        (setq props  (text-properties-at (point)))
-                                        (delete-char (length inserted-name))
-                                        (let ((pt  (point)))
-                                          (insert filename)
-                                          (set-text-properties pt (point) props))
-                                        (forward-char 1))
-                                    (forward-line 1)))
-                                (forward-line -1)
-                                (if dired-after-readin-hook
-                                    ;; The subdir-alist is not affected...
-                                    (save-excursion ; ...so we can run it right now:
-                                      (save-restriction
-                                        (beginning-of-line)
-                                        (narrow-to-region (point) (line-beginning-position 2))
-                                        (run-hooks 'dired-after-readin-hook))))
-                                (dired-move-to-filename))
-                              ;; Return nil if all went well
-                              nil))
-            (when reason (goto-char opoint)) ; don't move away on failure
-            (not reason)))                   ; return t on success, else nil
-      ;; Don't do it (`dired-omit-mode').
-      ;; Return t for success (perhaps we should return `file-exists-p').
-      t))
-
-  ;; Fixed to support older Emacs versions: Don't use `pcase-dolist'.
-  ;;
-  (defun dired-remember-hidden ()       ; Emacs 27.1 `dired.el'
-    "Return a list of names of subdirs currently hidden."
-    (let (result)
-      ;; ORIGINAL:
-      ;;       (pcase-dolist (`(,dir . ,pos) dired-subdir-alist)
-      ;;         (goto-char pos)
-      ;;         (end-of-line)
-      ;;         (when (dired--hidden-p) (push dir result)))
-      ;;       result))
-      (let (dir pos)
-        (dolist (dir.pos  dired-subdir-alist)
-          (setq dir  (car dir.pos)
-                pos  (cdr dir.pos))
-          (goto-char pos)
-          (end-of-line)
-          (when (dired--hidden-p) (push dir result)))
-        result)))
-
-  (defun dired-move-to-end-of-filename (&optional no-error) ; Emacs 27.1 `dired.el'
-    ;; Assumes point is at beginning of filename,
-    ;; thus the rwx bit re-search-backward below will succeed in *this*
-    ;; line if at all.  So, it should be called only after
-    ;; (dired-move-to-filename t).
-    ;; On failure, signals an error (with non-nil NO-ERROR just returns nil).
-    ;; This is the UNIX version.
-    (if (get-text-property (point) 'dired-filename)
-        (goto-char (next-single-property-change (point) 'dired-filename))
-      (let ((opoint  (point))
-            (used-F  (dired-check-switches dired-actual-switches "F" "classify"))
-            (eol     (line-end-position))
-            (hidden  (dired--hidden-p))
-            file-type executable symlink)
-        (if hidden
-            nil
-          (save-excursion               ; Find out what kind of file this is.
-            ;; Restrict permission bits to non-blank, otherwise this matches one char too early (looking backward):
-            ;; "l---------" (some systems make symlinks that way)
-            ;; "----------" (plain file with zero perms)
-            (if (re-search-backward dired-permission-flags-regexp nil t)
-                (setq file-type   (char-after (match-beginning 1))
-                      symlink     (eq file-type ?l)
-                      ;; Only with -F we need to know whether it's an executable
-                      executable  (and used-F  (string-match
-                                                "[xst]" ;; execute bit set anywhere?
-                                                (concat (match-string 2) (match-string 3) (match-string 4)))))
-              (unless no-error (error "No file on this line"))))
-          ;; Move point to end of name:
-          (if symlink
-              (when (search-forward " -> " eol t)
-                (forward-char -4)
-                (and used-F  dired-ls-F-marks-symlinks  (eq (preceding-char) ?@) ; `ls' really marked the link
-                     (forward-char -1)))
-            ;; Else not a symbolic link, `ls -lF' marks dirs, sockets, fifos and executables with exactly one
-            ;; trailing char.  (Executable bits on symlinks don't mean a thing, even to `ls', but we know it's
-            ;; not a symlink.)
-            (goto-char eol)
-            (and used-F  (or (memq file-type '(?d ?s ?p))  executable)
-                 (forward-char -1))))
-        (or no-error
-            (not (eq opoint (point)))
-            (error "%s" (if hidden
-                            (substitute-command-keys "File line is hidden, type \\[dired-hide-subdir] to unhide")
-                          "No file on this line")))
-        (if (eq opoint (point)) nil (point)))))
-
-  (unless (fboundp 'dired-check-switches)                       ; < Emacs 24
-    (defun dired-check-switches (switches short &optional long) ; Emacs 27.1 `dired.el'
-      "Return non-nil if the string SWITCHES matches LONG or SHORT format."
-      (let (case-fold-search)
-        (and (stringp switches)
-             (diredp-string-match-p (concat "\\(\\`\\| \\)-[[:alnum:]]*" short
-                                            (if long (concat "\\|--" long "\\>") ""))
-                                    switches)))))
-
-  (defun dired-hide-subdir (arg)        ; Emacs 27.1 `dired-aux.el'
-    "Hide or unhide the current subdirectory and move to next directory.
-Optional prefix arg is a repeat factor.
-Use \\[dired-hide-all] to (un)hide all directories."
-    (interactive "p")
-    (with-silent-modifications
-      (while (>=  (setq arg  (1- arg)) 0)
-        (let* ((cur-dir   (dired-current-directory))
-               (hidden-p  (dired-subdir-hidden-p cur-dir))
-               (elt       (assoc cur-dir dired-subdir-alist))
-               (end-pos   (1- (dired-get-subdir-max elt)))
-               buffer-read-only)
-          ;; Keep header line visible, hide rest
-          (goto-char (cdr elt))
-          (end-of-line)
-          (if hidden-p (dired--unhide (point) end-pos) (dired--hide (point) end-pos)))
-        (dired-next-subdir 1 t))))
-
-  (defun dired-hide-all (&optional ignored) ; Emacs 27.1 `dired-aux.el'
-    "Hide all subdirectories, leaving only their header lines.
-If there is already something hidden, make everything visible again.
-Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
-    (interactive "P")
-    (with-silent-modifications
-      (if (text-property-any (point-min) (point-max) 'invisible 'dired)
-          (dired--unhide (point-min) (point-max))
-        (let ((pos  (point-max)))        ; Position of end of last directory
-          (dolist (subdir dired-subdir-alist)
-            (let ((start  (cdr subdir))  ; Position of prev dir
-                  (end    (save-excursion
-                            (goto-char pos) ; Current dir.  We're somewhere on current dir's line.
-                            (forward-line -1)
-                            (point))))
-              (dired--hide start end))
-            (setq pos  (cdr subdir))))))) ; Previous dir gets current dir
-  )
 
 ;; This is like `dired-hide-subdir' in `dired-aux.el', except:
 ;;
@@ -15310,13 +15351,14 @@ that listing.  If option `diredp-count-.-and-..-flag' is non-nil then
 count also `.' and `..'.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
-    (when (derived-mode-p 'dired-mode) ; Sanity check - should always be the right buffer, but just in case.
+    ;; Sanity check - should always be the right buffer, but just in case.
+    (when (or (derived-mode-p 'dired-mode)  (derived-mode-p 'wdired-mode))
       (let ((mname  (format-mode-line mode-name)))
         ;; Property `dired+-mode-name' indicates whether `mode-name' has been changed.
         (unless (get-text-property 0 'dired+-mode-name mname)
           (save-match-data
             (setq mode-name
-                  `(,(propertize (if (string-match "^[dD]ired \\(by \\)?\\(.*\\)" mname)
+                  `(,(propertize (if (string-match "\\`[dD]ired \\(by \\)?\\(.*\\)" mname)
                                      (format "Dired/%s" (match-string 2 mname))
                                    mname)
                                  'dired+-mode-name t)
@@ -15337,7 +15379,7 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                           (format "%d/" (1+ (count-matches marked-regexp (point-min) (point))))
                                         ""))
                                     nb-marked dired-marker-char)
-                            'face 'diredp-mode-line-marked 'dired+-mode-name t)))))
+                            'face 'diredp-mode-line-marked)))))
                     (:eval              ; Number of flagged (#D).
                      (with-current-buffer ,(current-buffer)
                        (let* ((flagged-regexp  (let ((dired-marker-char  dired-del-marker))
@@ -15400,13 +15442,15 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
   )
 
 ;; Use a different format for `mode-name' from vanilla Emacs:
-;; `W' for WDired, `*' for explicit, arbitrary listingm `/' to separate sort description.
+;; `W' for WDired, `@' for explicit, arbitrary listing, `/' to separate sort description.
 
 (defun diredp--set-mode-name-for-explicit-listing ()
-  "Prefix `mode-name' with `*', for a listing of explicit file names."
-  (let ((mname  (if (listp mode-name) (car mode-name) mode-name)))
-    (unless (diredp-string-match-p "\\`W?[*][/]" mname)
-      (setq mode-name  (concat "*/" mname)))))
+  "Prefix `mode-name' with `@', for a listing of explicit file names."
+  (let* ((listp   (listp mode-name))
+         (mname   (if listp (car mode-name) mode-name))
+         (@/name  (propertize (concat "@/" mname) 'dired+-mode-name t)))
+    (unless (diredp-string-match-p "\\`W?@/" mname)
+      (if listp (setcar mode-name  @/name) (setq mode-name  @/name)))))
 
 (when (require 'nadvice nil t)          ; Emacs 24+
 
@@ -15416,8 +15460,12 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
     "Prefix WDired `mode-name' with `W' or `W/', after saving Dired `mode-name'."
     (setq diredp--this-dired-mode-name  (if (listp mode-name) (car mode-name) mode-name))
     (funcall old-fn)
-    (setq mode-name  (concat "W" (and (not (diredp-string-match-p "\\`[*/]" diredp--this-dired-mode-name))  "/")
-                             diredp--this-dired-mode-name)))
+    (setq mode-name  (propertize
+                      (concat "W" (and (not (diredp-string-match-p "\\`[@/]" diredp--this-dired-mode-name))
+                                       "/")
+                              diredp--this-dired-mode-name)
+                      'dired+-mode-name nil))
+    (diredp-nb-marked-in-mode-name))
 
   (eval-after-load "wdired"
     '(progn
@@ -15426,7 +15474,8 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
 
   (defun diredp--from-wdired-mode-advice ()
     "Set Dired `mode-name' to name saved before invoking changing to WDired."
-    (setq mode-name  diredp--this-dired-mode-name))
+    (setq mode-name  (propertize diredp--this-dired-mode-name 'dired+-mode-name nil))
+    (diredp-nb-marked-in-mode-name))
 
   )
 
