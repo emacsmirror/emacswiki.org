@@ -56,10 +56,12 @@ While some customizations of `default-frame-alist' could have undesirable effect
 
 In essence, the code above will make Emacs behave as if you had launched it with the emacs --maximize argument, automatically maximizing the window each time you open Emacs. This eliminates the slightly distracting visual effect that can occur when Emacs loads the frame settings after startup.
 
-====Windows====
+====Platform-specific methods====
+
+=====Windows=====
 The Emacs FAQ does not address this issue directly, as the GNU developers are not focused on optimizing text editing convenience for [https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#Why-Emacs-on-Windows Windows] users. However, several technical solutions are available to manage these visual distractions:
 
-=====Solution 1: Configuring the init File=====
+======Solution 1: Configuring the init File======
 To prevent visual disturbances, configure the `init' file traditionally. Unlike on GNU/Linux, the visual effect in Windows is not triggered by loading the init file. Thus, you can append the following code to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html Windows-specific `init' file], ensuring it is placed at the top to prevent premature loading of other configurations that might induce the effect:
 
 {{{
@@ -72,10 +74,10 @@ To prevent visual disturbances, configure the `init' file traditionally. Unlike 
 
 The `set*' functions in the `init' file are crucial for eliminating the visual effect. They position the window at the top-left corner for a brief 0.2 seconds before maximizing it, which is generally preferred as it avoids overlapping window borders. Note that these settings do not affect `early-init.el'; however, since `(push '(fullscreen . maximized) default-frame-alist)' suffices to prevent the effect in `early-init.el', this is not a concern.
 
-=====Solution 2: Utilizing the early-init File=====
+======Solution 2: Utilizing the early-init File======
 While the previous section discusses configuring the `early-init' file, some users prefer to consolidate all configurations in the `init file (as detailed in Solution 1). The initial frame buffer, visible for approximately 0.2 seconds, is centered on the screen before maximization, which can be slightly more intrusive than the method described in Solution 1.
 
-=====Solution 3: Modifying Windows Registry with Emacs.Geometry=====
+======Solution 3: Modifying Windows Registry with Emacs.Geometry======
 An alternative method involves adding an `Emacs.Geometry` entry to the [https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#MS_002dWindows-Registry Windows Registry] settings, though this approach is not yet fully documented.
 
 [:frame-cmds.el]
