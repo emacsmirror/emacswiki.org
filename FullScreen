@@ -38,17 +38,23 @@ A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI
 See also the devilspie2 section in this article if you prefer a X Window tiling program instead.
 
 ====Cross platform====
-When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which is responsible for the "frame effect". To ensure the frame settings take effect immediately, it is required to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file], which is processed prior to the initialization of the regular ##init file##, thereby allowing the frame settings to take precedence.
+When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which can lead to a noticeable "frame effect" upon startup. To ensure the frame settings take effect immediately, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]. The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence.
 
+To maximize Emacs automatically upon startup, add the following code to your early-init.el file:
 {{{
-  (push '(fullscreen . maximized) default-frame-alist)
+(push '(fullscreen . maximized) default-frame-alist)
 }}}
 
-This has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
+This code has been successfully tested in various environments, including:
+* GNU/Linux (both X11 and Wayland)
+* macOS
+* Windows
 
-While some customizations of `default-frame-alist' could have undesirable effects when modified in early-init.el, it is okay to do it in this particular case. (thanks Stefan)
+Remember to add the code to the top of early-init.el if you have created it earlier to prevent any load delay.
 
-Essentially the code above will make emacs behave like `emacs --maximize` automatically each time when you open it, because the --maximize argument also opens Emacs without the slightly distracting visual effect.
+While some customizations of `default-frame-alist' could have undesirable effects when modified in early-init.el, it is generally safe to do so in this particular case.
+
+In essence, the code above will make Emacs behave as if you had launched it with the emacs --maximize argument, automatically maximizing the window each time you open Emacs. This eliminates the slightly distracting visual effect that can occur when Emacs loads the frame settings after startup.
 
 ====Windows====
 The documentation on this section, instead of the Emacs FAQ, because [https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#Why-Emacs-on-Windows it is not the goal for the GNU developers to “help Windows users” by making text editing on Windows more convenient.].
