@@ -18,6 +18,8 @@ Probably the simplest way to configure fullscreen or maximized mode is to custom
 (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
+The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
+
 The ##*-frame-alist## variables (such as ##default-frame-alist## and ##initial-frame-alist##) are special variables in Emacs that specify default frame parameters. Setting ##(fullscreen . maximized)## in these variables automatically maximizes new frames or the initial frame, without needing to explicitly evaluate the expression, because Emacs recognizes this parameter and applies it when creating frames.
 
 So the ##push## macro is the fastest compute approach compared to other list manipulation functions because it does not evaluate its second argument, such as ##add-to-list## and ##custom-set-variables##, which are also commonly used to maximize the window by setting ##(fullscreen . maximized)##.
@@ -35,8 +37,6 @@ When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##defaul
 }}}
 
 This has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
-
-The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
 
 While some customizations of `default-frame-alist' could have undesirable effects when modified in early-init.el, it is okay to do it in this particular case. (thanks Stefan)
 
