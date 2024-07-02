@@ -15,9 +15,10 @@ On MS Windows, when parameters don't work, use the following line instead in you
 == Configuring fullscreen mode ==
 Probably the simplest way to configure fullscreen or maximized mode is to customize <code>default-frame-alist</code>
 {{{
-(custom-set-variables
- '(default-frame-alist (quote ((fullscreen . maximized)))))
+(push '(fullscreen . maximized) default-frame-alist)
 }}}
+
+The ##*-frame-alist## variables (such as ##default-frame-alist## and ##initial-frame-alist##) are special variables in Emacs that specify default frame parameters. Setting ##(fullscreen . maximized)## in these variables automatically maximizes new frames or the initial frame, without needing to explicitly evaluate the expression, because Emacs recognizes this parameter and applies it when creating frames. Furthermore, using push to add the ##(fullscreen . maximized)## pair to the ##*-frame-alist## variables is ideal, as the push macro does not evaluate its second argument, unlike functions like ##add-to-list## which do evaluate their second argument, making push the fastest compute approach compared to other list manipulation functions.
 
 ===To avoid the slightly distracting visual effect===
 A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it (from now on referred to as the "frame effect").
@@ -30,8 +31,6 @@ When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##defaul
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
-
-In general, push will execute slightly faster than add-to-list because it is a macro that does not evaluate its second argument.
 
 It works even if it takes time to load a typical ##init file## configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
 
