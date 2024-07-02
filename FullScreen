@@ -48,7 +48,6 @@ In Windows you can prevent the distracting visual effect by either:
 
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
-;; or: (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 (setq frame-resize-pixelwise t)
 (set-frame-position nil 0 0)
