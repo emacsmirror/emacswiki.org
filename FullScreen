@@ -25,11 +25,13 @@ A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI
 See also the devilspie2 section in this article if you prefer a X Window tiling program instead.
 
 ====Cross platform====
-When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which is responsible for the "frame effect". To ensure the frame settings take effect immediately, it is required to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the regular init file. In general, push will execute slightly faster than add-to-list because it is a macro that does not evaluate its second argument.
+When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which is responsible for the "frame effect". To ensure the frame settings take effect immediately, it is required to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file] instead of the regular init file.
 
 {{{
   (push '(fullscreen . maximized) default-frame-alist)
 }}}
+
+In general, push will execute slightly faster than add-to-list because it is a macro that does not evaluate its second argument.
 
 It works even if it takes time to load a typical ##init file## configuration, and has been successfully tested in GNU/Linux (both X11, and Wayland), macOS, and Windows. Don't forget to add the code to the top of early-init.el if you have created it earlier to prevent load delay.
 
