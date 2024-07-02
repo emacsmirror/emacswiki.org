@@ -13,16 +13,24 @@ On MS Windows, when parameters don't work, use the following line instead in you
 ##(w32-send-sys-command 61488)##
 
 == Configuring fullscreen mode ==
-Probably the simplest way to configure fullscreen or maximized mode is to customize <code>default-frame-alist</code>
+Probably the simplest way to configure fullscreen or maximized mode in Emacs is to customize the ##default-frame-alist## variable. The ##default-frame-alist## is a list of property lists that specify the initial appearance of Emacs frames. Each property list contains a set of key-value pairs that define frame properties. To maximize the initial frame and any new frames opened from it by default, you can add the ##(fullscreen . maximized)## property to ##default-frame-alist## using the ##push## function:
+
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
 }}}
 
-The push function in Emacs is used to add an element to the beginning of a list. In the expression (push '(fullscreen . maximized) default-frame-alist), the '(fullscreen . maximized) list is added to the beginning of the default-frame-alist list. The default-frame-alist variable is a list of property lists that are used to configure the initial appearance of Emacs frames. Each property list in the default-frame-alist variable contains a set of key-value pairs that specify properties for the frame.
+The ##push## function adds an element to the beginning of a list. In this case, it adds the ##'(fullscreen . maximized)## list to the beginning of ##default-frame-alist##. Emacs recognizes the ##(fullscreen . maximized)## parameter and automatically applies it when creating the initial frame and any new frames opened from it. This means that after evaluating the ##push## expression, the initial frame will be maximized, and any subsequently opened frames will also be maximized by default. Alternatively, you can use other list manipulation functions like ##add-to-list## or ##custom-set-variables## to achieve the same result:
 
-The ##*-frame-alist## variables (such as ##default-frame-alist## and ##initial-frame-alist##) are special variables in Emacs that specify default frame parameters. Setting ##(fullscreen . maximized)## in these variables automatically maximizes new frames or the initial frame, without needing to explicitly evaluate the expression, because Emacs recognizes this parameter and applies it when creating frames.
+{{{
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+}}}
 
-So the ##push## macro is the fastest compute approach compared to other list manipulation functions because it does not evaluate its second argument, such as ##add-to-list## and ##custom-set-variables##, which are also commonly used to maximize the window by setting ##(fullscreen . maximized)##.
+{{{
+(custom-set-variables
+ '(default-frame-alist '((fullscreen . maximized)))))
+}}}
+
+However, ##push## is generally considered the fastest approach because it doesn't evaluate its second argument, unlike ##add-to-list## and ##custom-set-variables##. By setting ##(fullscreen . maximized)## in ##default-frame-alist##, you can ensure that the initial frame and any new Emacs frames opened from it are maximized without needing to explicitly evaluate the expression each time.
 
 ===To avoid the slightly distracting visual effect===
 A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it (from now on referred to as the "frame effect").
