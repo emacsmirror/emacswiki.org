@@ -13,10 +13,10 @@ On MS Windows, when parameters don't work, use the following line instead in you
 ##(w32-send-sys-command 61488)##
 
 == Configuring fullscreen mode ==
-Probably the simplest way to configure fullscreen or maximized mode is to customize <code>initial-frame-alist</code>
+Probably the simplest way to configure fullscreen or maximized mode is to customize <code>default-frame-alist</code>
 {{{
 (custom-set-variables
- '(initial-frame-alist (quote ((fullscreen . maximized)))))
+ '(default-frame-alist (quote ((fullscreen . maximized)))))
 }}}
 
 ===To avoid the slightly distracting visual effect===
@@ -517,7 +517,6 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 	(my-fullscreen)))
 }}}
 
-
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
 
@@ -540,7 +539,3 @@ See also [[Fullscreen]] (just x-send-client-message for X Window).
   "Maximize frame every time it receives focus, i.e. a switch-frame event."
   (w32-send-sys-command #xf030))
 }}}
-
-
-
-
