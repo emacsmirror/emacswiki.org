@@ -33,9 +33,9 @@ The ##push## function adds an element to the beginning of a list. In this case, 
 However, ##push## is generally considered the fastest approach because it doesn't evaluate its second argument, unlike ##add-to-list## and ##custom-set-variables##. By setting ##(fullscreen . maximized)## in ##default-frame-alist##, you can ensure that the initial frame and any new Emacs frames opened from it are maximized without needing to explicitly evaluate the expression each time.
 
 ===To avoid the slightly distracting visual effect===
-A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it (from now on referred to as the "frame effect").
+[See the devilspie2 section in this article if you prefer a X Window tiling program instead.]
 
-See also the devilspie2 section in this article if you prefer a X Window tiling program instead.
+A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it (from now on referred to as the "frame effect").
 
 ====Cross platform====
 When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which can lead to the "frame effect" upon startup. To ensure the frame settings take effect immediately, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]. The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence.
