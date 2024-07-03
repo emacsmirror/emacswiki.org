@@ -38,7 +38,7 @@ However, ##push## is generally considered the fastest approach because it doesn'
 A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then growing to fullscreen when you maximize it (from now on referred to as the "frame effect").
 
 ====Cross platform====
-When Emacs loads the ##init file## in GNU/Linux, any ##*-frame-alist## (##default-frame-alist##, ##initial-frame-alist##) settings are deferred, which can lead to the "frame effect" upon startup. To ensure the frame settings take effect immediately, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]. The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence.
+When Emacs loads the ##init file## in GNU/Linux, frame settings (##default-frame-alist##, ##initial-frame-alist##, ##set-frame-size##) are slightly deferred, which can lead to the "frame effect" upon startup. To ensure the frame settings take effect immediately, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]. The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence.
 
 To maximize Emacs automatically upon startup, add the following code to your early-init.el file:
 {{{
