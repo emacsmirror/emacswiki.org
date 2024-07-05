@@ -308,37 +308,6 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 
 === Windows ===
 
-==== Maximizing window ====
-
-=====To avoid the slightly distracting visual effect=====
-The Emacs FAQ does not address this issue directly, as the GNU developers are not focused on optimizing text editing convenience for [https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#Why-Emacs-on-Windows Windows] users. However, several technical solutions are available to manage these visual distractions:
-
-======Solution 1: Configuring the init File======
-To prevent visual disturbances, configure the `init' file traditionally. Unlike on GNU/Linux, the visual effect in Windows is not triggered by loading the init file. Thus, you can append the following code to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html Windows-specific `init' file], ensuring it is placed at the top to prevent premature loading of other configurations that might induce the effect:
-
-{{{
-(push '(fullscreen . maximized) default-frame-alist)
-
-(setq frame-resize-pixelwise t)
-(set-frame-position nil 0 0)
-(set-frame-size nil (display-pixel-width) (display-pixel-height) t)
-}}}
-
-The `set*' functions in the `init' file are crucial for eliminating the visual effect. They position the window at the top-left corner for a brief 0.2 seconds before maximizing it, which is generally preferred as it avoids overlapping window borders. Note that these settings do not affect `early-init.el'; however, since `(push '(fullscreen . maximized) default-frame-alist)' suffices to prevent the effect in `early-init.el', this is not a concern.
-
-======Solution 2: Utilizing the early-init File======
-While the previous section discusses configuring the `early-init' file, some users prefer to consolidate all configurations in the `init file (as detailed in Solution 1). The initial frame buffer, visible for approximately 0.2 seconds, is centered on the screen before maximization, which can be slightly more intrusive than the method described in Solution 1.
-
-======Solution 3: Modifying Windows Registry with Emacs.Geometry======
-An alternative method involves adding an `Emacs.Geometry` entry to the [https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#MS_002dWindows-Registry Windows Registry] settings, though this approach is not yet fully documented.
-
-===== w32-send-sys-command =====
-{{{
-(if (fboundp 'w32-send-sys-command)
-    ;; WM_SYSCOMMAND maximize #xf030
-    (w32-send-sys-command 61488))
-}}}
-
 ==== Fullscreen ====
 
 ===== Emacs 24.4 =====
@@ -508,6 +477,37 @@ Note that I have also added
 to my .emacs (which is when the problems started occuring.)
 
 I've experimented with other fonts and different font sizes. This seems robust.
+
+==== Maximizing window ====
+
+=====To avoid the slightly distracting visual effect=====
+The Emacs FAQ does not address this issue directly, as the GNU developers are not focused on optimizing text editing convenience for [https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#Why-Emacs-on-Windows Windows] users. However, several technical solutions are available to manage these visual distractions:
+
+======Solution 1: Configuring the init File======
+To prevent visual disturbances, configure the `init' file traditionally. Unlike on GNU/Linux, the visual effect in Windows is not triggered by loading the init file. Thus, you can append the following code to the [https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Location-of-init-file.html Windows-specific `init' file], ensuring it is placed at the top to prevent premature loading of other configurations that might induce the effect:
+
+{{{
+(push '(fullscreen . maximized) default-frame-alist)
+
+(setq frame-resize-pixelwise t)
+(set-frame-position nil 0 0)
+(set-frame-size nil (display-pixel-width) (display-pixel-height) t)
+}}}
+
+The `set*' functions in the `init' file are crucial for eliminating the visual effect. They position the window at the top-left corner for a brief 0.2 seconds before maximizing it, which is generally preferred as it avoids overlapping window borders. Note that these settings do not affect `early-init.el'; however, since `(push '(fullscreen . maximized) default-frame-alist)' suffices to prevent the effect in `early-init.el', this is not a concern.
+
+======Solution 2: Utilizing the early-init File======
+While the previous section discusses configuring the `early-init' file, some users prefer to consolidate all configurations in the `init file (as detailed in Solution 1). The initial frame buffer, visible for approximately 0.2 seconds, is centered on the screen before maximization, which can be slightly more intrusive than the method described in Solution 1.
+
+======Solution 3: Modifying Windows Registry with Emacs.Geometry======
+An alternative method involves adding an `Emacs.Geometry` entry to the [https://www.gnu.org/software/emacs/manual/html_mono/emacs.html#MS_002dWindows-Registry Windows Registry] settings, though this approach is not yet fully documented.
+
+===== w32-send-sys-command =====
+{{{
+(if (fboundp 'w32-send-sys-command)
+    ;; WM_SYSCOMMAND maximize #xf030
+    (w32-send-sys-command 61488))
+}}}
 
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
