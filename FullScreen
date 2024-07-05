@@ -40,9 +40,7 @@ A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI
 ====Cross platform====
 When Emacs loads the ##init file## in GNU/Linux, frame settings (##default-frame-alist##, ##initial-frame-alist##, ##set-frame-size##) are slightly deferred, which can lead to the "frame effect" upon startup.
 
-To ensure that Emacs starts maximized without first displaying the default frame size, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]. The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence.
-
-To maximize Emacs automatically upon startup, add the following code to your early-init.el file:
+The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence. To ensure that Emacs starts maximized without first displaying the default frame size, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]:
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
 }}}
