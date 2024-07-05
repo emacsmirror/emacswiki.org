@@ -423,6 +423,16 @@ Or to only maximize window:
 
 ==== External programs ====
 
+===== Gnome Keyboard Shortcuts=====
+
+If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
+
+System => Preferences => Keyboard Shortcuts
+
+And bind the option "Toggle fullscreen mode" to a key which can be used when using Emacs to toggle full screen or not.
+
+The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
+
 ===== devilspie =====
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
@@ -500,16 +510,6 @@ and now you are GNOME HIG compliant :)
 * To automatically execute the above commands when emacs is starting, complement them with:
 
       (add-hook 'after-init-hook 'switch-full-screen)
-
-==== Gnome Keyboard Shortcuts====
-
-If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
-
-System => Preferences => Keyboard Shortcuts
-
-And bind the option "Toggle fullscreen mode" to a key which can be used when using Emacs to toggle full screen or not.
-
-The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
 
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
