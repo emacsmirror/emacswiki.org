@@ -190,8 +190,11 @@ names.
 }}}
 
 
-=== Norwegian ===
+=== Norwegian Nynorsk ===
 See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
+
+=== Norwegian Bokmål ===
+Use Norwegian Nynorsk calendar-norway.el and change every text string to Bokmål or use https://hub.369.dk/elisp/ Søren's Emacs Lisp Stuff for a Danish localisation that is closer to Bokmål and insert the holidays from calendar-norway.el.
 
 === Polish ===
 
