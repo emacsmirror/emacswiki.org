@@ -67,7 +67,7 @@ While some customizations of `default-frame-alist' could have undesirable effect
 
 In essence, the code above will make Emacs behave as if you had launched it with the emacs --maximize argument, automatically maximizing the window each time you open Emacs. This eliminates the slightly distracting visual effect that can occur when Emacs loads the frame settings after startup.
 
-==== Maximize/Restore Using Library frame-cmds.el ====
+==== Maximize/restore using library frame-cmds.el ====
 [:frame-cmds.el]
 
 Library <tt>[[frame-cmds.el]]</tt> provides various commands to maximize and restore frames horizontally, vertically, or both.  It applies to any platform and any Emacs version (20+), and it can take into account a standalone minibuffer frame, the MS Windows task bar, and Mac areas that should not be covered. 
