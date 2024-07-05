@@ -98,132 +98,6 @@ Note that an after-init-hook didn't work for me.
 
 These methods may be useful with older versions of Emacs, or ports where the 'fullscreen' frame parameter is not supported.
 
-=== X Window ===
-
-==== Emacs Frame Properties ====
-
-The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
-
-I (Ivan Kanis) have tested it works on Emacs 24.1.
-
-{{{
-
-(defun toggle-fullscreen ()
-  "Toggle full screen on X11"
-  (interactive)
-  (when (eq window-system 'x)
-    (set-frame-parameter
-     nil 'fullscreen
-     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
-
-(global-set-key [f11] 'toggle-fullscreen)
-}}}
-
-==== Send X Messages to the Window Manager ====
-
-     (defun fullscreen ()
-       (interactive)
-       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-
-Or to only maximize window:
-
-     (defun fullscreen (&optional f)
-       (interactive)
-       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-	    		 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-	    		 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
-
-
-==== External program: wmctrl ====
-If you want to bind F11 to toggle full-screen, here is what you need:
-
-* install wmctrl (sudo apt-get install wmctrl)
-* edit your .emacs and add:
-
-    (defun switch-full-screen ()
-      (interactive)
-      (shell-command "wmctrl -r :ACTIVE: -b toggle,fullscreen"))
-
-    (global-set-key [f11] 'switch-full-screen)
-
-That does the trick, 
-and now you are GNOME HIG compliant :)
-
-* Alternate definition, which mimics the 'maximize' button:
-
-    (defun switch-full-screen ()
-      (interactive)
-      (shell-command "wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz"))
-
-* Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
-
-    (defun switch-full-screen ()
-      (interactive)
-      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
-
-* To automatically execute the above commands when emacs is starting, complement them with:
-
-      (add-hook 'after-init-hook 'switch-full-screen)
-
-==== External program: devilspie2 ====
-
-This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-3|.emacs.d/early-init.el]]).
-<pre>
-# Configure devilspie2 to start 
-mkdir -p ~/.config/devilspie2/
-
-width="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1)"
-height="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)"
-
-tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
-if (get_class_instance_name() == "emacs") then
-
-    set_window_geometry(0, 0, $width, $height);
-
-end
-EOF
-
-# Autostart devilspie2
-mkdir -p "$HOME/.config/autostart/" # The directory does not exist by default
-cd "$HOME/.config/autostart/" || exit
-file="devilspie-2.desktop"
-touch "$file"
-desktop-file-edit \
---set-name="Devilspie 2" \
---set-comment="Perform scripted actions on windows as they are created" \
---set-key="Type" --set-value="Application" \
---set-key="Exec" --set-value="devilspie2" \
---set-key="X-MATE-Autostart-Delay" --set-value="0" \
-"$file"
-desktop-file-validate "$file"
-</pre>
-* Add this to ~/.emacs to fully maximize the window: (add-to-list 'default-frame-alist '(fullscreen . maximized))
-* Log out and then log back into your desktop environment
-
-1: Workaround to the devilspie2 bug: "maximize* commands don't work for Emacs" - https://savannah.nongnu.org/bugs/index.php?63979
-
-==== External program: devilspie ====
-
-http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
-
-    ;;
-    ;; ~/.devilspie/emacs.ds
-    ;;
-    (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
-        (undecorate fullscreen))
-
-==== Gnome Keyboard Shortcuts====
-
-If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
-
-System => Preferences => Keyboard Shortcuts
-
-And bind the option "Toggle fullscreen mode" to a key which can be used when using Emacs to toggle full screen or not.
-
-The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
-
 === Mac OS X ===
 
 ==== Emacs 24.4 ====
@@ -508,6 +382,132 @@ An alternative method involves adding an `Emacs.Geometry` entry to the [https://
     ;; WM_SYSCOMMAND maximize #xf030
     (w32-send-sys-command 61488))
 }}}
+
+=== X Window ===
+
+==== Emacs Frame Properties ====
+
+The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
+
+I (Ivan Kanis) have tested it works on Emacs 24.1.
+
+{{{
+
+(defun toggle-fullscreen ()
+  "Toggle full screen on X11"
+  (interactive)
+  (when (eq window-system 'x)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+
+(global-set-key [f11] 'toggle-fullscreen)
+}}}
+
+==== Send X Messages to the Window Manager ====
+
+     (defun fullscreen ()
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+
+Or to only maximize window:
+
+     (defun fullscreen (&optional f)
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+	    		 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
+
+
+==== External program: wmctrl ====
+If you want to bind F11 to toggle full-screen, here is what you need:
+
+* install wmctrl (sudo apt-get install wmctrl)
+* edit your .emacs and add:
+
+    (defun switch-full-screen ()
+      (interactive)
+      (shell-command "wmctrl -r :ACTIVE: -b toggle,fullscreen"))
+
+    (global-set-key [f11] 'switch-full-screen)
+
+That does the trick, 
+and now you are GNOME HIG compliant :)
+
+* Alternate definition, which mimics the 'maximize' button:
+
+    (defun switch-full-screen ()
+      (interactive)
+      (shell-command "wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz"))
+
+* Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
+
+    (defun switch-full-screen ()
+      (interactive)
+      (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
+
+* To automatically execute the above commands when emacs is starting, complement them with:
+
+      (add-hook 'after-init-hook 'switch-full-screen)
+
+==== External program: devilspie2 ====
+
+This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-3|.emacs.d/early-init.el]]).
+<pre>
+# Configure devilspie2 to start 
+mkdir -p ~/.config/devilspie2/
+
+width="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1)"
+height="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)"
+
+tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
+if (get_class_instance_name() == "emacs") then
+
+    set_window_geometry(0, 0, $width, $height);
+
+end
+EOF
+
+# Autostart devilspie2
+mkdir -p "$HOME/.config/autostart/" # The directory does not exist by default
+cd "$HOME/.config/autostart/" || exit
+file="devilspie-2.desktop"
+touch "$file"
+desktop-file-edit \
+--set-name="Devilspie 2" \
+--set-comment="Perform scripted actions on windows as they are created" \
+--set-key="Type" --set-value="Application" \
+--set-key="Exec" --set-value="devilspie2" \
+--set-key="X-MATE-Autostart-Delay" --set-value="0" \
+"$file"
+desktop-file-validate "$file"
+</pre>
+* Add this to ~/.emacs to fully maximize the window: (add-to-list 'default-frame-alist '(fullscreen . maximized))
+* Log out and then log back into your desktop environment
+
+1: Workaround to the devilspie2 bug: "maximize* commands don't work for Emacs" - https://savannah.nongnu.org/bugs/index.php?63979
+
+==== External program: devilspie ====
+
+http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
+
+    ;;
+    ;; ~/.devilspie/emacs.ds
+    ;;
+    (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
+        (undecorate fullscreen))
+
+==== Gnome Keyboard Shortcuts====
+
+If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
+
+System => Preferences => Keyboard Shortcuts
+
+And bind the option "Toggle fullscreen mode" to a key which can be used when using Emacs to toggle full screen or not.
+
+The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
 
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
