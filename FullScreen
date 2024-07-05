@@ -8,10 +8,6 @@ For example:
 
 ##emacs -mm [files]##
 
-On MS Windows, when parameters don't work, use the following line instead in your .emacs init file to start with maximized frame:
-
-##(w32-send-sys-command 61488)##
-
 == Configuring fullscreen mode ==
 Probably the simplest way to configure fullscreen or maximized mode in Emacs is to customize the ##default-frame-alist## variable. The ##default-frame-alist## is a list of property lists that specify the initial appearance of Emacs frames. Each property list contains a set of key-value pairs that define frame properties. To maximize the initial frame and any new frames opened from it by default, you can add the ##(fullscreen . maximized)## property to ##default-frame-alist## using the ##push## function:
 
@@ -115,26 +111,37 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 
 === MS Windows ===
 
-==== Emacs 24.4 ====
+==== Maximizing window ====
+
+===== w32-send-sys-command =====
+{{{
+(if (fboundp 'w32-send-sys-command)
+    ;; WM_SYSCOMMAND maximize #xf030
+    (w32-send-sys-command 61488))
+}}}
+
+==== Fullscreen ====
+
+===== Emacs 24.4 =====
 Emacs 24.4 fully supports fullscreen on Windows. Use M-x toggle-frame-fullscreen to toggle it. The window will go fullscreen on the window's owning screen.
 This is bound to F11 by default (at least in 26.3).
 
-==== Older versions ====
+===== Older versions =====
 The simplest way to get near fullscreen editing is to hide the Windows taskbar and maximize the current Emacs frame. You can use the control panel to make the taskbar always hidden (autohide), or call [http://www.ctrl-alt-del.com.au/CAD_TSUtils.htm TSTBARSET] from the command line with the appropriate flag to toggle the taskbar's visibility. (TSTBARSET is a utility to manipulate the taskbar from the command line; scroll near the bottom of linked page to download it).
 
 If the menubar on the emacs frame still bothers you, a call to emacs-fullscreen-win32 listed below will get rid of it.
 
-==== darkroom-mode ====
+===== darkroom-mode =====
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
 
-==== Binary patch ====
+===== Binary patch =====
 Alternatively, a patch is available [https://github.com/erikcharlebois/patches/blob/master/emacs/w32_set_fullscreen.patch here] 
 that makes the fullscreen frame parameter really fullscreen on Windows.
 
-==== emacs-fullscreen-win32 ====
+===== emacs-fullscreen-win32 =====
 Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/wiki/Home emacs-fullscreen-win32] project. It allows you to switch to/from full-screen mode.
-===== Basic settings =====
+====== Basic settings ======
 * Add the following lines to your .emacs file:
 {{{
 (defun toggle-full-screen () (interactive) (shell-command "emacs_fullscreen.exe"))
@@ -144,7 +151,7 @@ Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscre
 * Now run Emacs and press F11 to switch into full-screen mode. Press F11 again to switch to windowed mode.
 NOTE: This will not hide menu-bar, tool-bar, and scroll-bar.
 
-===== Hide Emacs bars forever =====
+====== Hide Emacs bars forever ======
 If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
 {{{
 (menu-bar-mode -1)
@@ -152,7 +159,7 @@ If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this co
 (scroll-bar-mode -1)
 }}}
 
-===== Start in full-screen mode =====
+====== Start in full-screen mode ======
 If you want to start Emacs in full-screen mode then put call to toggle-full-screen function into your .emacs file:
 {{{
 (toggle-full-screen)
@@ -160,7 +167,7 @@ If you want to start Emacs in full-screen mode then put call to toggle-full-scre
 
 Ps: in Windows System the right command to toggle full screen is (toggle-frame-fullscreen), change to that code in all the samples below.
 
-===== Hide bars in full-screen mode and show them in windowed mode =====
+====== Hide bars in full-screen mode and show them in windowed mode ======
 If you want to hide menu-bar, tool-bar, and scroll-bar in full-screen mode and restore them in windowed mode then use this code:
 {{{
 (defun toggle-full-screen ()
@@ -184,7 +191,7 @@ If you want to hide menu-bar, tool-bar, and scroll-bar in full-screen mode and r
 (global-set-key [f11] 'toggle-full-screen-and-bars)
 }}}
 
-===== Example of .emacs file =====
+====== Example of .emacs file ======
 Here is a part of my .emacs file. Emacs will start in full-screen mode. Menu-bar, tool-bar, and scroll-bar are visible in windowed mode (and are invisible in full-screen mode):
 {{{
 ;; Hide splash-screen and startup-message
@@ -216,10 +223,10 @@ Here is a part of my .emacs file. Emacs will start in full-screen mode. Menu-bar
 (toggle-full-screen-and-bars)
 }}}
 
-===== Topmost window=====
+====== Topmost window======
 emacs_fullscreen.exe supports --topmost command line switch. If this switch is present, then Emacs window will be topmost. It will hide task bar and all other windows. The downside is that if you want to switch to other window, you cannot use Alt+Tab directly, you have to turn off the full screen mode first (see [[https://bitbucket.org/dacap/emacs-fullscreen-win32/changeset/866d015f9a7b|866d015f9a7b]] changeset).
 
-==== Another Fullscreen ====
+===== Another Fullscreen =====
 While trying above solutions I have found some minor annoyances: some solutions are leaving few row of pixels on the bottom of the screen uncovered so I can see backrgound behind and none of them will restore window back to original position.
 
 To fix those annoyances I have hacked my own small version of toggle-fullscreen window. Unfortunately I also had to go with extern binary since Emacs does not have built-in functionality to correctly detect its own frame geometry (at least what I know by now). I am using win32 functions to detect frame size and position and std in/out to communicate back those for restoring after fullscreen mode. It is just simple and crude hack, but it works :).
@@ -235,29 +242,7 @@ It can be called interactively by M-x toggle-fullscreen, or bound to a key.
 
 This solution does nothing else but toggles active Emacs frame to fullscreen and back. If you want more it can be built on top of it.
 
-==== Maximizing window (not real full-screen) ====
-To get a maximized window you can use: (w32-send-sys-command #xf030)
-
-Attention!
-If you want that emacs starts maximized, you have to put this code into your .emacs file:
-{{{
-(defun jbr-init ()
-  "Called from term-setup-hook after the default
-terminal setup is
-done or directly from startup if term-setup-hook not
-used.  The value
-0xF030 is the command for maximizing a window."
-  (interactive)
-  (w32-send-sys-command #xf030)
-  (ecb-redraw-layout)
-  (calendar)
-)
-(setq term-setup-hook 'jbr-init)
-(setq window-setup-hook 'jbr-init)
-}}}
-
-
-==== True Fullscreen Patch for Emacs 24.1 ====
+===== True Fullscreen Patch for Emacs 24.1 =====
 
 I admire the unobtrusive UI of Emacs. But the one thing I painfully missed was the ability to truly fullscreen Emacs on Windows. So I took the Emacs 24.1 codebase and crudely patched the window handling code to let it create a window without the title bar for the first frame. I use this patch on Windows XP SP3 and Windows 7.
 
@@ -279,7 +264,7 @@ If you need to minimize the frame, you can use something like this:
 
 -- [[MikeVeldink]]
 
-==== Using a AutoHotKey script in order to remove the gaps left by borderless fullscreen ====
+===== Using a AutoHotKey script in order to remove the gaps left by borderless fullscreen =====
 I dabbled with a AutoHotKey script for getting this to work properly, and this is my solution:
 {{{
 SetTitleMatchMode 1 ; matches only the start of the window name
@@ -512,34 +497,6 @@ If your Emacs does not support fullscreen, it can be faked with the maxframe lib
 (global-set-key (kbd "M-RET") 'my-toggle-fullscreen)
 }}}
 
-=== Linux and Windows ===
-
-{{{
-(defvar my-fullscreen-p t "Check if fullscreen is on or off")
-
-(defun my-non-fullscreen ()
-  (interactive)
-  (if (fboundp 'w32-send-sys-command)
-	  ;; WM_SYSCOMMAND restore #xf120
-	  (w32-send-sys-command 61728)
-	(progn (set-frame-parameter nil 'width 82)
-		   (set-frame-parameter nil 'fullscreen 'fullheight))))
-
-(defun my-fullscreen ()
-  (interactive)
-  (if (fboundp 'w32-send-sys-command)
-	  ;; WM_SYSCOMMAND maximaze #xf030
-	  (w32-send-sys-command 61488)
-	(set-frame-parameter nil 'fullscreen 'fullboth)))
-
-(defun my-toggle-fullscreen ()
-  (interactive)
-  (setq my-fullscreen-p (not my-fullscreen-p))
-  (if my-fullscreen-p
-	  (my-non-fullscreen)
-	(my-fullscreen)))
-}}}
-
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
 
@@ -552,13 +509,3 @@ See also [[Fullscreen]] (just x-send-client-message for X Window).
 ** The solution is to add Style "*" <nowiki>ResizeHintOverride</nowiki> to your config
 ** This also occurs under Fluxbox 1.0; the current git repository fixes this problem
 ** Not a problem under KDE 3.5.7
-** Echo area cannot be displayed after fullscreen call, for windows, maybe ”(w32-send-sys-command 61488)“ should be used to maximize emacs window
-
-[new]
-** My Windows taskbar is vertical. Emacs gets confused and covers it partially. How can I make Emacs maximize every time I focus on it?
-  I tried this, but the advice doesn't seem to be invoked
-{{{
-(defadvice handle-switch-frame (after maximize-frame activate)
-  "Maximize frame every time it receives focus, i.e. a switch-frame event."
-  (w32-send-sys-command #xf030))
-}}}
