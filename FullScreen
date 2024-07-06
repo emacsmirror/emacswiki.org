@@ -120,13 +120,15 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 
 === Mac OS X ===
 
-==== Emacs 24.4 ====
+====Fullscreen====
+
+===== Emacs 24.4 =====
 
 Use `ns-use-native-fullscreen' to get “native” fullscreen on OS X 10.7.
 
 Both <code>M-x toggle-frame-fullscreen</code> or <code>M-x toggle-frame-maximized</code> are available without having to define a function from below.
 
-==== Frame parameter ====
+===== Frame parameter =====
 
 This is the simplest approach, and works with CarbonEmacs and Aquamacs and the Yamamoto Mitsuharu version of Emacs 24.  Use the toggle function:
 
@@ -147,11 +149,11 @@ or use this to always use fullscreen:
 
 Apparently the fullscreen functionality had not made it into Emacs 24 as of late 2012 but it is confirmed to be in Emacs 24.3.1 running on OS X 10.8.3 as of April 2013.
 
-==== Maximizer ====
+===== Maximizer =====
 
 Maximizer is a free utility that brings Full Screen app mode to all Cocoa apps running in Mac OS X Lion 10.7, even if they don’t technically support the feature yet. It also works with Emacs from [http://emacsformacosx.com/ emacsformacosx.com]. For more info go to article at [http://osxdaily.com/2011/07/22/enable-full-screen-support-all-apps-os-x-lion-maximizer/ osxdaily.com].
 
-==== Patching the binary ====
+===== Patching the binary =====
 
 To add the fullscreen functionality into Emacs, you can compile your own binary.
 
@@ -182,7 +184,10 @@ Install using
 {{{
 brew install https://gist.github.com/raw/1946398/e7bbb52a4fe3ae0060e65df3d4a7462730ddc822/emacs.rb --force --HEAD --cocoa --use-git-head
 }}}
-==== Resizing the window ====
+
+==== Maximize ====
+
+===== Resizing the window =====
 
 If your Emacs does not support fullscreen, it can be faked with the maxframe library, which resizes the window to approximately cover the entire screen.  Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el] for Cocoa/Nextstep Emacs. You can see the original version from [https://github.com/rmm5t/maxframe.el maxframe.el], which works for Windows, X11, and Carbon.
 
