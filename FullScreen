@@ -381,7 +381,7 @@ An alternative method involves adding an `Emacs.Geometry` entry to the [https://
     (w32-send-sys-command 61488))
 }}}
 
-==== Maximize ====
+=== X Window System (X11) ===
 
 ==== Fullscreen ====
 
