@@ -14,7 +14,7 @@ For example:
 ==== Toggle fullscreen ====
 F11 will toggle the fullscreen by default in Emacs.
 
-=== Hide Emacs bars ===
+=== Hide bars ===
 If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
 {{{
 (menu-bar-mode -1)
