@@ -445,18 +445,17 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 }}}
 
 ====== wmctrl ======
-* Alternate definition, which mimics the 'maximize' button:
-{{{
-(defun switch-full-screen ()
-  (interactive)
-  (shell-command "wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz"))
-}}}
+If you want to bind F11 to toggle full-screen, here is what you need:
 
-* Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
+* install wmctrl (sudo apt-get install wmctrl)
+* edit your .emacs and add:
+
 {{{
 (defun switch-full-screen ()
   (interactive)
-  (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
+  (shell-command "wmctrl -r :ACTIVE: -b toggle,fullscreen"))
+
+(global-set-key [f11] 'switch-full-screen)
 }}}
 
 * To automatically execute the above commands when emacs is starting, complement them with:
@@ -507,17 +506,21 @@ desktop-file-validate "$file"
 1: Workaround to the devilspie2 bug: "maximize* commands don't work for Emacs" - https://savannah.nongnu.org/bugs/index.php?63979
 
 ====== wmctrl ======
-If you want to bind F11 to toggle full-screen, here is what you need:
+If you want to bind F11 to toggle maximize the screen, here is what you need:
 
 * install wmctrl (sudo apt-get install wmctrl)
 * edit your .emacs and add:
-
 {{{
 (defun switch-full-screen ()
   (interactive)
-  (shell-command "wmctrl -r :ACTIVE: -b toggle,fullscreen"))
+  (shell-command "wmctrl -r :ACTIVE: -b toggle,maximized_vert,maximized_horz"))
+}}}
 
-(global-set-key [f11] 'switch-full-screen)
+* Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
+{{{
+(defun switch-full-screen ()
+  (interactive)
+  (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
 }}}
 
 * To automatically execute the above commands when emacs is starting, complement them with:
