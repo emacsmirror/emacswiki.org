@@ -38,7 +38,7 @@ For example:
 ==== Configuring maximized mode ====
 
 =====Toogle maximization=====
-Add this to the init file:
+Add this to the init file to toggle frame maximization with Alt+Return:
 
 {{{
 (global-set-key (kbd "M-RET") 'toggle-frame-maximized)
