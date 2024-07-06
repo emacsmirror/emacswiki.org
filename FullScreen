@@ -11,9 +11,6 @@ For example:
 
 ##emacs -mm [files]##
 
-=== Maximized ===
-"Maximized" here is not quite the same thing as "full-screen".  Maximizing here means making a frame as big as possible (possibly leaving room for the things mentioned above), but the frame still appears as a frame, with title bar, border, etc.
-
 === Hide Emacs bars ===
 If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
 {{{
@@ -21,6 +18,9 @@ If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this co
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 }}}
+
+=== Maximized ===
+"Maximized" here is not quite the same thing as "full-screen".  Maximizing here means making a frame as big as possible (possibly leaving room for the things mentioned above), but the frame still appears as a frame, with title bar, border, etc.
 
 ==== Maximized mode ====
 
