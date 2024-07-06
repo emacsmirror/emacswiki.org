@@ -453,7 +453,7 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 }}}
 
 * Rather than using :ACTIVE: which can do the wrong thing when you start Emacs and other programs at the same time:
-{{{{
+{{{
 (defun switch-full-screen ()
   (interactive)
   (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -b toggle,maximized_vert,maximized_horz"))
@@ -461,7 +461,7 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 
 * To automatically execute the above commands when emacs is starting, complement them with:
 
-{{{{
+{{{
 (add-hook 'after-init-hook 'switch-full-screen)
 }}}
 
