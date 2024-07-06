@@ -14,6 +14,14 @@ For example:
 === Maximized ===
 "Maximized" here is not quite the same thing as "full-screen".  Maximizing here means making a frame as big as possible (possibly leaving room for the things mentioned above), but the frame still appears as a frame, with title bar, border, etc.
 
+=== Hide Emacs bars ===
+If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
+{{{
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+}}}
+
 ==== Maximized mode ====
 
 From the Emacs Linux [http://linuxmanpages.net/manpages/fedora14/man1/emacs.1.html man page] (command line "man emacs"), for maximized frame, and for complete full screen:
@@ -212,14 +220,6 @@ Another option is to use [https://bitbucket.org/alexander_manenko/emacs-fullscre
 * Compile main.c (or download compiled EXE [[https://bitbucket.org/alexander_manenko/emacs-fullscreen-win32/downloads/emacs_fullscreen.zip|here]]) and copy EXE file to the folder in your PATH (I use C:\Windows\system32).
 * Now run Emacs and press F11 to switch into full-screen mode. Press F11 again to switch to windowed mode.
 NOTE: This will not hide menu-bar, tool-bar, and scroll-bar.
-
-====== Hide Emacs bars forever ======
-If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
-{{{
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-}}}
 
 ====== Start in full-screen mode ======
 If you want to start Emacs in full-screen mode then put call to toggle-full-screen function into your .emacs file:
