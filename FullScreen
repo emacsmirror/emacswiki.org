@@ -520,6 +520,12 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 (global-set-key [f11] 'switch-full-screen)
 }}}
 
+* To automatically execute the above commands when emacs is starting, complement them with:
+
+{{{
+(add-hook 'after-init-hook 'switch-full-screen)
+}}}
+
 ==See also==
 See also [[Fullscreen]] (just x-send-client-message for X Window).
 
