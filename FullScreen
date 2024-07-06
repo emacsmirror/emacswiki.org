@@ -381,9 +381,11 @@ An alternative method involves adding an `Emacs.Geometry` entry to the [https://
     (w32-send-sys-command 61488))
 }}}
 
-=== X Window System (X11) ===
+==== Maximize ====
 
-==== Emacs Frame Properties ====
+==== Fullscreen ====
+
+===== Emacs Frame Properties =====
 
 The following maps the function 11 key to toggle fullscreen on X11 (Linux, BSD, etc...).
 
@@ -402,7 +404,7 @@ I (Ivan Kanis) have tested it works on Emacs 24.1.
 (global-set-key [f11] 'toggle-fullscreen)
 }}}
 
-==== Send X Messages to the Window Manager ====
+===== Send X Messages to the Window Manager =====
 
      (defun fullscreen ()
        (interactive)
@@ -418,10 +420,9 @@ Or to only maximize window:
        (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
 	    		 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 
+===== External programs =====
 
-==== External programs ====
-
-===== Gnome Keyboard Shortcuts=====
+====== Gnome Keyboard Shortcuts======
 
 If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
 
@@ -431,7 +432,7 @@ And bind the option "Toggle fullscreen mode" to a key which can be used when usi
 
 The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
 
-===== devilspie =====
+====== devilspie ======
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 
@@ -440,6 +441,8 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
     ;;
     (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
         (undecorate fullscreen))
+
+==== Maximize ====
 
 ===== devilspie2 =====
 
