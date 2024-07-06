@@ -11,7 +11,7 @@ For example:
 
 ##emacs -mm [files]##
 
-=== Toggle fullscreen ====
+==== Toggle fullscreen ====
 Add this to the init file:
 
 {{{
