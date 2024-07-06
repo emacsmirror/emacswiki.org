@@ -12,11 +12,7 @@ For example:
 ##emacs -mm [files]##
 
 ==== Toggle fullscreen ====
-Add this to the init file:
-
-{{{
-(global-set-key (kbd "M-RET") 'toggle-frame-fullscreen)
-}}}
+F11 will toggle the fullscreen by default in Emacs.
 
 === Hide Emacs bars ===
 If you want to hide menu-bar, tool-bar, and scroll-bar forever, then use this code:
