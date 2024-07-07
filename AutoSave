@@ -30,16 +30,26 @@ Or even more dramatic:
     (setq auto-save-list-file-prefix
         emacs-tmp-dir)
 
+== Show difference between current file buffer and auto-save file == 
+
+    (defun my/diff-auto-save-file ()
+      "Get auto-save #file# difference with current buffer."
+      (interactive)
+      (diff (make-auto-save-file-name) (current-buffer) nil 'noasync))
+
 
 == Delete auto-save file == 
-    (defun my/auto-save-file-remove ()
+
+    (defun auto-save-file-remove ()
       "Delete auto-save #file# if exist."
       (interactive)
       (let ((filename (make-auto-save-file-name)))
-        (if (file-exists-p filename)
-            (delete-file filename nil) ; no trash
+        (if (not (file-exists-p filename))
+            (message (concat "File " filename " don't exist"))
           ;; else
-          (message (concat "File " filename " don't exist")))
+          (delete-file filename nil) ; no trash
+          (message (concat "File " filename " succesfully removed."))
+          )))
 
 == Interlock symlinks and auto-save files ==
 
