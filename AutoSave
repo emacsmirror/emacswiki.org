@@ -31,13 +31,15 @@ Or even more dramatic:
         emacs-tmp-dir)
 
 
-== Delete auto-save files == 
-
-* To delete all auto-save files in the current directory, use `<tt>#</tt>' in [[Dired]] to mark the files, then `x' to delete them.
-
-* To recursively print and delete all auto-save files under the current directory, run:
-
-    find -name "#*#" -print -delete
+== Delete auto-save file == 
+    (defun my/auto-save-file-remove ()
+      "Delete auto-save #file# if exist."
+      (interactive)
+      (let ((filename (make-auto-save-file-name)))
+        (if (file-exists-p filename)
+            (delete-file filename nil) ; no trash
+          ;; else
+          (message (concat "File " filename " don't exist")))
 
 == Interlock symlinks and auto-save files ==
 
