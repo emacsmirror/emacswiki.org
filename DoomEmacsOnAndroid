@@ -204,11 +204,33 @@ $ ln -s $HOME/.local/share/fonts $HOME/fonts
 [/code]
 
 =Path name in HOME dir, in config file=
-To reliably use <tt>$HOME<tt> in a path name, in emacs config file:
+To reliably use <tt>$HOME</tt> in a path name, in emacs config file:
 [code]
 (expand-file-name "storage/shared/stardict" (getenv "HOME"))
 [/code]
 
 should expand to <tt>/data/data/org.gnu.emacs/files/storage/shared/stardict</tt>
+
+=Suggestion: Move recentf and bookmarks to /sdcard/emacs/=
+To reduce the risk of loosing the precious files <tt>recentf</tt> and <tt>bookmarks</tt> it might be a
+good idea to move files <tt>$HOME/.config/emacs/.local/cache/recentf</tt>
+and <tt>$HOME/.config/emacs/.local/etc/bookmarks</tt> to, say, under <tt>/sdcard/emacs/</tt>:
+[code]
+$ mkdir -p /sdcard/emacs
+$ cp $HOME/.config/emacs/.local/cache/recentf /sdcard/emacs/
+$ cp $HOME/.config/emacs/.local/etc/bookmarks /sdcard/emacs/
+[/code]
+
+Then put the following in your emacs config file:
+[code]
+(customize-set-variable 'bookmark-default-file "/sdcard/emacs/bookmarks")
+(customize-set-variable 'bookmark-save-flag 1) ; Save bookmark list immediately when it has been updated.
+(after! recentf
+  (progn
+    (setq recentf-max-saved-items 10000) ; Set it to whatever you prefer, the default is too small
+    (customize-set-variable 'recentf-save-file "/sdcard/emacs/recentf")
+    (recentf-load-list)
+    (add-hook 'find-file-hook 'recentf-save-list)))
+[/code]
 
 CategoryPorts
