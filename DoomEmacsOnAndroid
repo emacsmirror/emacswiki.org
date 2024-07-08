@@ -5,6 +5,11 @@ Android Emacs can be used with various StarterKits, for example Spacemacs and Do
 
 Doom Emacs works well in Android Emacs, except that installing and updating takes a long time: The script that does the installation or update runs for a long time. This is due to that the script executes emacs as a subprocess multiple times, and Android has poor support for executing an app as a subprocess under itself. Other starter kits do not have this issue, they perform the installation or update without starting a lot of new emacs subprocesses.
 
+=A warning about Android power saving=
+It is important to ensure that Android does not attempt to slow down the CPU, or temporarily turn off Wifi, while doing "doom install", "doom upgrade" or "doom sync":
+* In Android settings, probably in section "Battery", look for "Power saving", or "performance", and ensure that power saving is disabled, and performance is set to high performace. Note that your version of Android might have only one of these controls.
+* Connect your Android device to a charger.
+
 =Installation=
 To get started install the Termux APK and the Android Emacs APK in [https://sourceforge.net/projects/android-ports-for-gnu-emacs/files/termux/ Sourceforge]. Follow the instructions in the README under the same URL. Do not forget to run:
 [code]
