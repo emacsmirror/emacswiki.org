@@ -16,6 +16,8 @@ of buffer zones is, in effect, a (typically) noncontiguous
 
 The content of a ''zone'' is any contiguous stretch of buffer text.
 
+
+[:ZonesAndNoncontiguousRegions]
 A set of zones differs from what Emacs calls a '''noncontiguous region''' in these ways:
 
 * The zones in a set (or list) of zones can be adjacent or overlap,
@@ -43,6 +45,7 @@ session by reading the file where it is saved.
 
 Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier (a negative integer).
 
+[:ZonesAndOverlays]
 Zones have even more in common with Emacs [[overlay]]s than they do
 with segments of a noncontiguous region. An overlay has an
 associated buffer, two limits (start and end), and an optional list of
@@ -69,7 +72,7 @@ information is used as the property list of the resulting overlay.
 
 
 
-
+[:WhatYouCanDoWithZones]
 You can do the following with a list of zones:
 
 * Sort them.
@@ -96,7 +99,7 @@ you need library [[Bookmark+]].
 
 
 
-
+[:ZoneCommandsAndKeys]
 [:zz-select-zone-by-id-and-text]
 [:zz-add-zone]
 [:zz-add-zone-and-unite]
