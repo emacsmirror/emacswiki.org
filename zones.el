@@ -1,4 +1,4 @@
-;;; zones.el --- Zones of text - like multiple regions
+;;; zones.el --- Zones of text - like multiple regions  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2010-2023  Free Software Foundation, Inc.
 ;;
@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 17 22:03:43 2023 (-0700)
+;; Last-Updated: Wed Oct 18 10:22:20 2023 (-0700)
 ;;           By: dradams
-;;     Update #: 3348
+;;     Update #: 3362
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -603,6 +603,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2023/10/18 dadams
+;;     Use nadvice, for Emacs releases that support it.  Thx to Stefan Monnier.
 ;; 2023/10/17 dadams
 ;;     Require cl-lib when available, else defalias cl-case to case.
 ;;     Added declare-function to quiet byte compiler.
@@ -1160,14 +1162,16 @@ cons whose car is the abstract (a string).")
 
 ;;; Advice for Standard Functions ------------------------------------
 
-(defadvice widen (after zz--widen activate)
-  "When called interactively, reset mode-line narrowing lighter."
-  (when (interactive-p)
-    (setq zz-lighter-narrowing-part  "")
-    (zz-narrowing-lighter)))
+(when (require 'nadvice nil t)
 
-(defun zz-narrow-advice (interactive-p)
-  "Advice for narrowing functions.
+  (defun zz--widen-advice (&rest _)
+    "When called interactively, reset mode-line narrowing lighter."
+    (when (called-interactively-p 'any)
+      (setq zz-lighter-narrowing-part  "")
+      (zz-narrowing-lighter)))
+
+  (defun zz--narrow-advice (&rest _)
+    "Advice for narrowing functions.
 If the function was called interactively and option
 `zz-narrowing-adds-zone-flag' is non-nil, or if `zz-add-zone-anyway-p'
 is non-nil, then call `zz-add-zone', to add a zone for the new buffer
@@ -1175,15 +1179,47 @@ restriction.
 
 If the function was called interactively then set the mode-line
 lighter to `Narrow'."
-  (when (or (and interactive-p  zz-narrowing-adds-zone-flag)
-            zz-add-zone-anyway-p)
-    (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: "))
-  (when interactive-p
-    (setq zz-lighter-narrowing-part  "")
-    (zz-narrowing-lighter)))
+    (let ((interactive-p  (called-interactively-p 'any)))
+      (when (or (and interactive-p  zz-narrowing-adds-zone-flag)  zz-add-zone-anyway-p)
+        (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: "))
+      (when interactive-p
+        (setq zz-lighter-narrowing-part  "")
+        (zz-narrowing-lighter))))
 
-(defadvice narrow-to-region (after zz-add-zone--region activate)
-  "Push the region limits to the current `zz-izones-var'.
+  (advice-add 'widen            :after #'zz--widen-advice)
+  (advice-add 'narrow-to-region :after #'zz--narrow-advice)
+  (advice-add 'narrow-to-defun  :after #'zz--narrow-advice)
+  (advice-add 'narrow-to-page   :after #'zz--narrow-advice)
+  
+
+  )
+
+(unless (require 'nadvice nil t)
+
+  (defadvice widen (after zz--widen activate)
+    "When called interactively, reset mode-line narrowing lighter."
+    (when (interactive-p)
+      (setq zz-lighter-narrowing-part  "")
+      (zz-narrowing-lighter)))
+
+  (defun zz-narrow-advice (interactive-p)
+    "Advice for narrowing functions.
+If the function was called interactively and option
+`zz-narrowing-adds-zone-flag' is non-nil, or if `zz-add-zone-anyway-p'
+is non-nil, then call `zz-add-zone', to add a zone for the new buffer
+restriction.
+
+If the function was called interactively then set the mode-line
+lighter to `Narrow'."
+    (when (or (and interactive-p  zz-narrowing-adds-zone-flag)
+              zz-add-zone-anyway-p)
+      (zz-add-zone (point-min) (point-max) nil nil nil "Narrowed, and recorded zone: "))
+    (when interactive-p
+      (setq zz-lighter-narrowing-part  "")
+      (zz-narrowing-lighter)))
+
+  (defadvice narrow-to-region (after zz-add-zone--region activate)
+    "Push the region limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 Interactively, this is controlled by option
@@ -1192,10 +1228,10 @@ variable `zz-add-zone-anyway-p'.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (zz-narrow-advice (interactive-p)))
+    (zz-narrow-advice (interactive-p)))
 
-(defadvice narrow-to-defun (after zz-add-zone--defun activate)
-  "Push the defun limits to the current `zz-izones-var'.
+  (defadvice narrow-to-defun (after zz-add-zone--defun activate)
+    "Push the defun limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 Interactively, this is controlled by option
@@ -1204,10 +1240,10 @@ variable `zz-add-zone-anyway-p'.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (zz-narrow-advice (interactive-p)))
+    (zz-narrow-advice (interactive-p)))
 
-(defadvice narrow-to-page (after zz-add-zone--defun activate)
-  "Push the page limits to the current `zz-izones-var'.
+  (defadvice narrow-to-page (after zz-add-zone--defun activate)
+    "Push the page limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 Interactively, this is controlled by option
@@ -1216,7 +1252,9 @@ variable `zz-add-zone-anyway-p'.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (zz-narrow-advice (interactive-p)))
+    (zz-narrow-advice (interactive-p)))
+
+  )
  
 ;;(@* "General Commands")
 
@@ -1321,18 +1359,18 @@ zones are first removed from `zz-izones-var'."
 ;; This is a non-destructive operation.
 ;;
 ;;;###autoload
-(defun zz-narrow (arg &optional msgp)   ; Not bound.
-  "Widen to a previous buffer restriction (narrowing).
+(defun zz-narrow (arg &optional msgp)   ; Not bound.  Instead, `zz-narrow-repeat' is bound, to `C-x n x'.
+  "Restore a previous buffer restriction (narrowing).
 The candidates are the zones in the current `zz-izones-var'.
 
-With no prefix arg, widen to the previous narrowing.
+With no prefix arg, restore the previous narrowing.
 With a plain prefix arg (`C-u'), widen completely.
 With a zero  prefix arg (`C-0'), widen completely and reset (empty)
  the list of zones for this buffer.
-With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
- previous narrowing).  Positive and negative args work the same,
- except that a negative arg also pops entries off the ring: it removes
- the ring entries from the most recent back through the (-)Nth one.
+With a numeric prefix arg N, restore the abs(N)th previous narrowing).
+ Positive and negative args work the same, except that a negative arg
+ also pops entries off the ring: it removes the ring entries from the
+ most recent one back through the (-)Nth one.
 
 If option `zz-auto-remove-empty-izones-flag' is non-nil then all empty
 zones are first removed from `zz-izones-var'."
@@ -1367,7 +1405,7 @@ zones are first removed from `zz-izones-var'."
              (cond (val
                     (setq zz-lighter-narrowing-part   (format "-%d" (abs (caar val))))
                     (condition-case err
-                        (let* ((zz-add-zone-anyway-p  t)
+                        (let* ((zz-add-zone-anyway-p   t)
                                (izone                  (car val))
                                (beg                    (nth 1 izone))
                                (end                    (nth 2 izone))
@@ -2454,7 +2492,7 @@ value can be modified."
 ;;                               limits))))
 ;;     limits))
 
-(define-obsolete-function-alias 'zz-izone-limits-in-bufs 'zz-basic-zones-in-bufs "2020.08.21")
+(define-obsolete-function-alias 'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs "2020.08.21")
 (defun zz-basic-zones-in-bufs (buffers &optional izones-var)
   "Return a list of basic zones for IZONES-VAR for each buffer in BUFFERS.
 If BUFFERS is nil, return the zones for the current buffer only.
@@ -2472,7 +2510,7 @@ sublists the `zz-basic-zones' lists for BUFFERS."
                              (zz-basic-zones (symbol-value (or izones-var  zz-izones-var)) buf 'THISBUF)))))
     limits))
 
-(define-obsolete-function-alias 'zz-izone-limits 'zz-basic-zones "2020.08.21")
+(define-obsolete-function-alias 'zz-izone-limits #'zz-basic-zones "2020.08.21")
 (defun zz-basic-zones (izones &optional buffer only-one-buffer-p)
   "Return a list of basic zones based on IZONES.
 In other words, remove zone identifiers from IZONES.
@@ -2616,7 +2654,7 @@ reads any symbol, but it provides completion against variable names."
         (enable-recursive-minibuffers  t))
     (when (and default-value  (symbolp default-value))
       (setq default-value  (symbol-name default-value)))
-    (intern (completing-read prompt obarray 'boundp require-match nil 'minibuffer-history
+    (intern (completing-read prompt obarray #'boundp require-match nil 'minibuffer-history
                              (let ((var-at-pt  (and symb  (boundp symb)  (symbol-name symb))))
                                (if (and default-value  var-at-pt  (> emacs-major-version 22))
                                    (list default-value var-at-pt)
@@ -2983,10 +3021,10 @@ associated with the basic zones."
 ;;                                       ("???" . isearchp-make-zones-visible)
 ;;                                       ("???" . isearchp-toggle-zone/anti-zone-visibility)
                                          ))
-    (define-key zz-toggles-map (kbd "d")     'isearchp-toggle-dimming-outside-search-area)     ; C-x n M-= d
-    (define-key zz-toggles-map (kbd "v")     'isearchp-toggle-anti-zones-invisible)            ; C-x n M-= v
-    (define-key zz-toggles-map (kbd "V")     'isearchp-toggle-zones-invisible)                 ; C-x n M-= V
-    (define-key zz-toggles-map (kbd "~")     'isearchp-toggle-complementing-domain)            ; C-x n M-= ~
+    (define-key zz-toggles-map (kbd "d")     #'isearchp-toggle-dimming-outside-search-area)    ; C-x n M-= d
+    (define-key zz-toggles-map (kbd "v")     #'isearchp-toggle-anti-zones-invisible)           ; C-x n M-= v
+    (define-key zz-toggles-map (kbd "V")     #'isearchp-toggle-zones-invisible)                ; C-x n M-= V
+    (define-key zz-toggles-map (kbd "~")     #'isearchp-toggle-complementing-domain)           ; C-x n M-= ~
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
