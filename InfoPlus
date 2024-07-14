@@ -427,6 +427,19 @@ Typo introduced in latest mod at line 3145 results in unbalanced parens, so lib 
 Thanks, Phil. Corrected. - DrewAdams
 
 
+---
+[new]
+
+Hey would it be possible that the format that Info-breadcrumbs-in-mode-line-mode uses?
+I don't like that it removes the * around the mode-line-buffer-identification similar as info has by default and what other modes
+uses which contain buffers that are not backend by plain files.
+I also noticed that using nfo-breadcrumbs-in-mode-line-mode breaks doom-modeline-mode.
+
+Thaodan -- Björn
+
+
+
+
 ----
 Lisp:info+.el
 
