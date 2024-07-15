@@ -17,6 +17,7 @@ See DiredSortDirectoriesFirst for other solutions.
 
 = Add-ons for sorting =
 * DiredSort
+* DiredSortCycle
 * DiredSortBySizeAndExtension 
 * DiredSortCriterias
 * DiredSortMenu - Lets you sort Dired listings in various ways. Provides a menu bar menu and a popup menu for this.
