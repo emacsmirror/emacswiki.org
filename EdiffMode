@@ -172,6 +172,11 @@ Enlarge *Ediff Control Panel* frame size and make it to be selected by default. 
 
 --DavidYoung
 
+
+= Separate window problem =
+Ediff controlled via separate window. There is no easy workaround to eliminate this window.
+Here is attempt [https://github.com/Anoncheg1/ediffnw Ediffnw] for two files case that rebind all keys.
+
 = Discussion =
 
 EdiffMode can also be used with pcl-cvs (see ConcurrentVersionsSystem).  To use it, type <code>d e</code> on some selected file. The original file will be fetched from cvs and then ediff applies to it - very useful. --ZajcevEvgeny
