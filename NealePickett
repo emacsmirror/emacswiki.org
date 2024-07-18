@@ -4,7 +4,7 @@ At first, when I accidentally overwrote my Windows hard drive with Linux, I swit
 
 Later on, I began using EmacsIRCClient, then CalendarMode with AppointmentMode, and now I've all but done away with my xterm with [[Eshell]].  My X setup at one point consisted of an Emacs window running full-screen under [[ratpoison]], occasionally a web browser, and that's all.
 
-These days (2024) I'm back on Emacs after trying all kinds of other editors, ending with Visual Studio Code. Emacs 29 has really come a long way since Emacs 20. My ''init.el'' is only 80 lines long now!
+These days (2024) I'm back on Emacs -- ''on Windows!'' -- after trying all kinds of other editors, ending with Visual Studio Code. Emacs 29 has really come a long way since Emacs 20. My ''init.el'' is only 80 lines long now!
 
 == Edits that didn't make it into the wiki ==
 
@@ -22,6 +22,10 @@ Notably, vim claims the concept is so foreign that it will probably never suppor
 I set this up with hooks in ''prog-mode'' and ''text-mode'':
 
 {{{
+(set-face-font 'default "Consolas-11")
+(set-face-font 'mode-line "Go")
+(set-face-font 'variable-pitch "Go")
+
 (use-package face-remap
   :diminish buffer-face-mode
   :hook (prog-mode . variable-pitch-mode)
