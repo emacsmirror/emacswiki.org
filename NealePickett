@@ -10,20 +10,28 @@ These days (2024) I'm back on Emacs after trying all kinds of other editors, end
 
 Here's some stuff I meant to add but couldn't get in for one reason or another:
 
-=== Variable Pitch (aka Proportional Spacing) on older Emacs ===
-
-Modern emacs has ''variable-pitch-mode''. You should use that :)
+=== Variable Pitch (aka Proportional Spacing) ===
 
 Plan 9's "Acme" editor does proportional spacing on fonts.
 After a few years I realized it's actually kind of nice,
-so when it was time to come back to Emacs, I set up the following.
+so when it was time to come back to Emacs, I set it up.
 
 There are very few editors that can handle proportional-spaced fonts.
 Notably, vim claims the concept is so foreign that it will probably never support it.
 
-There are occasionally things that really need monospacing,
-notably a lot of command-line programs.
-You can toggle between variable and fixed pitch with "C-c m".
+I set this up with hooks in ''prog-mode'' and ''text-mode'':
+
+{{{
+(use-package face-remap
+  :diminish buffer-face-mode
+  :hook (prog-mode . variable-pitch-mode)
+  :hook (text-mode . variable-pitch-mode)
+  )
+}}}
+
+Years ago, I had ''C-c m'' set to toggle variable-pitch-mode.
+I haven't needed that recently,
+but here's how I did it:
 
 {{{
 ;;; If you don't have "Roboto Mono" and "Roboto", try:
