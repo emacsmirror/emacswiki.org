@@ -2,15 +2,17 @@ I used to think I'd never need to know LISP.  I was wrong.
 
 At first, when I accidentally overwrote my Windows hard drive with Linux, I switched between Emacs and vi a lot.  All I knew about Emacs was that it took a long time to start up.  Then one day while learning PGP, I came across a newsgroup post about MailCrypt, which mentioned that it integrated seamlessly with Emacs MailUserAgents, noting "You *do* use Emacs to read your mail, don't you?"  In fact, I didn't, but I figured it would be worth trying, so I launched [[Rmail]].  That led to ViewMail (VM), and then [[Gnus]].
 
-Later on, I began using EmacsIRCClient, then CalendarMode with AppointmentMode, and now I've all but done away with my xterm with [[Eshell]].  My X setup now consists of an Emacs window running full-screen under [[ratpoison]], occasionally a web browser, and that's all.
+Later on, I began using EmacsIRCClient, then CalendarMode with AppointmentMode, and now I've all but done away with my xterm with [[Eshell]].  My X setup at one point consisted of an Emacs window running full-screen under [[ratpoison]], occasionally a web browser, and that's all.
 
-Ever since GNU Emacs 20.1 came out, I use Emacs.  Before that I preferred XEmacs.
+These days (2024) I'm back on Emacs after trying all kinds of other editors, ending with Visual Studio Code. Emacs 29 has really come a long way since Emacs 20. My ''init.el'' is only 80 lines long now!
 
 == Edits that didn't make it into the wiki ==
 
 Here's some stuff I meant to add but couldn't get in for one reason or another:
 
-=== Variable Pitch (aka Proportional Spacing) ===
+=== Variable Pitch (aka Proportional Spacing) on older Emacs ===
+
+Modern emacs has ''variable-pitch-mode''. You should use that :)
 
 Plan 9's "Acme" editor does proportional spacing on fonts.
 After a few years I realized it's actually kind of nice,
@@ -40,8 +42,6 @@ You can toggle between variable and fixed pitch with "C-c m".
 
 (global-set-key (kbd "C-c m") 'variable-pitch-mode)
 }}}
-
-http://i.imgur.com/BEsgDbj.png
 
 
 ----
