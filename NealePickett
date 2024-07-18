@@ -6,6 +6,8 @@ Later on, I began using EmacsIRCClient, then CalendarMode with AppointmentMode, 
 
 These days (2024) I'm back on Emacs -- ''on Windows!'' -- after trying all kinds of other editors, ending with Visual Studio Code. Emacs 29 has really come a long way since Emacs 20. My ''init.el'' is only 80 lines long now!
 
+My (non-Emacs) homepage is https://woozle.org/
+
 == Edits that didn't make it into the wiki ==
 
 Here's some stuff I meant to add but couldn't get in for one reason or another:
