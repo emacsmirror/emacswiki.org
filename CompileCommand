@@ -183,7 +183,8 @@ Note that after you have hit the enter once for your compile command, you can ru
 
 == Recompiling ==
 
-I use this command to compile, which will recompile in the exact same way as last time, unless given a prefix argument.  This is really handy for big projects where I need to edit a lot of files in different directories.
+In older versions of emacs, M-x recompile did not recompile in the original directory.
+This code creates a new function to make it work the way it does in modern Emacs:
 
 {{{
 (global-set-key [(control c) (c)] 'compile-again)
@@ -205,11 +206,6 @@ M-x compile.
 }}}
 
 - NealePickett
-
-[new]
-How is that different from M-x recompile?
-
-Answer: M-x recompile just executes the last compile command in the directory of the current buffer which can be different from the directory of the compile buffer. So you would have to manually switch to the compile buffer and do compile there. This is what the above command does.
 
 ==Running Make with the closest Makefile==
 
