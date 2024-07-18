@@ -41,5 +41,13 @@ go-mode can ability to interact with play.golang.org but there are nice modes th
 
 There are several repos with Go snippets for use with ''yasnippet''.
 
+== go test ==
+
+''M-x compile'' can automatically highlight and link files in ''go test'' output,
+with the addition of a regexp to recognize them:
+
+    (add-to-list 'compilation-error-regexp-alist 'gotest)
+    (add-to-list 'compilation-error-regexp-alist-alist '(gotest "^    \\([^:]+\\):\\([0-9]+\\)" 1 2))
+
 ----
 ProgrammingModes
