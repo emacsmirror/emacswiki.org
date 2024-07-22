@@ -47,7 +47,9 @@ There are several repos with Go snippets for use with ''yasnippet''.
 with the addition of a regexp to recognize them:
 
     (add-to-list 'compilation-error-regexp-alist 'gotest)
-    (add-to-list 'compilation-error-regexp-alist-alist '(gotest "^    \\([^:]+\\):\\([0-9]+\\)" 1 2))
+    (add-to-list 'compilation-error-regexp-alist-alist '(gotest "^    \\([^:\n]+\\):\\([0-9]+\\)" 1 2))
+    (add-to-list 'compilation-error-regexp-alist 'gotraceback)
+    (add-to-list 'compilation-error-regexp-alist-alist '(gotraceback "^a\t\\([^\n\t]+\\):\\([0-9]+\\)\\( \\+0x[0-9a-f]+\\)?$" 1 2 nil (nil . 3)))
 
 ----
 ProgrammingModes
