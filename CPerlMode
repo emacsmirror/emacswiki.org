@@ -27,20 +27,9 @@ Or the more robust equivalent:
            (setcdr pair 'cperl-mode)))
      (append auto-mode-alist interpreter-mode-alist))
 
-cperl-mode is part of Emacs.
+cperl-mode is part of Emacs.  We try hard to keep it up to the changes in Perl itself.  In Emacs 30 all Perl syntax including Perl version 5.40 (released in 2024) is supported.
 
-cperl-mode also used to ship with Perl itself, but was out of date. As of 5.12.1 it no longer ships with Perl at all.
-
-2008-Jan-18: JonathanRockway has updated CPerl mode to handle Perl 5.10: 
-
-Up-to-date code at http://github.com/jrockway/cperl-mode/tree/master (updated Jan-31-2009).  (This tends to border on experimental, so if you have questions, ask me (jrockway) on #emacs.  It now supports MooseX::Declare syntax.)
-
-http://blog.jrock.us/articles/Emacs%20and%20Perl%205.10.pod
-
-2009-May-11: SteffenSchwigon has provided a fork that handles Perl6 syntax quite well, 
-and is also useable for MooseX::Declare based modules. It's located in the Jonathan Rockway GitHub repository: https://github.com/jrockway/cperl-mode/tree/mxd-perl6-merge
-
-The version of CPerlMode you have loaded is given by the `cperl-version' variable. Try `M-x describe-variable RET cperl-version' or `C-h v cperl-version' or from the menu: ''Help'' -> ''Describe'' -> ''Describe Variable'', and type in `cperl-version'. 
+The version of cperl-mode.el which comes with Emacs 30 can be used as a drop-in replacement for cperl-mode.el in Emacs version 27 or newer.  It can be retrieved from the Emacs source code repository.
 
 == Starting CPerl Mode ==
 
