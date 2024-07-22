@@ -1,1 +1,9 @@
 New requests? Ask here!
+
+----
+
+The intermap link to the Emacs source code repository seems to be no longer updated.
+I suggest to link to the repository at savannah instead: https://git.savannah.gnu.org/cgit/emacs.git/
+
+-- haj 2024-07-22 11:12 UTC
+
