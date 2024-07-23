@@ -2,7 +2,7 @@
 ;;
 ;; Author: Phil Sainty
 ;; Created: April 2018
-;; Version: 0.4.9
+;; Version: 0.4.10
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -31,6 +31,10 @@
 ;; in `psysh-mode-hook' to filter the colour codes from the output;
 ;; or you can prevent PsySH from generating colour codes at all by
 ;; setting 'colorMode' in `psysh-config'.
+;;
+;; Note that if you are calling "sudo" in your `psysh-command' then
+;; you may need to pass "--preserve-env=PSYSH_CONFIG" as an option to
+;; the sudo command.
 
 (require 'comint)
 (require 'ansi-color)
@@ -39,7 +43,7 @@
 (require 'cc-mode) ;; `c-mode-syntax-table' is guaranteed to be available.
 (require 'php-mode nil :noerror) ;; Derives from c-mode; mightn't be installed.
 
-(defconst psysh--latest-version "0.4.9")
+(defconst psysh--latest-version "0.4.10")
 
 (defvar psysh-process-name "psysh"
   "Name for the comint process.")
@@ -84,7 +88,7 @@ overflow, which which means that PHP won't receive all the input.
 Using a pipe instead of a pty avoids this 4K buffer issue, as well as
 any other unwanted terminal-oriented weirdness which might occur.
 
-If psysh's 'useReadline' option is enabled and one of the supported
+If psysh's \\='useReadline\\=' option is enabled and one of the supported
 implementations is available, then this issue shouldn't crop up (as
 they will not be using canonical mode); however we need our default
 behavior to cope with the fallback readline implementation provided by
@@ -114,13 +118,13 @@ See `psysh-process-connection-type' for more information."
 (defcustom psysh-prompt-main ">>> "
   "The REPL's main input prompt.
 
-This must match the 'prompt' theme setting in `psysh-config'."
+This must match the \\='prompt\\=' theme setting in `psysh-config'."
   :type 'string)
 
 (defcustom psysh-prompt-continuation "... "
   "The REPL's input continuation prompt.
 
-This must match the 'bufferPrompt' theme setting in `psysh-config'."
+This must match the \\='bufferPrompt\\=' theme setting in `psysh-config'."
   :type 'string)
 
 (defcustom psysh-prompt-regexp (rx-to-string
@@ -132,7 +136,7 @@ This must match the 'bufferPrompt' theme setting in `psysh-config'."
 Defaults to matching either of `psysh-prompt-main' or
 `psysh-prompt-continuation'.
 
-See also the 'theme' setting in `psysh-config'."
+See also the \\='theme\\=' setting in `psysh-config'."
   :type 'string)
 
 (defvar psysh-remap-php-send-region)
@@ -217,16 +221,16 @@ file containing this configuration, when psysh is invoked.
 Refer to URL `http://github.com/bobthecow/psysh/wiki/Config-options'
 for details of all the available config options.
 
-At minimum the 'pager' value should be set to 'cat', as the comint
+At minimum the \\='pager\\=' value should be set to \\='cat\\=', as the comint
 buffer provides only a dumb terminal.
 
-For PsySH v0.11.9 or later, it's important for the 'theme' value
+For PsySH v0.11.9 or later, it's important for the \\='theme\\=' value
 to specify prompts which match the values of `psysh-prompt-main'
-and `psysh-prompt-continuation'.  If the 'prompt' value is set,
+and `psysh-prompt-continuation'.  If the \\='prompt\\=' value is set,
 it similarly must match `psysh-prompt-main'.
 
 If you set `psysh-comint-input-sender' to use the default comint
-sender then you may wish to set 'requireSemicolons' => true, as
+sender then you may wish to set \\='requireSemicolons\\=' => true, as
 otherwise PsySH can send the input to PHP earlier than you had
 intended.  For example, the following code would be submitted
 immediately following the first method call, meaning that the
@@ -236,13 +240,13 @@ statement, resulting in a parse error.
 $object->method1()
        ->method2();
 
-With 'requireSemicolons' enabled, the behaviour will be correct.
+With \\='requireSemicolons\\=' enabled, the behaviour will be correct.
 That setting does make it more awkward to use `psysh-send-region'
 on arbitrary fragments of code, however.
 
 If `psysh-comint-input-sender' is configured to use the custom
 sender, then all input is manipulated into a single line, and
-consequently 'requireSemicolons' is not necessary."
+consequently \\='requireSemicolons\\=' is not necessary."
   ;; See also https://github.com/bobthecow/psysh/issues/361
   :type 'psysh-text-widget)
 
@@ -251,7 +255,7 @@ consequently 'requireSemicolons' is not necessary."
   ;; but `customize-option' will display it nicely in older versions.
   "Initial input to send to PsySH.
 
-For example you could send 'help' to display the help text automatically
+For example you could send \"help\" to display the help text automatically
 when invoking the REPL.
 
 You may enter multiple lines.  Enter one command per line."
@@ -305,22 +309,22 @@ input exceeding 1024 characters may produce bugs/errors.  Refer
 to URL `https://github.com/bobthecow/psysh/issues/496'
 
 If you use the default comint sender then you may also wish to
-set 'requireSemicolons' => true, in `psysh-config'."
+set \\='requireSemicolons\\=' => true, in `psysh-config'."
   :type '(choice (const :tag "Standard comint sender" nil)
                  (const :tag "PsySH sender" t)
                  (function :tag "Custom function"
                            :value comint-simple-send)))
 
 (defcustom psysh-doc-refill t
-  "Whether to automatically refill psysh `doc' output.
+  "Whether to automatically refill psysh \\='doc\\=' output.
 
 This will wrap lines at the current `window-width' if it is
 smaller than 100 columns (being the hard-coded wrapping column
 used for this documentation).
 
 This occasionally causes unwanted indentations due to (rare)
-errors in the text of the `doc' database content.  At the time of
-writing, 'doc var_export' provides an example.  In practice, such
+errors in the text of the \\='doc\\=' database content.  At the time of
+writing, \"doc var_export\" provides an example.  In practice, such
 wrongly-wrapped text is usually still easy to read, and so these
 minor disadvantages are vastly outweighed by the overall benefits.
 
@@ -831,7 +835,7 @@ Called via `comint-output-filter-functions'."
 
 If no PsySH buffer is found, fall back to calling `php-send-region'.
 
-If 'requireSemicolons' is set to true in `psysh-config', then you
+If \\='requireSemicolons\\=' is set to true in `psysh-config', then you
 will not be able to directly execute regions which are not
 terminated with a semicolon -- you would need to switch to the
 REPL and enter the semicolon manually."
