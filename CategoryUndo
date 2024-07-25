@@ -16,6 +16,7 @@ Undo Replacements:
 Undo Utilities:
 
 * BackupFiles -- Let Emacs keep old copies of the file around.
+* CursorUndo -- track your cursor movement and cursor-to-screen relative position history for `undo'.
 * GotoLastChange, GotoChg  -- move [[point]] through `buffer-undo-list' positions
 * Lisp:volatile-highlights.el - Volatile highlights mode brings visual feedback of "undo" operation by making highlights on text inserted by "undo" command.
 * RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
