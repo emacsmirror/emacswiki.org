@@ -6,7 +6,7 @@ For frequent cursor movements such as up/down/left/right, it combines the moveme
 
 == "Brief" History ==
 
-This cursor-undo functionality has existed in my local Emacs init file for over 11+ years, since version 0 on 2013-06-26.  It was originally intended to support my Brief Editor Mode only, but I later found it would be more useful if implemented in a more generalized way.  For years I have hoped for an official implementation of this feature, which is commonly seen among various editors.  Considering my implementation using advice functions a bit inelegant so I have always hesitated to release it till recently.                                 
+This cursor-undo functionality has existed in my local Emacs init file for over 11+ years, since version 0 on 2013-06-26.  It was originally intended to support my BriefMode only, but I later found it would be more useful if implemented in a more generalized way.  For years I have hoped for an official implementation of this feature, which is commonly seen among various editors.  Considering my implementation using advice functions a bit inelegant so I have always hesitated to release it till recently.                                 
                                                                        
 Until there is official support for the cursor undo feature, this package serves most common daily needs.  The core design is to align with Emacs's native `undo' function by recording cursor positions and screen-relative position undo entries in the `buffer-undo-list' in accordance with its documentation.
 
