@@ -14,7 +14,7 @@ As this package primarily consists of advice functions to wrap cursor movement c
 
 == Usage ==
 
-This package is released as a standard ELPA package.  Just go to Emacs main menu -> "Options" -> "Manage Emacs Packages" and install it.  Once this package is installed, you only need to enable cursor-undo mode by adding the following line into your Emacs init file .emacs or init.el:                                                             
+This package is released as a standard [https://elpa.gnu.org/packages/cursor-undo.html ELPA package].  Just go to Emacs main menu -> "Options" -> "Manage Emacs Packages" and install it.  Once this package is installed, you only need to enable cursor-undo mode by adding the following line into your Emacs init file .emacs or init.el:                                                             
                                                                      
   (cursor-undo 1)
 
@@ -29,3 +29,6 @@ If you choose to use default Emacs `undo' system, you should be able to use `evi
 == Notes for Viper mode user ==
                                                                       
 The default `viper-undo' is advised to allow cursor-undo.  If you find the advised function not working properly, consider comment out the following source code `(define-advice viper-undo ...' to restore the original `viper-undo' function and use Emacs default `undo' (C-_, C-/ or C-x u ...) to undo cursor movements.
+
+
+Luke Lee  (07/25/2024)
