@@ -32,7 +32,7 @@ The default `viper-undo' is advised to allow cursor-undo.  If you find the advis
 
 == Technical notes == 
 
-Why do I use advice functions instead of a generalized pre/post-command-hook? I bet you wouldn't like all the cursor movements in your debugging session being recorded as undo entries; when you start `undo'ing you will find the cursor replaying your previous debugging session in a reverse order.  So does it in `semantic' mode and many others.  If it record *every* movement you will soon find it difficult to use in many conditions.  Therefore, only the chosen editing key commands are advised with cursor-undo.  If you find something missing, just add your `def-cursor-undo' advice.
+Why do I use advice functions instead of a generalized pre/post-command-hook? I bet you wouldn't like all the cursor movements in your debugging session being recorded as undo entries; when you start `undo'ing you will find the cursor replaying your previous debugging session in a reverse order.  So does it in `semantic' mode and many others.  If it record *every* movement you will soon find it difficult to use in many situations.  Therefore, only the chosen editing key commands are advised with cursor-undo.  If you find something missing, just add your `def-cursor-undo' advice.
 
 
 Luke Lee  (07/25/2024)
