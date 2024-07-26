@@ -20,6 +20,14 @@ This package is released as a standard [https://elpa.gnu.org/packages/cursor-und
 
 That's all.  You can now move your cursor around and use stand Emacs `undo' (C-_, C-/ or C-x u) to move it back.  Even in read-only buffers you can still undo cursor movements.  This is convenient especially when browsing a huge file.
 
+== Notes for read-only buffers ==
+
+Notice that the original `undo' cannot be performed in read-only buffers. Here, I also advised the undo operation in read-only buffers as long as the pending undo list is still a cursor movement.
+
+This also enables a editing trick:
+If you are just editing a big file and moving the cursor to browse other parts but forgot where you were, you can undo cursor movements to go back to your last edited position by long-holding <undo> until the last editing command. However, you risk missing your last edited operation as it might flash by so quickly that you don't notice and keep undoing other cursor commands you don't want to undo. 
+
+In this case, you can switch the buffer to read-only mode (by setting `buffer-read-only' to t), then long press <undo> until the undo command warns you that you're trying to edit a read-only buffer. At this point, you're exactly at the latest editing position you are looking for. You can then safely set `buffer-read-only' flag back to NIL and continue your editing.
 
 == Notes for EVIL mode user ==
                                                                        
