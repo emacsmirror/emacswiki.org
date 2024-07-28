@@ -112,3 +112,4 @@
 ^172\.84\.(18[2-3])\. # 2024-07-28 [172.84.182.0 - 172.84.183.255] Comments on CategoryEmacsWikiSite
 ^172\.84\.(17[6-9]|18[0-9]|19[0-1])\. # 2024-07-28 [172.84.176.0 - 172.84.191.255] Comments on CategoryEmacsWikiSite
 ^148\.87\. # 2024-07-28 [148.87.0.0 - 148.87.255.255] Comments on CategoryEmacsWikiSite
+^217\.69\.127\. # 2024-07-28 [217.69.127.0 - 217.69.127.255] Comments on GettingIspellWorkinginEmacsForWindows
