@@ -111,3 +111,4 @@
 ^45\.252\.(5[6-7])\. # 2024-07-28 [45.252.56.0 - 45.252.57.255] Comments on Git repository
 ^172\.84\.(18[2-3])\. # 2024-07-28 [172.84.182.0 - 172.84.183.255] Comments on CategoryEmacsWikiSite
 ^172\.84\.(17[6-9]|18[0-9]|19[0-1])\. # 2024-07-28 [172.84.176.0 - 172.84.191.255] Comments on CategoryEmacsWikiSite
+^148\.87\. # 2024-07-28 [148.87.0.0 - 148.87.255.255] Comments on CategoryEmacsWikiSite
