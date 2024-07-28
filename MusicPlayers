@@ -12,6 +12,7 @@ See CategoryMusic for ways to /make/ music using Emacs.
 * [https://github.com/jorenvo/simple-mpc simple-mpc-mode] -- provides an interface to [http://musicpd.org/ MPD], focuses on simplicity, UI inspired by [[Mingus]] and [[mu4e]]
 * [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://github.com/andyetitmoves/libmpdee libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
 * [https://github.com/alphapapa/listen.el Listen.el] -- Aims to provide a simple audio/music player for Emacs. It should “just work,” with little-to-no configuration, have intuitive commands, and be easily extended and customized.  Offers queues, library browser, MPD database searching, and more.
+* [https://codeberg.org/Heathcliff/muu muu] - A music player built on GNU Emacs and EMMS. It is a keyboard-driven, file/filesystem-oriented music player. muu is heavily inspired by the music player MOC.
 
 === Lightweight options, cool hacks, and non-Emacs players ===
 
