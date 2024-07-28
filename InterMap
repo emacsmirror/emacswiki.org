@@ -26,7 +26,7 @@ An alternative to a plain link people can use.
 Emacs:
 
  BZR http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head:/lisp/
- GIT http://repo.or.cz/w/emacs.git/blob/HEAD:/lisp/
+ GIT https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/
 
 GNU/Linux:
 
