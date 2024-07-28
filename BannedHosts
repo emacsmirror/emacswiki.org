@@ -114,3 +114,4 @@
 ^148\.87\. # 2024-07-28 [148.87.0.0 - 148.87.255.255] Comments on CategoryEmacsWikiSite
 ^217\.69\.127\. # 2024-07-28 [217.69.127.0 - 217.69.127.255] Comments on GettingIspellWorkinginEmacsForWindows
 ^45\.43\.(6[4-9]|[7-8][0-9]|9[0-5])\. # 2024-07-28 [45.43.64.0 - 45.43.95.255] Comments on GettingIspellWorkinginEmacsForWindows
+^45\.61\.(6[4-9]|[7-9][0-9]|1[0-1][0-9]|12[0-7])\. # 2024-07-28 [45.61.64.0 - 45.61.127.255] Comments on GettingIspellWorkinginEmacsForWindows
