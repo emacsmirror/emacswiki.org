@@ -136,5 +136,4 @@ delight is invoked with the ##:delight## keyword, which is passed a minor mode s
   (visual-line-mode))
 [/quote]
 
-With ##use-package## now a part of Emacs, see also:\\
-https://www.gnu.org/software/emacs/manual/html_node/use-package/Delight.html
+With ##use-package## now a part of Emacs, see also: [https://www.gnu.org/software/emacs/manual/html_node/use-package/Delight.html (use-package) Delight] in the info manuals.
