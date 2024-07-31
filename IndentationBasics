@@ -4,7 +4,9 @@ Remember, often the indentation engines of major modes can be customized. Specia
 
 == Basic Control ==
 
-The variable ##indent-tabs-mode## controls whether tabs are used for indentation. It is ##t## (true) by default; to deactivate it, put the following in <tt>[InitFile .emacs]</tt>.
+The variable ##indent-tabs-mode## controls whether tabs are used for indentation. It is ##t## (true) by default, which means that the standard indentation commands will utilise tab characters where possible, and in accordance with the current ##tab-width## value.  (When the indentation is not an exact multiple of tab-width, spaces will be used for the remainder.)
+
+To deactivate ##indent-tabs-mode##, put the following in <tt>[InitFile .emacs]</tt>.
 
     (setq-default indent-tabs-mode nil)
 
