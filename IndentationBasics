@@ -8,18 +8,31 @@ The variable ##indent-tabs-mode## controls whether tabs are used for indentation
 
     (setq-default indent-tabs-mode nil)
 
+The variable ##backward-delete-char-untabify-method## controls what happens when you delete a tab character -- either converting the tab to spaces and deleting one space (the default); deleting all preceding whitespace; or deleting just the single tab character.  If the latter is what you want to happen, use:
+
+    (setq backward-delete-char-untabify-method nil)
+
+Note that you can also switch on `whitespace-mode' to visualise the whitespace; or, if you're using GUI frames, you can use ##(setq x-stretch-cursor t)## to make the cursor occupy the full width of the character it's on (including the full width of a tab character).
+
 The rest of this page will assume tabs are used and discuss the use of the following two variables:
 
 * ##c-basic-offset##: The basic indentation offset in [CcMode CC Mode], default is 2. For Perl, it is controlled by ##cperl-indent-level##.
 * ##tab-width##: How wide a tab is, default is 8.
 
-You /should/ ensure these variables have the same value to avoid interoperability problems with other editors ([http://lists.macromates.com/textmate/2007-November/023215.html TextMate, for example]) that are unable to separate tab width from indentation.  The following will merge the indentation offset and tab width variables for Emacs as well:
+You /should/ ensure these variables have the same value to avoid interoperability problems with other editors ([http://lists.macromates.com/textmate/2007-November/023215.html TextMate, for example]) that are unable to separate tab width from indentation.  E.g.:
+
+    (setq tab-width 4 ;; or any other preferred value
+          c-basic-offset tab-width
+          cperl-indent-level tab-width
+          ...)
+
+With this set-up, all lines but continuation lines become independent of the tab size used by the programmer.  (I.e. when the indentation is a combination of a base indent with some additional alignment spacing).  To fix continuation lines too, see SmartTabs.
+
+The following would alternatively cause the indentation/offset variables to become aliases for the tab-width variable (causing all of the variables to evaluate to the same value); but aliases are intended to be used for variables that are actually the same thing (which is not the case here), and so this has the potential to be problematic:
 
     (setq tab-width 4) ; or any other preferred value
     (defvaralias 'c-basic-offset 'tab-width)
     (defvaralias 'cperl-indent-level 'tab-width)
-
-With this set-up, all lines but continuation lines become independent of the tab size used by the programmer. To fix continuation lines too, see SmartTabs.
 
 ----
 
