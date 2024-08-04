@@ -9,3 +9,16 @@ I would like to edit a link to quotenil.com/OfflineIMAP-with-Encrypted-Authinfo.
 
 -- asdf 2015-06-16 08:43 UTC
 
+
+----
+
+OK, first of all, I cannot even be specific about the problem, because it is blocked and I lost my first submission and had to write this all again (lol).
+
+OK so the problem seems to be that the regex 'deba n OR l ink' is catching https://github.com/toshism/org-super-<banned-word>.
+
+Banning the word 'l ink' seems a bit broad to me, no?
+
+Hopefully this goes through.
+
+-- [https://sr.ht/~trs-80/ Trs80] 2024-08-04 18:45 UTC
+
