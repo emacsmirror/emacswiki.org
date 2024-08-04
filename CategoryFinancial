@@ -2,6 +2,7 @@ Here are some Emacs things relating to finance, money, accounting, etc.
 
 * LedgerMode -- double entry accounting.
 * BeancountMode -- Emacs major-mode to work with Beancount ledger files.
+* BeancountTxnElisp -- A Beancount txn parser and writer, implemented in EmacsLisp.
 * BalanceMode -- tracking bank accounts.
 * LoanPaymentCalculator -- calculating loan payments.
 * [[Chart]] -- stock and commodity quotes in Emacs.
