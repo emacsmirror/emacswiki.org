@@ -1,6 +1,6 @@
 == beancount-txn-elisp ==
 
-A library to read/parse and write/insert individual Beancount transactions, implemented in Emacs Lisp
+A library to read/parse and write/insert individual Beancount transactions, implemented in Emacs Lisp.
 
 [https://sr.ht/~trs-80/beancount-txn-elisp/ beancount-txn-elisp] - Project page at Sourcehut.
 
