@@ -32,7 +32,7 @@ technsight.com # 2024-02-14 Comments on SiteMap
 metamask-wallet.at # 2024-02-21 Comments on SiteMap
 orbiter-finance.at # 2024-02-21 Comments on SiteMap
 trezor-wallet.at # 2024-02-21 Comments on SiteMap
-debank|link # 2024-02-21 Comments on SiteMap
+# debank|link # 2024-02-21 Comments on SiteMap
 didvirtualnumbers.com # 2024-03-15 Comments on LoadingLispFiles
 goo.su/ # 2024-03-18 Comments on EmacsForums
 gblshops.com # 2024-03-25 Comments on StyleGuide
@@ -94,3 +94,4 @@ mapopet\.org # 2024-07-26 Comments on EmacsLisp
 food\.meirxrs\.com # 2024-07-28 Comments on Git repository
 Velo-xachmas\.com # 2024-07-28 Comments on CategoryEmacsWikiSite
 Litl\.cc # 2024-08-03 Comments on EmacsWiki
+debank # 2024-08-05 Defanged "debank|link" pattern due to false positives
