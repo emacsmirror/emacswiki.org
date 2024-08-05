@@ -1,3 +1,18 @@
+Homepage:
+
+[https://crowd.fi.uncoma.edu.ar/christian.gimenez/ https://crowd.fi.uncoma.edu.ar/christian.gimenez]
+(also [https://cnngimenez.gitlab.io https://cnngimenez.gitlab.io] )
+
+My repositories:
+
+[https://gitlab.com/cnngimenez/ Gitlab]
+
+[https://github.com/cnngimenez/ Github]
+
+[https://codeberg.org/cnngimenez Codeberg]
+
+[https://git.sr.ht/~cngimenez Source Hut]
+
 == Emacs Related and Unrelated Projects/Collaborations ==
 
 === Submitted Here ===
@@ -72,6 +87,7 @@ Unrelated Projects:
 I have translated some pages and added these:
 
 * Created:
+** [[auth-source]] -- Created article at august 5, 2024.
 ** [[BBDBV3-Wl]] -- Created article. 
 ** EmotionIconousMode -- Created article.
 ** [[Execute.el]] -- Created article.
