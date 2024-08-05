@@ -163,7 +163,8 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 and Jira.
 * [[https://github.com/sheijk/org-menu org-menu]] -- Provides a handy transient menu for easily discovering and accessing org-mode related commands. Nifty for inserting source blocks, navigation and several other goodies.
 * [https://github.com/toshism/org-super-links org-super-links] package to create backlinked org headings using org-id. This facilitates a zettelkasten system.
-* OrgMode can be used in conjunction with other modes like HowmMode, and packages listed in CategoryPersonalInformationManager. 
+* OrgMode can be used in conjunction with other modes like HowmMode, and packages listed in CategoryPersonalInformationManager.
+* OrgIdUpdateExternal updates Orgmode IDs externally and asynchronously, using find and grep.
 
 [:elisp]
 == Related elisp code ==
