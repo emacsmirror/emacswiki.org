@@ -7,11 +7,13 @@ The frontend functions written in [[EmacsLisp]] are used by other Emacs software
 Backends are used to store the information. There are already implemented to access the files explained at [[GnusAuthInfo]]: ##~/.authinfo.gpg##, ##~/.authinfo##, and ##~/.netrc##. Also, the secrets.el library is included by default to access the gnome-keyring and kwallet through the D-Bus interface.
 
 == Configuration ==
-The {{ auth-sources }} variable must be set with the backends and storage. It can be set with setq or the customization ( ##M-x customize-option auth-sources## ).
+The ##auth-sources## variable must be set with the backends and storage. It can be set with setq or the customization ( ##M-x customize-option auth-sources## ).
 
 The default value is normally:
 
-{{{ ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc") }}}
+{{{
+("~/.authinfo" "~/.authinfo.gpg" "~/.netrc")
+}}}
 
 It can be set as follows:
 
@@ -28,7 +30,7 @@ To query the backends, the following code is used. Usually, a username and host 
 (auth-source-search :user "my-username" :host "example.com")
 }}}
 
-The {{{ :type }}} keyword is used to state which backend must be used. Auth-source will not search in other backends.
+The ##:type## keyword is used to state which backend must be used. Auth-source will not search in other backends.
 
 {{{
 (auth-source-search :user "my-username" :host "example.com" :type 'netrc)
@@ -49,7 +51,7 @@ First, the auth-source library (and other) is required.
 (require 'auth-source)
 }}}
 
-The search function is used when auth-source-search is called. In the following example, the {{{ :backend }}}, {{{ :type }}}, and {{{ :port }}} is not used by the function, but can be used as auth-source-search parameter. Remember that cl-defun is not supported by edebug-defun completely, which may make debugging a bit difficult.
+The search function is used when auth-source-search is called. In the following example, the ##:backend##, ##:type##, and ##:port## is not used by the function, but can be used as auth-source-search parameter. Remember that cl-defun is not supported by edebug-defun completely, which may make debugging a bit difficult.
 
 {{{
 (cl-defun auth-source-example-search (&rest spec
@@ -72,7 +74,7 @@ SPEC, BACKEND, TYPE, HOST, USER and PORT are as required by auth-source."
 
 A backend-parse function is needed to parse the auth-sources variable entries. Each entry is provided as parameter, processed, and an auth-source-backend object is created. If the entry has no relation with the current backend, nil should be returned.
 
-In the example code, when auth-sources has the {{{ 'my-backend }}} symbol, this backend is used. The search function defined before is consulted when auth-source-search is called.
+In the example code, when auth-sources has the ##'my-backend## symbol, this backend is used. The search function defined before is consulted when auth-source-search is called.
 
 {{{
 (defun auth-source-example-backend-parse (entry)
@@ -87,7 +89,7 @@ In the example code, when auth-sources has the {{{ 'my-backend }}} symbol, this 
 
 }}}
 
-Before providing the library, the backend-parse function should be added to the {{{ auth-source-backend-parser-functions }}} hook.
+Before providing the library, the backend-parse function should be added to the ##auth-source-backend-parser-functions## hook.
 
 {{{
 (add-hook 'auth-source-backend-parser-functions #'auth-source-example-backend-parse)
@@ -102,6 +104,12 @@ Before providing the library, the backend-parse function should be added to the 
 == Packages ==
 
 * [https://github.com/vaartis/auth-source-kwallet auth-source-kwallet] Alternative backend to access to KWallet.
+* [https://github.com/dlobraico/auth-source-1password auth-source-1password] Support for 1password-cli.
+* [https://github.com/triplem/auth-source-gopass auth-source-gopass]
+* [https://github.com/emacs-grammarly/auth-source-keytar auth-source-keytar]
+* [https://github.com/ccrusius/auth-source-xoauth2 auth-source-xoauth2]
+* [https://github.com/tirimia/hush hush] An auth-source alternative.
+* [https://github.com/rnadler/password-menu password-menu] UI wrapper for auth-source.
 
 == Related articles ==
 
