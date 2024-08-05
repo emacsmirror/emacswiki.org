@@ -1,0 +1,17 @@
+== org-id-update-external ==
+
+=== Update Orgmode IDs externally and asynchronously, using find and grep! ===
+
+
+
+Do you have /a lot/ of OrgMode files, with many ##id:## links throughout?
+
+Annoyed by how long the function ##org-id-update-id-locations## takes to run (especially given that Emacs is single threaded, and this is a blocking action)?
+
+Even more annoyed that ##org-id-update-id-locations## needs to open /each and every one/ of your Orgmode files just to check them for IDs?  And then has the nerve /not to clean up after itself/, instead leaving them laying around all over the place, /like some sort of animal/?!
+
+If so, this package may be for you.
+
+https://sr.ht/~trs-80/org-id-update-external/
+
+Brought to you by [[Trs80]]!
