@@ -8,6 +8,8 @@ Simply save your information in ##~/.authinfo.gpg## and you're done.
 
 If you use this file for passwords elsewhere, you might be interested in [[authinfo-copy-password]].
 
+The [[auth-source]] library is used by Gnus, TRAMP, and other Emacs software, to access the aformentioned files. An [https://www.gnu.org/software/emacs/manual/auth.html info manual] is available to consult within Emacs and from a Web page. This library can be expanded with more packages to obtain authentication information from other sources such as KWallet and keepassxc.
+
 == GPG ==
 
 [[GnuPG|GPG]] (GNU Privacy Guard) is a *keypair* encryption tool. Your *public* key locks stuff (give it to everyone), and your *private* key opens it (keep it secret).
