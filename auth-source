@@ -1,0 +1,93 @@
+The auth-source library is used by Gnus, TRAMP, and other Emacs software to access secret (private) data. Usually, this data is your username, host, protocol, and password authentication information, to connect to remote computers.
+
+An [https://www.gnu.org/software/emacs/manual/auth.html info manual] is available within Emacs by typing: ##C-h i auth##
+
+The frontend functions written in [[EmacsLisp]] are used by other Emacs software. 
+
+Backends are used to store the information. There are already implemented to access the files explained at [[GnusAuthInfo]]: ##~/.authinfo.gpg##, ##~/.authinfo##, and ##~/.netrc##. Also, the secrets.el library is included by default to access the gnome-keyring and kwallet through the D-Bus interface.
+
+== Using the Frontend ==
+To query the backends, the following code is used. Usually, a username and host is provided (for instance, to access FTP servers). When no backend is provided, it will access all of them to search for secrets.
+
+<code>
+(auth-source-search :user "my-username" :host "example.com")
+</code>
+
+The {{{:type}}} keyword is used to state which backend must be used. Auth-source will not search in other backends.
+
+<code>
+(auth-source-search :user "my-username" :host "example.com" :type 'netrc)
+</code>
+
+Also, any keyword can be provided.
+
+<code>
+(auth-source-search :entry "a-specific-label" :type 'my-backend)
+</code>
+
+== Creating Your Backends ==
+The following is an explanation about the necessary code to create your backend. We will use the [https://github.com/vaartis/auth-source-kwallet auth-source-kwallet] as the code basis for the example.
+
+First, the auth-source library (and other) is required.
+
+<code>
+(require 'auth-source)
+</code>
+
+The search function is used when auth-source-search is called. In the following example, the {{{:backend}}}, {{{:type}}}, and {{{port}}} is not used by the function, but can be used as auth-source-search parameter. Remember that cl-defun is not supported by edebug-defun completely, which may make debugging a bit difficult.
+
+<code>
+(cl-defun auth-source-example-search (&rest spec
+                                            &key _backend _type host user _port
+                                            &allow-other-keys)
+  "Search the storage for the specified user and host.
+SPEC, BACKEND, TYPE, HOST, USER and PORT are as required by auth-source."  
+  
+  ;; Execute or do everything needed.
+  ;; ...  (executable-find auth-source-example-executable) ...
+
+  ;; Return somthing like...
+        (list (list :user (or user label)
+                    :secret got-secret)))
+
+  ;; If not executable was found, return nil and show a warning
+       (warn (format "`auth-source-example': Could not find executable '%s' to query KWallet"
+                  auth-source-kwallet-executable))))
+</code>
+
+A backend-parse function is needed to parse the auth-sources variable entries. Each entry is provided as parameter, processed, and an auth-source-backend object is created. If the entry has no relation with the current backend, nil should be returned.
+
+In the example code, when auth-sources has the {{{'my-backend}}} symbol, this backend is used. The search function defined before is consulted when auth-source-search is called.
+
+<code>
+(defun auth-source-example-backend-parse (entry)
+  "Parse the entry from `auth-sources'."
+  (when (eq entry 'my-backend)
+    (auth-source-backend-parse-parameters
+     entry
+     (auth-source-backend
+      :source "My Backend"
+      :type 'my-backend
+      :search-function #'auth-source-example-search))))
+
+</code>
+
+Before providing the library, the backend-parse function should be added to the {{{auth-source-backend-parser-functions}}} hook.
+
+<code>
+(add-hook 'auth-source-backend-parser-functions #'auth-source-example-backend-parse)
+
+(provide 'auth-source-example)
+</code>
+
+=== Related Links ===
+
+* [https://www.emoses.org/posts/emacs-custom-auth-source/ Bulding a custom Emacs auth-source] blog post by Evan Moses.
+
+== Packages ==
+
+* [https://github.com/vaartis/auth-source-kwallet auth-source-kwallet] Alternative backend to access to KWallet.
+
+== Related articles ==
+
+* GnusAuthinfo explains authinfo and netrc files and how to use it.
