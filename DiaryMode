@@ -144,6 +144,12 @@ day of the month, or it is a monday and the third day of the month.
               (or (diary-date 2 t t)
                   (diary-date 3 t t))))) Check reports
 
+For Emacs 29.4 the above does not work (has `diary-date' changed definition?).  The following does:
+
+ %%(let ((d (calendar-day-of-week date)))
+     (or (and (<= 1 d 5) (diary-date t 1 t))
+         (and (= d 1) (diary-date t '(2 3) t)))) Check reports
+
 If you want to see reminders of upcoming events, use <code>diary-remind</code>. The first argument is a diary-sexp like the ones used in the preceding examples (it took some time to find out quoting is needed...), the second arg is the number of days (or a list of numbers) before the event that the reminders should occur on. The optional third arg turns on marking of the reminders in the calendar.
 
  %%(diary-remind '(diary-date 1 8 2004) '(1 2 3) t) really-important-event-i-have-to-prepare-days-in-advance
