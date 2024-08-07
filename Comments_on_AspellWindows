@@ -41,3 +41,11 @@ What is personal dictionary? Is this the second installed dictionary from websit
 
 -- isavour 2014-09-30 13:54 UTC
 
+
+----
+
+For WSL users, you can access its aspell installation, as documented here:
+https://juanjose.garciaripoll.com/blog/aspell-emacs-windows-wsl/index.html
+
+-- Anonymous 2024-08-07 19:12 UTC
+
