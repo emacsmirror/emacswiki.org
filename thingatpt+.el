@@ -4,12 +4,12 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Sun Jul 23 15:00:25 2023 (-0700)
+;; Last-Updated: Mon Aug 12 12:37:59 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 2405
+;;     Update #: 2407
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -1008,7 +1008,7 @@ See `tap-sexp-nearest-point'.
 
 Return a consp (START . END), where START /= END.
 Return nil if no form is found.
-Optional args are the same as for `tap-bounds-of-sexp-nearest-point'."
+Optional args are the same as for `tap-form-nearest-point-with-bounds'."
   (tap-bounds-of-form-nearest-point 'sexp predicate syntax-table))
 
 (defun tap-form-nearest-point (&optional thing predicate syntax-table)
