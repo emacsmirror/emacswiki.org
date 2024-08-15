@@ -75,6 +75,7 @@ Historically, Emacs, like many editors, has used heuristics (often [[RegularExpr
 == External Links ==
 
 * [https://www.masteringemacs.org/article/how-to-get-started-tree-sitter How to get started with Tree-Sitter] -- MickeyPeterson / Mastering Emacs
+* [https://www.masteringemacs.org/article/lets-write-a-treesitter-major-mode Let’s Write a Tree-Sitter Major Mode] -- MickeyPeterson / Mastering Emacs
 * [https://tree-sitter.github.io/tree-sitter/#parsers A list of Tree-sitter parsers you can install manually]
 * [https://corwin.bru.st/emacs-tree-sitter/ Corwin Brust's archive of Windows compiled libraries]
 
