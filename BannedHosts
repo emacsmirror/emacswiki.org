@@ -106,3 +106,4 @@
 ^45\.43\.(6[4-9]|[7-8][0-9]|9[0-5])\. # 2024-07-28 [45.43.64.0 - 45.43.95.255] Comments on GettingIspellWorkinginEmacsForWindows
 ^45\.61\.(6[4-9]|[7-9][0-9]|1[0-1][0-9]|12[0-7])\. # 2024-07-28 [45.61.64.0 - 45.61.127.255] Comments on GettingIspellWorkinginEmacsForWindows
 ^92\.118\.(4[0-1])\. # 2024-08-03 [92.118.40.0 - 92.118.41.255] Comments on EmacsWiki
+^92\. # 2024-08-18 [92.0.0.0 - 92.255.255.255] Comments on ОписаниеOrgMode
