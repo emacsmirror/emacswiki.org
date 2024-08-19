@@ -7,5 +7,31 @@ External links
 Related:
 * [https://melpa.org/#/evil-god-state evil-god-state], "an [[Evil|evil-mode]] state for using god-mode"
 
+== Integration with input method ==
+
+god-mode is not working well with InputMethods, when the mode is enabled and the method is toggled on, the mode can't recognize the keys.
+The workaround is to enable input methods only when the mode is disabled:  
+{{{
+(defvar my-input-method-was-enabled nil)
+
+(defun my-input-method-on ()
+  (when (and 
+         (equal nil current-input-method)
+         (not (equal nil my-input-method-was-enabled)))
+    (progn
+      (toggle-input-method)
+      (setq my-input-method-was-enabled nil))))
+
+(defun my-input-method-off ()
+  (when (not (equal nil current-input-method))
+    (progn
+      (toggle-input-method)
+      (setq my-input-method-was-enabled t))))
+
+(add-hook 'god-mode-disabled-hook 'my-input-method-on)
+(add-hook 'god-mode-enabled-hook 'my-input-method-off)
+}}}
+
+
 ----
 CategoryModes  CategoryModalEditing
