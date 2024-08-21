@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.06.30
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 30 14:15:25 2024 (-0700)
+;; Last-Updated: Tue Aug 20 17:23:01 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 13749
+;;     Update #: 13753
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1046,6 +1046,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/08/20 dadams
+;;     diredp-set-header-line-breadcrumbs:
+;;       Show also the default-directory, including if it's the root directory.
 ;; 2024/06/29 dadams
 ;;     dired-do-find-regexp(-and-replace): Redefine for Emacs 25+, not (fboundp 'xref-collect-matches).
 ;;     dired-do-find-regexp:
@@ -14820,16 +14823,16 @@ not `\\[dired-sort-toggle-or-edit]', to sort arbitrary-files list"))))
   ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
   ;;
   (eval '(define-minor-mode diredp-breadcrumbs-in-header-line-mode
-          "Toggle the use of breadcrumbs in Dired header line.
+           "Toggle the use of breadcrumbs in Dired header line.
 With arg, show breadcrumbs iff arg is positive."
-          :init-value nil :group 'header-line :group 'Dired-Plus
-          (diredp-ensure-mode)
-          (if diredp-breadcrumbs-in-header-line-mode
-              (diredp-set-header-line-breadcrumbs)
-            (setq header-line-format  (default-value 'header-line-format)))))
+           :init-value nil :group 'header-line :group 'Dired-Plus
+           (diredp-ensure-mode)
+           (if diredp-breadcrumbs-in-header-line-mode
+               (diredp-set-header-line-breadcrumbs)
+             (setq header-line-format  (default-value 'header-line-format)))))
 
   (defun diredp-set-header-line-breadcrumbs ()
-    "Show a header line with breadcrumbs to parent directories."
+    "Show a header line with clickable breadcrumbs to parent directories."
     (let ((parent  (diredp-parent-dir default-directory))
           (dirs    ())
           (text    ""))
@@ -14849,17 +14852,24 @@ With arg, show breadcrumbs iff arg is positive."
             (setq rdir  (propertize rdir
                                     'local-map (progn (define-key crumbs-map [header-line mouse-1]
                                                         `(lambda () (interactive)
-                                                          (dired ,dir dired-actual-switches)))
+                                                           (dired ,dir dired-actual-switches)))
                                                       (define-key crumbs-map [header-line mouse-2]
                                                         `(lambda () (interactive)
-                                                          (dired-other-window ,dir dired-actual-switches)))
+                                                           (dired-other-window ,dir dired-actual-switches)))
                                                       crumbs-map)
                                     'mouse-face 'mode-line-highlight
                                     ;;'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
                                     'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
             (setq text  (concat text (if (or rootp  parent-rootp) " "  " / ") rdir)))))
-      (make-local-variable 'header-line-format)
-      (setq header-line-format  text)))
+      (let* ((rootp         (diredp-root-directory-p default-directory))
+             (parent-rootp  (and (not rootp)  (diredp-root-directory-p (diredp-parent-dir default-directory)))))
+        (setq text  (if (diredp-root-directory-p default-directory)
+                        default-directory ; Root directory listing.
+                      (concat text
+                              (if (or rootp  parent-rootp) " "  " / ")
+                              (file-name-nondirectory (directory-file-name default-directory)))))
+        (make-local-variable 'header-line-format)
+        (setq header-line-format  text))))
 
   ;; Users can do this.
   ;;
