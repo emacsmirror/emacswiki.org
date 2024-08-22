@@ -1,11 +1,10 @@
 Useful links to web pages on how to set up, configure or use, Emacs on Android.
 
 Extensive documentation on how to set up, configure and use Emacs on an old Android ebook.
-[https://lockywolf.net/2024-08-07_Using-an-ebook-instead-of-a-laptop.d/index.html Emacs on an Android ebook]
+* [https://lockywolf.net/2024-08-07_Using-an-ebook-instead-of-a-laptop.d/index.html Emacs on an Android ebook]
 
 Configure your own command buttons, and much more. An advanced use of Emacs on Android. Scroll down to the middle of the page to see two demos of Emacs on Android.
-[https://www.reddit.com/r/emacs/comments/1d7t6pl/finally_penel_is_out_annatation_language_learning/ paw annotation and language learning tool in emacs]
-
-[https://github.com/chenyanming/paw paw github repo]
+* [https://www.reddit.com/r/emacs/comments/1d7t6pl/finally_penel_is_out_annatation_language_learning/ paw annotation and language learning tool in emacs]
+* [https://github.com/chenyanming/paw paw github repo]
 
 CategoryPorts
