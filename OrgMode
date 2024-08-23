@@ -1,12 +1,12 @@
 [[ru:ОписаниеOrgMode]]
 [[ja:オルグモード]]
 [[es:ModoOrg]]
-[[es:ModoOrg]]
 [[zh:Org-Mode (中文)]]
+
 [:overview]
 == Overview ==
 
-Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
+Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default. Its Home page is: [http://orgmode.org http://orgmode.org]
 
 Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes [http://orgmode.org/worg/org-tutorials/index.html tutorials], ideas, code snippets, [http://orgmode.org/worg/dev/org-syntax.html Org Syntax], etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. There is also [https://blog.tecosaur.com/tmio/ This month in Org] which summarizes interesting developments from the Org mode mailing list. 
 
@@ -25,12 +25,13 @@ Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/gu
 
 [:install]
 == Download and Install ==
+Org-mode is included by default from Emacs 22.1 onward. So no additional steps are required to install it.
 
-The development version is at:
+However, you can install the latest development version. Clone the repository with:
 
     git clone https://code.orgmode.org/bzg/org-mode.git
 
-There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
+Moreover, there is an Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
 
     deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
     deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
@@ -132,7 +133,8 @@ If you publish external sources to org mode agenda files, you'll need to refresh
       (org-agenda nil "a")
       (delete-other-windows))
 
-[:addons]]
+[:addons]
+[:packages]
 == Add-ons, packages, and other files ==
 
 * Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
