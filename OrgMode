@@ -6,7 +6,7 @@
 [:overview]
 == Overview ==
 
-Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default. Its Home page is: [http://orgmode.org http://orgmode.org]
+Org-mode is an Emacs mode for note keeping, projecxt planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default. Its Home page is: [http://orgmode.org http://orgmode.org]
 
 Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes [http://orgmode.org/worg/org-tutorials/index.html tutorials], ideas, code snippets, [http://orgmode.org/worg/dev/org-syntax.html Org Syntax], etc.,) and can be accessed at [http://orgmode.org its homepage]. [http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. There is also [https://blog.tecosaur.com/tmio/ This month in Org] which summarizes interesting developments from the Org mode mailing list. 
 
@@ -254,6 +254,19 @@ To follow links with RET, rather than a 2 key combo:
     (setq org-return-follows-link t)
 
 You can also make TAB follow links in a similar way.
+
+=== Register a URL schema ===
+Org-mode can identify other URL schema (such as "gemini" in gemini://geminiprotocol.net/)  or any invented (such as "copy+gemini" in "copy+gemini://geminiprotocol.net/").
+
+The following code is an example to register the gemini schema for all Org-mode buffers. In this case, browse-url will open the registered browser (Elpher or any other) with the URL. The follow function will be called with the URL without the schema. For example, when using C-c C-o at "gemini://geminiprotocol.net", the "url" parameter will store "//geminiprotocol.net". 
+
+<pre>
+  (defun org-geminilinks-switch-link-follow (url &optional arg)
+    "Open gemini link with `browser-url'."
+    (browse-url (concat "gemini:" url) arg))
+    
+  (org-link-set-parameters "gemini" :follow #'org-geminilinks-switch-link-follow)
+</pre>
 
 === Opening pdf at specific page ===
 To open links of type [~/test.pdf::3] i.e. open file at page 3:
