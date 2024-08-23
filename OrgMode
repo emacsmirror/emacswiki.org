@@ -133,7 +133,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
       (delete-other-windows))
 
 [:addons]]
-== Add-ons and other files ==
+== Add-ons, packages, and other files ==
 
 * Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
 
@@ -148,7 +148,6 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 * [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.
 * Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
 * inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
-* FreeMind lets you import/export between org-mode and freemind file format.
 * [[mobileorg]] ([http://mobileorg.ncogni.to/ home page]) is an iPhone and iPod Touch application for storing, searching, viewing and editing Org-mode files
 * OrgOutlook lets you integrate with Microsoft Outlook
 * OutlookFlagToOrgTask exports emails flagged in Outlook to an Org file.
@@ -165,6 +164,28 @@ and Jira.
 * [https://github.com/toshism/org-super-links org-super-links] package to create backlinked org headings using org-id. This facilitates a zettelkasten system.
 * OrgMode can be used in conjunction with other modes like HowmMode, and packages listed in CategoryPersonalInformationManager.
 * OrgIdUpdateExternal updates Orgmode IDs externally and asynchronously, using find and grep.
+
+=== Mind-mapping and note taking ===
+* FreeMind lets you import/export between org-mode and freemind file format.
+* [https://github.com/Kungsgeten/org-brain org-brain] Org-mode wiki + concept-mapping.
+* Zettelkasten:
+** [https://github.com/org-roam/org-roam org-roam] A database abstraction layer for Org-mode.
+** [https://sr.ht/~ymherklotz/org-zettelkasten org-zettelkasten] A Zettelkasten mode leveraging Org.
+* [https://github.com/org-noter/org-noter org-noter] Emacs document annotator, using Org-mode.
+
+=== Graphical calendar/agendas ===
+Package to change the graphical interface of org-agenda. 
+
+* [https://github.com/kiwanami/emacs-calfw calfw-org] Calendar framework for Emacs.
+* [https://github.com/ichernyshovvv/org-timeblock/ org-timeblock] Interactive SVG calendar for orgmode tasks
+* [https://github.com/Fuco1/org-timeline/ org-timeline] Add graphical view of agenda to agenda buffer.
+
+=== Searching and querying ===
+Libraries and packages to find a specific portion of an Org text.
+
+* org-element.el (Org Element API) is a parser library for Org syntax installed by default. See the     [https://orgmode.org/worg/dev/org-element-api.html Worg documentation].
+* [https://github.com/alphapapa/org-ql org-ql] A searching tool for Org-mode, including custom query languages, commands, saved searches and agenda-like views, etc.
+
 
 [:elisp]
 == Related elisp code ==
