@@ -1,6 +1,6 @@
 [https://slack.com Slack] is an IRC-style cloud-based messaging app for teams.
 
-[https://github.com/yuya373/emacs-slack emacs-slack] is a Slack client for emacs
+[https://github.com/yuya373/emacs-slack emacs-slack] is a Slack client for emacs (Note: according the the README, this project was deprecated on Aug 7, 2024, and will no longer be maintained)
 
 [https://github.com/sshaw/copy-as-format copy-as-format] Copy buffer locations as GitHub/[[Slack]]/JIRA/HipChat… formatted code
 
