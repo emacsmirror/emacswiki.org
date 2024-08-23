@@ -1,0 +1,75 @@
+Emacs 30 is currently in pre-release.  You can build it locally, test it and if you find issues report these as EmacsBugs.
+
+This page aims to motivate testing Emacs, by highlighting the upcoming features, instead of having a low-effort blog post circulate around the internet.  As such, please contribute comments (see HowToEdit if you are not familiar with Emacs Wiki).  Just remember: Add context, motivate and attribute!
+
+Consult the NEWS file on the "emacs-30" branch for an authoritative and exhaustive listing of changes: https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=emacs-30.
+
+-----
+
+The following is a list of highlights from the upcoming Emacs 30 release.  As to the exact release date of Emacs 30, see this thread: https://mail.gnu.org/archive/html/emacs-devel/2024-08/msg00795.html.
+
+== Android Support ==
+
+Just as Emacs runs on different operating systems (GNU/Linux, BSD, DOS, ...) runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
+
+See EmacsOnAndroid and https://lwn.net/Articles/936576/. Developed by PoLu, see https://lists.gnu.org/archive/html/emacs-devel/2022-12/msg01358.html.
+
+== New JSON Parser ==
+
+A new, custom JSON parser has replaced the Jansson-based parser added in Emacs 27.  The advantage is that it doesn't store objects in an intermediate format, thereby reducing memory usage and allocation costs.  Along with a new serializer, this deprecates the Jansson parser while making it accessible to more users.
+
+JSON speedup is interesting to all users of LSP implementations such as [[Eglot]], as this accelerates the speed at which Emacs can respond to server messages.
+
+The parser was contributed by GézaHerman, see https://lists.gnu.org/archive/html/emacs-devel/2024-03/msg00539.html.  The encoder was written by MattiasEngdegård, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=70007.
+
+== New `package-isolate' command ==
+
+This command starts a new Emacs process that will only load certain local packages.  This is useful when debugging an issue, without having to run [tt]emacs -Q[/tt] and having to load packages by hand.
+
+This feature was implemented by PhilipKaludercic.
+
+== New `:vc' keyword for Emacs ==
+
+It is possible to specify declarative requests to install packages using PackageVC and UsePackage.  If you maintain/regularly contribute to a package from ELPA, you can install it from source by writing
+
+{{{
+(use-package foo :vc t)
+}}}
+
+This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature!.
+
+== New TreeSitter based modes ==
+
+Building on the addition of TreeSitter in Emacs 29, new major modes that use TreeSitter parsers have been added:
+
+* `elixir-ts-mode' (by WilhelmHKirschbaum)
+* `heex-ts-mode' (by WilhelmHKirschbaum)
+* `html-ts-mode' (by TheodorThornhill)
+* `lua-ts-mode' (by JohnMuhl)
+* `php-ts-mode' (by VincenzoPupillo)
+
+Using `treesit-install-language-grammar', you can install the necessary grammars for these major modes to work. 
+
+== New Packages ==
+
+=== Support for EditorConfig ===
+
+Editor Config is a popular format for specifying general properties about how an Editor should format a file (indentation width, indentation style, encoding, ...).  See https://editorconfig.org/ for more details.
+
+While an Emacs package has existed on NonGNUELPA, it has now been added to the core as well.  Note that is hasn't been enabled by default (that might happen in the future!).
+
+The `editorconfig-mode' was initially written by Google, and was cleaned up before added by StefanMonnier.
+
+=== Inclusion of WhichKey ===
+
+The WhichKey minor mode displays a list of partial key-chords after a short delay.  It is comparable to pressing <kbd>C-h</kbd> mid-chord, but without having to interrupt it.  Novices appreciate the minor mode to discover new commands.
+
+The `which-key' package was written by JustinBurkett, and the inclusion into Emacs was guided by JeremyBryant.
+
+=== Addition of a Compat Shim ===
+
+This is only of interest to Emacs Package developers:  The Compat package implements definitions of functions compatible for newer versions of Emacs.  Other packages may depend on Compat to make use of newer definitions, making it easier to support older versions of Emacs.
+
+With Emacs 30, a more or less empty file has been added that will prevent Compat from being installed from ELPA if unnecessary.  This also allows core packages such as `python' to use Compat in-core, and fetch it when installed from ELPA.
+
+The shim was contributed by DanielMendler and PhilipKaludercic.
