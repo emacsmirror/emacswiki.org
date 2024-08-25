@@ -45,6 +45,11 @@ It is possible to specify declarative requests to install packages using Package
 
 This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature!.
 
+== New user option 'grep-use-headings' ==
+
+When non-nil, the output of Grep is split into sections, one for each
+file, instead of having file names prefixed to each line.
+
 == New TreeSitter based modes ==
 
 Building on the addition of TreeSitter in Emacs 29, new major modes that use TreeSitter parsers have been added:
@@ -81,8 +86,4 @@ With Emacs 30, a more or less empty file has been added that will prevent Compat
 
 The shim was contributed by DanielMendler and PhilipKaludercic.
 
-=== New user option 'grep-use-headings' ===
-
-When non-nil, the output of Grep is split into sections, one for each
-file, instead of having file names prefixed to each line.
 
