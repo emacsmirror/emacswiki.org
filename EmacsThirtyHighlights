@@ -80,3 +80,9 @@ This is only of interest to Emacs Package developers:  The Compat package implem
 With Emacs 30, a more or less empty file has been added that will prevent Compat from being installed from ELPA if unnecessary.  This also allows core packages such as `python' to use Compat in-core, and fetch it when installed from ELPA.
 
 The shim was contributed by DanielMendler and PhilipKaludercic.
+
+=== New user option 'grep-use-headings' ===
+
+When non-nil, the output of Grep is split into sections, one for each
+file, instead of having file names prefixed to each line.
+
