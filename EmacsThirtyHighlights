@@ -86,4 +86,28 @@ With Emacs 30, a more or less empty file has been added that will prevent Compat
 
 The shim was contributed by DanielMendler and PhilipKaludercic.
 
+== Useful New Commands ==
 
+=== `diff-apply-buffer' ===
+
+When viewing a diff, it is already easy to apply a singular hunk with <kbd>C-c C-a</kbd>.  This new command applies all hunks at once.  It is useful when combined with [[Eglot]]s `eglot-confirm-server-edits' option, that displays server edits as diffs instead of editing files on the disk.
+
+This command was implemented by JuriLinkov, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=66113.
+
+=== `customize-toggle-option' ===
+
+This command is a convenient shorthand to toggle the value of boolean user options.  You can use it to toggle minor modes, which are usually all also boolean user options.
+
+This command was implemented by PhilipKaludercic, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=69079.
+
+=== `toggle-window-dedicated' ===
+
+A [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Dedicated-Windows.html dedicated window]] will always display a fixed buffer, and won't be replaced by some other buffer.  Up until now this property had to be set programmatically using Elisp.  This has changed with a new command that toggles the property for the current window.  It has been bound to <kbd>C-x w d</kbd> by default.
+
+This command was contributed by SpencerBaugh, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=64619
+
+=== `prog-fill-reindent-defun' ===
+
+This command merges `fill-paragraph' and `indent-region' for programming modes.  Bound to <kbd>M-q</kbd> it will reindent the defun at point (or any other top-level language construct), expect if the point is in a string.  In that case it will refill (see CategoryFilling) the contents of the string, breaking lines where necessary.  If possible, the command will make use of information make avaliable by TreeSitter.
+
+This command was contributed by TheodorThornhill, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59664
