@@ -1,14 +1,10 @@
 [[OpenDocument]] text files carry the <code>.odt</code> extension.   Emacs provides varied support for working with such files.
-
 ==Create==
 [[OrgMode]] files can be exported to OpenDocumentText. You need Org >= 7.8 or Emacs >= 24.1.
-
 ==View and edit==
-
 Since 2006 there is  preliminary support for viewing and editing OpenDocument files with Emacs using [http://www.cb1.com/~john/computing/emacs/lisp/editing/odf-mode.el odf-mode].  YMMV :-)
-
 ==Convert==
-
-Use [https://bitbucket.org/josemaria.alkala/odt2org/wiki/Home odt2org] to convert ODT files to OrgMode. The tool is Python-based and can handle lists, links, images, tables etc. 
-
+Use [https://bitbucket.org/josemaria.alkala/odt2org/wiki/Home odt2org] to convert ODT files to OrgMode. The tool is Python-based and can handle lists, links, images, tables etc.
 Once a document is exported as an <code>.org</code> file, converting it to other file formats like HTML, PDF, LaTeX, DocBook, MediaWiki is quite a breeze.
+
+[https://codeberg.org/quotuva/tchanges tchanges.el] uses [https://pandoc.org Pandoc] to convert 'track' changes and comments as well to any format supported by the latter: which, if OrgMode, the reverse conversion is also possible.
