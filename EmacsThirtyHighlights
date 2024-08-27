@@ -35,7 +35,7 @@ You can enable Completion Preview mode for all supported buffers with `global-co
 
 This feature was contributed by EshelYaron, see https://eshelyaron.com/posts/2023-11-17-completion-preview-in-emacs.html, and check out the Commentary section of `completion-preview.el' for up-to-date documentation.
 
-== New `:vc' keyword for UsePakage ==
+== New `:vc' keyword for UsePackage ==
 
 It is possible to specify declarative requests to install packages using PackageVC and UsePackage.  If you maintain/regularly contribute to a package from ELPA, you can install it from source by writing
 
