@@ -1,16 +1,23 @@
-Been an Emacs user since the early nineties (around version 18.something).
+==About Me==
 
-Always used the GNU/Emacs version never XEmacs or other variants (besides the NTEmacs on windows).
+Allow me to introduce myself. My name is Søren Lund, and I've been an Emacs user since the early nineties (around version 18 dot something).
 
-Find (some of) my elisp stuff here: https://hub.369.dk/elisp/ 
+I've always used the GNU/Emacs version, never XEmacs or other variants (besides the NTEmacs when I've had to use Windows).
 
-Find out more about me here: https://about.me/slu or email me at:
-{{{
-(replace-regexp-in-string "^http://\\([a-z]+\\)\.\\([a-z\.]+\\)/" "\\1@\\2" "http://soren.lund.org/")
-}}}
+
+==My Dot Emacs File==
+
+You can find my Emacs configuration here: https://codeberg.org/slu/dot-emacs
+
+
+==My Emacs Contributions==
+
+I've contributed with Danish CalendarLocalization, that also adds Danish holidays.
 
 I've written about integrating CfnLint into Emacs.
 
+
+==Comments==
 [new:AndyStewart:2009-08-20 22:07 UTC]
 Hi, Søren, welcome to wiki! :)  -- AndyStewart
 
