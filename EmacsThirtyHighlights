@@ -22,12 +22,6 @@ JSON speedup is interesting to all users of LSP implementations such as [[Eglot]
 
 The parser was contributed by GézaHerman, see https://lists.gnu.org/archive/html/emacs-devel/2024-03/msg00539.html.  The encoder was written by MattiasEngdegård, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=70007.
 
-== New `package-isolate' command ==
-
-This command starts a new Emacs process that will only load certain local packages.  This is useful when debugging an issue, without having to run [tt]emacs -Q[/tt] and having to load packages by hand.
-
-This feature was implemented by PhilipKaludercic.
-
 == New Completion Preview mode ==
 
 This minor mode displays completion suggestions as you type, using an inline preview.  It's well integrated with `completion-at-point' and uses the same completion backends.
@@ -113,3 +107,9 @@ This command was contributed by SpencerBaugh, see https://debbugs.gnu.org/cgi/bu
 This command merges `fill-paragraph' and `indent-region' for programming modes.  Bound to <kbd>M-q</kbd> it will reindent the defun at point (or any other top-level language construct), expect if the point is in a string.  In that case it will refill (see CategoryFilling) the contents of the string, breaking lines where necessary.  If possible, the command will make use of information make avaliable by TreeSitter.
 
 This command was contributed by TheodorThornhill, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59664
+
+=== `package-isolate' ===
+
+Instead of using [tt]emacs -Q[/tt] and loading packages by hand, this command starts a new Emacs instance that will only load a specified list of packages.
+
+This feature was implemented by PhilipKaludercic.
