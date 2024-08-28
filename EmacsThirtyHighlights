@@ -10,7 +10,7 @@ The following is a list of highlights from the upcoming Emacs 30 release.  As to
 
 == Android Support ==
 
-Just as Emacs runs on different operating systems (GNU/Linux, BSD, DOS, ...) runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
+Just as Emacs runs on different operating systems (GnuLinux, [[BSD]], [[DOS]], ...) runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
 
 See EmacsOnAndroid and https://lwn.net/Articles/936576/. Developed by PoLu, see https://lists.gnu.org/archive/html/emacs-devel/2022-12/msg01358.html.
 
@@ -37,7 +37,7 @@ This feature was contributed by EshelYaron, see https://eshelyaron.com/posts/202
 
 == New `:vc' keyword for UsePackage ==
 
-It is possible to specify declarative requests to install packages using PackageVC and UsePackage.  If you maintain/regularly contribute to a package from ELPA, you can install it from source by writing
+It is possible to specify declarative requests to install packages using PackageVc and UsePackage.  If you maintain/regularly contribute to a package from ELPA, you can install it from source by writing
 
 {{{
 (use-package foo :vc t)
@@ -45,7 +45,7 @@ It is possible to specify declarative requests to install packages using Package
 
 This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature!.
 
-*Reminder:* Package-vc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
+*Reminder:* PackageVc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
 
 == New user option 'grep-use-headings' ==
 
@@ -70,7 +70,7 @@ Using `treesit-install-language-grammar', you can install the necessary grammars
 
 Editor Config is a popular format for specifying general properties about how an Editor should format a file (indentation width, indentation style, encoding, ...).  See https://editorconfig.org/ for more details.
 
-While an Emacs package has existed on NonGNUELPA, it has now been added to the core as well.  Note that is hasn't been enabled by default (that might happen in the future!).
+While an Emacs package has existed on NonGnuElpa, it has now been added to the core as well.  Note that is hasn't been enabled by default (that might happen in the future!).
 
 The `editorconfig-mode' was initially written by Google, and was cleaned up before added by StefanMonnier.
 
