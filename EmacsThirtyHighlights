@@ -41,10 +41,11 @@ This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/us
 
 *Reminder:* PackageVc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
 
-== New user option 'grep-use-headings' ==
+== New user option `grep-use-headings' ==
 
-When non-nil, the output of Grep is split into sections, one for each
-file, instead of having file names prefixed to each line.
+When running a command like rgrep, the default behaviour is to list each match with the file name and line number at the beginning of each line (think of the [tt]-H[/tt] option for GnuGrep).  When this new option is enabled, the [tt]*Grep*[/tt] will be structured using headers that correspond to file names, thereby shortening each line.  This is useful when combined with the `rgrep' command.
+
+This option was contributed by AugustoStoffel, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59888
 
 == New TreeSitter based modes ==
 
