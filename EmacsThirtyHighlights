@@ -45,6 +45,8 @@ It is possible to specify declarative requests to install packages using Package
 
 This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature!.
 
+*Reminder:* Package-vc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
+
 == New user option 'grep-use-headings' ==
 
 When non-nil, the output of Grep is split into sections, one for each
