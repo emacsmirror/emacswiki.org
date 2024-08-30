@@ -22,7 +22,7 @@ Apparently stipple is unsupported on Windows[http://lists.gnu.org/archive/html/b
 
 Also does not work with emacs-mac-port () on OSX (I have not tested the Emacs NextStep OSX build.) -- Jason Milkins
 
-It should work on emacs-mac-port as of this change in 2019-Mar: [https://bitbucket.org/mituharu/emacs-mac/commits/25d1a744fc68eb8cd4e37443ac8ac3f7465f128e] -- AmitPatel
+It should work on emacs-mac-port as of this change in March 2019: [https://bitbucket.org/mituharu/emacs-mac/commits/25d1a744fc68eb8cd4e37443ac8ac3f7465f128e] -- AmitPatel
 
 ----
 CategoryFaces
