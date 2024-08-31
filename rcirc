@@ -1,14 +1,9 @@
 rcirc is an [https://www.emacswiki.org/emacs/InternetRelayChat IRC] client. It blends seamlessly with Emacs and has sane defaults.
-
 rcirc is part of GNU Emacs since release 22.0.
-
 == Quickstart ==
-
 Add a server in your InitFile, then Start rcirc with ##M-x irc##:
-
 {{{
 (global-set-key (kbd "C-c I") 'irc)
-
 (setq rcirc-server-alist
       '(("irc.libera.chat" ; Hostname
        :port 6697          ; Standard port for secure IRC
@@ -16,47 +11,30 @@ Add a server in your InitFile, then Start rcirc with ##M-x irc##:
        :encryption tls     ; Specify to use encryption
        :channels ("#rcirc" "#emacs" "#emacswiki"))))
 }}}
-
 To get started, see also:
-
 * [[rcircExampleSettings|Example Settings]] -- Example rcirc configurations.
 * [[rcircAutoAuthentication|Auto Authentication]] -- Make autho-auth work nicely with ##nickserv &c##.
-
 == Using SSL ==
-
 SSL comes with Emacs >= 24, but rcirc must enable it first (as we do above)
-
 Emacs must be built with [http://www.gnutls.org/ GNU TLS]. On *Windows*, you can [ftp://ftp.gnutls.org/gcrypt/gnutls/w32/ download GnuTLS]. Make sure ##bin## is in your ##PATH##. Test it by running ##gnutls-cli## from [[Eshell]]:
-
 {{{
 Welcome to the Emacs shell
-
 ~ $ gnutls-cli
 No hostname specified
-}}} 
-
+}}}
 : If you get the following error:
-
 : ##gnutls.c: [1] Note that the security level of the Diffie-Hellman key exchange has been lowered to 256 bits and this may allow decryption of the session data##
-
 : Add the following to your init file:
-
 : <code>(setq gnutls-min-prime-bits 1024)</code>
-
-
 == Commands ==
-
 Common keybindings:
-
 * ##C-h m## -- List keybindings.
 * ##C-c C-j## -- Join a channel
 * ##C-c RET## -- Send a ##/msg##
 * ##C-c Cn## -- List users in channel
 * ##C-c C-r## -- Change nick
 * ##C-c C-b## -- Open URL under point.
-
 Common IRC commands (tab-completable):
-
 * ##/help [command]## -- Describe a command.
 * ##/info## -- Display server info
 * ##/part## -- Leave channel.
@@ -66,9 +44,7 @@ Common IRC commands (tab-completable):
 * ##/whois## -- More info about a nick.
 * ##/away## -- Tell users you aren't available.
 * <code>/topic #guile</code> -- Display topic string
-
 == Addons ==
-
 * [[rcircColoredNicks]]: ##/color## -- Color each nick seperately.
 * [[rcircColoredNickClasses]]: Color nicks by group, like ##pals## and ##bots##.
 * [[rcircColors]]: Handle escape sequences that convey text colors.
@@ -77,7 +53,7 @@ Common IRC commands (tab-completable):
 * [[rcircAutoReconnect]]: Automatically reconnect when disconnected from the IRC server.
 * [[rcircPounce]]: ##/pounce##, ##/unpounce## -- store messages for people and send them when they're online.
 * [[rcircSmiley]]: Add :) smilies.
-* [[rcircAll]]: ##/all## -- Run a command (such as ##/away##) for all connections 
+* [[rcircAll]]: ##/all## -- Run a command (such as ##/away##) for all connections
 * [[rcircNoNamesOnJoin]]: How not to display NAMES list on channel JOIN (ugly hacks inside)
 * [[rcircShowVersion]]: ##/sv## -- Show version number.
 * [[rcircAwayTime]]: Display how long you were away from IRC
@@ -98,10 +74,7 @@ Common IRC commands (tab-completable):
 * [[rcircOccur]]: ##/occur## -- find stuff in all your rcirc buffers
 * [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
 * [[rcircActivities]]: Minimal activity tracker, open for extension. Use ##rcirc-activities/switch-to-buffer## to see and switch to buffers with activities, using ido.
-
-
 ==Related Stuff==
-
 * [[rcirc for bs-show]]: A configuration for `M-x bs-show' users
 * [[rcirc and iswitchb]]: Hiding IRC buffers from iswitchb
 * [[rcircNickBeep]]: Beep when your nick is mentioned.
@@ -120,7 +93,6 @@ Common IRC commands (tab-completable):
 * [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
 * [[rcircRandomNames]]: change all the nicks to random names
 * [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
-
 rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to-buffer" function used by rcirc-track-minor-mode can be changed. To make rcirc switch to the screen where the buffer with the last activity is located simply add to your InitFile <code>(setq rcirc-switch-to-buffer-function 'elscreen-find-and-goto-by-buffer)</code>. This has a problem though: automatic switching after some actions (joining a channel, for example) will stop working. One possible solution is:
 <pre>
 (defun rcirc-switch-buffer-or-screen (buffer)
@@ -130,14 +102,10 @@ rcirc tracking with [[elscreen]]: when using [[elscreen]] the default "switch-to
 		
 (setq rcirc-switch-to-buffer-function 'rcirc-switch-buffer-or-screen)
 </pre>
-
 rcirc can highlight the channels in the mode line only when your nick is mentioned in them. Use the following code snippet:
-
 {{{
 (rcirc-track-minor-mode 1)
-
 (setq neale/rcirc-ignored-channels '("#emacs" "#guix" "#scheme" "#rcirc"))
-
 (defun neale/rcirc-print-function (process sender response target text)
   (if (not (eq target nil))
       (with-current-buffer (rcirc-get-buffer process target)
@@ -147,9 +115,30 @@ rcirc can highlight the channels in the mode line only when your nick is mention
           (rcirc-omit-mode)
           (when (member target neale/rcirc-ignored-channels)
             (setq rcirc-ignore-buffer-activity-flag t)))))))
-
 (add-hook 'rcirc-print-functions 'neale/rcirc-print-function)
 }}}
-
+For reply to sender in a group (say, ##bitlbee## when non-##private##)
+{{{
+(defun my/rcirc-reply nil
+  "With point on message, prepares for a message to the same nick."
+  (interactive )
+  (let*
+      ((pos (end-of-line))
+       (nick-other
+	(progn
+	  (while
+	      (not
+	       (memq
+		'rcirc-other-nick
+		(get-char-property
+		 (goto-char
+		  (previous-single-property-change
+		   (point) 'font-lock-face))
+		 'font-lock-face)))
+	    (setq pos (point)))
+	  (buffer-substring-no-properties (point) pos))))
+    (goto-char rcirc-prompt-end-marker)
+    (insert nick-other ": ")))
+}}}
 ----
 CategoryChatClient
