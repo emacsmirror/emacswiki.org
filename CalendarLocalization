@@ -217,6 +217,20 @@ See [https://codeberg.org/einar/kalender.el kalender.el]. This is a fork of the 
                                      "Maio" "Junho" "Julho" "Agosto"
                                      "Setembro" "Outubro" "Novembro" "Dezembro"])
 
+=== Romanian ===
+
+{{{
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["Duminică" "Luni" "Marți" "Miercuri" "Joi"
+                               "Vineri" "Sâmbătă"]
+      calendar-month-name-array ["Ianuarie" "Februarie" "Martie" "Aprilie"
+				 "Mai" "Iunie" "Iulie" "August"
+				 "Septembrie" "Octombrie" "Noiembrie"
+				 "Decembrie"]
+      calendar-month-abbrev-array ["Ian" "Feb" "Mart" "Apr" "Iun" "Iul" "Aug"
+                                   "Sept" "Oct" "Nov" "Dec"])
+}}}
+
 === Russian ===
 
     (setq calendar-week-start-day 1
