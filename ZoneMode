@@ -3,7 +3,7 @@ Zone Mode 'zones' Emacs out, choosing one of its random modes to obfuscate the c
 
 Try it with `M-x zone'.
 
-To enable Zone Mode for all buffers after Emacs is idle for 2 minutes, add the following Lisp code to you InitFile or try it out by EvaluatingExpressions.
+To enable Zone Mode for all buffers after Emacs is idle for 2 minutes, add the following Lisp code to your InitFile or try it out by EvaluatingExpressions.
 
   (require 'zone)
   (zone-when-idle 120)
