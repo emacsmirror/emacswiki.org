@@ -1,12 +1,8 @@
 [[ja:eww-ja]]
 '''Eww''' (the <b>E</b>macs <b>W</b>eb <b>W</b>owser) is a Web browser written in elisp and based on shr.el.
-
 Eww is included in Emacs 24.4 and later.
-
 == Configuration ==
-
 Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by setting the shr variables.
-
 <pre>
 (setq
  browse-url-browser-function 'eww-browse-url ; Use eww as the default browser
@@ -16,15 +12,10 @@ Eww uses the `shr' HTML renderer, so we can change how Eww web pages look by set
  shr-width 70                                ; Fold text to 70 columns
  eww-search-prefix "https://wiby.me/?q=")    ; Use another engine for searching
 </pre>
-
 You can use `M-x customize-group' on `eww' or `shr' to see more options.
-
 == Usage ==
-
 Start Eww with `M-x eww'. You'll be prompted for a search term or URL.
-
 You can see a list of keybindings with ##?##. Common keys include:
-
 * ##TAB## -- Next link
 * ##Shift+TAB## -- Previous link
 * ##b## -- Add bookmark
@@ -36,44 +27,37 @@ You can see a list of keybindings with ##?##. Common keys include:
 * ##w## -- Copy the current URL
 * ##M-<RET>## -- Open link in new tab
 * ##s## -- Get a list of eww tabs
-
 == Proxy ==
-
-To open ##.onion## links, run `torsocks emacs' from the terminal. 
+To open ##.onion## links, run `torsocks emacs' from the terminal.
 From then, you should be able to load ##.onion## URLs Emacs-wide.
-
+To switch on the fly, instead run `tor` with ##HTTPTunnelPort##, and for e.g.:
+{{{
+(setq url-proxy-services
+  '(("https" . "localhost:9999")
+    ("http" . "localhost:9999")))
+}}}
 [[ErcProxy]] has a lot of helpful advice.
-
+==Tip: Large input in forms (like in editing this site)==
+Insert spaces and lines /before/ the last word or line respectively, to avoid corruption.
 == Eww from the Terminal ==
-
 You can create an alias or function to call ##eww## from the command line:
-
 {{{
 # In ~/.bashrc
-
 eww() {
  emacsclient -a '' -t -e '(eww-browse-url "'"$1"'")'
 }
-
 # Or from non-client Emacs:
 alias eww="emacs -f eww-browse $1"
 }}}
-
 Then use the command from your terminal:
-
 {{{
 eww "some search query"
 eww emacswiki.org
 }}}
-
 == Windows ==
-
 Windows may need ##libxml2## and ##GnuTLS## installed and added to ##%PATH%##. Both of these are provided by [[http://sourceforge.net/projects/ezwinports/files/ ezwinports]].
-
 You may also need *TLS certificates*, as explained in [http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html “GnuTLS for Emacs 24 on Windows”].
-
 == Related Pages ==
-
 * [[Bookmark+]] -- Advanced bookmarking features.
 * [[HtmlRendering|SHR]] -- The HTML renderer used by eww.
 * [[eww-lnum]] -- Follow numeric link shortcuts in eww.
@@ -81,15 +65,12 @@ You may also need *TLS certificates*, as explained in [http://xn--9dbdkw.se/diar
 * [[emacs-w3m]] -- An Emacs interface to W3M
 * [[w3]] -- An alternative browser written in Elisp
 * [[Integrate_Gopher_and_Gemini_into_Eww_using_Elpher]]
-
 == External Links ==
-
 * [https://lars.ingebrigtsen.no/2013/06/16/eww/ Announcement by the original author]
 * [https://www.gnu.org/software/emacs/manual/html_node/eww/index.html#Top Eww in the Emacs manual]
 * [https://ersi.vivaldi.net/2020/02/19/eww-a-web-browser-inside-a-text-editor/ Eww article by ersi]
 * [http://xahlee.info/emacs/emacs/emacs_eww_web_browser.html Xah Lee's eww page]
 * [https://mutoshack.gitlab.io/posts/my-emacs-configuration.html#web-browsing-with-eww Muto's section on eww]
 * [http://www.howardism.org/Technical/Emacs/browsing-in-emacs.html Eww article by howardism]
-
 CategoryHypermedia
 CategoryWebBrowser
