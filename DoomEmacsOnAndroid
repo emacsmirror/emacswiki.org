@@ -134,6 +134,8 @@ $ mv .emacs.d save/; ln -s $HOME/.config/emacs .emacs.d
 Now you can restart emacs, and you should see the Doom start page.
 
 =After install: Create a default doom profile=
+The <tt>doom install</tt> does not create a default doom profile, nor a profile loader. Such a profile is needed to get full functionality from Doom Emacs.
+
 After the install, one should execute a <tt>doom upgrade --force</tt> to create a default doom profile:
 * Restart emacs
 * Start an emacs shell: <tt>M-x shell</tt>, and execute the following commands in the shell:
@@ -145,6 +147,8 @@ $ $HOME/bin/fix-shell-path *
 $ cd
 $ $HOME/.config/emacs/bin/doom sync
 [/code]
+
+Expect to see "No profile loader found. Generating one...", during execution of <tt>doom upgrade</tt>.
 
 =Updating Android emacs=
 To update Android Emacs:
