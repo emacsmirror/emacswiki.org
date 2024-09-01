@@ -133,6 +133,19 @@ $ mv .emacs.d save/; ln -s $HOME/.config/emacs .emacs.d
 
 Now you can restart emacs, and you should see the Doom start page.
 
+=After install: Create a default doom profile=
+After the install, one should execute a <tt>doom upgrade --force</tt> to create a default doom profile:
+* Restart emacs
+* Start an emacs shell: <tt>M-x shell</tt>, and execute the following commands in the shell:
+
+[code]
+$ $HOME/.config/emacs/bin/doom upgrade --force
+$ cd $HOME/.config/emacs/bin
+$ $HOME/bin/fix-shell-path *
+$ cd
+$ $HOME/.config/emacs/bin/doom sync
+[/code]
+
 =Updating Android emacs=
 To update Android Emacs:
 * Download the new Android Emacs APK from sourceforge. This can be done on a computer, or directly using a web browser in Android.
