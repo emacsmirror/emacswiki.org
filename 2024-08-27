@@ -1,2 +1,4 @@
 Wow, spammers being mega achievers these days! Thanks, Drew Adams for sending me an email and letting me know.
 Some days I feel like we'll end up banning all commercial hosting providers… Thank you all for fighting the good fight! EmacsWikiAdministrators can add entries to BannedHosts and BannedContent. When rolling back a page the wiki offers you to ban contributors and it lists all the URLs that where removed, both of which helps you add the necessary entries. – [[Alex Schroeder]]
+
+2024-09-02. They are still at it. Sorry for overeager IP range bans. I‘ll figure out the appropriate ranges when I‘m back at a decent screen. If you can‘t edit pages, look at the last few lines of BannedHosts and check whether that could be a problem. Send me an email at alex@gnu.org with your IP number if you think there was an error. – Alex
