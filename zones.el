@@ -1,6 +1,6 @@
 ;;; zones.el --- Zones of text - like multiple regions  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2010-2023  Free Software Foundation, Inc.
+;; Copyright (C) 2010-2024  Free Software Foundation, Inc.
 ;;
 ;; Filename: zones.el
 ;; Description:  Zones of text - like multiple regions
@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2023.06.11
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 18 10:22:20 2023 (-0700)
+;; Last-Updated: Mon Sep  2 15:56:39 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 3362
+;;     Update #: 3365
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -21,7 +21,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
+;;   `nadvice'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -603,6 +603,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2024/09/02 dadams
+;;     zz-do-izones: Bug fix/typo.
 ;; 2023/10/18 dadams
 ;;     Use nadvice, for Emacs releases that support it.  Thx to Stefan Monnier.
 ;; 2023/10/17 dadams
@@ -2063,7 +2065,7 @@ The return value is undefined."
   (setq izones  (or izones  (symbol-value zz-izones-var)))
   (when unite-p
     (setq izones  (zz-izones-from-zones (zz-zone-union (zz-basic-zones izones)))))
-  (dolist (izone  izones) (funcall function (car izone) (cadr izone) (caddr izone))))
+  (dolist (izone  izones) (funcall function izone)))
 
 (defun zz-zones-complement (zones &optional beg end)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
