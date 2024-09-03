@@ -1,58 +1,19 @@
 == What it is ==
-A major mode for editing .m-files containing Matlab code. Matlab is proprietary software for numerical maths and data analysis.  Also note that Emacs (21.3 onwards) comes with an alternative built in: octave mode.  Octave is a free software alternative to Matlab. 
 
-== How To Use It ==
-Put into your init-file (~/.emacs, ~/.xemacs/init.el, whatever) 
+A major mode for editing MATLAB (*.m) files containing MATLAB code. MATLAB from http://www.mathworks.com is proprietary software for numerical maths and data analysis.  Also note that Emacs (21.3 onwards) comes with an alternative built in: octave mode.  Octave is a free software alternative to Matlab. 
 
- (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
- (add-to-list
-  'auto-mode-alist
-  '("\\.m$" . matlab-mode))
- (setq matlab-indent-function t)
- (setq matlab-shell-command "matlab")
+The matlab-mode package also enables editing of Target Language Compiler (*.tlc) files.
 
-=== On Win32 ===
-
-MATLAB is not a CLI application on MS Windows. One needs a shell wrapper that would pipe emacs input into a Matlab and back.
-One can get that from http://www.cs.umb.edu/~ram/matlabShell/index.html .
-The only problem is that it does not allow multiline commands. This is crucial if one intends to use it with org-babel .
-There is a [https://github.com/mlt/matlabShell workaround available] until better solution is found.
-[http://www.mathworks.com/matlabcentral/newsreader/view_thread/13365 Here] it is explained how to set things up. However ##""## shall be replaced with ##'()##
-
-Here is mine ##C:/Programs/matlabshell/matlabshell.cmd##
-
-    @echo off
-    SET PATH=C:\PROGRA~1\MATLAB\R2011a\bin;C:\PROGRA~1\MATLAB\R2011a\bin\win32
-    %~dp0\matlabShell.exe 10000 20000
-
-And here is what I have in dot emacs
-
-    (setq matlab-shell-command "c:/Programs/matlabshell/matlabshell.cmd")
-    (setq matlab-shell-command-switches '())
-    (setq matlab-shell-echoes nil)
-
-
-== On Mac ==
-Matlab on Mac is accessible as a CLI application on Mac (and maybe Linux) with settings similar to the following:
-
-    % CLI matlab from the shell:
-    % /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop
-    %
-    % elisp setup for matlab-mode:
-    (setq matlab-shell-command "/Applications/MATLAB_R2016a.app/bin/matlab")
-    (setq matlab-shell-command-switches (list "-nodesktop"))
+To setup and use it, see https://github.com/MathWorks/Emacs-MATLAB-Mode
 
 
 == Wiki Pages ==
 * MatlabFunctionTemplate
 
 == Links ==
+* Emacs matlab-mode project: https://github.com/MathWorks/Emacs-MATLAB-Mode
 * GNU Octave: http://www.octave.org/
 * The Math-Works Website: http://www.mathworks.com/
-* Download matlab.el: http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=104&objectType=file
-* SourceForge project for matlab.el (and CVS): http://matlab-emacs.sf.net. 
-  the tarball link: http://matlab-emacs.cvs.sourceforge.net/viewvc/matlab-emacs/?view=tar
-* A how-to by Cristian S. Dima: http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
 
 ----
 CategoryModes ProgrammingModes
