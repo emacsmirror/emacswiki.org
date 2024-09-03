@@ -241,7 +241,7 @@ The ##mail## directory here is optional and can be named differently, or you can
                (nnimap-user "<username>@gmail.com")))
 
 (setq smtpmail-smtp-server "smtp.gmail.com")
-{{{
+}}}
 
 5. Also, verify that your `auth-sources' configuration includes ##password-store##, which can be checked with `C-h v auth-sources RET':
 
