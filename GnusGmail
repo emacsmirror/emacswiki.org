@@ -230,7 +230,20 @@ The ##mail## directory here is optional and can be named differently, or you can
 
 3. Ensure that each password file ends with ##.gpg##.
 
-4. Also, verify that your `auth-sources' configuration includes ##password-store##, which can be checked with `C-h v auth-sources RET':
+4. Ensure that your ##nnimap-user##, ##nnimap-address## and ##smtpmail-smtp-server## in your Gnus configuration match the corresponding values in your ##pass## setup, e.g.:
+
+{{{
+(setq gnus-select-method
+      `(nnimap "gmail"
+               ;; rest of your configuration
+               ;; ...
+               (nnimap-address "imap.gmail.com")
+               (nnimap-user "<username>@gmail.com")))
+
+(setq smtpmail-smtp-server "smtp.gmail.com")
+{{{
+
+5. Also, verify that your `auth-sources' configuration includes ##password-store##, which can be checked with `C-h v auth-sources RET':
 
 {{{
 (password-store "~/.authinfo" "~/.authinfo.gpg" "~/.netrc")
