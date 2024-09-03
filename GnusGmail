@@ -233,7 +233,7 @@ The ##mail## directory here is optional and can be named differently, or you can
 4. Also, verify that your `auth-sources' configuration includes ##password-store##, which can be checked with `C-h v auth-sources RET':
 
 {{{
-(setq auth-sources '("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" password-store))
+(password-store "~/.authinfo" "~/.authinfo.gpg" "~/.netrc")
 }}}
 
 ==Usage==
