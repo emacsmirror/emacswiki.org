@@ -657,3 +657,18 @@ I understand that "S" is bound to `save` and thus not available as prefix, but m
 
 -- chriad 2024-09-04 07:37 UTC
 
+
+----
+
+Thanks for your comment - a reasonable question.
+
+There are reasons for this design (keystroke order), including parallelism for **S**how and **M**ark commands for different types of bookmarks, and including the existence of the (similar) sort prefix `s'. 
+
+I do understand your point, however. (You can try rebinding all that you see with `C-h m', with the `S' and `O' orders reversed, if you like.)
+
+Can't speak for `which-key', but both [[Icicles - Key Completion]] and key completion with KeySee work fine with such keys, including at top level (i.e., without hitting any prefix key). Just hit `S-TAB' at top level and you'll see all possible keys. (I don't recall whether `which-key' supports top-level discovery.)
+
+`C-h m' also shows you most keys. So I don't think there's a serious discovery problem.
+
+-- DrewAdams 2024-09-04 15:04 UTC
+
