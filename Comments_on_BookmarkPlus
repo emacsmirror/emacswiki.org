@@ -647,3 +647,13 @@ kind regards, [[Zeltak]] -- 2015-07-15 14:31 UTC
 [new:DrewAdams:2015-07-16 21:19 UTC]
 I guess someone who uses OrgMode (I don't) would need to code that up.  But have you tried just bookmarking a header line location? When you bookmark a position, bookmarking keeps track of the immediately surrounding text, to use to relocate the position when the buffer gets modified. Or try bookmarking some text immediately preceding or following a header.  Maybe that would be adequate? -- DrewAdams
 
+
+----
+
+I think there is a design flaw in the keybindings for the *Bookmark List* in that it is not self-documenting and discoverable with `which-key` and the like.
+For example if I want to narrow to Info bookmarks, i type "I S" and for "orphaned local file" bookmarks "O S". Wouldn't it be better to transpose this and index all SHOW commands with "S", so "S I" to show info bookmarks. This way the user needs not remember that e.g. "O" is for showing orphans but can discover it with S c-h. But maybe this is my bias as someone who is used to `which-key` type completion suggestions that come with e.g. Spacemacs.
+
+I understand that "S" is bound to `save` and thus not available as prefix, but maybe this could be a customization option? If you could hint what I would have to change to swap all bindings "x S" -> "S x" that would be great.
+
+-- chriad 2024-09-04 07:37 UTC
+
