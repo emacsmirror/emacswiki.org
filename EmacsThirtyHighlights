@@ -41,12 +41,6 @@ This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/us
 
 *Reminder:* PackageVc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
 
-== New user option `grep-use-headings' ==
-
-When running a command like rgrep, the default behaviour is to list each match with the file name and line number at the beginning of each line (think of the [tt]-H[/tt] option for GnuGrep).  When this new option is enabled, the [tt]*Grep*[/tt] will be structured using headers that correspond to file names, thereby shortening each line.  This is useful when combined with the `rgrep' command.
-
-This option was contributed by AugustoStoffel, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59888
-
 == New TreeSitter based modes ==
 
 Building on the addition of TreeSitter in Emacs 29, new major modes that use TreeSitter parsers have been added:
@@ -114,3 +108,25 @@ This command was contributed by TheodorThornhill, see https://debbugs.gnu.org/cg
 Instead of using [tt]emacs -Q[/tt] and loading packages by hand, this command starts a new Emacs instance that will only load a specified list of packages.
 
 This feature was implemented by PhilipKaludercic.
+
+== Interesting User Options ==
+
+*General tip:* Run <kbd>M-x customize-changed</kbd> and select the last version you have been using to get a list of all new user options, along with documentation and possible values.
+
+=== New user option `grep-use-headings' ===
+
+When running a command like rgrep, the default behaviour is to list each match with the file name and line number at the beginning of each line (think of the [tt]-H[/tt] option for GnuGrep).  When this new option is enabled, the [tt]*Grep*[/tt] will be structured using headers that correspond to file names, thereby shortening each line.  This is useful when combined with the `rgrep' command.
+
+This option was contributed by AugustoStoffel, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59888
+
+=== New user option `imenu-flatten' ===
+
+By default, invoking [[Imenu]] will hide some definitions underneath submenus ("Functions", "Classes", ...).  By enabling this new option, these are all flattened into a single menu, which is more convenient for people who use [[Fido]] or [[Vertico]] to select completions.
+
+Implemented by JuriLinkov in https://debbugs.gnu.org/cgi/bugreport.cgi?bug=70846
+
+=== New user option `flymake-show-diagnostics-at-end-of-line' ===
+
+Instead of using `display-local-help' to print the message of a FlyMake warning/error in the echo area (or using a command like `flymake-show-buffer-diagnostics'), this option makes it so that Flymake adds overlays at the ends of the affected lines.  This makes it easier to see what is wrong on a glance, and copies the style of many contemporary editors, but comes at the cost of not being able to select or interact with the message, in a way that one would expect from Emacs.
+
+Implemented by JoãoTávora.
