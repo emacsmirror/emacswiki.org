@@ -1,8 +1,7 @@
 '''ViewMail''' (VM) is a mail reader that runs on GNU Emacs and XEmacs.
 
-'''As of April 2021, the last update was May 2010.'''
+'''As of the summer of 2024, the VM project has been rebooted on GitLab at [https://gitlab.com/emacs-vm/vm https://gitlab.com/emacs-vm/vm].  We are looking for contributors and users.'''
 
-VM comes with XEmacs but not GNU Emacs.
 
 VM is very well documented. It comes with a fine set of info pages, and there are two EmacsNewsgroups dealing with VM. These pages attempt to distill some of the useful information from the other sources.
 
