@@ -33,6 +33,12 @@ You can find more information in the following sections.
 
 Run `M-x gnus' and enjoy.
 
+=== SMTP Port Recommendations and TLS/SSL Configuration ===
+
+Most user configurations and guides available online use port 587 for SMTP, which may be due to historical reasons. When using this port, the `smtpmail-stream-type' parameter should not be set to ##ssl##, as this is not how Gmail operates. Google supports two types of connections for sending mail: port 587 with STARTTLS and port 465 with direct TLS/SSL.
+
+Port 465 automatically implies the use of TLS/SSL, which encrypts the connection immediately, providing a secure channel from the start. In contrast, port 587 uses STARTTLS, where the connection starts unencrypted and is then upgraded to TLS/SSL. While both methods provide encryption, using port 465 simplifies the setup since you don't need to worry about the value of `smtpmail-stream-type'; in fact, when using this port, `message-multi-smtp-send-mail' automatically adjusts this variable to #tls#. This approach aligns with current security standards and makes the configuration more straightforward.
+
 == Introduction ==
 
 [[Gnus]] can connect to the Gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
