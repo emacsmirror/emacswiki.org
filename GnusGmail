@@ -37,7 +37,7 @@ Run `M-x gnus' and enjoy.
 
 Most user configurations and guides available online use port 587 for SMTP, which may be due to historical reasons. When using this port, the `smtpmail-stream-type' parameter should not be set to ##ssl##, as this is not how Gmail operates. Google supports two types of connections for sending mail: port 587 with STARTTLS and port 465 with direct TLS/SSL.
 
-Port 465 automatically implies the use of TLS/SSL, which encrypts the connection immediately, providing a secure channel from the start. In contrast, port 587 uses STARTTLS, where the connection starts unencrypted and is then upgraded to TLS/SSL. While both methods provide encryption, using port 465 simplifies the setup since you don't need to worry about the value of `smtpmail-stream-type'; in fact, when using this port, `message-multi-smtp-send-mail' automatically adjusts this variable to #tls#. This approach aligns with current security standards and makes the configuration more straightforward.
+Port 465 automatically implies the use of TLS/SSL, which encrypts the connection immediately, providing a secure channel from the start. In contrast, port 587 uses STARTTLS, where the connection starts unencrypted and is then upgraded to TLS/SSL. While both methods provide encryption, using port 465 simplifies the setup since you don't need to worry about the value of `smtpmail-stream-type'; in fact, when using this port, `message-multi-smtp-send-mail' automatically adjusts this variable to ##tls##. This approach aligns with current security standards and makes the configuration more straightforward.
 
 == Introduction ==
 
