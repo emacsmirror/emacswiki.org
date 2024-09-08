@@ -126,7 +126,7 @@ $> tree .emacs.d/
 |   |-- completion.el
 |   |-- control-version.el
 |   |-- external-command-whole-buffer.el
-|   |-- highligth-current-line.el
+|   |-- highlight-current-line.el
 |   |-- modes/
 |   |   |-- flymake-mode.el
 |   |   |-- markdown-mode.el
