@@ -138,6 +138,12 @@ And Quelpa can be combined with library `use-package', as follows:
                                      "bookmark+-chg.el"))
                  :defer 2)
 
+2024-09-11 - it is also possible to do: 
+
+    (use-package bookmark+ :ensure t :straight t)
+
+if you have straight installed
+
 
 As always, you should read the Commentary in (at least) file <tt>[[bookmark+.el]]</tt>. In particular,  read the NOTE there about updating '''Bookmark+'''. And in particular:
 
