@@ -1,0 +1,7 @@
+=Move cursor to beginning or and of end buffer=
+
+The commands `beginning-of-buffer' (<kbd>C-<</kbd>) and `end-of-buffer' (<kbd>C-<</kbd>) move the cursor (point) to the beginning and end of the current buffer.
+
+For the other window are the commands `beginning-of-buffer-other-window' (<kbd>M-<begin></kbd> and <kbd>M-<home></kbd>) and `end-of-buffer-other-window' (<kbd>M-<begin></kbd>).
+
+In some buffers point lands on a little usefull first or last line, e.g. trailing blank line in `dired'. See page [[smarterNavigatingBufferLimits]] for some tweaks to use more sensible locations in `dired', `ibuffer' & `org-mode'.
