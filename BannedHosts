@@ -124,3 +124,4 @@
 ^87\.101\.(8[0-3])\. # 2024-09-02 [87.101.80.0 - 87.101.83.255] Comments on CategoryEmacsWikiSite
 ^46\.175\.(15[2-5])\. # 2024-09-04 [46.175.152.0 - 46.175.155.255] Comments on CategoryEmacsWikiSite
 ^188\. # 2024-09-09 [188.0.0.0 - 188.255.255.255] Comments on CategoryEmacsWikiSite
+^37\.187\.([0-9]|[1-2][0-9]|3[0-1])\. # 2024-09-11 [37.187.0.0 - 37.187.31.255] Comments on LineNumbers
