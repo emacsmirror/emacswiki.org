@@ -78,6 +78,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
 ** [[CategoryXML|XML]] -- XML technologies
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+* [[CategoryNavigation|Navigating]] -- Navigating through text
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 * [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
