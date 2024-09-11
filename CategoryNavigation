@@ -4,6 +4,7 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 
 * BookMarks -- Record locations so you can return to them later.
 * MarkCommands -- Common commands for manipulating and using the [[mark]].
+* NavigatingBufferLimits -- move cursor to buffer begin or end.
 * GrepMode -- Search via external "grep" utility.
 * OccurMode -- List all lines of the current buffer that match a regexp.
 * CompilationMode -- Navigate based on the output of compilers or any other utility that gives the line numbers.
