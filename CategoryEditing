@@ -78,7 +78,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** LineCommands
 ** RunCommandOverLines -- execute a command for several lines, like in `ed' (TheTruePath)
 ** EndOfLineTips -- How to convert between different system line ending characters.
-* Jumping around, and seeing where you've been
+* Jumping around, and seeing where you've been (See also [[CategoryNavigation|Category Navigation]])
 ** MarkCommands -- Use of [[mark]] and [[point]] to jump around
 ** Lisp:hqw-goto.el -- A quick way to go to specific window line and position.
 ** [[quick-jump.el]] -- -Remember current position,and jump back
