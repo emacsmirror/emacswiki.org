@@ -1,112 +1,94 @@
-;;; "smarter `beginning-of-buffer' and `end-of-buffer' variants
-;;
-;; Alternative `beginning-of-buffer' and `end-of-buffer' commands for
-;; usage in `dired', `ibuffer' & `org-mode', to put point on sensible
-;; locations instead of by default useless places, e.g. trailing blank
-;; line in `dired' and `ibuffer'.
-;; By E3D3 (20240911)
+=="Smarter" `beginning-of-buffer' and `end-of-buffer' variants==
+    
+Alternative `beginning-of-buffer' and `end-of-buffer' commands for usage in `dired', `ibuffer' & `org-mode', to put point on sensible locations instead of by default useless places, e.g. the trailing blank line in `dired' and `ibuffer'. By E3D3 (20240911)
+
+**dired**
+
+In `dired' the top line contains the path (appended with a colon to make copying harder) and the last line is blank. Copying the path
+can be done with `dired-copy-filename-as-kill' (default keybinding "w") so there is little reason to use these positions for point,
+
+Below `beginning-of-buffer' variant jumps to the first file line. Repeating cycles point between this and the absolute top line, while the `end-of-buffer' alternative always puts point on last file line,
+and on the beginning of a file name.
+
+  (let ((my--beginning-of-buffer-alternative t)) ; t = use alternative begin
+    (defun my/dired-beginning-of-buffer-alternative ()
+      "In `dired' place point on the first file line.
+  Repeat to cycle between this and absolute first line."
+      (interactive)
+      (goto-char (point-min))                ; goto absolute top line
+      (if (equal last-command this-command)  ; toggle position variable
+          (cl-callf not my--beginning-of-buffer-alternative)
+        ;; (re)set position variable to alternative position:
+        (setq my--beginning-of-buffer-alternative t))
+      (when my--beginning-of-buffer-alternative
+        (dired-goto-next-nontrivial-file)))) ; goto first file line
+
+  (defun my/dired-end-of-buffer-alternative ()
+      "Position point on last file line, instead of on a useless blank line !"
+      (interactive)
+      (goto-char (point-max))
+      (beginning-of-line)
+      (while (looking-at "^[   ]*$") (forward-line -1))
+      (dired-move-to-filename))
+
+  ;; Keybindings for `dired-mode-map'
+  (define-key dired-mode-map (kbd "M-<")
+    'my/dired-beginning-of-buffer-alternative)
+  (define-key dired-mode-map (kbd "M->")
+    'my/dired-end-of-buffer-alternative)
+
+**ibuffer**
+
+After decades `end-of-buffer' in `ibuffer' still puts point on a useless (blank or with never used info) line. `beginning-of-buffer' goes to the first buffer line, which is (so far as I know) also never usefull for anyone.
+
+Next `beginning-of-buffer' variant puts point on the first buffer describing line. Repeat it to cycle between this and the absolute top line. The following `end-of-buffer' variant always jumps to the last non-blank line.
 
 
-;;; `dired'
-;; ===================================================================
-;; In `dired' the top line contains the path (appended with a colon to
-;; make copying harder) and the last line is blank. Copying the path
-;; can be done with `dired-copy-filename-as-kill' (default keybinding
-;; "w") so there is little reason to use these positions for point,
-;;
-;; Below `beginning-of-buffer' variant jumps to the first file line.
-;; Repeating cycles point between this and the absolute top line, while
-;; the `end-of-buffer' alternative always puts point on last file line,
-;; and on the beginning of a file name.
-(let ((my--beginning-of-buffer-alternative t)) ; t = use alternative begin
-  (defun my/dired-beginning-of-buffer-alternative ()
-    "In `dired' place point on the first file line.
-Repeat to cycle between this and absolute first line."
-    (interactive)
-    (goto-char (point-min))                ; goto absolute top line
-    (if (equal last-command this-command)  ; toggle position variable
-        (cl-callf not my--beginning-of-buffer-alternative)
-      ;; (re)set position variable to alternative position:
-      (setq my--beginning-of-buffer-alternative t))
-    (when my--beginning-of-buffer-alternative
-      (dired-goto-next-nontrivial-file)))) ; goto first file line
+  (let ((my--ibuffer-beginning-of-buffer-alternative t)) ; t = use alternative begin
+    (defun my/ibuffer-beginning-of-buffer-alternative ()
+      "In `ibuffer' place point on the first buffer describing line.
+  Repeat to cycle between this and absolute first line."
+      (interactive)
+      (goto-char (point-min))               ; goto absolute top line
+      (if (equal last-command this-command) ; toggle position variable
+          (cl-callf not my--ibuffer-beginning-of-buffer-alternative)
+        ;; (re)set position variable to alternative position:
+        (setq my--ibuffer-beginning-of-buffer-alternative t))
+      (when my--ibuffer-beginning-of-buffer-alternative
+        (ibuffer-forward-line 0 t))))       ; skip group name
 
-(defun my/dired-end-of-buffer-alternative ()
-    "Position point on last file line, instead of on a useless blank line !"
+  (defun my/ibuffer-end-of-buffer-alternative ()
+    "In `ibuffer' place point on last non-blank line."
     (interactive)
     (goto-char (point-max))
     (beginning-of-line)
-    (while (looking-at "^[   ]*$") (forward-line -1))
-    (dired-move-to-filename))
+    (while (looking-at "^\[ \t\]*$")        ; if looking at empty line
+      (forward-line -1)))                   ;   then go one line up
 
-;; Keybindings for `dired-mode-map'
-(define-key dired-mode-map (kbd "M-<")
-  'my/dired-beginning-of-buffer-alternative)
-(define-key dired-mode-map (kbd "M->")
-  'my/dired-end-of-buffer-alternative)
+  ;; Keybindings for `ibuffer-mode-map'
+  (define-key ibuffer-mode-map (kbd "M-<")
+    'my/ibuffer-beginning-of-buffer-alternative)
+  (define-key ibuffer-mode-map (kbd "M->")
+    'my/ibuffer-end-of-buffer-alternative)
 
+**org-mode**
 
+Alternative `beginning-of-buffer' command for `org-mode' which by default places point on the first heading. Repeat to cycle between this and absolute first line.
 
-;;; `ibuffer'
-;; ===================================================================
-;; After decades `end-of-buffer' in `ibuffer' still puts point on a
-;; useless (blank or with never used info) line. `beginning-of-buffer'
-;; goes to the first buffer line, which is (so far as I know) also
-;; never usefull for anyone.
-;;
-;; Next `beginning-of-buffer' variant puts point on the first buffer
-;; describing line. Repeat it to cycle between this and the absolute
-;; top line. The following `end-of-buffer' variant always jumps to the
-;; last non-blank line.
+  (let ((my--org-mode-beginning-of-buffer-alternative t)) ; t = use alternative begin
+    (defun my/org-mode-beginning-of-buffer-alternative ()
+      "In `org-mode' place point on the first heading.
+  Repeat to cycle between this and absolute first line."
+      (interactive)
+      (goto-char (point-min))               ; goto absolute top line
+      (if (equal last-command this-command) ; toggle position variable
+          (cl-callf not my--org-mode-beginning-of-buffer-alternative)
+        ;; (re)set position variable to alternative position:
+        (setq my--org-mode-beginning-of-buffer-alternative t))
+      (when my--org-mode-beginning-of-buffer-alternative
+        (org-goto-first-child))))           ; goto first heading
 
-(let ((my--ibuffer-beginning-of-buffer-alternative t)) ; t = use alternative begin
-  (defun my/ibuffer-beginning-of-buffer-alternative ()
-    "In `ibuffer' place point on the first buffer describing line.
-Repeat to cycle between this and absolute first line."
-    (interactive)
-    (goto-char (point-min))               ; goto absolute top line
-    (if (equal last-command this-command) ; toggle position variable
-        (cl-callf not my--ibuffer-beginning-of-buffer-alternative)
-      ;; (re)set position variable to alternative position:
-      (setq my--ibuffer-beginning-of-buffer-alternative t))
-    (when my--ibuffer-beginning-of-buffer-alternative
-      (ibuffer-forward-line 0 t))))       ; skip group name
-
-(defun my/ibuffer-end-of-buffer-alternative ()
-  "In `ibuffer' place point on last non-blank line."
-  (interactive)
-  (goto-char (point-max))
-  (beginning-of-line)
-  (while (looking-at "^\[ \t\]*$")        ; if looking at empty line
-    (forward-line -1)))                   ;   then go one line up
-
-;; Keybindings for `ibuffer-mode-map'
-(define-key ibuffer-mode-map (kbd "M-<")
-  'my/ibuffer-beginning-of-buffer-alternative)
-(define-key ibuffer-mode-map (kbd "M->")
-  'my/ibuffer-end-of-buffer-alternative)
-
-
-
-;;; `org-mode'
-;; ===================================================================
-;; Alternative `beginning-of-buffer' command for `org-mode' which by
-;; default places point on the first heading. Repeat to cycle between
-;; this and absolute first line. 
-(let ((my--org-mode-beginning-of-buffer-alternative t)) ; t = use alternative begin
-  (defun my/org-mode-beginning-of-buffer-alternative ()
-    "In `org-mode' place point on the first heading.
-Repeat to cycle between this and absolute first line."
-    (interactive)
-    (goto-char (point-min))               ; goto absolute top line
-    (if (equal last-command this-command) ; toggle position variable
-        (cl-callf not my--org-mode-beginning-of-buffer-alternative)
-      ;; (re)set position variable to alternative position:
-      (setq my--org-mode-beginning-of-buffer-alternative t))
-    (when my--org-mode-beginning-of-buffer-alternative
-      (org-goto-first-child))))           ; goto first heading
-
-;; Keybinding for `org-mode-map'
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "M-<")
-    'my/org-mode-beginning-of-buffer-alternative))
+  ;; Keybinding for `org-mode-map'
+  (with-eval-after-load 'org
+    (define-key org-mode-map (kbd "M-<")
+      'my/org-mode-beginning-of-buffer-alternative))
