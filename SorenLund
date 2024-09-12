@@ -12,7 +12,7 @@ You can find my Emacs configuration here: https://codeberg.org/slu/dot-emacs
 
 ==My Emacs Contributions==
 
-I've contributed with Danish CalendarLocalization, that also adds Danish holidays.
+I've contributed with a Danish CalendarLocalization, that also adds Danish holidays.
 
 I've written about integrating CfnLint into Emacs.
 
