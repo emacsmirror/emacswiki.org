@@ -1,6 +1,6 @@
 =="Smarter" `beginning-of-buffer' and `end-of-buffer' variants==
     
-Alternative `beginning-of-buffer' and `end-of-buffer' commands for usage in `dired', `ibuffer' & `org-mode', to put point on sensible locations instead of by default useless places, e.g. the trailing blank line in `dired' and `ibuffer'. By E3D3 (20240911)
+Alternative `beginning-of-buffer' and `end-of-buffer' commands for usage in `dired', `ibuffer' & `org-mode', to put point on sensible locations instead of by default useless places, e.g. the trailing blank line in `dired' and `ibuffer'. By [[e3d3]] (20240911)
 
 **dired**
 
