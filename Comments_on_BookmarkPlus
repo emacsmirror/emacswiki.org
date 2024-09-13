@@ -672,3 +672,40 @@ Can't speak for `which-key', but both [[Icicles - Key Completion]] and key compl
 
 -- DrewAdams 2024-09-04 15:04 UTC
 
+
+----
+
+Thank you, in retrospect my discovery problem accusation was a little bit over the top.
+
+One more thing that I am experimenting with and would appreciate your comment.
+
+I wonder why there is no macro of this sort (this version does not work, but I hope you get the idea from this pseudo creation inspired  by your bookmark+-mac library...)
+<pre>
+(defmacro chriad/bmkp-register-new-simple-type-bookmark (name doc-string handler-function)
+  "A simple type is one that can simply be checked by its handler function"
+  (let  ((alist-only-cmd (intern (format "bmkp-%s-bookmark-alist-only" name)))
+         (bmenu-show-only-cmd (intern (format "bmkp-bmenu-show-only-%s-bookmarks" name))))
+     `(progn
+       (defun ,alist-only-cmd ()
+         ,doc-string
+         (bookmark-maybe-load-default-file)
+         (bmkp-remove-if-not
+          (lambda () (eq (bookmark-get-handler bookmark) ',handler-function))
+          bookmark-alist)))
+     (bmkp-define-show-only-command name ,doc-string ,alist-only-cmd)
+     ;; `(define-key bookmark-bmenu-mode-map key ',bmenu-show-only-cmd)
+     (bmkp-define-history-variables)
+     ))
+</pre>
+Then I would use something like:
+
+<pre>
+(chriad/bmkp-register-new-simple-type-bookmark "nov" "A bookmark for epub" 'nov-bookmark-jump-handler)
+(chriad/bmkp-register-new-simple-type-bookmark "helpful" "A bookmark for helpful non-file buffers" 'helpful--bookmark-jump)
+(chriad/bmkp-register-new-simple-type-bookmark "helm-ff-session" "A bookmark for helm-find-file sessions" 'helm-ff-bookmark-jump)
+</pre>
+
+So that packages that integrate easily with vanilla bookmarks (i.e. privide a `make-record` and a `bookmark-jump` function) can also be used in one go with bookmark+.
+
+-- Anonymous 2024-09-13 08:42 UTC
+
