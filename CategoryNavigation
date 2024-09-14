@@ -7,7 +7,7 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 * NavigatingBufferLimits -- move cursor to buffer begin or end.
 * GrepMode -- Search via external "grep" utility.
 * OccurMode -- List all lines of the current buffer that match a regexp.
-* OrgSpeedKeys -- execute custom commands with a single key, on org headlines
+* OrgSpeedKeys -- Execute custom commands with a single key on org headlines.
 * CompilationMode -- Navigate based on the output of compilers or any other utility that gives the line numbers.
 * ImenuMode -- Move quickly among definitions of functions, macros, classes, types, whatever.
 * WhichFuncMode -- Displays the current function name in the mode line.
