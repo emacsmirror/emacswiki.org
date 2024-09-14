@@ -1,6 +1,6 @@
 ==Speed keys for org-mode==
 
-In org-mode "speed keys" are single keystrokes that can execute custom commands in an Org file when point is on a headline, including headlines of src, example and other blocks. They can easily be used to speed navigation or execute custom commands. e.g. to jump to next headline or enter special editing for a src-block.
+In org-mode "speed keys" are single keystrokes that can execute custom commands in an Org file when point is on a headline, /including headlines of src, example and other blocks/. They can easily be used to speed navigation or execute custom commands. e.g. to jump to next headline or enter special editing for a src-block.
 
 By default, Org has Speed Keys disabled. To activate Speed Keys, set the user option `org-use-speed-commands' to a non-'nil' value.
 
