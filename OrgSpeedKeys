@@ -27,6 +27,7 @@ Luckily most is easy to tweak. Below example let speed keys for blocks also work
      ("c" . org-babel-check-src-block)
      ("m" . org-babel-mark-block)
      ("@" . org-babel-mark-block)
+     ("o" . consult-org-heading)
      ("'" . org-edit-special)
      ("e" . org-edit-special)
      ("r" . org-babel-open-src-block-result)
