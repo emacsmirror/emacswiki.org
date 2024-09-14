@@ -11,7 +11,7 @@ The speed keys for tree headlines are set in customization option `org-speed-com
 
 The speed keys for blocks are by default not the same but use `org-babel-key-bindings', an Alist of key bindings and interactive Babel functions (those with default prefix <kbd>C-c C-v</kbd>). This contains not only commands like `org-babel-tangle', and `org-babel-next-src-block' but also `org-babel-goto-src-block-head' and other commands that are not useful here.
 
-Luckily most is easy to tweak. Below example let speed keys for blocks also work with point between the begin of the line and the start of a headline (instead of only at the absolute begin of the line).
+Luckily most is easy to tweak. Below example let speed keys for blocks also work with point between the begin of the line and the start of a headline (instead of only at the absolute begin of the line), and also for example blocks.
 
  ;; Specify custom speed keys for blocks, for example:
  (defvar my-org-src-blocks-speedkeys
