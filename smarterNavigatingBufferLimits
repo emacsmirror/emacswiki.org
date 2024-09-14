@@ -73,7 +73,7 @@ Next `beginning-of-buffer' variant puts point on the first buffer describing lin
 
 **org-mode**
 
-Alternative `beginning-of-buffer' command for `org-mode' which by default places point on the first heading. Repeat to cycle between this and absolute first line.
+Alternative `beginning-of-buffer' command for `org-mode' which by default places point on the first heading. Repeat to cycle between this and the top line. It falls back to the default behaviour when a buffer, e.g. a narrowed buffer, has no heading.
 
   (let ((my--org-mode-beginning-of-buffer-alternative t)) ; t = use alternative begin
     (defun my/org-mode-beginning-of-buffer-alternative ()
