@@ -64,6 +64,6 @@ Luckily most is easy to tweak. Below example let speed keys for blocks also work
  (setq org-speed-command-hook
        '(org-speed-command-activate my-org-babel-speed-command-activate))
 
-Enjoy flying with Org-airways. By e3d3 on 20240914
+Enjoy flying with Org-airways. By [[e3d3]] on 20240914
 
 CategoryNavigation
