@@ -92,3 +92,5 @@ Alternative `beginning-of-buffer' command for `org-mode' which by default places
   (with-eval-after-load 'org
     (define-key org-mode-map (kbd "M-<")
       'my/org-mode-beginning-of-buffer-alternative))
+
+CategoryNavigation
