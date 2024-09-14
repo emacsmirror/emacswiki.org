@@ -1,5 +1,7 @@
 This page is about different ways to access Emacs menus from the keyboard -- in particular, the menubar menus.
 
+* TextModeMenu (`tmm-menubar') -- Menu navigation that comes with Emacs.
+
 * '''LaCarte''' -- Library <tt>[[lacarte.el]]</tt>, by DrewAdams. Each leaf menu item is pre-expanded to include its ancestors -- for example, <code>Edit > Search > String Forward</code>. [[Completion]] is available using `TAB' etc., as usual -- you can match against any prefix of the expanded name. You need not use multiple completions to move up and down the menu hierarchy, completing a small piece at at time, because the hierarchy is flattened. '''%%La Carte%%''' can be used with MS Windows keyboard accelerators (see `<code>emacsw32-menu.el</code>', below).
 
 : In addition, when used together with '''[[Icicles]]''':
