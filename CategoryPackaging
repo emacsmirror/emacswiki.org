@@ -25,5 +25,9 @@ These repositories are connected to alternative Emacs packaging systems.
 * [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
 * StraightEl -- functional package manager that can install packages listed in MELPA, ELPA, or Emacsmirror, but checks these packages out from their git repositories directly.  Can also be combined with UsePackage.
 
+== Trying Packages ==
+
+* [[https://github.com/larstvei/Try Try]] -- External package to try out Emacs packages without installing them.
+
 == Writing Packages ==
 Detailed information about what is necessary to prepare a package for upload to ELPA can be found in the GNU Emacs Manual.  See MakingPackages and [[ELPA]].
