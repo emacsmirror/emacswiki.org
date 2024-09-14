@@ -31,7 +31,7 @@ Luckily most is easy to tweak. Below example let speed keys for blocks also work
      ("e" . org-edit-special)
      ("r" . org-babel-open-src-block-result)
      ("k" . org-babel-remove-result-one-or-many)
-     ("?" . e3/show-my-org-src-speedkeys) ; custom function
+     ("?" . my-show-my-org-src-speedkeys) ; custom function
      )
    "Alist of key bindings, used as speed keys on src blocks.
   Replaces the default used 'org-babel-key-bindings'.")
