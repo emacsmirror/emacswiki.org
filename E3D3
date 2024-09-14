@@ -1,18 +1,21 @@
 I'm E3D3, alias [::e3d3], and use Emacs mostly for hobby programming, notes & OS-tasks.
 
-I love Org-mode for literal programming, generating Emacs & OS config files, note taking and more.
-My Emacs config keeps growing & changing but survived some bankruptcy's. elisp is still not my thing but learning a bit Common Lisp made it much more fun.
+I love Org-mode for literal programming, generating crazy config files, note taking and more.
+My Emacs config keeps growing and often changes daily. It survived multiple bankruptcy's, that I often consider as welcome holidays with "new" rebirth. Elisp is still not my thing but learning a bit Common Lisp made it much more fun. - Update 20240914: this changed since I start learning Common Lisp. Now I'm often elisp its thing & even enjoy it most of the time.
 
-Some of my favorite packages are [[http://github.com/larstvei/try try]], [[https://github.com/abo-abo/hydra hydra]] and [[http://github.com/areina/helm-dash dash-docs]].
+My favorite external packages are [[http://github.com/larstvei/try try]], [[https://github.com/abo-abo/hydra hydra]] and [[http://github.com/areina/helm-dash dash-docs]], and ca. 50 more (in 2024).
 
-What I still don't like in Emacs are the theme's. None seems to work in both GUI & terminal, and many even hide elements by giving it the same color as the background !!!
+What I still don't like (to say it nice) in Emacs are the theme's. None is good enough for both GUI & terminal, that is; all hides one or more elements by giving it the same color as the background !!! Crazy !!! - Update 2024: I didn't and won't try Prot's or other new theme's, so sick am I of waisting time on endless color lists.
 
+Some of the things I shared here can be find on:
+* [OrgSpeedKeys Org speed keys]
+* [[smarterNavigatingBufferLimits]] (alternatives for `beginning-of-buffer' and `end-of-buffer')
 
 --------------------
 
 Welcome to the wiki. -- DrewAdams
 
-
+Thank you. Nice to hear. -- e3d3
 ---------------------
 
 
