@@ -1,0 +1,69 @@
+==Speed keys for org-mode==
+
+In org-mode "speed keys" are single keystrokes that can execute custom commands in an Org file when point is on a headline, including headlines of src, example and other blocks. They can easily be used to speed navigation or execute custom commands. e.g. to jump to next headline or enter special editing for a src-block.
+
+By default, Org has Speed Keys disabled. To activate Speed Keys, set the user option `org-use-speed-commands' to a non-'nil' value.
+
+The customization variable `org-speed-command-hook' specifies when to activate speed keys, by default only when point is at the beginning of an Org headline, before any of the stars. If this list contains `org-speed-command-activate' (the hook that
+activates single-letter speed commands) and hook `org-babel-speed-command-activate' then speed keys also work on headlines of src blocks. Extending this to other blocks is easy, as shown below.
+
+The speed keys for tree headlines are set in customization option `org-speed-commands'. By default pressing key <kbd>?</kbd> on the beginning of a headline shows the currently enabled speed keys.
+
+The speed keys for blocks are by default not the same but use `org-babel-key-bindings', an Alist of key bindings and interactive Babel functions (those with default prefix <kbd>C-c C-v</kbd>). This contains not only commands like `org-babel-tangle', and `org-babel-next-src-block' but also `org-babel-goto-src-block-head' and other commands that are not useful here.
+
+Luckily most is easy to tweak. Below example let speed keys for blocks also work with point between the begin of the line and the start of a headline (instead of only at the absolute begin of the line).
+
+ ;; Specify custom speed keys for blocks, for example:
+ (defvar my-org-src-blocks-speedkeys
+   '(("h" . org-previous-visible-heading)
+     ("u" . org-previous-visible-heading) ; alternative ≈ goto parent heading
+     ("H" . org-next-visible-heading)
+     ("n" . org-next-block)
+     ("F" . org-next-block) ; same as heading speedkey
+     ("p" . org-previous-block)
+     ("B" . org-previous-block) ; same as heading speedkey
+     ("N" . org-babel-goto-named-src-block)
+     ("a" . org-babel-insert-header-arg)
+     ("c" . org-babel-check-src-block)
+     ("m" . org-babel-mark-block)
+     ("@" . org-babel-mark-block)
+     ("'" . org-edit-special)
+     ("e" . org-edit-special)
+     ("r" . org-babel-open-src-block-result)
+     ("k" . org-babel-remove-result-one-or-many)
+     ("?" . e3/show-my-org-src-speedkeys) ; custom function
+     )
+   "Alist of key bindings, used as speed keys on src blocks.
+  Replaces the default used 'org-babel-key-bindings'.")
+
+ ;; Alternative function to specify custom speed keys for blocks, which
+ ;; also work with example blocks and with point on the begin of a
+ ;; headline or on the whitespace before a headline.
+ (defun my-org-babel-speed-command-activate (keys)
+   "Hook for activating single-letter code block commands,
+ similar to the default hook minus the `bolp' requirement
+ and with recognition for example blocks."
+   (when (and
+          ;; (bolp) <== the removed restriction
+          (let ((case-fold-search t))
+            ;; generalize the regexp to include "#+begin_example" blocks:
+            (looking-at "[ \t]*#\\+begin_[^ ]")
+            ;;(looking-at (substring org-babel-src-block-regexp 1))
+            ;; is more advanced but doesn't work on #+begin_example
+            ;; blocks, for which org has yet no named regexp.
+            )
+          ;; Return t if current element is a src or example block,
+          ;; to let org know that it must enable speed keys:
+          (let ((elem (org-element-type (org-element-at-point))))
+            (or (eq elem 'src-block) (eq elem 'example-block))))
+
+     ;; Use the above specified custom speed key list:
+     (cdr (assoc keys my-org-src-blocks-speedkeys))))
+
+ ;; Replace the orginal hook with our alternative hook:
+ (setq org-speed-command-hook
+       '(org-speed-command-activate my-org-babel-speed-command-activate))
+
+Enjoy flying with Org-airways. By e3d3 on 20240914
+
+CategoryNavigation
