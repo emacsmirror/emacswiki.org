@@ -56,7 +56,6 @@ Luckily most is easy to tweak. Below example let speed keys for blocks also work
           ;; to let org know that it must enable speed keys:
           (let ((elem (org-element-type (org-element-at-point))))
             (or (eq elem 'src-block) (eq elem 'example-block))))
-
      ;; Use the above specified custom speed key list:
      (cdr (assoc keys my-org-src-blocks-speedkeys))))
 
