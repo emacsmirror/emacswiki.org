@@ -1,7 +1,7 @@
 I'm E3D3, alias [::e3d3], and use Emacs mostly for hobby programming, notes & OS-tasks.
 
 I love Org-mode for literal programming, generating crazy config files, note taking and more.
-My Emacs config keeps growing and often changes daily. It survived multiple bankruptcy's, that I often consider as welcome holidays with "new" rebirth. Elisp is still not my thing but learning a bit Common Lisp made it much more fun. - Update 20240914: this changed since I start learning Common Lisp. Now I'm often elisp its thing & even enjoy it most of the time.
+My Emacs config keeps growing and often changes daily. It survived multiple bankruptcy's, that I often consider as welcome holidays with "new" rebirth. Elisp is still not my thing but learning a bit Common Lisp made it much more fun. - Update 2024: this changed; Now I'm often elisp its thing & even enjoy it most of the time.
 
 My favorite external packages are [[http://github.com/larstvei/try try]], [[https://github.com/abo-abo/hydra hydra]] and [[http://github.com/areina/helm-dash dash-docs]], and ca. 50 more (in 2024).
 
