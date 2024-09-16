@@ -1,11 +1,11 @@
 == Built-in solution ==
-Have cursor blinking issue and some recall.
+Have cursor blinking issue and some recall. Highlight at search.
 
   (progn (isearch-forward-symbol-at-point) (isearch-repeat-forward))
   (progn (isearch-forward-symbol-at-point) (isearch-repeat-backward) (isearch-repeat-backward))
 
 == From scratch solution ==
-Allow to set regex for matching and range to look up.
+Allow to set regex for matching and range to look up. For highlighting require additional packages.
 
   (defun my/prevnext-occurrence (next)
     "Search for the next or previous occurrence of the word at the
@@ -50,3 +50,7 @@ Allow to set regex for matching and range to look up.
     (keymap-local-set "C-c C-p" #'my/go-to-prev-occurrence))
 
   (add-hook 'emacs-lisp-mode-hook 'my/programming-keys)
+
+== Highlighting ==
+  (require 'idle-highlight-mode)
+  (add-hook 'emacs-lisp-mode-hook 'idle-highlight-mode)
