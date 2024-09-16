@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Feb 10 15:12:54 2024 (-0800)
+;; Last-Updated: Sun Sep 15 17:26:08 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 4303
+;;     Update #: 4304
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1201,7 +1201,7 @@ Use `customize-face' if you want to change the appearance.
  `bmkp-su-or-sudo', `bmkp-url', `bmkp-variable-list'
 
 If option `bmkp-bmenu-state-file' is non-nil then the state of the
-displayed bookmark-list is saved when you quit it, and it is restored
+displayed bookmark list is saved when you quit it, and it is restored
 when you next use this command.  That saved state is not restored,
 however, if it represents a different file from the current bookmark
 file.
