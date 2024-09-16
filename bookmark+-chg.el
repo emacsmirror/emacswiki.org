@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Mar 23 21:42:05 2024 (-0700)
+;; Last-Updated: Mon Sep 16 08:26:28 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 17022
+;;     Update #: 17024
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2325,6 +2325,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-doc.el'")
 ;;
+;; 2024/09/16 dadams
+;;     Added doc about bmkp-define-type-from-hander.
 ;; 2020/07/04 dadams
 ;;     Changed all references to `C-x p' to `C-x x'.
  
@@ -2664,6 +2666,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2024/09/16 dadams
+;;     Added bmkp-define-type-from-hander.
 ;; 2024/02/01 dadams
 ;;     Move bmkp-make-plain-predicate here from bookmark+-1.el, changing it to a macro.
 ;; 2023/10/23 dadams
