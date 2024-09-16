@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb 10 16:04:00 2024 (-0800)
+;; Last-Updated: Sun Sep 15 18:28:37 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 15414
+;;     Update #: 15423
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -441,11 +441,11 @@
 ;;    using function `bookmark-make-record', or by binding variable
 ;;    `bookmark-make-record-function' for a given context.
 ;;
-;;    But you can also make jumping to a new type of bookmarks
+;;    You can also make jumping to a new type of bookmarks
 ;;    type-specific, usable with `bmkp-jump-to-type' (`C-x j :') or
 ;;    with your own type-specific jump command.
 ;;
-;;    For that, just:
+;;    For that, you need to do this:
 ;;
 ;;    1. Define a function `bmkp-TYPE-alist-only', which returns an
 ;;       alist of bookmarks that are only of your new TYPE, for use
@@ -456,6 +456,20 @@
 ;;    2. Evaluate `(bmkp-define-history-variables)', to add a history
 ;;       variable for your type, again, for use with
 ;;       `bookmark-completing-read'.
+;;
+;;    You can use macro `bmkp-define-type-from-hander' to define a
+;;    simple bookmark type that's based only on a given handler.  You
+;;    pass it the TYPE name and HANDLER name as arguments.  It does #1
+;;    and #2 above, plus it defines:
+;;
+;;    * A predicate, `bmkp-TYPE-bookmark-p', which returns non-nil if
+;;      its bookmark argument has the given HANDLER.
+;;
+;;    * A command to show only bookmarks of TYPE in *Bookmark List*.
+;;      (Macro `bmkp-define-show-only-command' is used to do this.)
+;;
+;;    (Remember that to use any of the Bookmark+ macros directly
+;;    you'll need to load library `bookmark+-mac.el'.)
 ;;
 ;;  * Extensive menus.
 ;;
