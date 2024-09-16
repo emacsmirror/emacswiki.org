@@ -16,7 +16,7 @@ Starting with Emacs 22, you can also use '''`##C-x `##'''' (`next-error') or `M-
 I bind next-error and previous-error to the keypad '''/''' and '''*''' keys, since I don't use them otherwise.  It's handy and much easier on the fingers than chording Control+X. -- TedZ
 [new]
 
-See also: OccurKey, HideSearch.
+See also: OccurKey, HideSearch, NextOccurrence.
 
 
 
