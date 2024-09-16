@@ -1,0 +1,52 @@
+== Built-in solution ==
+Have cursor blinking issue and some recall.
+
+  (progn (isearch-forward-symbol-at-point) (isearch-repeat-forward))
+  (progn (isearch-forward-symbol-at-point) (isearch-repeat-backward) (isearch-repeat-backward))
+
+== From scratch solution ==
+Allow to set regex for matching and range to look up.
+
+  (defun my/prevnext-occurrence (next)
+    "Search for the next or previous occurrence of the word at the
+  cursor position."
+    (if (string-match-p "[-_A-Za-z0-9]" (char-to-string (char-after (point))))
+        (let ((bound 600)
+              (word))
+          (save-excursion
+            (skip-chars-backward "-_A-Za-z0-9")
+            (setq word (buffer-substring-no-properties
+                        (point)
+                        (progn (forward-word 1) (point)))))
+          (if (save-excursion
+                (goto-char (if next
+                               (1+ (point))
+                             (1- (point))))
+                (if next
+                    (re-search-forward (concat "\\b" (regexp-quote word) "\\b")
+                                       (+ (point) bound) t)
+                  (re-search-backward (concat "\\b" (regexp-quote word) "\\b")
+                                      (- (point) bound) t)))
+              (progn
+                (goto-char (if next
+                               (match-beginning 0)
+                             (match-end 0)))
+                (if (not next)
+                    (goto-char (1- (point))))
+                (message "Found '%s'" word))
+            ;; else
+            (message "No '%s' found" word)))))
+
+  (defun my/go-to-next-occurrence ()
+    (interactive)
+    (my/prevnext-occurrence t))
+
+  (defun my/go-to-prev-occurrence ()
+    (interactive)
+    (my/prevnext-occurrence nil))
+
+  (defun my/programming-keys()
+    (keymap-local-set "C-c C-n" #'my/go-to-next-occurrence)
+    (keymap-local-set "C-c C-p" #'my/go-to-prev-occurrence))
+
+  (add-hook 'emacs-lisp-mode-hook 'my/programming-keys)
