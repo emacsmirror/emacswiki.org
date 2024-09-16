@@ -5,8 +5,8 @@ There are several so-called "starter kits" which provide default Emacs configura
 Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2022-08; some size numbers from 2016-01-16):
 
 || Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 22.4k ||          1088 ||   10932 ||              9700 || https://github.com/syl20bnr/spacemacs/tree/develop ||
-|| Doom Emacs           ||  14.8k ||          571 ||   17415 ||               1200 || https://github.com/hlissner/doom-emacs ||
+|| Spacemacs            || 23.6k ||         1194 ||   12973 ||              9700 || https://github.com/syl20bnr/spacemacs ||
+|| Doom Emacs           || 19.2k ||          751 ||   19502 ||              1200 || https://github.com/doomemacs/doomemacs ||
 || purcell emacs.d      ||  6.3k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
 || Prelude              ||  4.8k ||          166 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
 || Centaur Emacs        ||  1.6k ||           22 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
@@ -22,6 +22,6 @@ Ranked in terms of popularity, as measured by the number of stars on their !GitH
 || ocodo .emacs.d       ||   100 ||            4 ||    9352 ||             46000 || https://github.com/ocodo/.emacs.d ||
 || Wakib Emacs          ||    23 ||            1 ||      93 ||                 8 || https://github.com/darkstego/wakib-emacs  ||
 || Rho Emacs            ||    22 ||            1 ||      37 ||                 ~ || https://github.com/GChristensen/rho-emacs ||
-|| Onboard              ||     16 ||            1 ||     212 ||                 8 || https://github.com/monkeyjunglejuice/emacs.onboard ||
+|| Onboard              ||    16 ||            1 ||     212 ||                 8 || https://github.com/monkeyjunglejuice/emacs.onboard ||
 ----
 CategoryDotEmacs LearningEmacs
