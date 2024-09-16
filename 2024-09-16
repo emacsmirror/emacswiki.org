@@ -1,3 +1,7 @@
 I spent more than an hour trying to figure out why my server had a load of nearly 40. All I discovered is that load went down when I shut down Emacs Wiki. Well, I needed to sleep and I‘ve got plans for the next few days so I shut it down while I slept hoping that the misconfigured spider is fixed or the inept programmer discovers their mistake. Just another day in the Butlerian Jihad. Some misguided soul probably wanted to download it all and wrote a broken web crawler and when that got blocked they bought some nice scaling infrastructure from Amazon, Hentzner, OHV or Alibaba Cloud or whatever they are called, allowing them to use a gazillion different IP numbers that will eventually lead me to implement some sort of cloud service provider block. – Alex
 
 [[image:2024-09-16 Screenshot|Load shoots up to nearly 40 around midnight]]
+
+Switched Emacs Wiki back on after a few hours of sleep and it did fine. But then it restarted again... at 18:00, 19:00, 21:00, 22:00... and so I have switched Emacs Wiki off again. Time to ban some networks!
+
+Anybody interested in my banning of IP ranges and possibly interested in me reverting any of these, take a look at [https://alexschroeder.ch/admin/ban-cidr ban-cidr] ... from a network that isn't banned, I guess. 😏
