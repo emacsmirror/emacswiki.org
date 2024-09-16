@@ -709,3 +709,10 @@ So that packages that integrate easily with vanilla bookmarks (i.e. privide a `m
 
 -- Anonymous 2024-09-13 08:42 UTC
 
+
+----
+
+Thanks for your interest. I added macro `bmkp-define-type-from-hander' for this use case.
+
+-- DrewAdams 2024-09-16 15:38 UTC
+
