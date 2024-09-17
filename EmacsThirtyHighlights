@@ -109,6 +109,10 @@ Instead of using [tt]emacs -Q[/tt] and loading packages by hand, this command st
 
 This feature was implemented by PhilipKaludercic.
 
+=== `list-keyboard-macros' ===
+
+A command to work with keyboard macros similar to `list-buffers'.
+
 == Interesting User Options ==
 
 *General tip:* Run <kbd>M-x customize-changed</kbd> and select the last version you have been using to get a list of all new user options, along with documentation and possible values.
@@ -130,3 +134,7 @@ Implemented by JuriLinkov in https://debbugs.gnu.org/cgi/bugreport.cgi?bug=70846
 Instead of using `display-local-help' to print the message of a FlyMake warning/error in the echo area (or using a command like `flymake-show-buffer-diagnostics'), this option makes it so that Flymake adds overlays at the ends of the affected lines.  This makes it easier to see what is wrong on a glance, and copies the style of many contemporary editors, but comes at the cost of not being able to select or interact with the message, in a way that one would expect from Emacs.
 
 Implemented by JoãoTávora.
+
+=== New user option `edmacro-reverse-macro-lines'. ===
+
+This makes Edmacro Mode show the keys in reverse order. This is convenient with `kmacro-edit-lossage' and the new command `edmacro-set-macro-to-region-lines'.
