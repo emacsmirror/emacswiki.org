@@ -16,4 +16,4 @@ In any case, I added over a hundred Chinese networks to the firewall rules and I
 [[e3d3]] last week I added emacswiki to my newsfeed by using openrss.org. When reading this post I was worried that this caused the disturbance, although I expected it to refresh the feeds twice a day. I don't know much about networking and to be sure I removed the feed, at 20240916 at 18:00 hour, plus minus 5-10 minutes. Later I became a little paranoid that I had caused it by using the "random page" link too often (20-30 times). Wish I could help more. You can find me sometimes on #emacs and leave a message there if you want to contact me. Wish you good Luck, and a good mood. Best regards.
 
 [new]
-No worries. These are badly programmed crawlers that will visit every single old revision of a page, download the individual feeds for every page, and so on. They have no concept of what it important information and what is not. -- Alex
+No worries. These are badly programmed crawlers that will visit every single old revision of a page, download the individual feeds for every page, and so on. They have no concept of what is important and what is not. -- Alex
