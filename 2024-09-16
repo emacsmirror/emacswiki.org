@@ -9,3 +9,5 @@ Anybody interested in my banning of IP ranges and possibly interested in me reve
 **2024-09-17**. This continues to keep me busy and angry every evening. Too bad I don't have a real fast [https://alexschroeder.ch/admin/network-lookup network-lookup] to firewall ban pipeline.
 
 In any case, I added over a hundred Chinese networks to the firewall rules and I'm seriously considering blocking the whole country for a week. It seems that most of the offenders are networks run by China Telecoms and China Mobile.
+
+**2024-09-18**. So far, so good. Load stays below two.
