@@ -10,17 +10,17 @@ can be done with `dired-copy-filename-as-kill' (default keybinding "w") so there
 Below `beginning-of-buffer' variant jumps to the first file line. Repeating cycles point between this and the absolute top line, while the `end-of-buffer' alternative always puts point on last file line,
 and on the beginning of a file name.
 
-  (let ((e3--beginning-of-buffer-alternative t)) ; t = use alternative begin
-    (defun e3/dired-beginning-of-buffer-alternative ()
+  (let ((my--beginning-of-buffer-alternative t)) ; t = use alternative begin
+    (defun my/dired-beginning-of-buffer-alternative ()
       "In `dired' place point on the first file line.
   Repeat to cycle between this and absolute first line."
       (interactive)
       (goto-char (point-min))               ; goto absolute top line
       (if (equal last-command this-command) ; toggle position variable
-          (cl-callf not e3--beginning-of-buffer-alternative)
+          (cl-callf not my--beginning-of-buffer-alternative)
         ;; (re)set position variable to alternative position:
-        (setq e3--beginning-of-buffer-alternative t))
-      (when e3--beginning-of-buffer-alternative ; then goto first file line
+        (setq my--beginning-of-buffer-alternative t))
+      (when my--beginning-of-buffer-alternative ; then goto first file line
         (dired-goto-next-file)
         (while (or (looking-at "\\.$") (looking-at "\\.\\.$")) (next-logical-line))
         ;; UPDATED: previously used (dired-goto-next-nontrivial-file)
