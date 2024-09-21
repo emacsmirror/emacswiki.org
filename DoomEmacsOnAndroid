@@ -203,6 +203,20 @@ $ mkdir -p $HOME/.local/share/fonts
 $ ln -s $HOME/.local/share/fonts $HOME/fonts
 [/code]
 
+Alternatively, move the font directory to /sdcard/fonts:
+[code]
+$ M-x shell
+$ cd $HOME
+$ tar cf - fonts | (cd /sdcard; tar xf -)
+$ mv fonts junk-fonts; ln -s /sdcard/fonts
+$ ls /sdcard/fonts/
+$ ls fonts
+$ cd .local/share
+$ ls
+$ mv fonts junk-fonts; ln -s /sdcard/fonts
+$ ls fonts
+[/code]
+
 =Path name in HOME dir, in config file=
 To reliably use <tt>$HOME</tt> in a path name, in emacs config file:
 [code]
