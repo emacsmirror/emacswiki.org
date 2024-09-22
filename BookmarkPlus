@@ -1281,9 +1281,9 @@ forward destination in your bookmark to that Info location.
 You create an annotation forward for a bookmark by using one of
 these forms as the annotation text.
 
-     bmkp-annot-url: "FILE"
+     bmkp-annot-file: "FILE"
      bmkp-annot-url: "URL"
-     bmkp-annot-url: "BOOKMARK"
+     bmkp-annot-bmk: "BOOKMARK"
 
 * ##FILE## is an absolute file name.  Forwarding to it uses `find-file-other-window'.
 * ##URL## is a URL.  Forwarding to it uses `browse-url'.
