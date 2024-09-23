@@ -6,7 +6,7 @@ Fsbot ("free software bot") is an infobot that has supported several free softwa
 (Please don't change the design or contents of this document, except for minor cleanup. -deego).
 
 
-== Parsing/Lispification and Lisp interpreter ==
+== Parsing/Lispification, Lisp interpreter and fslisp ==
 
 At its core, fsbot is an infobot - it allows you to add notes for terms, and spits out the notes when requested.
 
