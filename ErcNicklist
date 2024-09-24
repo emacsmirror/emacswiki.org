@@ -1,3 +1,11 @@
+==ERC 5.6 and later==
+
+This page contains information for users of older Emacsian.   When using ERC 5.6 (or above) please look at *nickbar* within (info "(erc) Modules") first.
+
+~These instructions have been reported broken (via #erc on libera.chat) under newer Emacsian; please consider updating this page if the information below leads you in the right direction.~
+
+==Older Versions==
+
 See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-nicklist.el.
 
 To display channel nicknames in a side buffer, just add the following to your .emacs or ERC configuration file:
