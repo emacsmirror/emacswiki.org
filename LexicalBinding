@@ -21,7 +21,7 @@ For closures on previous versions of Emacs, see FakeClosures.
 ==Problem with defun in lexically bound contexts. (For Emacs 24 prior to 24.3)==
 
 Prior to Emacs 24.3, the <code>defun</code> special form didn't work properly in lexically bound
-contexts (i.e. when the buffer-local variable <code>lexical-binding</code> in not <code>nil</code>).  For example: 
+contexts (i.e. when the buffer-local variable <code>lexical-binding</code> is not <code>nil</code>).  For example: 
 
 <pre>
 (let ((counter 0))
