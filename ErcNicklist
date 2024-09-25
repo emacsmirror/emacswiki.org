@@ -4,6 +4,26 @@ This page contains information for users of older Emacsian.   When using ERC 5.6
 
 ~These instructions have been reported broken (via #erc on libera.chat) under newer Emacsian; please consider updating this page if the information below leads you in the right direction.~
 
+To enable `erc-nickbar-mode` automatically in your Emacs configuration file (`init.el` or `.emacs`), you can add the following lines:
+
+ (require 'erc)
+ (add-hook 'erc-mode-hook 'erc-nickbar-mode)
+
+This ensures that `erc-nickbar-mode` is activated whenever you start an ERC session. The `add-hook` function attaches `erc-nickbar-mode` to the `erc-mode-hook`, which is run whenever an ERC buffer is opened.
+
+If you also want to make sure that the speedbar window is locked (not selectable with `other-window`), you can configure that as well:
+ (setq erc-nickbar-toggle-nicknames-window-lock t)
+
+Place both snippets in your Emacs initialization file to have this mode activated and configured the way you want.
+
+Alternatively, instead of using the `erc-mode-hook`, you can add `nickbar` to `erc-modules` to enable `erc-nickbar-mode` automatically. This method integrates it more seamlessly with ERC's modular setup. Here's how to do it in your Emacs `init.el` file:
+
+ (add-to-list 'erc-modules 'nickbar)
+ ;; Ensure ERC reloads modules after modification
+ (erc-update-modules)
+
+By adding `'nickbar'` to `erc-modules`, the sidebar will open automatically when you connect to an IRC server for the first time in your Emacs session, without needing to manually activate it with a hook. This method also fits better with ERC's module system.
+
 ==Older Versions==
 
 See ErcExtraModules first if you use the version of ERC that comes with Emacs 22 and you don't have erc-nicklist.el.
