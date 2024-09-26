@@ -4,6 +4,10 @@ It is available at https://github.com/sshirokov/ZNC.el
 
 Make sure the contents of the repo, or just ./znc.el is on your load-path.
 
+===Note===
+This package is not necessary for most use-cases. ZNC works perfectly normal without it.
+
+==Configuration and Usage==
 <pre>
 ;; Install
 (require 'znc)
@@ -19,15 +23,30 @@ M-x znc-erc
 M-x znc-all
 </pre>
 
-;; Usage
-
 /reconnect will recycle the hell out of the server buffer.
 
 By default, when you kill a channel buffer instead of /parting from the channel, you will detach from it
 This is customizable
+
+==Query Buffers Self-Messages Fix==
+
+When using the ZNC setting 'AutoClearQueryBuffer = false',
+in order to have query buffers (ex. direct message with another user) restore with your messages it is necessary to add this advice to your ERC configuration:
+
+Ref: https://github.com/sshirokov/ZNC.el/issues/32
+
+<pre>
+(advice-add #'erc-login :before (lambda ()
+                                  (erc-server-send "CAP REQ :znc.in/self-message")
+                                  (erc-server-send "CAP END")))
+</pre>
+
+
+==Notes==
 
 [PhilHudson:2015-01-18 23:11 UTC]
 Question: what is a "network slug"?
 
 [new:WadeMealing:2018-09-27 11:11 UTC]
 Answer: Slug is a "name-like-this" identifier.  No spaces or dots, i think the term originates from django's slug url.  This question originates from the term used in the customize-group znc "Account" information.
+
