@@ -41,6 +41,18 @@ Ref: https://github.com/sshirokov/ZNC.el/issues/32
                                   (erc-server-send "CAP END")))
 </pre>
 
+If you would like ZNC to not restore the query buffers after they have been killed (C-x k):
+
+<pre>
+(defun erc-clear-query-buffer ()
+    (when (erc-query-buffer-p)
+      (erc-send-input-line "*status" (format "clearbuffer %s" (erc-target)))))
+(add-to-list 'erc-kill-buffer-hook 'erc-clear-query-buffer)
+
+</pre>
+Once again, this is only necessary when using 'AutoClearQueryBuffer = false'.
+
+Ref: https://wiki.znc.in/Query_buffers
 
 ==Notes==
 
