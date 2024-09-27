@@ -16,6 +16,31 @@ You can find the full list of features in this open pull request to the upstream
 
 https://github.com/jimhourihan/glsl-mode/pull/15
 
+== Edit shader code from a string ==
+
+With a little bit of code, you can have it so that when your point is at a string you can press <code>C-c C-.</code> to get a temporary buffer to edit the shader in. The convenience of a string, the benefits of a file/buffer.
+
+    (require 'glsl-mode)
+    (require 'separedit)
+    
+    (defun zyd/choose-glsl-mode (fn &rest args)
+      (if (eq major-mode 'lisp-mode)
+          "glsl-mode"
+        (apply fn args)))
+    
+    (advice-add 'separedit--select-mode :around #'zyd/choose-glsl-mode)
+      
+    (defun zyd/indirectly-edit ()
+      (interactive)
+      (let ((current-prefix-arg t))
+        (separedit-dwim-default)))
+    
+    (define-key slime-mode-map (kbd "C-c C-.") #'zyd/indirectly-edit)
+
+[[image:EditingAStringWithGLSL]]
+
+
+Note that the you'll need to adapt the function <code>zyd/choose-glsl-mode</code> to what major-mode(s) you want this to work in. Currently, it just Lisp.
 ----
 CategoryModes
 CategoryProgramming
