@@ -1,11 +1,21 @@
-Original Mode From Xavier Decoret is here:
+Major mode for the *OpenGL Shading Language*
 
-http://artis.inrialpes.fr/~Xavier.Decoret/resources/glsl-mode
+https://github.com/jimhourihan/glsl-mode
 
-With modifications for up to GLSL 4.3:
+== Xaldew's fork ==
 
-https://raw.github.com/jimhourihan/glsl-mode/master/glsl-mode.el
+There is also a more recent fork of this package with interesting features: 
 
-repo with modifications is here: https://github.com/jimhourihan/glsl-mode
+https://github.com/Xaldew/glsl-mode
+
+* Updated extension for auto-mode
+* More syntax highlighting of keywords/builtins
+* Better use of cc-mode
+
+You can find the full list of features in this open pull request to the upstream repo: 
+
+https://github.com/jimhourihan/glsl-mode/pull/15
+
 ----
 CategoryModes
+CategoryProgramming
