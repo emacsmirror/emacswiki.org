@@ -35,3 +35,14 @@ I changed the if statement to skip if power-shell-command-reply is null, and set
 	     (setq powershell-command-reply "")
 	     )
 }}}
+
+----
+
+Just stopped here to mention that there is now a new mode called koopa-mode
+
+[https://github.com/sch0lars/koopa-mode Github Repo]
+
+It seems to be more actively mantained and it's available on MELPA.
+
+-- pupitetris 2024-09-29 20:22 UTC
+
