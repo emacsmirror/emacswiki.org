@@ -96,6 +96,7 @@ To enable or disable modules use M-x customize-variable RET erc-modules.
 * ErcLogging -- writing channel buffers out to files at the end of a session
 * ErcMorseCode -- useful if you have weird friends sending you morse code on IRC
 * ErcNickserv -- identify to Nickserv automatically
+* ErcNicks -- automatically colorize nicks
 * ErcNotify -- have ERC notify you when selected users enter or leave IRC
 * ErcReplace -- Filter messages with text search and replace
 * ErcScrollToBottom -- scroll to the bottom of the buffer
