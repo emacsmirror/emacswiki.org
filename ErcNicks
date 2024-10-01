@@ -1,0 +1,20 @@
+=ErcNicks= 
+
+erc-nicks.el is a module that automatically colorizes nicknames.
+
+It can be enabled by adding 'nicks' to erc-modules.
+
+==Customization==
+
+Use 'customize-group erc-nicks' to see configuration options.
+
+You can use 'erc-nicks-refresh' to view your changes.
+
+==User defined nick colors==
+
+If you are going to make 'erc-nicks-colors' a custom list of colors, then you most likely want to 
+override 'erc-nicks--create-pool-function' and set it to 'erc-nicks--create-culled-pool', otherwise
+the colors will coerce ('erc-nicks--create-coerced-pool') to the nearest terminal color.
+<pre>
+(setq erc-nicks--create-pool-function 'erc-nicks--create-culled-pool)
+</pre>
