@@ -1,5 +1,3 @@
-=ErcNicks= 
-
 erc-nicks.el is a module that automatically colorizes nicknames.
 
 It can be enabled by adding 'nicks' to erc-modules.
