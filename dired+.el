@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.06.30
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 20 17:23:01 2024 (-0700)
+;; Last-Updated: Wed Oct  2 09:49:07 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 13753
+;;     Update #: 13762
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1046,6 +1046,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/10/02 dadams
+;;     dired-goto-file: Works now also for Dired buffers with listings of arbitrary file names.
 ;; 2024/08/20 dadams
 ;;     diredp-set-header-line-breadcrumbs:
 ;;       Show also the default-directory, including if it's the root directory.
@@ -12841,16 +12843,22 @@ Return buffer position on success, else nil."
       (and found  (goto-char found)))))
 
 
-;; REPLACE ORIGINAL in `dired.el'.
-;;
-;; 1. Expand input file name relative to current subdir listing, not `default-directory'.
-;; 2. Respect option `diredp-case-fold-search'.  Prefix arg means respect its complement instead.
-;; 3. If destination is in a hidden dir listing then open that listing.
-;;
 (when (>= emacs-major-version 25)
 
-  ;; Vanilla comment: Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007"
-  ;; into the buffer, so we won't find it in the buffer.
+
+  ;; REPLACE ORIGINAL in `dired.el'.
+  ;;
+  ;; 1. Works also for Dired buffers with listings of arbitrary file names, not just `ls' listings.
+  ;; 2. Expand input file name relative to current subdir listing, not `default-directory'.
+  ;; 3. Respect option `diredp-case-fold-search'.  Prefix arg means respect its complement instead.
+  ;; 4. If destination is in a hidden dir listing then open that listing.
+  ;; 5. Instead of letting `push-mark' show its message, show a message (if interactive) saying you can use
+  ;;    `C-x C-x C-g' to go back.  Show "Not found" message if not found. 
+
+  ;; Vanilla Emacs comment:
+  ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007" into the buffer,
+  ;; so we won't find it in the buffer.
+  ;;
   (defun dired-goto-file (file &optional toggle-case-fold-p open-hidden-dir-p) ; Bound to `j'
     "Go to line describing file FILE in this Dired buffer.
 Respect option `diredp-case-fold-search'.
@@ -12867,18 +12875,21 @@ When called from Lisp:
 
 Return buffer position on success, else nil."
     ;; Unlike vanilla Dired, expand input name in current subdir listing.
-    (interactive (prog1 (list (let ((curr-listing-dir  (dired-current-directory)))
-                                (expand-file-name (read-file-name "Goto file: " curr-listing-dir) curr-listing-dir))
-;;; $$$$$ WAS THIS: (expand-file-name (read-file-name "Goto file: " (dired-current-directory)))
-                              current-prefix-arg
-                              t)
-                   (push-mark nil t)))
+    (interactive 
+     (prog1 (list (if (consp dired-directory)
+                      (let ((files  (cdr dired-directory)))
+                        (expand-file-name (completing-read "Goto file: " files nil t) (dired-current-directory)))
+                    (let ((curr-listing-dir  (dired-current-directory)))
+                      (expand-file-name (read-file-name "Goto file: " curr-listing-dir) curr-listing-dir)))
+                  current-prefix-arg
+                  t)
+       (push-mark nil t)))
     (unless (file-name-absolute-p file) (error "File name `%s' is not absolute" file))
     (setq file  (directory-file-name file)) ; Does no harm if not a directory
     (let* ((case-fold-search  (if toggle-case-fold-p (not diredp-case-fold-search) diredp-case-fold-search))
            (dir               (file-name-directory file))
            (found             (or
-                               ;; Absolute name.
+                               ;; Search first for absolute name.
                                (save-excursion
                                  (goto-char (point-min))
                                  (dired-goto-file-1 file file (point-max) open-hidden-dir-p))
@@ -12906,17 +12917,18 @@ Return buffer position on success, else nil."
 
   ;; REPLACE ORIGINAL in `dired.el':
   ;;
-  ;; Respect `case-fold-search'.
+  ;; 1. Respect `case-fold-search'.
+  ;; 2. Open hidden directory if OPEN-HIDDEN-DIR-P.
   ;;
   (defun dired-goto-file-1 (file full-name limit &optional open-hidden-dir-p)
     "Advance to the Dired listing labeled by FILE; return its position.
 Return nil if the listing is not found.
 
-If FILE contains chars that would not appear in a Dired buffer then
-search using the quoted forms of those chars
+If FILE contains characters that would not appear in a Dired buffer
+then search using the quoted forms of those characters.
 
-FULL-NAME specifies the actual file name the listing must have, as
- returned by `dired-get-filename'.
+FULL-NAME specifies the actual file name that the listing must have,
+ as returned by `dired-get-filename'.
 LIMIT is the search limit.
 Non-nil OPEN-HIDDEN-DIR-P means open current subdir listing if hidden."
     (let (str)
