@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.06.30
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  2 09:49:07 2024 (-0700)
+;; Last-Updated: Wed Oct  2 11:14:28 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 13762
+;;     Update #: 13783
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1047,6 +1047,7 @@
 ;;; Change Log:
 ;;
 ;; 2024/10/02 dadams
+;;     Added macro diredp-string-replace.  Use instead of replace-regexp-in-string.
 ;;     dired-goto-file: Works now also for Dired buffers with listings of arbitrary file names.
 ;; 2024/08/20 dadams
 ;;     diredp-set-header-line-breadcrumbs:
@@ -2635,9 +2636,14 @@ of that nature."
       `(lexical-let* ,@all)
     `(let* ,@all)))
 
-
 (defmacro diredp-user-error (&rest args)
   `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
+(defmacro diredp-string-replace (from-string to-string in-string)
+  "`string-replace', usable also with older Emacs versions."
+  `(if (fboundp 'string-replace)
+      (string-replace ,from-string ,to-string ,in-string)
+    (replace-regexp-in-string (regexp-quote ,from-string) ,to-string ,in-string  nil t)))
 
 
 ;; Quiet the byte-compiler.
@@ -3400,7 +3406,7 @@ Initialized to the value of option `diredp-hide-details-initially-flag'.")
 
 (defun diredp-replace-dir-sep-in-string (string)
   "Replace `/` chars in STRING with `diredp-dir-sep-replacement'."
-  (replace-regexp-in-string "/" diredp-dir-sep-replacement string nil 'LITERAL))
+  (diredp-string-replace "/" diredp-dir-sep-replacement string))
 
 ;; 2020-12-05.
 ;;
@@ -4642,8 +4648,8 @@ If HDR is non-nil, insert a header line with the directory name."
         ;; But at present it is done only if "-b" is in ls-switches, because newlines in dirnames
         ;; are uncommon, and people may have gotten used to seeing unescaped "\" in the headers.
         ;; Note: adjust `dired-build-subdir-alist' if you change this.
-        (setq dir  (replace-regexp-in-string "\\\\" "\\\\" dir nil t)
-              dir  (replace-regexp-in-string "\n" "\\n" dir nil t)))
+        (setq dir  (diredp-string-replace "\\" "\\\\" dir)
+              dir  (diredp-string-replace "\n" "\\n"  dir)))
       ;; If we used `--dired' and it worked, the lines are already indented.  Else indent them.
       (unless (save-excursion (goto-char opoint) (diredp-looking-at-p "  "))
         (let ((indent-tabs-mode  nil)) (indent-rigidly opoint (point) 2)))
@@ -5488,8 +5494,7 @@ Used as arg to `format-time-string'.")
 (defun diredp--snapshot-cmd-name-time ()
   "Replace SPC chars in time part of snapshot command names.
 Uses `diredp-snapshot-cmd-time-format' for the time part to fix."
-  (replace-regexp-in-string
-   (regexp-quote " ") "_" (format-time-string diredp-snapshot-cmd-time-format)))
+  (diredp-string-replace " " "_" (format-time-string diredp-snapshot-cmd-time-format)))
 
 (defvar diredp-snapshot-cmd-buffer-name-format "Files on %s"
   "Buffer name format for `diredp-define-snapshot-dired-commands-1'.
@@ -9134,10 +9139,10 @@ When called from Lisp, optional arg DETAILS is passed to
          (modestr  (and (stringp (car files))  (nth 8 (file-attributes (car files)))))
          (default  (and (stringp modestr)
                         (string-match "^.\\(...\\)\\(...\\)\\(...\\)$" modestr)
-                        (replace-regexp-in-string "-" "" (format "u=%s,g=%s,o=%s"
-                                                                 (match-string 1 modestr)
-                                                                 (match-string 2 modestr)
-                                                                 (match-string 3 modestr)))))
+                        (diredp-string-replace "-" "" (format "u=%s,g=%s,o=%s"
+                                                              (match-string 1 modestr)
+                                                              (match-string 2 modestr)
+                                                              (match-string 3 modestr)))))
          (modes    (if (> emacs-major-version 22)
                        (dired-mark-read-string
                         "Change mode of marked files here and below to: " nil 'chmod nil files default)
@@ -12750,18 +12755,18 @@ Return buffer position on success, else nil."
       ;; `Dired+': Added this sexp.
       (save-excursion
         (goto-char (point-min))
-        (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
+        (let ((search-string  (diredp-string-replace "\^m" "\\^m" file))
               (here           nil))
-          (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+          (setq search-string  (diredp-string-replace "\\" "\\\\" search-string))
 
           ;; Escape whitespace.  Added per Emacs 24 addition in `unless' code below:
           (when (and (dired-switches-escape-p dired-actual-switches)
                      (diredp-string-match-p "[ \t\n]" search-string))
             ;; FIXME: fix this for all possible file names (embedded control chars etc).
             ;;        Need to escape everything that `ls -b' escapes.
-            (setq search-string  (replace-regexp-in-string " " "\\ "  search-string nil t)
-                  search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                  search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+            (setq search-string  (diredp-string-replace " "  "\\ " search-string)
+                  search-string  (diredp-string-replace "\t" "\\t" search-string)
+                  search-string  (diredp-string-replace "\n" "\\n" search-string)))
 
           ;; Use HERE to ensure we do not keep searching for a directory entry.
           (while (and (not (eobp))  (not found)  (not (equal here (point))))
@@ -12783,16 +12788,16 @@ Return buffer position on success, else nil."
             (let ((base      (file-name-nondirectory file))
                   (boundary  (dired-subdir-max))
                   search-string)
-              (setq search-string  (replace-regexp-in-string "\^m" "\\^m" base nil t)
-                    search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+              (setq search-string  (diredp-string-replace "\^m" "\\^m" base)
+                    search-string  (diredp-string-replace "\\"  "\\\\" search-string))
               ;; Escape whitespace.  Sexp added by Emacs 24:
               (when (and (dired-switches-escape-p dired-actual-switches)
                          (diredp-string-match-p "[ \t\n]" search-string))
                 ;; FIXME: fix this for all possible file names (embedded control chars etc).
                 ;;        Need to escape everything that `ls -b' escapes.
-                (setq search-string  (replace-regexp-in-string " " "\\ " search-string nil t)
-                      search-string  (replace-regexp-in-string "\t" "\\t" search-string nil t)
-                      search-string  (replace-regexp-in-string "\n" "\\n" search-string nil t)))
+                (setq search-string  (diredp-string-replace " "  "\\ " search-string)
+                      search-string  (diredp-string-replace "\t" "\\t" search-string)
+                      search-string  (diredp-string-replace "\n" "\\n" search-string)))
               (while (and (not found)
                           ;; Filenames are preceded by SPC.  This makes the search faster
                           ;; (e.g. for the filename "-"!).
@@ -12932,14 +12937,14 @@ FULL-NAME specifies the actual file name that the listing must have,
 LIMIT is the search limit.
 Non-nil OPEN-HIDDEN-DIR-P means open current subdir listing if hidden."
     (let (str)
-      (setq str  (replace-regexp-in-string "\^m" "\\^m"  file nil t)
-            str  (replace-regexp-in-string "\\\\" "\\\\" str  nil t))
+      (setq str  (diredp-string-replace "\^m" "\\^m" file)
+            str  (diredp-string-replace "\\"  "\\\\" str))
       (and (dired-switches-escape-p dired-actual-switches)
 	   (string-match-p "[ \t\n]" str)
            ;; FIXME: to fix this for embedded control characters etc, we should escape everything that `ls -b' does.
-	   (setq str  (replace-regexp-in-string " " "\\ "  str nil t)
-	         str  (replace-regexp-in-string "\t" "\\t" str nil t)
-	         str  (replace-regexp-in-string "\n" "\\n" str nil t)))
+	   (setq str  (diredp-string-replace " "  "\\ " str)
+	         str  (diredp-string-replace "\t" "\\t" str)
+	         str  (diredp-string-replace "\n" "\\n" str)))
       (let ((found          nil)
 	    (search-string  (concat " " str))) ; This makes search faster (e.g. for the filename "-").
         (while (and (not found)  (search-forward search-string limit 'move))
