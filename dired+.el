@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.06.30
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct  4 10:28:27 2024 (-0700)
+;; Last-Updated: Tue Oct  8 11:09:51 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 13848
+;;     Update #: 13851
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1046,6 +1046,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/10/08 dadams
+;;     diredp-default-sort-arbitrary-function, diredp-sort-arbitrary-command: Added sorting by file date.
 ;; 2024/10/04 dadams
 ;;     Added breadcrumbs-in-header-line to diredp-hide/show-menu.
 ;;     Added comments with menu bindings.
@@ -3118,12 +3120,13 @@ Emacs to see the effect of the new value on font-locking."
   "Sorting used by default for sorting recent-files or dirs
 You can re-sort the buffer using \\<dired-mode-map>`\\[diredp-sort-arbitrary-command]'."
   :type '(choice
-          (const :tag "Access order, most recent first"   nil)
-          (const :tag "Access order, least recent first"  t)
-          (function :tag "A-Z, last part of name"         :value diredp-last-file-name-part-less-p)
-          (function :tag "A-Z, full name"                 :value diredp-full-file-name-less-p)
-          (function :tag "Z-A, last part of name"         :value diredp-last-file-name-part-more-p)
-          (function :tag "Z-A, full name"                 :value diredp-full-file-name-more-p))
+          (const :tag "Access order, most recent first"    nil)
+          (const :tag "Access order, least recent first"   t)
+          (function :tag "A-Z, last part of name"          :value diredp-last-file-name-part-less-p)
+          (function :tag "A-Z, full name"                  :value diredp-full-file-name-less-p)
+          (function :tag "Z-A, last part of name"          :value diredp-last-file-name-part-more-p)
+          (function :tag "Z-A, full name"                  :value diredp-full-file-name-more-p)
+          (function :tag "Last-modification time"          :value diredp-file-date-earlier-p))
   :group 'Dired-Plus)
 
 ;;;###autoload
@@ -5893,7 +5896,8 @@ NOTE:
                       ("3: A-to-Z, Last Part of Name" . diredp-last-file-name-part-less-p)
                       ("4: A-to-Z, Full Name"         . diredp-full-file-name-less-p)
                       ("5: Z-to-A, Last Part of Name" . diredp-last-file-name-part-more-p)
-                      ("6: Z-to-A, Full Name"         . diredp-full-file-name-more-p)))
+                      ("6: Z-to-A, Full Name"         . diredp-full-file-name-more-p)
+                      ("7: Last-Modification Time"    . file-newer-than-file-p)))
             (order  (completing-read "Sort order: " cands nil t)))
        (list (cdr (assoc order cands))))))
   (let ((buf    (buffer-name))
