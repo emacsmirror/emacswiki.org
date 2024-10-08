@@ -8,7 +8,6 @@ Doom Emacs works well in Android Emacs, except that installing and updating take
 =A warning about Android power saving=
 It is important to ensure that Android does not attempt to slow down the CPU, or temporarily turn off Wifi, while doing "doom install", "doom upgrade" or "doom sync":
 * In Android settings, probably in section "Battery", look for "Power saving", or "performance", and ensure that power saving is disabled, and performance is set to high performace. Note that your version of Android might have only one of these controls.
-* Connect your Android device to a charger.
 
 =Installation=
 To get started install the Termux APK and the Android Emacs APK in [https://sourceforge.net/projects/android-ports-for-gnu-emacs/files/termux/ Sourceforge]. Follow the instructions in the README under the same URL. Do not forget to run:
@@ -102,7 +101,6 @@ $ ls -l
 All scripts except <tt>doom.cmd</tt> should have been updated.
 
 Now execute the next step in the installation of Doom Emacs:
-* Connect your Android device to a charger. This will avoid that the device tries to save battery, which could slow the installation process, and also make network access less reliable during the installation.
 
 [code]
 $ cd
