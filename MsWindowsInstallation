@@ -13,15 +13,22 @@ To install the *official stable binaries*:
 * Visit https://ftpmirror.gnu.org/emacs/windows/ 
 * Consider reading the README
 * Find the highest Emacs version directory
-* Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed
-* Open it using Explorer (slow) or 7zip (faster) and extract all the files into a directory of your choice
 
-*Note*: The 27.2 pre-packaged binaries come with an older GnuTLS library version with a known problem that could wrongly refuse connections to sites, such as MELPA, with a "certificate has expired" error. See https://debbugs.gnu.org/cgi/bugreport.cgi?bug=51038 for a discussion. 
+If you download the file ending in ##-installer.exe##, you might have to provide an administrator password.
+
+If you download the file ending in ##.zip##, unpack them as you see fit.
 
 To install the *official snapshot binaries*:
 
 * Visit https://alpha.gnu.org/gnu/emacs/pretest/windows/
-* Download the installer.exe with the latest date (again with x86_64 and i686 indicating 64 bit or 32 bit, respectively)
+* Download the ##-installer.exe## with the latest date
+* Run the executable to extract the Emacs installation into the directory of your choice.
+* Alternatively, you can download snapshots in zip format, like for the stable release.
+
+To install the *unofficial binaries* by Corwin:
+
+* Visit https://corwin.bru.st/ and click through to https://corwin.bru.st/emacs-31/emacs-31-latest/ or similar
+* Download the ##-installer.exe##
 * Run the executable to extract the Emacs installation into the directory of your choice.
 * Alternatively, you can download snapshots in zip format, like for the stable release.
 
