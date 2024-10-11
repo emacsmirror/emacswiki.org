@@ -286,6 +286,40 @@ http://i.imgur.com/CK6kg.png
 Note the highlights, and the error message for the current line, shown beneath the modeline. 
 
 
+=== compile_commands.json : extract the build command from the JSON compilation database ===
+
+Many build systems generate a file named <tt>compilation_commands.json</tt>, that provides the original build command for each source file. This patch overrides the internal function <tt>flymake-get-make-cmdline</tt> to extract the syntax-check command from this database (C/C++ only):
+
+<pre>
+   (defun fm--find-build-command (source)
+     "Retrieve the build command for SOURCE from compile_commands.json."
+     (cdr (assq 'command
+                (catch 'found
+                    (with-temp-buffer
+                      (insert-file-contents "/home/user/my_project/build/compile_commands.json")
+                      (let* ((json-data (json-read-from-string (buffer-string))))
+                        (mapcar (lambda (entry)
+                                  (if (string-suffix-p source (cdr (assq 'file entry)))
+                                      (throw 'found entry)))
+                                json-data)))))))
+
+   (defun fm--generate-check-command (source)
+     "Build the syntax-check command for SOURCE."
+     (let* ((source (replace-regexp-in-string "_flymake" "" source))
+            (cmd (when source (fm--find-build-command source)))
+            (cmd (when cmd (replace-regexp-in-string " -o [^ ]* " " -o /dev/null " cmd))))
+       cmd))
+
+   (defun flymake-get-make-cmdline (source _)
+     "Flymake override: use compile_command.json to build the command line for checking the syntax of SOURCE."
+     (let* ((cmd (fm--generate-check-command source))
+            (ls (when cmd (split-string cmd))))
+       (when ls
+         (list (car ls)
+               (cdr ls)))))
+</pre>
+
+
 == More Tips and Questions ==
 
 === Wine build system ==
