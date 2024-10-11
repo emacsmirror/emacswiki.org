@@ -4,13 +4,13 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2024, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 25 07:51:45 2023 (-0700)
+;; Last-Updated: Fri Oct 11 13:47:25 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 3114
+;;     Update #: 3117
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2024/10/11 dadams
+;;     Don't try to require framemove for Emacs < 26.  That tries to require cl-seq, with no provide.
 ;; 2023/03/25 dadams
 ;;     Don't require savehist-20+.el for Emacs 23+ (probably don't need it for 22 either).
 ;; 2022/01/22 dadams
@@ -416,7 +418,8 @@
 (autoload 'libreq-insert-lib-requires-as-comment "lib-requires"
   "Insert a comment listing all libraries ultimately required by LIBRARY." t)
 (require 'frame-cmds nil t)             ; Frame and window commands.
-(when (fboundp 'window-inside-pixel-edges) (require 'framemove nil t)) ; Move frame focus.
+;; Emacs < 26 versions of `cl-seq' don't `provide' it, and `framemove' tries to `require' it.
+(when (> emacs-major-version 25) (require 'framemove nil t)) ; Move frame focus.
 (when (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
   (require 'autofit-frame nil t))       ; Automatically fit frames to sole window.
 (unless (> emacs-major-version 22)
