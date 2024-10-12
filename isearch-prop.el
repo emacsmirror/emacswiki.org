@@ -4,13 +4,13 @@
 ;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2024, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 30 09:36:38 2022 (-0800)
+;; Last-Updated: Sat Oct 12 15:57:46 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 1515
+;;     Update #: 1525
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cconv', `cl', `cl-lib', `color', `gv',
-;;   `macroexp', `thingatpt', `thingatpt+', `zones'.
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `color', `macroexp',
+;;   `nadvice', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -34,7 +34,7 @@
 ;;  `isearch+.el'.  You can use either of the files without the other,
 ;;  if you like, but I recommend that you use them together.
 ;;
-;;  Some of the features of library `isearch+.el' need library
+;;  Some of the features of library `isearch-prop.el' need library
 ;;  `zones.el'.  There is no error if you do not have that library,
 ;;  but those features will be unavailable without it.
 ;;
@@ -157,8 +157,9 @@
 ;;
 ;;    `C-t'        `isearchp-property-forward'
 ;;    `C-M-t'      `isearchp-property-forward-regexp'
-;;    `C-M-;'      `isearchp-toggle-ignoring-comments'
 ;;    `C-M-~'      `isearchp-toggle-complementing-domain'
+;;    `M-s ;'      `isearchp-toggle-hiding-comments'
+;;    `M-s M-;'    `isearchp-toggle-ignoring-comments'
 ;;
 ;;
 ;;  This file should be loaded *AFTER* loading the standard GNU file
@@ -348,15 +349,18 @@
 ;;    automatically by the commands of this library, when you do not
 ;;    specify a property.
 ;;
-;;  * You can hide or show code comments during Isearch, using `M-;'
+;;  * You can hide or show code comments during Isearch, using `M-s ;'
 ;;    (command `isearchp-toggle-hiding-comments').  You can toggle
-;;    ignoring comments during Isearch, using `C-M-;' (command
+;;    ignoring comments during Isearch, using `M-s M-;' (command
 ;;    `isearchp-toggle-ignoring-comments').
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2024/10/12 dadams
+;;     isearchp-toggle-hiding-comments, isearchp-hide/show-comments: Show message when interactive.
+;;     Bind them to M-s ; and M-s M-;, respectively, not to M-; and `C-M-;.
 ;; 2022/12/30 dadams
 ;;     Added defalias for condition-case-no-debug to support Emacs 23, as Emacs 29+ removed it.
 ;;     isearchp-add-prop-to-other-prop-zones, isearchp-(regexp|thing)-scan:
@@ -767,9 +771,9 @@ Possible values are `text', `overlay', and nil, meaning both.")
 ;;; Keys -------------------------------------------------------------
 
 (define-key isearch-mode-map (kbd "C-t")          'isearchp-property-forward)
-(define-key isearch-mode-map (kbd "M-;")          'isearchp-toggle-hiding-comments)
+(define-key isearch-mode-map (kbd "M-s ;")        'isearchp-toggle-hiding-comments)
+(define-key isearch-mode-map (kbd "M-s M-;")      'isearchp-toggle-ignoring-comments)
 (define-key isearch-mode-map (kbd "C-M-t")        'isearchp-property-forward-regexp)
-(define-key isearch-mode-map (kbd "C-M-;")        'isearchp-toggle-ignoring-comments)
 (define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
 (define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-outside-search-area)
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
@@ -2374,7 +2378,7 @@ Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
 
 ;; Same as `hide/show-comments-toggle' in `hide-comnt.el'.
 ;;
-(defun isearchp-toggle-hiding-comments (&optional start end) ; Bound to `M-;' during Isearch
+(defun isearchp-toggle-hiding-comments (&optional start end msgp) ; Bound to `M-s ;' during Isearch
   "Toggle hiding/showing of comments in the active region or whole buffer.
 If the region is active then toggle in the region.  Otherwise, in the
 whole buffer.
@@ -2390,14 +2394,14 @@ Be aware that using this command to show invisible text shows *ALL*
 such text, regardless of how it was hidden.  IOW, it does not just
 show invisible text that you previously hid using this command."
   (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
-                   (list (point-min) (point-max))
-                 (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
+                   (list (point-min) (point-max) t)
+                 (if (< (point) (mark)) (list (point) (mark) t) (list (mark) (point) t))))
   (when (require 'newcomment nil t) ; `comment-search-forward', Emacs 21+.
     (comment-normalize-vars)     ; Per Stefan, should call this first.
-    (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
-                                               (get-text-property (point) 'invisible)))
-        (isearchp-hide/show-comments 'show start end)
-      (isearchp-hide/show-comments 'hide start end))))
+    (let ((show  (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
+                                                        (get-text-property (point) 'invisible)))))
+      (isearchp-hide/show-comments (if show 'show 'hide) start end)
+      (when msgp (message "Hiding comments is now %s" (if show "OFF" "ON"))))))
 
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
 ;; Same as `icicle-hide/show-comments' in `icicles-cmd2.el'.
@@ -2456,9 +2460,11 @@ show them."
                 (setq cend  (min (1+ cend) end))))
             (when (and cbeg cend)
               (put-text-property cbeg cend 'invisible (eq 'hide hide/show)))
-            (goto-char (setq start  (or cend  end)))))))))
+            (goto-char (setq start  (or cend  end)))))))
+    (when (interactive-p)
+      (message "Hiding comments is now %s" (if (eq 'hide hide/show) "ON" "OFF")))))
 
-(defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `C-M-;' during Isearch.
+(defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `M-s M-;' during Isearch.
   "Toggle the value of option `isearchp-ignore-comments-flag'.
 If option `ignore-comments-flag' is defined (in library
 `hide-comnt.el') then it too is toggled.
