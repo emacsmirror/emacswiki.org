@@ -4,13 +4,13 @@
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 27 14:44:49 2023 (-0700)
+;; Last-Updated: Sat Oct 12 16:53:02 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 7289
+;;     Update #: 7306
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -31,13 +31,13 @@
 ;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
 ;;   `highlight', `hl-line', `hl-line+', `info', `info+',
 ;;   `isearch-prop', `kmacro', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mwheel', `naked', `package',
-;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -427,8 +427,6 @@
 ;;    `C-z |1'     `isearchp-or-last-filter' (Emacs 24.4+)
 ;;    `C-z ~~'     `isearchp-complement-filter' (Emacs 24.4+)
 ;;    `C-z ~1'     `isearchp-negate-last-filter' (Emacs 24.4+)
-;;    `C-M-;'      `isearchp-toggle-ignoring-comments' (Emacs 23+)
-;;                 (`isearch-prop.el')
 ;;    `C-M-`'      `isearchp-toggle-literal-replacement' (Emacs 22+)
 ;;    `C-M-~'      `isearchp-toggle-complementing-domain' (Emacs 23+)
 ;;                 (`isearch-prop.el')
@@ -439,14 +437,14 @@
 ;;                 (Emacs 23+) (`isearch-prop.el')
 ;;    `C-M-left'   `isearchp-init-edit' (Emacs 22+)
 ;;    `C-M-i'      `isearchp-complete'
+;;    `M-TAB'      `isearchp-complete'
 ;;    `C-M-l'      `isearchp-remove-failed-part' (Emacs 22+)
 ;;    `C-M-t'      `isearchp-property-forward-regexp' (Emacs 23+)
+;;                 (`isearch-prop.el')
 ;;    `C-M-y'      `isearch-yank-secondary' (requires `second-sel.el')
 ;;    `C-S-SPC'    `isearchp-narrow-to-lazy-highlights' (Emacs 23+)
 ;;                 (`isearch-prop.el')
 ;;    `M-:'        `isearchp-eval-sexp-and-insert' (Emacs 22+)
-;;    `M-;'        `isearchp-toggle-hiding-comments' (Emacs 23+)
-;;                 (`isearch-prop.el')
 ;;    `M-left'     `isearchp-init-edit' (Emacs 22+)
 ;;    `M-b'        `isearchp-init-edit' (Emacs 22+)
 ;;    `M-c'        `isearch-toggle-case-fold'
@@ -454,13 +452,17 @@
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
-;;    `M-w'        `isearchp-kill-ring-save'
-;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
-;;    `M-s C-e'    `isearchp-yank-line' (Emacs 22+)
+;;    `M-w'        `isearchp-copy-match'
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
 ;;    `M-s #'      `isearchp-toggle-showing-match-number' (Emacs 24.3+)
 ;;    `M-s %'      `isearchp-toggle-limit-match-numbers-to-region'
 ;;                 (Emacs 24.3+)
+;;    `M-s ;'      `isearchp-toggle-hiding-comments'
+;;                 (`isearch-prop.el')
+;;    `M-s M-;'    `isearchp-toggle-ignoring-comments'
+;;                 (`isearch-prop.el')
+;;    `M-s h '     `isearchp-toggle-lazy-highlighting'
+;;    `M-s C-e'    `isearchp-yank-line' (Emacs 22+)
 ;;    `M-s h d'    `isearchp-toggle-dimming-filter-failures'
 ;;                 (Emacs 24.4+)
 ;;    `M-s h b'    `isearchp-toggle-lazy-highlight-full-buffer'
@@ -474,13 +476,43 @@
 ;;    `M-s h u'    `hlt-unhighlight-isearch-matches'
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s v'      `isearchp-toggle-option-toggle'
-;;    `M-TAB'      `isearchp-complete'
 ;;    `M-s M-SPC'  `isearchp-toggle-set-region'
 ;;    `M-s M-k'    `isearchp-toggle-repeat-search-if-fail' (Emacs 22+)
+;;    `M-s M-w'    `isearchp-copy-pattern'
 ;;    `M-s u f'    `isearchp-unhighlight-last-face' (Emacs 22+)
 ;;    `M-s z a'    `isearchp-add-zones-from-lazy-highlighting'
 ;;    `M-s z r'    `isearchp-noncontiguous-region-from-lazy-highlighting'
 ;;    `M-s z s'    `isearchp-set-zones-from-lazy-highlighting'
+;;    `M-= C-h'    `isearchp-describe-prefix-bindings'
+;;    `M-= d'      `isearchp-toggle-dimming-filter-failures'
+;;    `M-= s'      `isearchp-toggle-showing-filter-prompt-prefixes'
+;;    `M-= #'      `isearchp-toggle-showing-match-number'
+;;    `M-= %'      `isearchp-toggle-limit-match-numbers-to-region'
+;;    `M-= b'      `isearchp-toggle-lazy-highlight-full-buffer'
+;;    `M-= l'      `isearchp-toggle-lazy-highlight-cleanup'
+;;    `M-= L'      `isearchp-toggle-lazy-highlighting'
+;;    `M-= n'      `isearchp-toggle-region-restriction'
+;;    `M-= C-SPC'  `isearchp-toggle-region-deactivation'
+;;    `M-= M-SPC'  `isearchp-toggle-set-region'
+;;    `M-= +'      `isearchp-toggle-search-invisible'
+;;    `M-= `'      `isearchp-toggle-regexp-quote-yank'
+;;    `M-= M-`'    `isearchp-toggle-literal-replacement'
+;;    `M-= c'      `isearch-toggle-case-fold'
+;;    `M-= i'      `isearch-toggle-invisible'
+;;    `M-= k'      `isearchp-toggle-repeat-search-if-fail'
+;;    `M-= R'      `isearchp-toggle-highlighting-regexp-groups'
+;;    `M-= v'      `isearchp-toggle-option-toggle'
+;;    `M-= \'      `isearch-toggle-input-method'
+;;    `M-= ^'      `isearch-toggle-specified-input-method'
+;;    `M-= ~'      `isearchp-toggle-complementing-domain'
+;;    `M-= ;'      `isearchp-toggle-hiding-comments'
+;;    `M-= M-;'    `isearchp-toggle-ignoring-comments'
+;;    `M-= D'      `isearchp-toggle-dimming-outside-search-area'
+;;    `M-= SPC'    `isearch-toggle-lax-whitespace'
+;;    `M-= ''      `isearch-toggle-char-fold'
+;;    `M-= _'      `isearch-toggle-symbol'
+;;    `M-= r'      `isearch-toggle-regexp'
+;;    `M-= w'      `isearch-toggle-word'
 ;;    `M-S-delete' `isearchp-cleanup'  (Emacs 23+) (`isearch-prop.el')
 ;;    `left'       `isearchp-init-edit' (Emacs 22+)
 ;;    `mouse-2'    `isearch-mouse-2'
@@ -1037,8 +1069,11 @@
 ;;    sexps (or symbols or words or subwords or chars) into the search
 ;;    string.
 ;;
-;;  * `M-w' (`isearchp-kill-ring-save') copies the current search
-;;    string to the kill ring.
+;;  * `M-w' (`isearchp-copy-match') copies the current search match to
+;;    the kill ring.
+;;
+;;  * `M-s M-w' (`isearchp-copy-pattern') copies the current search
+;;    pattern (`isearch-string') to the kill ring.
 ;;
 ;;    (I use this all the time, but you might not use multiple Emacs
 ;;    sessions.)  Note that if you did not have this feature then you
@@ -1290,7 +1325,9 @@
 ;;; Change Log:
 ;;
 ;;(@* "Change log")
-;;
+;; 2024/10/10 dadams
+;;     Added isearchp-copy-match.  Bound it to M-w, in place of isearchp-kill-ring-save.
+;;     Renamed isearchp-kill-ring-save to isearchp-copy-pattern (aliased old name).  Changed its binding to M-s M-w.
 ;; 2023/09/27 dadams
 ;;     Require cl-lib when available, else defalias cl-* to *.
 ;; 2022/05/03 dadams
@@ -3597,7 +3634,7 @@ suspended."
             (unless (eq old-value new-value) (setq debug-on-error  new-value))))
         (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
 
-  (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
+  (defun isearchp-act-on-demand (arg) ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
 ARG is the raw prefix arg.
 This suspends Isearch, performs the action, then reinvokes Isearch.
@@ -3781,7 +3818,7 @@ according to option `isearchp-case-fold': t or `yes'."
 ;; 2. Added prefix arg to flip handling of `isearchp-toggle-option-flag'.
 ;;
 ;;;###autoload
-(defun isearch-toggle-invisible (flip)  ; Bound to `M-s i'.
+(defun isearch-toggle-invisible (flip)  ; Bound to `M-s i' in `isearch-mode-map'.
   "Toggle searching within invisible text on or off.
 If `isearchp-toggle-option-flag' is non-nil then toggle the value of
 option `search-invisible'.  If it is nil then toggle the behavior only
@@ -3953,7 +3990,7 @@ For Emacs 24.3+, only ARG1 is used."
 ;; 2. List isearch bindings too.
 ;;
 ;;;###autoload
-(defun isearch-mode-help ()             ; Bound to `C-h' in `isearch-mode-map'.
+(defun isearch-mode-help ()    ; Bound to `C-h' in `isearch-mode-map'.
   "Display information on interactive search in buffer *Help*."
   (interactive)
   (describe-function 'isearch-forward)
@@ -3977,7 +4014,7 @@ Bindings in Isearch minor mode:
   ;; 1. Start with point at the mismatch position - use `isearchp-message-prefix'.
   ;; 2. Use macro `with-isearch-suspended'.
   ;;
-  (defun isearch-edit-string ()         ; Bound to `M-e' in `isearch-mode-map'.
+  (defun isearch-edit-string () ; Bound to `M-e' in `isearch-mode-map'.
     "Edit the search string in the minibuffer.
 The following additional command keys are active while editing.
 \\<minibuffer-local-isearch-map>
@@ -4311,15 +4348,24 @@ hit through the new position is removed from the search string."
      (recursive-edit)
      (setq isearch-new-position  (point)))))
 
-(defun isearchp-kill-ring-save ()       ; Bound to `M-w' in `isearch-mode-map'.
-  "Copy the current search string to the kill ring."
+(defun isearchp-copy-match () ; Bound to `M-w' in `isearch-mode-map'.
+  "Copy the current search match to the kill ring."
   (interactive)
-  (kill-new isearch-string)
-  (let ((message-log-max  nil)) (message "Copied search string as kill"))
+  (kill-new (buffer-substring (point) isearch-other-end))
+  (let ((message-log-max  nil)) (message "Copied search match as kill"))
   (sit-for 1)
   (isearch-update))
 
-(defun isearchp-append-register ()      ; Bound to `C-x r g', the same as `insert-register' globally.
+(defalias 'isearchp-kill-ring-save 'isearchp-copy-pattern) ; Bound to `M-s M-w' in `isearch-mode-map'.
+(defun isearchp-copy-pattern () ; Bound to `M-s M-w' in `isearch-mode-map'.
+  "Copy the current search pattern (input) to the kill ring."
+  (interactive)
+  (kill-new isearch-string)
+  (let ((message-log-max  nil)) (message "Copied search pattern as kill"))
+  (sit-for 1)
+  (isearch-update))
+
+(defun isearchp-append-register () ; Bound to `C-x r g', the same as `insert-register' globally.
   "Insert register contents at point in search string.
 You are prompted for the register to use."
   (interactive)
@@ -4357,7 +4403,7 @@ not necessarily fontify the whole buffer."
 (unless (featurep 'icicles)
 
   ;; Similar to `icicle-isearch-complete'.
-  (defun isearchp-complete ()           ; Bound to `M-TAB', `C-M-TAB' in `isearch-mode-map'.
+  (defun isearchp-complete () ; Bound to `M-TAB', `C-M-TAB' in `isearch-mode-map'.
     "Complete the search string using candidates from the search ring."
     (interactive)
     (isearchp-complete-past-string)
@@ -4731,7 +4777,8 @@ General commands
 \\[isearch-del-char]\t  - delete char from end of search string
 \\[isearchp-remove-failed-part]\t  - remove failed part of search string, if any
 \\[isearchp-remove-failed-part-or-last-char] - remove failed part or last char
-\\[isearchp-kill-ring-save]\t  - copy current search string to kill ring
+\\[isearchp-copy-match]\t  - copy current search match to kill ring
+\\[isearchp-copy-pattern]\t  - copy current search pattern (input) to kill ring
 \\[isearch-quote-char]\t  - quote a control character, to search for it
 \\[isearch-char-by-name] - add a Unicode char to search string by Unicode name
 \\[isearchp-open-recursive-edit]\t  - invoke Emacs command loop recursively, during Isearch
@@ -7735,7 +7782,8 @@ Elements of ALIST that are not conses are ignored."
 (when (fboundp 'isearchp-toggle-repeat-search-if-fail)
   (define-key isearch-mode-map "\M-s\M-k"         'isearchp-toggle-repeat-search-if-fail))
 (define-key isearch-mode-map [(meta ?s) (meta ? )] 'isearchp-toggle-set-region)
-(define-key isearch-mode-map "\M-w"               'isearchp-kill-ring-save)
+(define-key isearch-mode-map "\M-w"               'isearchp-copy-match)
+(define-key isearch-mode-map "\M-s\M-w"           'isearchp-copy-pattern)
 (define-key isearch-mode-map "\C-_"               'isearchp-yank-symbol-or-char) ; (Emacs 22+)
 (define-key isearch-mode-map [(control ?\()]      'isearchp-yank-sexp-symbol-or-char) ; (Emacs 22+)
 (when (and (fboundp 'goto-longest-line)  window-system) ; Defined in `misc-cmds.el'
