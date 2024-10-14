@@ -228,9 +228,11 @@ Another possible method is by using Stunnel.
 
 === Encrypting Emails ===
 
-While writing an email, use `M-x mml-secure-message-sign-encrypt' (`C-c C-m C-e') to mark the email for encryption.
+While writing an email, use `M-x mml-secure-message-sign-encrypt' (`C-c RET C-e') to mark the email for encryption.
 
 When sent, it will be encrypted *based on the recipient's email address*, if it's linked to their PGP key.
+
+Alternatively you can use `M-x epa-mail-encrypt' to encrypt the contents of the mail buffer before sending it.
 
 === Decrypting Emails ===
 
