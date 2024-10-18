@@ -121,3 +121,31 @@ For such detailed questions, it's better to email me (see the file header). And 
 
 -- DrewAdams 2017-09-25 14:05 UTC
 
+
+----
+
+Hello,
+
+I am having trouble adding subdirectories recursively to bookmarks.
+I can't see clearly the differences between the 4 diredp bookmark recursive functions, but I believe the correct one for subdirectories is:
+
+"diredp-do-bookmark-dirs-recursive"
+
+I am using it without marking any directory.
+
+The result is that I get just two bookmarks:
+
+    The first one, for the directory where Dired is open: "dir1 Bmkp-Dired ...path"
+
+    The second one: "dir1 and subdirs Bmkp-Sequence   "
+
+
+Is it not possible to generate a separate bookmark for each subdirectory?
+
+Best regards,
+
+Windows 11
+GNU Emacs 29.3 (build 2, x86_64-w64-mingw32)
+
+-- Kepa 2024-10-18 22:16 UTC
+
