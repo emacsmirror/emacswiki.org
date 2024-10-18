@@ -153,3 +153,22 @@ GNU Emacs 29.3 (build 2, x86_64-w64-mingw32)
 ----
 
 
+
+----
+
+If I understand correctly what you're trying to do, just do this: `C-u M-+ M-B'.
+
+The `C-u' says to use the Dired buffers listing all of the subdirs (of the current Dired buffer).
+
+The `M-+ M-B' says to create a bookmark for each of those Dired buffers, that is, for each Dired buffer of a subdir of the current Dired buffer.
+
+The Dired+ commands whose names end with `-recursive' act on marked files and on marked subdirs that have their own Dired buffers (or on all such if you tell the commands to do that, using `C-u'). 
+
+This Dired+ command acts on marked subdirs (or all subdirs) that have Dired buffers. It creates a Dired bookmark in each of those buffers.
+
+Do you have multiple Dired buffers? That's the starting point.
+
+HTH.
+
+-- DrewAdams 2024-10-18 23:10 UTC
+
