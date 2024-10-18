@@ -152,9 +152,4 @@ GNU Emacs 29.3 (build 2, x86_64-w64-mingw32)
 
 ----
 
-@Anonymous: What do you mean by "set up"?
-
-Just load the file, `dired+.el`: just put `(require 'dired+)` in your init file, after ensuring the file `dired+.el` is in a directory that's in your `load-path`. As for setup as in customization, just use Customize (for options and faces). Nothing new.
-
--- DrewAdams 2024-10-18 22:30 UTC
 
