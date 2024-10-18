@@ -245,4 +245,10 @@ Then put the following in your emacs config file:
     (add-hook 'find-file-hook 'recentf-save-list)))
 [/code]
 
+=Suggestion: run "doom doctor", when Doom Emacs has been configured=
+When Doom Emacs has been installed and configured, it is a good idea to check that there is nothing amiss, for example expected applications in Termux:
+[code]
+$ doom doctor
+[/code]
+
 CategoryPorts
