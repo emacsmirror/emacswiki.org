@@ -191,3 +191,30 @@ If I call `C-u M-+ M-B’ or "C-u M-x diredp-do-bookmark-dirs-recursive" I get t
 
 -- Kepa 2024-10-19 18:51 UTC
 
+
+----
+
+Again, the `diredp-do-...-recursive' commands act on marked files and dirs in the current Dired buffer, and they do that recursively for any marked dirs in the buffer that have their own Dired buffers. IOW, it's about recursively descending into marked dirs that have their own Dired buffers. With `C-u' they do the same, but for all files and dirs in each buffer, not just those that are marked.
+
+`M-+ M-B' creates a Dired bookmark for every marked directory in the current Dired buffer and for each marked directory in the Dired buffer (if any) of any of those marked directories ... recursively. With `C-u' marks are ignored: it acts on all dirs in the current Dired buffer and in any Dired buffers for those dirs ... recursively.
+
+There probably is not, immediately, a command to do what I think you're trying to do. Probably, for now, some manual marking or creation of Dired buffers is required - dunno.
+
+----
+
+Note that, using `i',  that you can insert subdirs (at any level) into an ancestor Dired listing. That's the ordinary/longstanding way to act on files in different directories of a hierarchy. What Dired+ offers with its `diredp-do-...-recursive' commands are ways to act on files in *different* Dired buffers. (The listings in those different Dired buffers can themselves include subdir listings, and the `diredp-do-...-recursive' commands generally act on those too.)
+
+----
+
+FWIW, I *might* define new commands such as these when I get around to it:
+
+1. Insert all dirs that are marked in the current listing into that listing. IOW, like `i' but acting on all marked dirs, not just the dir of the current line.
+
+2. Dired all dirs that are marked in the current listing; that is, open a Dired buffer for each of them.
+
+3. A recursive version of #2.
+
+HTH.
+
+-- DrewAdams 2024-10-19 21:19 UTC
+
