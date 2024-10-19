@@ -172,3 +172,22 @@ HTH.
 
 -- DrewAdams 2024-10-18 23:10 UTC
 
+
+----
+
+Hi Drew!
+
+I am testing this in just one Dired buffer.
+
+I have created some sub dirs with and without files.
+
+I would like that each one of those dirs is added to bookmarks. 
+
+By now, I have to add manually, one by one, each subdir to bookmarks, and I don't add more profound subdirs because it would be too much work.
+
+If I call `C-u M-+ M-B’ or "C-u M-x diredp-do-bookmark-dirs-recursive" I get the bookmarks I mentioned above:
+"dir1 Bmkp-Dired ...path"
+"dir1 and subdirs Bmkp-Sequence   "
+
+-- Kepa 2024-10-19 18:51 UTC
+
