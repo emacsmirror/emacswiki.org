@@ -501,8 +501,7 @@ desktop-file-edit \
 "$file"
 desktop-file-validate "$file"
 }}}
-* Add this to ~/.emacs to fully maximize the window: (add-to-list 'default-frame-alist '(fullscreen . maximized))
-* Log out and then log back into your desktop environment
+* Log out and then log back into your desktop environment and start emacs, to make sure that devilspie2 autostarts and maximizes emacs.
 
 ====== wmctrl ======
 If you want to bind F11 to toggle maximize the screen, here is what you need:
