@@ -473,7 +473,7 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 
 ====== devilspie2 ======
 
-This will not only maximize the window,[1] but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-3|.emacs.d/early-init.el]]).
+This will not only maximize the window, but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-3|.emacs.d/early-init.el]]).
 {{{
 # Configure devilspie2 to start 
 mkdir -p ~/.config/devilspie2/
@@ -486,7 +486,11 @@ if get_class_instance_name() == "emacs" then
   maximize()
 end
 EOF
+}}}
 
+
+devilspie2 0.44 and earlier versions do not include a desktop file, requiring users to create one manually:
+{{{
 # Autostart devilspie2
 mkdir -p "$HOME/.config/autostart/" # The directory does not exist by default
 cd "$HOME/.config/autostart/" || exit
