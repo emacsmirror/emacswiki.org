@@ -230,3 +230,22 @@ A hugh, and thanks for these two masterworks!!
 
 -- Kepa 2024-10-20 17:26 UTC
 
+
+----
+
+Ok:
+
+I do in the first line:
+C-u l
+I add -R switch
+
+I mark only the directories:
+M-x dired-mark-directories
+
+I add the marked directories to bookmarks:
+diredp-do-bookmark
+
+:-D
+
+-- Kepa 2024-10-20 17:39 UTC
+
