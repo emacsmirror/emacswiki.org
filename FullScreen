@@ -478,14 +478,12 @@ This will not only maximize the window,[1] but also avoid the slightly distracti
 # Configure devilspie2 to start 
 mkdir -p ~/.config/devilspie2/
 
-width="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1)"
-height="$(xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)"
-
 tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
-if (get_class_instance_name() == "emacs") then
-
-    set_window_geometry(0, 0, $width, $height);
-
+if get_class_instance_name() == "emacs" then
+    os.execute("sleep 0.1")
+    -- Emacs applies default window size with a delay, potentially overriding devilspie2.
+    -- A brief pause ensures devilspie2's maximize action takes effect after Emacs completes its initial sizing.
+  maximize()
 end
 EOF
 
@@ -505,8 +503,6 @@ desktop-file-validate "$file"
 }}}
 * Add this to ~/.emacs to fully maximize the window: (add-to-list 'default-frame-alist '(fullscreen . maximized))
 * Log out and then log back into your desktop environment
-
-1: Workaround to the devilspie2 bug: "maximize* commands don't work for Emacs" - https://savannah.nongnu.org/bugs/index.php?63979
 
 ====== wmctrl ======
 If you want to bind F11 to toggle maximize the screen, here is what you need:
