@@ -218,3 +218,15 @@ HTH.
 
 -- DrewAdams 2024-10-19 21:19 UTC
 
+
+----
+
+Thanks, I get it now. It is necessary to have a dedicated buffer for each subdir.
+
+The approach that seems most practical to me for now, is to use the -R switch to display all subdirectories, mark all, and then call "diredp-do-bookmark". 
+The only caveat to this approach is that it will add and open the files to the bookmarks, not just directories. Maybe I must learn to filter the marked file, and deativate temporarily openwith.
+
+A hugh, and thanks for these two masterworks!!
+
+-- Kepa 2024-10-20 17:26 UTC
+
