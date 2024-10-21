@@ -474,18 +474,7 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 mkdir -p ~/.config/devilspie2/
 
 tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
-if get_class_instance_name() == "emacs" then
-    os.execute("sleep 0.1")
-    maximize()
-end
-EOF
-}}}
-
-devilspie2 [https://github.com/dsalt/devilspie2/pull/27/commits/11bdc583da6d1cb119cc41e7ad02422bba08f0f3 version 0.46] (not released yet)
-{{{
-mkdir -p ~/.config/devilspie2/
-
-tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
+-- Make Emacs (emacs or emacs-gtk) always start maximised.
 win_class = get_class_instance_name()
 
 debug_print("Window class: " .. win_class)
@@ -511,8 +500,8 @@ if win_class == "emacs" or win_class == "Emacs" then
   --   option 2 (needs luaposix):
   --     posix = require "posix"
   --     posix.nanosleep(0, 100e6)
-  millisleep(100)
-  maximise()
+  os.execute("sleep 0.1")
+  maximize()
 end
 EOF
 }}}
