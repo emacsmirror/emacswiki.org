@@ -479,6 +479,9 @@ tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
 -- Make Emacs (emacs or emacs-gtk) always start maximised.
 win_class = get_class_instance_name()
 
+-- Make Emacs (emacs or emacs-gtk) always start maximised.
+win_class = get_class_instance_name()
+
 debug_print("Window class: " .. win_class)
 
 if win_class == "emacs" or win_class == "Emacs" then
@@ -500,10 +503,10 @@ if win_class == "emacs" or win_class == "Emacs" then
   --   option 1:
   --     os.execute("sleep 0.1")
   --   option 2 (needs luaposix):
-  --     posix = require "posix"
-  --     posix.nanosleep(0, 100e6)
-  os.execute("sleep 0.1")
-  maximize()
+  --     nanosleep = require "posix.time".nanosleep
+  --     nanosleep{tv_nsec=100e6}
+  millisleep(100)
+  maximise() -- maximize() for compatibility with <0.45
 end
 EOF
 }}}
