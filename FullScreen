@@ -65,8 +65,6 @@ The ##push## function adds an element to the beginning of a list. In this case, 
 However, ##push## is generally considered the fastest approach because it doesn't evaluate its second argument, unlike ##add-to-list## and ##custom-set-variables##. By setting ##(fullscreen . maximized)## in ##default-frame-alist##, you can ensure that the initial frame and any new Emacs frames opened from it are maximized without needing to explicitly evaluate the expression each time.
 
 ======To avoid the slightly distracting visual effect======
-[See the devilspie2 section in this article if you prefer a X Window tiling program instead.]
-
 A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then switching to fullscreen when you maximize it (from now on referred to as the "frame effect").
 
 When Emacs loads the ##init file## in GNU/Linux, frame settings (##default-frame-alist##, ##initial-frame-alist##, ##set-frame-size##) are slightly deferred, which can lead to the "frame effect" upon startup.
@@ -472,22 +470,52 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 =====External programs=====
 
 ====== devilspie2 ======
-
-This will not only maximize the window, but also avoid the slightly distracting visual effect of Emacs starting with its default frame size and then growing to fullscreen (an alternative solution to [[#h5o-3|.emacs.d/early-init.el]]).
 {{{
-# Configure devilspie2 to start 
 mkdir -p ~/.config/devilspie2/
 
 tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
 if get_class_instance_name() == "emacs" then
     os.execute("sleep 0.1")
-    -- Emacs applies default window size with a delay, potentially overriding devilspie2.
-    -- A brief pause ensures devilspie2's maximize action takes effect after Emacs completes its initial sizing.
-  maximize()
+    maximize()
 end
 EOF
 }}}
 
+devilspie2 [https://github.com/dsalt/devilspie2/pull/27/commits/11bdc583da6d1cb119cc41e7ad02422bba08f0f3 version 0.46] (not released yet)
+{{{
+mkdir -p ~/.config/devilspie2/
+
+tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
+win_class = get_class_instance_name()
+
+debug_print("Window class: " .. win_class)
+
+if win_class == "emacs" or win_class == "Emacs" then
+  -- Emacs applies default window size etc. after a brief delay,
+  -- potentially overriding devilspie2.
+  --
+  -- A brief pause (here, of 0.1s) ensures that devilspie2's actions on the
+  -- window take effect after Emacs completes its initialisation. A shorter
+  -- pause may work, or a longer one may be needed. Experiment! Could be
+  -- that 'millisleep(10)' (0.01s) works well on one PC…?
+  --
+  -- If you prefer, you can have Emacs maximise its window (as in this
+  -- example) via one of its configuration files - early-init.el, which is
+  -- normally faster (and avoids a possible visual effect), or init.el –
+  -- using this LISP statement:
+  --   (push '(fullscreen .  maximized) default-frame-alist)
+  --
+  -- 'millisleep' is new to 0.46. The 0.1s delay for older versions:
+  --   option 1:
+  --     os.execute("sleep 0.1")
+  --   option 2 (needs luaposix):
+  --     posix = require "posix"
+  --     posix.nanosleep(0, 100e6)
+  millisleep(100)
+  maximise()
+end
+EOF
+}}}
 
 devilspie2 0.44 and earlier versions do not include a desktop file, requiring users to create one manually:
 {{{
