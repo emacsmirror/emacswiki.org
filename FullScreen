@@ -474,7 +474,7 @@ If you want to bind F11 to toggle full-screen, here is what you need:
 mkdir -p ~/.config/devilspie2/
 
 tee ~/.config/devilspie2/emacs.lua > /dev/null << EOF
--- From https://github.com/dsalt/devilspie2?tab=readme-ov-file#simple-script-example :
+-- From https://github.com/dsalt/devilspie2/blob/master/README.md#simple-script-examples :
 
 -- Make Emacs (emacs or emacs-gtk) always start maximised.
 win_class = get_class_instance_name()
