@@ -503,7 +503,7 @@ if win_class == "emacs" or win_class == "Emacs" then
   --     nanosleep = require "posix.time".nanosleep
   --     nanosleep{tv_nsec=100e6}
   millisleep(100)
-  maximise()
+  maximise() -- maximize() for compatibility with <0.45
 end
 EOF
 }}}
