@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Sep 15 17:26:08 2024 (-0700)
+;; Last-Updated: Wed Oct 23 19:24:44 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 4304
+;;     Update #: 4305
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5930,7 +5930,7 @@ are marked or ALLP is non-nil."
 
 ;;; `Bookmark+' menu-bar menu in `*Bookmark List*'
 
-(defvar bmkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+") "`Boomark+' menu-bar menu.")
+(defvar bmkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+") "`Bookmark+' menu-bar menu.")
 (define-key bookmark-bmenu-mode-map [menu-bar bmkp]
   (cons "Bookmark+" bmkp-bmenu-menubar-menu))
 
