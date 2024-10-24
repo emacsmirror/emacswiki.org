@@ -452,5 +452,31 @@ Setting this to 0 causes issues with tmux keybindings beginning with alt.  This 
 
     set -s escape-time 5
 
+
+=== Cursor shape and color when running in terminal mode ===
+In a terminal emulator, the shape and color of the cursor is controlled by the emulator. The default setting will give the same cursor for all states, and it is confusing that the normal state and the insert state have the same cursor. To change the cursor in a terminal emulator, we can send a control sequence to the terminal by the following code:
+
+  (defun my/set-cursor-in-terminal ()
+    (unless (display-graphic-p)
+      (cond
+       ((evil-insert-state-p)
+	;; Green bar cursor for insert mode
+	(send-string-to-terminal "\033[5 q")  ; bar shape
+	(send-string-to-terminal "\033]12;green\007"))  ; green color
+       ((evil-normal-state-p)
+	;; White block cursor for normal mode
+	(send-string-to-terminal "\033[2 q")  ; block shape
+	(send-string-to-terminal "\033]12;white\007"))  ; white color
+       ((evil-replace-state-p)
+	;; Red underline cursor for replace mode
+	(send-string-to-terminal "\033[3 q")  ; underline shape
+	(send-string-to-terminal "\033]12;red\007"))  ; red color
+       )
+      ))
+  (add-hook 'post-command-hook #'my/set-cursor-in-terminal)
+
+
+Note that the final effect like the color depends on the terminal used.
+
 ----
 CategoryKeys CategoryEmulation CategoryModalEditing
