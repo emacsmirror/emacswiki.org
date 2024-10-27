@@ -9,7 +9,7 @@ I use Emacs.
 == Emacs configuration and packages ==
 
 ; [https://git.sr.ht/~bkhl/dotfiles/tree/main/item/.emacs.d/configuration.org configuration.org] : My Emacs configuration in org-mode format.
-; [https://git.sr.ht/~bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of [DeletingWhitespace automatic stripping of whitespace].
+; [https://git.sr.ht/~bkhl/trimspace-mode trimspace-mode] : Minor mode to handle enabling/disabling of [DeletingWhitespace automatic stripping of whitespace]. (Also on [https://melpa.org/#/trimspace-mode MELPA]).
 
 ----
 CategoryHomepage
