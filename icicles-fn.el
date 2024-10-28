@@ -4,11 +4,11 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Jul 27 08:41:11 2023 (-0700)
+;; Last-Updated: Mon Oct 28 09:43:00 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 15321
+;;     Update #: 15325
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,25 +19,22 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `browse-url',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `eieio',
-;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
+;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `epg-config',
+;;   `ffap', `ffap-', `fit-frame', `flx', `font-lock', `font-lock+',
 ;;   `frame-fns', `fuzzy', `fuzzy-match', `gv', `help+', `help-fns',
 ;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
 ;;   `hl-line', `hl-line+', `icicles-opt', `icicles-var', `info',
-;;   `info+', `json', `kmacro', `levenshtein', `macroexp', `mailcap',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `text-property-search',
-;;   `thingatpt', `thingatpt+', `url', `url-cookie', `url-domsuf',
-;;   `url-expand', `url-handlers', `url-history', `url-methods',
-;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars',
-;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `info+', `kmacro', `levenshtein', `macroexp', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `package',
+;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `second-sel', `seq', `strings', `syntax', `tabulated-list',
+;;   `text-mode', `thingatpt', `thingatpt+', `url-handlers',
+;;   `url-parse', `url-vars', `vline', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3579,7 +3576,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
                            (and (boundp 'completion-extra-properties)  (plist-get completion-extra-properties
                                                                                   :annotation-function))
                            (and (boundp 'completion-annotate-function)  completion-annotate-function))))
-      (when annotation-fn               ; Emacs 23+ uses a list (CAND ANNOTATION) for the candidate.
+      (when annotation-fn ; Emacs 23+ uses a list (CAND ANNOTATION) for the candidate.
         (setq candidates  (mapcar (lambda (cand)
                                     (let ((ann  (condition-case nil
                                                     (funcall annotation-fn cand)
@@ -3625,7 +3622,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
       ;; Turn it on only if it has already been turned off here (non-nil `icicle-auto-no-icomplete-mode-p'),
       ;; for this minibuffer reading.  When turn it off, set flag `icicle-auto-no-icomplete-mode-p'.
       (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates)
-                 (> emacs-major-version 22)) ; `icomplete-tidy' does not use overlay with Emacs < 23.
+                 (> emacs-major-version 22)) ; Emacs < 23 doesn't use overlay for icomplete.
         (save-excursion
           (with-current-buffer (if (active-minibuffer-window)
                                    (window-buffer (active-minibuffer-window))
@@ -3645,7 +3642,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
                         (let ((cval  (or (get 'icomplete-mode 'saved-value)
                                          (get 'icomplete-mode 'standard-value))))
                           (condition-case nil (eval (car cval)) (error nil)))))
-              (icomplete-tidy)
+              (unless (> emacs-major-version 27) (icomplete-tidy)) ; Emacs 28+ has no `icomplete-tidy'.
               (icomplete-mode -1)
               (setq icicle-auto-no-icomplete-mode-p  t)))))
 
@@ -3678,7 +3675,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
                    (indent-to column-nb icicle-inter-candidates-min-spaces)
                    (put-text-property cand-end (point) 'mouse-face nil) ; Turn off `mouse-face', `face'
                    (put-text-property cand-end (point) 'face nil))))
-              (t                        ; Horizontal layout (`horizontal' or nil).
+              (t            ; Horizontal layout (`horizontal' or nil).
                (unless (bolp)
                  (put-text-property (point) (point) 'mouse-face nil) ; Turn off `mouse-face'
                  (indent-to (* (max 1 column-nb) colwidth) icicle-inter-candidates-min-spaces)
@@ -3686,7 +3683,7 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
                                                       (+ (length (car cand)) (length (cadr cand)))
                                                     (length cand)))
                                     (current-column)))
-                   (save-excursion      ; This is like `fixup-whitespace', but only forward.
+                   (save-excursion ; This is like `fixup-whitespace', but only forward.
                      (delete-region (point) (progn (skip-chars-forward " \t") (point)))
                      (unless (or (looking-at "^\\|\\s)")
                                  (save-excursion (forward-char -1) (looking-at "$\\|\\s(\\|\\s'")))
