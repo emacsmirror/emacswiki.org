@@ -1,7 +1,5 @@
 == ∃x∀y(Emacs(x)∧(Person(y)→♥(y,x))) ==
 
-portrait:http://www.adesam.se/robert/robert-48x48.jpg
-
 I have been using Emacs since 1994 and use it on Mac OS X, Linux,
 Solaris, and sometimes on Windows. It has not been the smoothest ride,
 I have tried to exchange Emacs for other tools like Eclipse,
