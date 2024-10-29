@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jul 27 15:07:37 2023 (-0700)
+;; Last-Updated: Mon Oct 28 09:44:07 2024 (-0700)
 ;;           By: dradams
-;;     Update #: 11946
+;;     Update #: 11947
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2350,6 +2350,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2024/10/28 dadams
+;;     icicle-insert-candidates: Emacs 28+ doesn't use icomplete-tidy.
 ;; 2023/07/27 dadams
 ;;     icicle-read-buffer: Added optional arg PREDICATE.
 ;;       See https://lists.gnu.org/archive/html/emacs-devel/2023-07/msg00802.html.
