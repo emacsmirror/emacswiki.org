@@ -34,6 +34,7 @@ These provide powerful and relatively complete environments by combining and cus
 
 * [https://github.com/aki2o/emacs-tss tss.el] provides Intellisense-like completion, as well as syntax-checking for Typescript. Also includes a modified version of <code>typescript-mode.el</code>
 * [https://github.com/ananthakumaran/tide tide] supports auto-completion via CompanyMode, syntax-validation via Flycheck, jump to definition, rename symbol, ElDoc, find occurrences and ImenuMode
+* [https://github.com/emacsorphanage/quickrun quickrun] supports compiling/running a single TypeScript buffer.
 
 ----
 CategoryModes
