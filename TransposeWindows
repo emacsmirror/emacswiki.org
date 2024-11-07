@@ -6,6 +6,10 @@ To swap the top and bottom windows when two windows are open, use a sequence of 
 
 From Emacs 26.1 there is `M-x window-swap-states'.
 
+=== Via ace-windows ===
+
+[https://github.com/abo-abo/ace-window ace-window] is a nice way to easily do several operations on windows, including swapping them. See [https://github.com/abo-abo/ace-window#change-the-action-midway change-the-action-midway] on how to do that.
+
 === Via buffer-move ===
 
 Available [http://melpa.org/#/buffer-move within MELPA] and [https://github.com/lukhas/buffer-move GitHub]. 
