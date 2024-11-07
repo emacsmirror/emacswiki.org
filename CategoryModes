@@ -156,7 +156,7 @@ operations on files in the solution.
 * TtcnMode -- edit TTCN code in Emacs.
 * TupMode
 * UnicodeEncoding -- describes oc-unicode
-* Uniline Mode -- draw Unicode diagrams
+* [[Uniline]] Mode -- draw Unicode diagrams
 * UnisonMode -- Syntax highlighting for file synchronization program [http://www.cis.upenn.edu/~bcpierce/unison/ unison]
 * [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightMode] -- Minor mode provides visual feedback on some operations: undo, yank and etc.
 * VersionControl -- and various similar implementations
