@@ -3992,7 +3992,7 @@ then you can use a function such as this as the value of
     (let ((line  (line-number-at-pos position))
           (col   (save-excursion
                    (goto-char position) (current-column))))
-      (format "L%d,C%d %s" col line (buffer-name))))
+      (format "L%d,C%d %s" line col (buffer-name))))
 
 To enable '''Bookmark+''' to recognize such bookmarks as autonamed, you
 would then set `bmkp-autoname-format' to the format specification
