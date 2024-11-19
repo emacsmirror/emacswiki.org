@@ -3109,7 +3109,7 @@ tagged both `Java' and `ide'?
 
 # `##T m * Java RET ide RET RET##', to mark them.
 
-# `##T > + Java IDE Projects RET RET##, to tag them.
+# `##T > + Java IDE Projects RET RET##', to tag them.
 
 
 How would you sort your bookmarks, to show all those tagged both `blue' and `moon' first?
