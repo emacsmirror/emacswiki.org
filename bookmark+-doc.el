@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Sep 15 18:28:37 2024 (-0700)
+;; Last-Updated: Tue Nov 19 12:31:28 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 15423
+;;     Update #: 15425
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2776,7 +2776,7 @@
 ;;  already tagged both `Java' and `ide'?
 ;;
 ;;  1. `T m * Java RET ide RET RET', to mark them.
-;;  2. `T > + Java IDE Projects RET RET, to tag them.
+;;  2. `T > + Java IDE Projects RET RET', to tag them.
 ;;
 ;;  How would you sort your bookmarks, to show all those tagged both
 ;;  `blue' and `moon' first?
@@ -3547,7 +3547,7 @@
 ;;      (let ((line  (line-number-at-pos position))
 ;;            (col   (save-excursion
 ;;                     (goto-char position) (current-column))))
-;;        (format "L%d,C%d %s" col line (buffer-name))))
+;;        (format "L%d,C%d %s" line col (buffer-name))))
 ;;
 ;;  To enable Bookmark+ to recognize such bookmarks as autonamed, you
 ;;  would then set `bmkp-autoname-format' to the format specification
