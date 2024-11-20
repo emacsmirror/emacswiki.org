@@ -100,8 +100,6 @@ There is also a guide on Github made by Noctuid [https://github.com/noctuid/evil
 
 * [https://github.com/hlissner/evil-snipe evil-snipe]: Port of [https://github.com/justinmk/vim-sneak vim-sneak]/[https://github.com/goldfeld/vim-seek vim-seek].
 
-* [https://github.com/jamescherti/vim-tab-bar.el vim-tab-bar]: A package that makes the Emacs tab-bar look like Vim’s tab bar.
-
 * [https://github.com/noctuid/emacs-sentence-navigation sentence-navigation]: Port of [https://github.com/reedes/vim-textobj-sentence vim-textobj-sentence] that gives sentence text objects that ignore abbreviations.
 
 * [https://github.com/noctuid/evil-textobj-anyblock evil-textobj-anyblock]: Port of [https://github.com/rhysd/vim-textobj-anyblock vim-textobj-anyblock] that gives text objects for matching the closest of various types of blocks.
@@ -111,6 +109,9 @@ There is also a guide on Github made by Noctuid [https://github.com/noctuid/evil
 * [https://github.com/GuiltyDolphin/org-evil org-evil]: Provides integration with [[OrgMode]].
 
 * [https://github.com/noctuid/vertigo.el vertigo]: Port of [https://github.com/prendradjaja/vim-vertigo vim-vertigo] that gives commands for jumping lines using the home row (instead of using something like 34j).
+
+* [https://github.com/jamescherti/vim-tab-bar.el vim-tab-bar]: A package that makes the Emacs tab-bar look like Vim’s tab bar.
+
 == Bug tracker ==
 
 If you have bug reports or suggestions, please submit them at the [https://github.com/emacs-evil/evil/issues Bug tracker] (open for all).
