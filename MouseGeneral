@@ -34,10 +34,15 @@ Focus-follows-mouse (point-to-focus) for internal Emacs windows.  Argument is de
 
     (setq mouse-autoselect-window 0.25)
 
+== Disabling the mouse ==
+
+The [https://github.com/jamescherti/inhibit-mouse.el inhibit-mouse] Emacs package allows disabling of mouse input for users who wish to prevent accidental clicks or cursor movements that can alter the cursor position unexpectedly. It can also be useful reinforce a keyboard-centric workflow.
+
 == Mouse-specific modes and extensions ==
 
 These are centered around using or extending the mouse; they are useless without the mouse.
 
+* The [https://github.com/jamescherti/inhibit-mouse.el inhibit-mouse] package allows the disabling of mouse input. 
 * StrokeMode -- Hand-drawn patterns to insert characters or execute commands
 * ArtistMode -- Draw freehand with the mouse
 * <tt>[[follow-mouse.el]]</tt> -- Make the [[frame]] focus follow the pointer
