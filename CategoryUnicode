@@ -19,6 +19,7 @@ These libraries are intended to help users who edit Unicode files.
 * UnicodeHelperMode
 * UnicodeFonts
 * <tt>[http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el]</tt>
+* [[Uniline]] minor mode to handle box drawing and a few other unicodes
 
 == Unicode Interface ==
 
