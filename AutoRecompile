@@ -67,6 +67,8 @@ It can be installed via MELPA:
   (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
 </pre>
 
+(Add the above code at the very beginning of your Emacs init file, before all other packages)
+
 One of the differences between compile-angel and auto-compile is that compile-angel guarantees that all .el files are compiled. (For instance, auto-compile does not compile a .el file if its corresponding .elc file does not exist, whereas compile-angel does.)
 
 Compile-angel also offers a few interesting features listed in [https://github.com/jamescherti/compile-angel.el?tab=readme-ov-file#what-is-the-difference-between-auto-compile-and-compile-angel this README.md file], including support for indirect buffers, debug mode, excluding files with regular expressions, and compiling using functions other than just ##require## and ##load##...
