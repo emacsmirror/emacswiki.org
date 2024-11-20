@@ -18,12 +18,10 @@ some must be downloaded.
 * FoldDwim: a unified user interface for the folding methods of OutlineMode, HideShow, FoldingMode, AUCTeX folding, and NxmlMode.
 * TaggingMode: add tags to your file, then filter the blocks shown using tags
 * HtmlOutline: shows how to use NxmlMode to fold <ol> based outlines in html.
-* [https://github.com/zenozeng/yafolding.el|Yafolding.el]: simple script folding code blocks based on indentation, so, no special strings are needed.
-* [https://github.com/gregsexton/origami.el|origami.el]: another text folding mode for Emacs.
 
-There is also ooutline and noutline which all refer to
-some version of `outline', so they are not worth mentioning.
-
-If you want basic IDE-style code folding without hours of research:
+== Emacs Packages ==
+* [https://github.com/jamescherti/outline-indent.el outline-indent.el]: The ##outline-indent## package offers a minor mode for code folding based on indentation levels, providing a fast and reliable alternative to origami.el and yafolding.el.
+* [https://github.com/gregsexton/origami.el|origami.el] (not maintained): another text folding mode for Emacs.
+* [https://github.com/zenozeng/yafolding.el|Yafolding.el] (not maintained): simple script folding code blocks based on indentation, so, no special strings are needed.
 * Enable outline-minor-mode (bundled with GNU Emacs, and with better language support from most major modes than hide-show minor mode): <code>(add-hook 'prog-mode-hook 'outline-minor-mode)</code>
 * Install OutlineMagic for sane outline keybindings.
