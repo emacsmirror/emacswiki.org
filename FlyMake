@@ -40,6 +40,8 @@ listed here:
 
 * PHP: FlymakePhp
 * Ruby: FlymakeRuby
+* Bash: [https://github.com/jamescherti/flymake-bashate.el flymake-bashate.el]
+* Ansible: [https://github.com/jamescherti/flymake-ansible-lint.el flymake-ansible-lint.el]
 * Fortran G95: [[Flymake Fortran G95]]
 * Javascript: FlymakeJavaScript
 * Actionscript 3: FlymakeActionscriptThree -- More than just syntax checking; full incremental compilation
