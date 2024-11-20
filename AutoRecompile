@@ -49,7 +49,27 @@ useless) and compilation does not happen asynchronously (speed never
 was a problem for me and I *want* authors to be bothered by warnings,
 so that they actually fix them). -- JonasBernoulli
 
+== The Compile-Angel Package ==
 
+The [https://github.com/jamescherti/compile-angel.el compile-angel] package automatically byte-compiles and native-compiles Emacs Lisp libraries. It offers ##(compile-angel-on-load-mode)##, a global mode that compiles .el files before they are loaded, and  ##(compile-angel-on-save-local-mode)##, a local mode that compiles .el files whenever the user saves them.
+
+These modes speed up Emacs by ensuring all libraries are byte-compiled and native-compiled.
+
+It can be installed via MELPA:
+<pre>
+(use-package compile-angel
+  :ensure t
+  :demand t
+  :custom
+  (compile-angel-verbose nil)
+  :config
+  (compile-angel-on-load-mode)
+  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode))
+</pre>
+
+One of the differences between compile-angel and auto-compile is that compile-angel guarantees that all .el files are compiled. (For instance, auto-compile does not compile a .el file if its corresponding .elc file does not exist, whereas compile-angel does.)
+
+Compile-angel also offers a few interesting features listed in [https://github.com/jamescherti/compile-angel.el?tab=readme-ov-file#what-is-the-difference-between-auto-compile-and-compile-angel this README.md file], including support for indirect buffers, debug mode, excluding files with regular expressions, and compiling using functions other than just ##require## and ##load##...
 
 == Byte Compile on Buffer Save ==
 
