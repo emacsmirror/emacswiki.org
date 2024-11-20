@@ -3,6 +3,7 @@ Emacs and restored when you start a new session.
 
 == List of Session Management packages for Emacs ==
 
+* [https://github.com/jamescherti/easysession.el easysession]: A session manager for Emacs that can persist and restore file editing buffers, indirect buffers/clones, Dired buffers, windows/splits, the built-in tab-bar (including tabs, their buffers, and windows), and Emacs frames. It offers a convenient and effortless way to manage Emacs editing sessions and utilizes built-in Emacs functions to persist and restore frames.
 * [https://github.com/m0smith/annals Annals] -- Associate [[DeskTop]]s with tasks including Jira and Github.  Think Mylyn.
 * [[BookmarkPlus|Bookmark+]] -- [[DeskTop]]s as bookmarks: just hit a
   key to create them or jump among them.
