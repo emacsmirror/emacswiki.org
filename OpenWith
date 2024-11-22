@@ -61,11 +61,24 @@ In order to get that to run without an error, I had to reformulate the main hand
 	(apply operation args)))))
 </pre>
 
+
+=== OpenWith for interactive functions only ===
+
+I found that openwith is also opening files when a file was opened non-interactively from package "dashboard". I had to change the defun for openwith-file-handler to check (called-interactively-p):
+
+
+<pre>
+(defun openwith-file-handler (operation &rest args)
+  "Open file with external program, if an association is configured."
+  (when (and openwith-mode (not (buffer-modified-p)) (zerop (buffer-size))
+             (called-interactively-p)) [...]
+
+</pre>
+
+
 == Using an advice function instead of filename handlers ==
 
-
 I managed to avoid all error conditions by using an advice function  to find-file instead of injecting into the filename-handler mechanism. I used the opportunity to refactor the code as well. I have a repository with the patched package [https://git.repetitions.de/openwith/ here]. And here are the advice function and the mode-definition:
-
 
 <pre>
 (defun openwith/find-file (filename &rest rest)
@@ -98,24 +111,9 @@ This is intended to be used as advice to `find-file'."
     (progn
       (advice-remove 'find-file 'openwith/find-file)
       (advice-remove 'org-open-file 'openwith/find-file))))
-
-
 </pre>
 
 (This setup obv. does not affect any context that calls `find-file-noselect` directly).
-
-=== OpenWith for interactive functions only ===
-
-I found that openwith is also opening files when a file was opened non-interactively from package "dashboard". I had to change the defun for openwith-file-handler to check (called-interactively-p):
-
-
-<pre>
-(defun openwith-file-handler (operation &rest args)
-  "Open file with external program, if an association is configured."
-  (when (and openwith-mode (not (buffer-modified-p)) (zerop (buffer-size))
-             (called-interactively-p)) [...]
-
-</pre>
 
 ----
 See also CategoryExternalUtilities
