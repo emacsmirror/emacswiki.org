@@ -61,6 +61,49 @@ In order to get that to run without an error, I had to reformulate the main hand
 	(apply operation args)))))
 </pre>
 
+== Using an advice function instead of filename handlers ==
+
+
+I managed to avoid all error conditions by using an advice function  to find-file instead of injecting into the filename-handler mechanism. I used the opportunity to refactor the code as well. I have a repository with the patched package [https://git.repetitions.de/openwith/ here]. And here are the advice function and the mode-definition:
+
+
+<pre>
+(defun openwith/find-file (filename &rest rest)
+  "Open FILENAME in Programm according to `openwith-associations'.
+
+This is intended to be used as advice to `find-file'."
+  (when-let ((filepath (expand-file-name filename))
+             (oa (assoc filepath openwith-associations 'string-match-p))
+             (program (cadr oa))
+             (params (mapcar (lambda (x) (if (eq x 'file) filepath x))
+                             (nth 2 oa))))
+    (when (or (not openwith-confirm-invocation)
+              (y-or-n-p (format "Open %s in %s?" filename program)))
+      (if (eq system-type 'windows-nt) (openwith-open-windows filepath)
+               (openwith-open-unix program params))
+      (when (featurep 'recentf) (recentf-add-file filepath))
+      (message (format "Opened %s in external program"
+                       (file-name-nondirectory filepath))))))
+
+
+;;;###autoload
+(define-minor-mode openwith-mode
+  "Automatically open files with external programs."
+  :lighter ""
+  :global t
+  (if openwith-mode
+      (progn
+        (advice-add 'find-file :before-until 'openwith/find-file)
+        (advice-add 'org-open-file :before-until 'openwith/find-file))
+    (progn
+      (advice-remove 'find-file 'openwith/find-file)
+      (advice-remove 'org-open-file 'openwith/find-file))))
+
+
+</pre>
+
+(This setup obv. does not affect any context that calls `find-file-noselect` directly).
+
 === OpenWith for interactive functions only ===
 
 I found that openwith is also opening files when a file was opened non-interactively from package "dashboard". I had to change the defun for openwith-file-handler to check (called-interactively-p):
