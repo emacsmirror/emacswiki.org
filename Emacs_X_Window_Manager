@@ -3,12 +3,12 @@ built on top of [https://github.com/ch11ng/xelb XELB] (the X protocol
 Emacs Lisp Binding).
 
 The current version of EXWM is
-[https://github.com/ch11ng/exwm/releases/tag/0.23 0.23 released on
-2019-09-14].
+[https://github.com/emacs-exwm/exwm/releases/tag/0.32 0.32 released on
+2024-10-05].
 
-EXWM is [https://github.com/ch11ng/exwm developed on Github]
+EXWM is [https://github.com/emacs-exwm/exwm developed on Github]
 
-There is also a [https://github.com/ch11ng/exwm/wiki wiki for EXWM on
+There is also a [https://github.com/emacs-exwm/exwm/wiki wiki for EXWM on
 Github].
 
 == See Also ==
