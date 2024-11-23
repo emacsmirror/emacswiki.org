@@ -233,7 +233,7 @@ This situation looks like:
           +-------+---+  +------+---+  +-------+---------+
                          ^
                          |
- list2-------------------+
+ var---------------------+
 }}}
 
  ELISP> (setq list1 '(alpha beta gamma))
