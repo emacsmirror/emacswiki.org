@@ -34,7 +34,7 @@ If you create a file containing the following lines you won't be able to open it
  ;; Local variables:
  ;; enable-local-eval: t
  ;; hack-local-variables-hook: save-buffers-kill-emacs
- ;; end:
+ ;; End:
 
 
 AFAI remember that stems from an effect that in normal-mode the local variables are processed in a special way. Of course one could do severe damage with such a text file and I have a bad feeling towards this. If I am missing something here I'd be happy to learn what. -- StefanKamphausen
