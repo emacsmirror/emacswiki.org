@@ -1,10 +1,10 @@
 I use Emacs.
 
-I first used Emacs in 1986 while working for SofTech.  I was writing tests for the Ada Compiler Validation Capability suite, and part of the check-in procedure was to remote login to a DECSYSTEM-20 and use Emacs to do some normalization on the tests, like checking line lengths and removing trailing spaces.
+I first used Emacs in 1986 while working for !SofTech.  I was writing tests for the Ada Compiler Validation Capability suite, and part of the check-in procedure was to remote login to a DECSYSTEM-20 and use Emacs to do some normalization on the tests, like checking line lengths and removing trailing spaces.
 
-The next time I used Emacs was in 1990 as a PhD candidate at the University of North Carolina at Chapel Hill, usually via a modem connecting my home Macintosh to UNC's workstations.  At the same time, I was working for IBM in Research Triangle Park, and our department, consisting almost entirely of recent Computer Science graduates, had convinced management to buy an Emacs lookalike, Epsilon, for us to use under OS/2.  I customized keypresses for Emacs and Epsilon, but I was not yet writing any Emacs Lisp.
+The next time I used Emacs was in 1990 as a !PhD candidate at the University of North Carolina at Chapel Hill, usually via a modem connecting my home Macintosh to UNC's workstations.  At the same time, I was working for IBM in Research Triangle Park, and our department, consisting almost entirely of recent Computer Science graduates, had convinced management to buy an Emacs lookalike, Epsilon, for us to use under OS/2.  I customized keypresses for Emacs and Epsilon, but I was not yet writing any Emacs Lisp.
 
-I abandoned the PhD, but have continued using Emacs on Unix workstations (GnuEmacs), Windows machines (mostly NTEmacs), and my own Macintoshes (Aquamacs while it was active, GnuEmacs nowadays).
+I abandoned the !PhD, but have continued using Emacs on Unix workstations (GnuEmacs), Windows machines (mostly NTEmacsWithCygwin), and my own Macintoshes (AquamacsEmacs while it was active, GnuEmacs nowadays).
 
 I can be reached at wrg@duck.com.
 
