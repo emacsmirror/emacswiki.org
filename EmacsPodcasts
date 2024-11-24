@@ -1,5 +1,51 @@
-* [https://github.com/emacs-el/emacs-el.github.io/tree/master/source/episodes Emacs.el] -- Daniel Gopar and Samer Masterson (changed link to archive)
-* [http://sachachua.com/blog/emacs-chat/ Emacs Chat] -- [http://sachachua.com/blog/tag/emacs-chat/podcast Podcast feed] Sacha Chua - not currently being updated, but the archive is there
-* [http://emacscast.org/ EmacsCast] -- beginner's journey into Emacs by Rakhim Davletkaliyev
+== Emacs.el ==
+[https://github.com/emacs-el/emacs-el.github.io/tree/master/source/episodes Emacs.el on Github] (changed link to archive)
+
+By Daniel Gopar and Samer Masterson.
+
+== Emacs Chat ==
+[http://sachachua.com/blog/emacs-chat/ Emacs Chat in SachaChua.com] | [http://sachachua.com/blog/tag/emacs-chat/podcast Podcast feed]
+
+By Sacha Chua
+
+[quote]
+The Emacs community has a lot of amazing people, although we rarely get to meet face to face. It’s great to get a sense of what people are like, so here are some casual chats with other Emacs geeks. =) I’m looking forward to being able to do these again when I can actually schedule things!
+[/quote]
+
+The podcast is not currently being updated, but the archive is there.
+
+== EmacsCast ==
+[http://emacscast.org/ EmacsCast Homepage] | [https://open.spotify.com/show/55FtiTIlDijMqPPa6rGUti EmacsCast in Spotify]
+
+By Rakhim Davletkaliyev.
+
+[quote]
+Exploring the world of Emacs as a beginner, learning how to grow a wonderful tool out of raw materials and with community's help.
+[/quote]
+
+== Emacs Talk (chinese) ==
+* [https://open.spotify.com/show/6QdmFKhhjN6IAhXDIknUqI EmacsTalk] 写代码的西瓜 (chinese)  -- Episodes 1 to 13. See https://emacstalk.github.io
+* [https://open.spotify.com/show/7jwo5rpK2Yv3rfWzLzLGGW EmacsTalk] Jiacai Liu (chinese) -- Episodes 1 to 15. See https://emacstalk.github.io
+
+
+== Discovering Emacs ==
+[https://open.spotify.com/show/418Bz9DpieBzLynaZunrmc Discovering Emacs in Spotify] | [https://github.com/VernonGrant/discovering-emacs Notes and more resources in Github]
+
+By Vernon Grant.
+
+[quote]
+A podcast all about GNU Emacs, where I uncover some of it’s lesser known features, discussed upcoming releases and share some tips and tricks. Join me as we discover some of the most valuable aspects of this wonderful piece of software.
+[/quote]
+
+Each episode comments a feature of Emacs, its usage, and tips.
+
+== uGeek (español/spanish) ==
+[https://ugeek.github.io/ https://ugeek.github.io/] | [https://ugeek.github.io/list.html Listado de audios]
+
+Es un Blog del podcast uGeek. Contiene artículos y audios.
+
+=== Podcast: Iniciándonos en Emacs y Org Mode de un Modo muy muy Fácil (spanish) ===
+[https://ugeek.github.io/post/2018-10-09-podcast-iniciandonos-en-emacs-y-org-mode-de-un-modo-muy-muy-facil.html Homepage]
+
 
 CategoryCommunity
