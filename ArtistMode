@@ -93,7 +93,10 @@ Or consider simply org-narrow before editing in artist-mode:
 ----
 Note: If using the keyboard to draw, use C-u RET to stop drawing.
 ----
-See Also: PictureMode
+See Also:
+* [[PictureMode]]
+* [[Uniline]]
+
 ----
 CategoryModes
 MultimediaModes
