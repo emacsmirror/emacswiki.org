@@ -44,6 +44,7 @@ The input method will be activated for this file as soon as it is loaded.
 
 These are some additional input methods that do not come with Emacs:
 
+* [[https://tildegit.org/knit/plains-cree-emacs Cree]] (Canadian aboriginal syllabic. Y dialect)
 * Georgian (a bit different than the one that comes with Emacs): Lisp:georgian.el
 * Armenian: Lisp:armenian.el
 * Neo-Akkadian Cuneiform: Lisp:akkadian.el
