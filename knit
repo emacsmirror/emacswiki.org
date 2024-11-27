@@ -8,16 +8,13 @@
 * ##M-z x## - delete chars until ##x##
 * ##M-m##   - First non-whitespace character on this line
 * ##C-c <letter>## is reserved for the user to bind
-* ##f5## to ##f9## are also reserved for you :3
 * ##f3## starts recording a key macro. ##f4## stops it
 * ##C-x n n## - [[Narrowing|narrow]] buffer to current region
 * ##C-x n w## - widen (undoes narrowing)
-* i bind arrow keys to select frames
-* i dont deviate a lot from vanilla emacs
-* i try to stay cozy :3
+
 
 [:faves]
-=== favourite pages ===
+== favourite pages ==
 
 * [[IbufferMode|ibuffer]]
 * [[OrgCapture|org-capture]]
@@ -42,8 +39,6 @@ i use ModusThemes because they're really cute :D
 
 i install the package from melpa because it's a newer version.
 
-[[https://tildegit.org/knit/init-el/src/branch/main/config/theme.el see my theme config here!]]
-
 as for fonts i use [[https://github.com/protesilaos/iosevka-comfy iosevka comfy]]:
 
 {{{
@@ -62,44 +57,53 @@ as for fonts i use [[https://github.com/protesilaos/iosevka-comfy iosevka comfy]
 
 == bookmarking ==
 
-I customize my bookmarks to categorize them by file. see [[https://www.emacswiki.org/emacs/BookMarks#h5o-4 this section]] of the wiki page about it.
-
-i also set 'quick keys' for choosing a bookmark file; see [[https://tildegit.org/knit/init-el/src/branch/main/config/bookmark-conf.el#L61 my bookmarks config]] on gitea.
+* ##C-x r l## - list bookmarks
+* ##C-x r m## - add bookmark
 
 == org ==
 
-i use orgmode to handle my todo lists, notes, time-sensitive deadlines, and writing documentation.
+i use org for todo lists, notes, time-sensitive deadlines, and writing documentation.
 
-* use ##visual-fill-column## for a cozy softwrapped width (you can also center the text)
+* ##visual-fill-column## -- soft-wrap text to width (you can also center the text)
 * ##org-hide-emphasis-markers## -- cleanup asterisks around bold text, etc.
 * ##org-use-quick-tag-selection## -- use a single key to pick a tag, for speedy tag :3
 * ##org-startup-folded## -- collapse all headings by default pls!
 
-== capture ==
+== capture / agenda ==
 
 I use org-capture to send notes and links, and add todos to my agenda directory.
 
-i press ##C-o t## to add a TODO heading to my ##todo.txt## file, which is then visible on my ##org-agenda## timeline :3 :3 ;3 ;3
-
-I use the agenda to keep track of all my captured todo headings and find my tags / dates and whatnot.
-
-i also use org capture to keep a diary!
+* ##C-c o t## -- add a TODO heading to ##todo.org## file
+* ##C-c o j## -- add a journal entry for the day.
+* ##C-c a a## -- open the agenda
 
 == ibuffer ==
 
-i just use ibuffer normally, which is more confusing than you'd think :3
+for managing my buffers, i use ibuffer.
+
+* ##m## / ##u## -- mark / unmark buffer
+* ##t## -- inverse current selection
+* ##/m## -- filter by mode
+* ##/v## -- filter by buffers currently visiting a file
+* ##/i## -- all modified buffers
+* <code>#</code>  -- switch display format
 
 id like to be able to run a command to add a mode to an ibuffer group
 
+== tab bar ==
+
+tabs allow me to have a workspace with multiple windows in one tab, and a single window in another.
+
+* ##C-c t## -- tab list
+* ##C-x t r## -- tab-rename
+* ##C-x t x## -- close tab
+* ##C-x t n## -- new tab
+* ##C-x t t## -- run the next command in a new tab
+
 == Smaller ==
 
-=== swatch beats ===
-
-I use [https://www.emacswiki.org/emacs/InternetTime#h5o-2 Alex's formatter] to render swatch .beat internet time.
-
-=== oddmuse mode ===
-
-I use [[Oddmuse_Mode]] by Alex cause it's probably the most updated :3
+* for swatch .beat internet time, i use [https://www.emacswiki.org/emacs/InternetTime#h5o-2 Alex's formatter].
+* for editing oddmuse pages, i use [[Oddmuse_Mode]] by Alex
 
 ----
 
