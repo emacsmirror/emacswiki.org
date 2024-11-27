@@ -1,25 +1,25 @@
-Input Methods allow you to enter characters that are not supported by your keyboard.
+Input Methods allow you to enter characters that are not supported by your keyboard, such as writing in languages that use different alphabets.
 
-* 'C-x C-m C-\' or `M-x set-input-method' or switch to a new input method.
-* 'C-h C-\' or `C-h I' to describe the current input method.
-* 'C-\' to toggle the input method on and off
+* ##C-x C-m C-\## or `M-x set-input-method' or switch to a new input method.
+* ##C-h C-\## or `C-h I' to describe the current input method.
+* ##C-\## to toggle the input method on and off
 
-Emacs should also work correctly with appropriate XIM input methods under X.
+== Popular Input Methods ==
 
-Possibly the most convenient casual method for inputting unicode characters
-is the TeXInputMethod, which permits you to enter Unicode characters by typing a
-\ prefixed sequence reminiscent of TeX. For example, the greek character λ
-may be entered by typing \lambda.
+The ##TeX## input method allows you to enter Unicode characters by typing ##\## followed by a !TeX character name, for example, ##λ## can be entered by typing ##\lambda##.
 
-An obsolete way of entering accented characters is '''iso-accents-mode'''.
-These days, you should use the input-method `latin-1-prefix' instead.
-Both will make accent characters combine with the following characters, so
-that you can type `" u' to achieve `ü', for example.
+The ##latin-1-prefix## input method lets you write ##^a## to output ##â##.
+
+##latin-1-postfix## is the same, but you write ##a^## instead of ##^a##.
+
+Instead of ##latin-1-prefix##, you may use *iso-accents-mode* to achieve this effect as well.
 
 An even stranger way of entering accented characters is the '''C-x 8 keymap'''.
 See WritingIsoLatinOne.
 
 Another way is to use QuotedInsert with `C-q'.
+
+== Activate an Input Method for a Specific Mode ==
 
 To activate the input method for a specific mode put the following line in your config file:
 
@@ -28,8 +28,7 @@ To activate the input method for a specific mode put the following line in your 
 The input method is then automaticaly activated for files
 which open in text mode.
 
-To activate the input method on a per-buffer basis.
-First put the following lines in the .emacs:
+To activate the input method on a per-buffer basis, put the following lines in ##.emacs##:
 
   (set input-activate nil)
   (add-hook 'find-file-hook
@@ -41,7 +40,10 @@ Then put the following line at the beginning of a file:
 
 The input method will be activated for this file as soon as it is loaded.
 
+== Additional Input Methods ==
+
 These are some additional input methods that do not come with Emacs:
+
 * Georgian (a bit different than the one that comes with Emacs): Lisp:georgian.el
 * Armenian: Lisp:armenian.el
 * Neo-Akkadian Cuneiform: Lisp:akkadian.el
@@ -51,11 +53,36 @@ These are some additional input methods that do not come with Emacs:
 
 It's convenient for people who speak in korean or japanese or etc... to use only the internal emacs input method ([[mule]]) without scim, nabi, Microsoft IME, etc...
 
-For X Windows, add the following line to your ~/.Xresources file (if not exist, make it)
+== Writing Your Own Input Method ==
+
+You can create a file, ##my-method.el## and write:
+
+{{{
+(require 'quail)
+	(quail-define-package
+	 "my-name" "My Name" "R" nil
+	 "My Name's Description"
+	 nil t t t t nil nil nil nil nil t)
+
+(quail-define-rules
+  ("ba" ?â)
+  ("kwa" ["kuh wah"])
+  ("n"  ?ñ))       
+
+(provide 'my-method)
+}}}
+
+if you load this file as a package, you can set this method using ##set-input-method##.
+
+== XIM Input Methods Under X ==
+
+For X Windows, add the following line to your ##~/.Xresources## file (if not exist, make it)
 
   Emacs.useXIM: off
 
 For MS Windows, you may need to use DisableImeForEmacs.
+
+== Questions ==
 
 [new]
 *Question:*
@@ -68,6 +95,12 @@ It is not convenient to use different bindings for switching languages inside an
 How do I allow input methods such as SCIM to override Emacs keybindings in a desktop environment such as GNOME (instead of using the version of SCIM internal to Emacs)?
 [new]
 Set ##LC_CTYPE=ja_JP.UTF-8## before launching Emacs, and Emacs will recognize your SCIM keys, such as ##C-SPC## to change input method.
+
+== External Links ==
+
+* [[https://blog.alex.balgavy.eu/creating-a-custom-emacs-input-method-for-box-drawing-characters/ Balgavy's post]] on creating an input method for Emacs.
+* [[http://xahlee.info/emacs/emacs/emacs_input_method.html Xah Lee's page]] on input methods.
+
 ----
 
 '''See Also:''' ChangingCursorDynamically to automatically change the TextCursor color when you are using an input method. This makes it easy to tell if an input method is in use.
