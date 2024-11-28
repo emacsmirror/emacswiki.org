@@ -126,8 +126,5 @@
 ^188\.65\.1[89]\. # 2024-09-09 [188.65.18.0 - 188.65.19.255] Comments on CategoryEmacsWikiSite
 ^37\.187\.([0-9]|[1-2][0-9]|3[0-1])\. # 2024-09-11 [37.187.0.0 - 37.187.31.255] Comments on LineNumbers
 ^93\.100\.(12[8-9]|1[3-8][0-9]|19[0-1])\. # 2024-09-24 [93.100.128.0 - 93.100.191.255] Comments on Rmail
-^42\. # 2024-09-27 [42.0.0.0 - 42.255.255.255] Comments on Calc, Comments on AquamacsFAQ
 ^91\.217\.249\. # 2024-11-18 [91.217.249.0 - 91.217.249.255] Comments on JonathanArnoldDotEmacs
-^45\.XXX\. # 2024-11-23 [45.80.0.0 - 45.88.215.255] Comments on w32-send-mapi.el
-^45\.XXX\. # 2024-11-23 [45.80.0.0 - 45.88.215.255] Comments on visual-basic-mode.el
 ^45\.86\.202\. # 2024-11-23 [45.86.202.0 - 45.86.202.255] Comments on visual-basic-mode.el
