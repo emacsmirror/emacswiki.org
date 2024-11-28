@@ -200,6 +200,60 @@ One thing I found lacking in the documentation was that pressing a modifier key 
 
 KDE also implements this; find "Regional & Accessibility > Accessibility > Keyboard" in KControl. You can find more information at [http://accessibility.kde.org/ KDE Accessibility Project]
 
+=== A More Flexible Approach (key remapping daemons) ===
+
+The "StickyKeys" feature provided by most OSes is rather inflexible, since it doesn't allow choosing which modifiers will be sticky.
+
+A more flexible option is to implement homegrown StickyKeys using one of the software options described below.  This allows you to configure some modifiers as sticky and let others behave as before.
+
+These options translate keypresses before they're received by the desktop environment.  And they work regardless of whether X, Wayland or some other GUI framework applies.  In addition to StickyKeys, these programs allow nearly any keyboard customization you can think of.
+
+==== Kmonad ====
+
+[Kmonad](https://github.com/kmonad/kmonad) is a cross-platform keyboard configuration daemon.
+
+It uses a lisp-like configuration syntax and comes with an Emacs major-mode for editing configuration files.
+
+It is written in Haskell.
+
+==== Keyd ====
+
+[Keyd](https://github.com/rvaiya/keyd) is a keyboard configuration daemon for Linux.
+
+It is written in C, and its configuration files use a simple Unix-Conf syntax.
+
+Here is a Keyd configuration that implements StickyKeys and turns CapsLock into an additional "Ctrl" key.
+
+    [ids]
+     
+    *
+     
+    # Latching (first press activates modifier's layer for next key)
+     
+    [main]
+    capslock = oneshot(control)
+    control = oneshot(control)
+    shift = oneshot(shift)
+    leftalt = oneshot(alt)
+    rightalt = oneshot(alt)
+    meta = oneshot(meta)
+     
+    # Locking (second press locks modifier until pressed again)
+     
+    [control]
+    control = toggle(control)
+    capslock = toggle(control)
+     
+    [shift]
+    shift = toggle(shift)
+     
+    [alt]
+    leftalt = toggle(alt)
+    rightalt = toggle(alt)
+     
+    [meta]
+    meta = toggle(meta)
+
 == APIs ===
 
 The underlying API-level framework is called MSAA on MS Windows and ATK in GNOME. The applications have to use this to support Sticky Modifiers (and a lot of other accessiblity options). In some cases this is very simple due to the way the frameworks are built.
