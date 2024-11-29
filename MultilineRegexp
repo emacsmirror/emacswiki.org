@@ -87,5 +87,29 @@ an equivalent of Perl's /s modifier, so . can't match \n [I was also testing in 
 You are correct.  That's the whole point of having the \n in there.  I've taken in further appart.
 -- AlexSchroeder
 
+=== An example for replacement and deletion with ##re## ===
+
+    (defun my-replace ()
+      (interactive)
+      (save-excursion
+        (while (re-search-forward (rx (seq "\\mypar " (submatch (*? anychar)) ?\n ?\n )) nil t)
+          (replace-match "\\\\myparwitharg{\\1}\n\n" nil nil))))
+
+
+    (defun my-delete ()
+      (interactive)
+      (while (re-search-forward
+              (rx (seq "Node:" (submatch (*? not-newline)) ?\n
+                       "Next:" (submatch (*? not-newline)) ?\n
+                       "Previous:" (submatch (*? not-newline)) ?\n
+                       "Up:" (submatch (*? not-newline)) ?\n
+                       "<br>" ?\n)) nil t)
+        (delete-region (point) (match-beginning 0) ))
+      ;;(set-mark-command nil)
+      ;;(goto-char (match-beginning 0))
+      )
+
+-- Lockywolf 
+
 ----
 CategoryRegexp
