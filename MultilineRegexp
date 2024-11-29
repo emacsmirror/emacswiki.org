@@ -87,7 +87,7 @@ an equivalent of Perl's /s modifier, so . can't match \n [I was also testing in 
 You are correct.  That's the whole point of having the \n in there.  I've taken in further appart.
 -- AlexSchroeder
 
-=== An example for replacement and deletion with ##re## ===
+== An example for replacement and deletion with re ==
 
     (defun my-replace ()
       (interactive)
@@ -108,7 +108,8 @@ You are correct.  That's the whole point of having the \n in there.  I've taken 
       ;;(set-mark-command nil)
       ;;(goto-char (match-beginning 0))
       )
-
+these two functions should help the audience write their own ones
+the match-* functions should really only be used within the same function, otherwise they pick up wrong matches
 -- Lockywolf 
 
 ----
