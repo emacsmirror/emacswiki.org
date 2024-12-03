@@ -116,7 +116,7 @@ functional programmer should strive towards.
 
 An analogy is then drawn with the "no <code>GOTO</code>!" arguments in favor of structured programming -- and the conclusion is that it is its ''modularity'', not its lack of <code>GOTO</code>, that gives structured programming its advantage. The rest of the paper explores the modularity advantages provided by higher-order functions and lazy evaluation.
 
-I heartily recommend this 35-year old paper. I guarantee that it is an eye-opener, no matter how familiar you are with functional programming and programming-language design.
+I heartily recommend this 40-year old paper. I guarantee that it is an eye-opener, no matter how familiar you are with functional programming and programming-language design.
 
 Here, BTW, is what John himself says about this paper:
 
