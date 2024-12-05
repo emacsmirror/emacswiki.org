@@ -154,7 +154,7 @@ These special handlers take care of quoting the rest of your input properly, and
 
 Notice that the gibberish at the end of the text did not, in this case, cause problems. Normally, such gibberish would be passed through fsbot's read feature and lead to an error, but that feature is disabled for the above three special handlers. The read feature is otherwise useful for most other bot functionality, for example, when you simply type ##,+ 1 2##. 
 
-I believe fsbot provided the earliest public gpt interface on the libera. Additionally, even when not invoking GPT directly as above, fsbot used to have a way to use GPT as one of the fallback options. The results were pretty good, in my opinion, and that ensured that unmatched queries often led to a sensible response. That route, however, was disabled after user feedback, especially since this is non-free software. In future, I hope to move to using a free LLM instead of the openai.  
+I believe fsbot provided the earliest public gpt interface on the libera network. Additionally, even when not invoking GPT directly as above, fsbot used to have a way to use GPT as one of the fallback options. The results were pretty good, in my opinion, and that ensured that unmatched queries often led to a sensible response. That route, however, was disabled after user feedback, especially since this is non-free software. In future, I hope to move to using a free LLM instead of the one from openai.  
 
 Related: Extended English Interface using ,,, which also uses GPT.
 
