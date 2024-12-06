@@ -12,8 +12,8 @@
 ;; Last-Updated: 2018/19/02 9:47
 ;;           By: Pierre Téchoueyres
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
-;; Keywords: yaoddmuse, oddmuse
-;; Compatibility: GNU Emacs 22 ~ 23
+;; Keywords: convenience,docs,tools
+;; Package-Requires: ((emacs "24.1"))
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -47,7 +47,7 @@
 ;; Yet another oddmuse for Emacs.
 ;;
 ;; This mode can edit or post wiki page *asynchronous*.
-;; So it can't hang your emacs.
+;; So it can't hang your Emacs.
 ;; You can do your work when get or post wiki page.
 ;;
 ;; Below are the command you can use:
@@ -63,8 +63,8 @@
 ;;      `yaoddmuse-post-file-default'        post file to default wiki.
 ;;      `yaoddmuse-post-library'             post library to wiki.
 ;;      `yaoddmuse-post-library-default'     post library to default wiki.
-;;      `yaoddmuse-post-dired'               post dired marked files to wiki.
-;;      `yaoddmuse-post-dired-default'       post dired marked files to wiki.
+;;      `yaoddmuse-post-dired'               post Dired marked files to wiki.
+;;      `yaoddmuse-post-dired-default'       post Dired marked files to wiki.
 ;;      `yaoddmuse-post-screenshot'          post screenshot to wiki.
 ;;      `yaoddmuse-post-screenshot-default'  post screenshot to default wiki.
 ;; * View:
@@ -117,8 +117,8 @@
 ;; ・ Post file to wiki:
 ;;      Command ‘yaoddmuse-post-file’ post special file to wiki,
 ;;      it’s useful to fast posting when you don’t want open file.
-;; ・ Post mark files in dired to wiki:
-;;      Command ‘yaoddmuse-post-dired’ post mark files in dired to wiki,
+;; ・ Post mark files in Dired to wiki:
+;;      Command ‘yaoddmuse-post-dired’ post mark files in Dired to wiki,
 ;;      this command is useful when update many files to wiki.
 ;; ・ Post library to wiki:
 ;;      Command ‘yaoddmuse-post-library’ and ‘yaoddmuse-post-library-default’
@@ -186,9 +186,9 @@
 ;;  `yaoddmuse-post-library-default'
 ;;    Post library to default wiki.
 ;;  `yaoddmuse-post-dired'
-;;    Post dired marked files to current wiki.
+;;    Post Dired marked files to current wiki.
 ;;  `yaoddmuse-post-dired-default'
-;;    Post dired marked files to default wiki.
+;;    Post Dired marked files to default wiki.
 ;;  `yaoddmuse-post-screenshot'
 ;;    Post screenshot to current wiki.
 ;;  `yaoddmuse-post-screenshot-default'
@@ -264,7 +264,7 @@
 ;;    Whether close `yaoddmuse-mode' buffer after POST.
 ;;    default = nil
 ;;  `yaoddmuse-post-dired-confirm'
-;;    Whether confirmation is needed to post mark dired files.
+;;    Whether confirmation is needed to post mark Dired files.
 ;;    default = t
 ;;  `yaoddmuse-edit-protect'
 ;;    This option is make user can post wiki page without text captcha.
@@ -343,7 +343,7 @@
 ;; post wiki page.
 ;;
 ;; `yaoddmuse-post-dired-confirm' Whether confirmation is needed
-;; to post mark dired files.
+;; to post mark Dired files.
 ;;
 ;; `yaoddmuse-edit-protect' Some wikis, such as EmacsWiki,
 ;; use a text captcha to protect pages from being edited.
@@ -399,6 +399,10 @@
 ;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Change log:
+;; 2024/12/06     ChristianGimenez
+;;      * Fixing some package-lint, checkdoc, and byte-compile warnings (flycheck is happier).
+;;        Still, some obsolete functions are used, need fixing!
+;;      * Support for other values tha list in mode-line-format.  Fixing error in `yaoddmuse-update-edit-status'.
 ;; 2014/03/06     Andy Stewart
 ;;      * `yaoddmuse-post-dired': add sit-for 5 for emacswiki to void upload files failed.
 ;;
@@ -428,7 +432,7 @@
 ;;        `yaoddmuse-browse-page-default-diff'
 ;;
 ;; 2009/03/13
-;;      * Just ask summary once when post from dired.
+;;      * Just ask summary once when post from Dired.
 ;;
 ;; 2009/03/11
 ;;      * Refactory code.
@@ -572,7 +576,6 @@
 ;;
 
 ;;; Require
-(eval-when-compile (require 'cl))
 (require 'sgml-mode)
 (require 'skeleton)
 (require 'url)
@@ -617,7 +620,8 @@ Third argument is coding for Wiki.
 Fourth argument is captcha string for edit protected.
 
 You can add new list as format (WikiName WikiURL CodingSystem CaptchaString).
-But don't modified default elements of `yaoddmuse-wikis', probably causes trouble!"
+But don't modified default elements of `yaoddmuse-wikis', probably causes
+trouble!"
   :type '(repeat (list (string :tag "Wiki")
                        (string :tag "URL")
                        (symbol :tag "Coding System")
@@ -673,9 +677,9 @@ Default is t."
   :group 'yaoddmuse)
 
 (defcustom yaoddmuse-post-dired-confirm t
-  "Whether confirmation is needed to post mark dired files.
+  "Whether confirmation is needed to post mark Dired files.
 Nil means no confirmation is needed.
-If non-nil, will notify you before post dired mark files."
+If non-nil, will notify you before post Dired mark files."
   :type 'boolean
   :group 'yaoddmuse)
 
@@ -753,12 +757,12 @@ Default is t."
 
 (defface yaoddmuse-lisp-keyword
   '((t (:foreground "PaleGreen")))
-  "Highlight lisp keyword `Lisp:'."
+  "Highlight Lisp keyword `Lisp:'."
   :group 'yaoddmuse)
 
 (defface yaoddmuse-lisp-file
   '((t (:foreground "GreenYellow")))
-  "Highlight lisp file."
+  "Highlight Lisp file."
   :group 'yaoddmuse)
 
 (defface yaoddmuse-source-code
@@ -887,7 +891,7 @@ Default is nil.")
   "Command to use for publishing pages.
 It must print the page to stdout.
 
-%t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
+%t  URL encoded pagename, eg.  HowTo, How_To, or How%20To")
 
 (defvar yaoddmuse-args-index
   "action=index;raw=1"
@@ -976,7 +980,7 @@ It must print the page to stdout.
      ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
      ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
      ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
-     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)     
+     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
      ("\\<[A-Z\xc0-\xdeÀÈÌÒÙÁÉÍÓÚÖÜ]+[àèìòùáéíóúüöa-z\xdf-\xff]+\\([ÀÈÌÒÙÁÉÍÓÚÖÜA-Z\xc0-\xde]+[àèìòùáéíóúüöa-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
      ("\\[\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-link)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 1 'yaoddmuse-lisp-keyword)
@@ -994,8 +998,7 @@ It must print the page to stdout.
      ("\\s-_+\\([^_]+\\)_+\\s-" 1 'yaoddmuse-underline)
      ("^\\(\\([*#]\\)\\{1\\}\\)\\s-" 1 'yaoddmuse-level-1)
      ("^\\(\\([*#]\\)\\{2\\}\\)\\s-" 1 'yaoddmuse-level-2)
-     ("^\\(\\([*#]\\)\\{3\\}\\)\\s-" 1 'yaoddmuse-level-3)
-     ))
+     ("^\\(\\([*#]\\)\\{3\\}\\)\\s-" 1 'yaoddmuse-level-3) ))
   (font-lock-mode 1))
 
 (define-derived-mode yaoddmuse-mode text-mode "Yaoddmuse"
@@ -1006,7 +1009,7 @@ It must print the page to stdout.
   (set (make-local-variable 'sgml-tag-alist)
        `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
          ("pre" \n) ("tt") ("u")))
-  (set (make-local-variable 'skeleton-transformation) 'identity)
+  (set (make-local-variable 'skeleton-transformation-function) 'identity)
   ;; Wiki and page name setup.
   (setq imenu-generic-expression (list (list nil yaoddmuse-imenu-regexp 2)))
   (and buffer-file-name
@@ -1174,7 +1177,7 @@ Use a PREFIX argument to browse page after post successful."
 
 ;;;###autoload
 (defun yaoddmuse-post-dired (&optional wikiname summary prefix)
-  "Post dired marked files to current wiki.
+  "Post Dired marked files to current wiki.
 The current wiki is taken from `yaoddmuse-wikis'.
 WIKINAME is wiki name for post.
 SUMMARY is summary for post.
@@ -1182,7 +1185,7 @@ If PREFIX is non-nil, will view page after post successful."
   (interactive)
   (if (eq major-mode 'dired-mode)
       (if (or (not yaoddmuse-post-dired-confirm)
-              (yes-or-no-p "Do you want post marked files to wiki."))
+              (yes-or-no-p "Do you want post marked files to wiki?"))
           (let (filename pagename)
             (or summary (setq summary (yaoddmuse-read-summary)))
             (dolist (file (dired-get-marked-files))
@@ -1193,7 +1196,7 @@ If PREFIX is non-nil, will view page after post successful."
 
 ;;;###autoload
 (defun yaoddmuse-post-dired-default (prefix)
-  "Post dired marked files to default wiki.
+  "Post Dired marked files to default wiki.
 Use a PREFIX argument to browse page after post successful."
   (interactive "P")
   (yaoddmuse-post-dired yaoddmuse-default-wiki nil prefix))
@@ -1376,18 +1379,18 @@ such as picture or compress."
         (write-file (read-file-name (format "File: (Suffix: %s) " suffix)))))))
 
 ;;;###autoload
-(defun emacswiki (&optional pagename prefix)
+(defun yaoddmuse-emacswiki (&optional pagename prefix)
   "Edit a page on the EmacsWiki.
 PAGENAME is the pagename of the page you want to edit.
 Use a PREFIX argument to force a reload of the page."
   (interactive)
   (yaoddmuse-edit "EmacsWiki" pagename prefix))
 
-(defun emacswiki-post (&optional pagename summary prefix)
+(defun yaoddmuse-emacswiki-post (&optional pagename summary prefix)
   "Post file to the EmacsWiki.
 PAGENAME is page name for post, whose default is basename of current filename.
 SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful. "
+If PREFIX is non-nil, will view page after post successful."
   (interactive)
   (let ((file (file-name-nondirectory buffer-file-name)))
     (yaoddmuse-post-file file "EmacsWiki" (or pagename file) summary prefix)))
@@ -1941,8 +1944,7 @@ If URL is `non-nil' return new url concat with ARGS."
                   ("%m" . yaoddmuse-minor)
                   ("%p" . yaoddmuse-password)
                   ("%s" . summary)
-                  ("%x" . text)
-                  ))
+                  ("%x" . text) ))
     (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
       (setq args
             (replace-regexp-in-string
@@ -2036,7 +2038,8 @@ Transform image format to raw text."
 If current is major editor mode, display [Major] at mode-line.
 Otherwise display [Minor] at mode-line."
   ;; Add `yaoddmuse-edit-status' to mode-line.
-  (unless (member 'yaoddmuse-edit-status-string mode-line-format)
+  (when (and (listp mode-line-format)
+             (not (member 'yaoddmuse-edit-status-string mode-line-format)))
     (setq mode-line-format (append mode-line-format
                                    (list 'yaoddmuse-edit-status-string))))
   ;; Update `yaoddmuse-edit-status' along with `yaoddmuse-minor'.
@@ -2056,6 +2059,7 @@ Otherwise display [Minor] at mode-line."
 ;;;; Bug report
 (defvar yaoddmuse-maintainer-mail-address
   (concat "rubiki" "tch@ru" "by-lang.org"))
+
 (defvar yaoddmuse-bug-report-salutation
   "Describe bug below, using a precise recipe.
 
@@ -2068,7 +2072,9 @@ How to send a bug report:
   4) If you got an error, please paste *Backtrace* buffer.
   5) Type C-c C-c to send.
 # If you are a Japanese, please write in Japanese:-)")
+
 (defun yaoddmuse-send-bug-report ()
+  "Send a bug report to yaoddmuse maintainer."
   (interactive)
   (reporter-submit-bug-report
    yaoddmuse-maintainer-mail-address
