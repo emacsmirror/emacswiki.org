@@ -1,14 +1,11 @@
-EPUB
-
 EPUB is a format for digital publications and documents. The W3C standard that described it is at: https://www.w3.org/TR/epub-33/
 
-EPUB is usually referred as an electronic book or ebook. Other formats (possibly privative) are AZW, AZW3, and MOBI. The HTML, PDF, DOC, DOCX, and TXT file types are also used for documents and ebook.
+It is usually referred as an electronic book or ebook. Other formats (possibly privative) are AZW, AZW3, and MOBI. The HTML, PDF, DOC, DOCX, and TXT file types are also used for documents and ebook.
 
-Internally, EBOOK is a zip file with the ".epub" extension. Its contents are XML, HTML/XHTML, CSS, and other embed files such as images, fonts, etc. 
+Internally, EBOOK is a zip file with the ".epub" extension. Its contents are XML, HTML/XHTML, CSS, and other embeded files such as images, fonts, etc. 
 
 == Reading ==
 * DocViewMode
-
 * nov -- "Featureful EPUB reader mode" at MELPA. https://depp.brause.cc/nov.el.git
 
 === Reading and rendering EPUB internal files ===
@@ -32,9 +29,9 @@ As indicated above, EPUB is a zip containing HTML files. The following can be us
 To edit the HTML/XHMTL, CSS, XML internal files: HtmlMode, WebMode, NxhtmlMode, [[CSS]], [[XML]]
 
 == Interoperability ==
-Apart from Emacs, [https://calibre-ebook.com Calibre] is an ebook management program. It provides some terminal programs to process EPUB files: ebook-edit, ebook-viewer, and ebook-convert.
+Apart from Emacs, [https://calibre-ebook.com Calibre] is an ebook management software under the GPLv3-only license. It also provides some programs to process EPUB files: ##ebook-edit##, ##ebook-viewer##, and ##ebook-convert## (terminal). These programs are useful for editing, checking, converting, and viewing.
 
-Libreoffice also can read and export EPUB files. Libreoffice (or depending your distribution, [https://sourceforge.net/projects/libebook/ the libe-book package]), offers the following terminal programs: ebook2html, ebook2text, and ebook2raw.
+Libreoffice can export DOC and ODT documents to EPUB files. It (or depending your distribution, [https://sourceforge.net/projects/libebook/ the libe-book package]), offers the following terminal programs: ##ebook2html##, ##ebook2text##, and ##ebook2raw##.
 
 In Emacs, there are libraries to interact with these or other external programs:
 
