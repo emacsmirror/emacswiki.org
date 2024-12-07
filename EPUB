@@ -1,0 +1,44 @@
+EPUB
+
+EPUB is a format for digital publications and documents. The W3C standard that described it is at: https://www.w3.org/TR/epub-33/
+
+EPUB is usually referred as an electronic book or ebook. Other formats (possibly privative) are AZW, AZW3, and MOBI. The HTML, PDF, DOC, DOCX, and TXT file types are also used for documents and ebook.
+
+Internally, EBOOK is a zip file with the ".epub" extension. Its contents are XML, HTML/XHTML, CSS, and other embed files such as images, fonts, etc. 
+
+== Reading ==
+* DocViewMode
+
+* nov -- "Featureful EPUB reader mode" at MELPA. https://depp.brause.cc/nov.el.git
+
+=== Reading and rendering EPUB internal files ===
+As indicated above, EPUB is a zip containing HTML files. The following can be used to open and render these HTML files:
+
+* [[w3m]] and [[emacs-w3m]] -- Browser program and its Emacs integration. Provides ##M-x w3m-buffer## to render an HTML buffer.
+* [[w3]] --
+* [[eww]] -- Extract the HTML file and open it with ##M-x eww-open-file##.
+* [[Htmlize]] -- 
+* See CategoryHypermedia for more information about HTML renders.
+
+== Notes and highlights ==
+* org-remark -- at GNU ELPA. https://github.com/nobiot/org-remark
+* org-calibre-notes -- "Extract highlights and notes from Calibre" at MELPA. https://github.com/bpanthi977/org-calibre-notes
+
+== Writing and export ==
+
+* ox-epub -- Org mode export to EPUB. https://github.com/ofosos/org-epub
+
+=== Editing EPUB internal files ===
+To edit the HTML/XHMTL, CSS, XML internal files: HtmlMode, WebMode, NxhtmlMode, [[CSS]], [[XML]]
+
+== Interoperability ==
+Apart from Emacs, [https://calibre-ebook.com Calibre] is an ebook management program. It provides some terminal programs to process EPUB files: ebook-edit, ebook-viewer, and ebook-convert.
+
+Libreoffice also can read and export EPUB files. Libreoffice (or depending your distribution, [https://sourceforge.net/projects/libebook/ the libe-book package]), offers the following terminal programs: ebook2html, ebook2text, and ebook2raw.
+
+In Emacs, there are libraries to interact with these or other external programs:
+
+* org-calibre-notes -- "Extract highlights and notes from Calibre" at MELPA. https://github.com/bpanthi977/org-calibre-notes
+
+----
+CategoryWriting
