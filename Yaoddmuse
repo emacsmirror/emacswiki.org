@@ -67,7 +67,8 @@ post.
 
 * To create a new wiki page
 ## Create a new buffer with the name of the page.
-## Set the major mode to Yaoddmuse (##M-x yaoddmuse-mode##) and edit the contents. ## Use C-c C-c to upload.
+## Set the major mode to Yaoddmuse (##M-x yaoddmuse-mode##) and edit the contents.
+## Use C-c C-c to upload.
 : Also, you can post a file with ##M-x yaoddmuse-post-file## or ##M-x yaoddmuse-post-file-default##.
 
 * To view a wiki page:
