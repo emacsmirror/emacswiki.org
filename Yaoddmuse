@@ -65,6 +65,11 @@ using Oddmuse Markup (See TextFormattingRules)
 : That's all.  Yaoddmuse will view your edited page after a successful
 post.
 
+* To create a new wiki page
+## Create a new buffer with the name of the page.
+## Set the major mode to Yaoddmuse (##M-x yaoddmuse-mode##) and edit the contents. ## Use C-c C-c to upload.
+: Also, you can post a file with ##M-x yaoddmuse-post-file## or ##M-x yaoddmuse-post-file-default##.
+
 * To view a wiki page:
 ## M-x yaoddmuse-browse-page-default RET
 ## Input page name that you want view.
