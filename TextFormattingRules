@@ -5,6 +5,43 @@ How do you learn to format Wiki pages?
 * Check how others have done things you want to do (bullets, indentation, whatever): Click '''Edit this page''' at the bottom of a page to see its source code.
 * Use '''Preview''' when you edit, to see the effect of what you write.
 
+[:overview]
+== Overview ==
+
+|| What do you look for?   || Preview                                || How to do it                                             ||
+|| Bold, italic, underline || *bold* /italic/ _underline_            || ##*bold* /italic/ _underline_##                          || 
+|| Escaped or monospaced   || %%escaped%% ##escaped and monospaced## || ##%%*escaped*%%## <code>##escaped and monospaced##</code>||
+|| Source code             || <code>(defvar my-var nil "Yep")</code> || ##{{{ (defvar my-var nil "Yep") }}}##                    ||
+||                         || <code>(defvar my-var nil "Yep")</code> || ##<code>(defvar my-var nil "Yep")</code>##               ||
+||                         || <pre>(defvar my-var nil "Yep")</pre>   || ##<pre>(defvar my-var nil "Yep")</pre>##                 ||
+|| Headers                 ||                                        || ##== header 2 ==## ##=== header 3 ===##                  || 
+|| Variables and keys      || `variable' <kbd>C-x C-s</kbd>          || ##`variable'## ##<kbd>C-x C-s</kbd>##                    ||
+|| Bullet list             || * first                                || ##* first##                                              ||
+||                         ||   * second                             || ##** second##                                            ||
+|| Numbered list           || 1. first                               || <code># first</code>                                     ||
+||                         ||   1. second                            || <code>## second</code>                                   ||
+|| Definition list         ||                                        || ##; Term: Descrition##                                   ||
+|| List indentation        ||                                        || ##: Text##                                               ||
+|| Internal links          || CategoryWriting | [[CategoryWriting]]  || ##CategoryWriting## | ##[[CategoryWriting]]##            || 
+||                         || [[CategoryWriting The writing category]]        || ##[[CategoryWriting The writing category]]##    ||
+|| External links          || [https://emacswiki.org EmacsWiki homepage ]     || ##[https://emacswiki.org EmacsWiki homepage]##  ||
+||                         || https://emacswiki.org | [https://emacswiki.org] || ##https://emacswiki.org## | ##[https://emacswiki.org]##  ||
+|| Prevent link            || !ExamplePage                           || ##!ExamplePage##                                         ||
+|| Anchors                 || [:averyspecialsection]                 || ##[:averyspecialsection]##                               ||
+|| Link to anchors         || [[#averyspecialsection]]               || ##[[#averyspecialsection]]##                             ||
+|| Tables                  ||                                        || Use ##||## to separate columns. Each line is a new row.  ||
+|| External images         ||                                        || ##http://www.emacswiki.org/emacs_logo.png##              ||
+|| Uploaded images         ||                                        || ##[[image:AngryFruitSaladTwo_Screenshot]]##              ||
+|| Rename / Redirect       ||                                        || <code>#REDIRECT ExamplePage</code> or <code>#REDIRECT [[ExamplePage]]</code> ||
+|| Inclusion               ||                                        || ##<include "ExamplePage">##                              ||
+|| Category at endpage     ||                                        || ##----##                                                 ||
+||                         ||                                        || ##CategoryWhereThisPageIsMentioned AnotherCategory##     ||
+|| In-page dialog          ||                                        || ##[new]##                                                ||
+|| Dialog with automatic fill ||                                     || ##[new:poo:2024-12-07 20:45 UTC]##                                              ||
+|| IRC quotes              ||                                        || ##<hybrid> emacs has a text adventure game in it##       ||
+||                         ||                                        || ##<PyroMithrandir> emacs IS a text adventure game##      ||
+
+
 [:basics]
 == Basics ==
 
