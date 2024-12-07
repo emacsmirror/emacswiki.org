@@ -20,7 +20,7 @@ To use filesets, you need to require the filesets library (see [[#FilesetsLibrar
 
 The version of the filesets library, ##filesets.el##, included in Emacs  (1.8.4) is a bit iffy. You can obtain a more recent version (2.2) from the author's Web page: http://members.a1.net/t.link/CompEmacsFilesets.html.
 
-The [[InfoMode|Info]] doc for filesets, Manual:Filesets, is quite poor, unfortunately. Better is the doc at http://members.a1.net/t.link/CompEmacsFilesetsDoc.html.
+The [[InfoMode|Info]] doc for filesets, Manual:Filesets, is quite poor, unfortunately. Better is the doc at http://www.thm.link/a1/CompEmacsFilesetsDoc.html
 
 I (DrewAdams) have had trouble trying to use the more recent version with GnuEmacs, especially wrt byte-compiling. For now, I just use the version included with Emacs (1.8.4).
 
