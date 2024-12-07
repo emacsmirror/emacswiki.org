@@ -28,6 +28,10 @@ Clicking the title heading to search for pages about writing in natural language
 * [[Screenplay]] -- Write a dramatic screenplay.
 * [[FountainMode]] -- Write a movie screenplay or stageplay using the [http://fountain.io Fountain markup format].
 
+=== Digital Book File Types ===
+* [[EPUB]] -- Reading and writing EPUB.
+* [[PDF]] -- Portable Document Format. Reading and writing PDF files.
+
 === Miscellaneous ===
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
 * PredictiveMode -- minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
