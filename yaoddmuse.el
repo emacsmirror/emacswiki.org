@@ -399,7 +399,9 @@
 ;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Change log:
-;; 2024/12/06     ChristianGimenez
+;; 2024/12/07     ChristianGimenez
+;;      * Removing require obsolete cl package. Removing flet usage for `basic-save-buffer' with nil parameter (redefining message can affect hooks).
+;;        Requiring url-http package needed for `url-http-end-of-headers'. The `declare' has no special specification, use `cl-declare'.
 ;;      * Fixing some package-lint, checkdoc, and byte-compile warnings (flycheck is happier).
 ;;        Still, some obsolete functions are used, need fixing!
 ;;      * Support for other values tha list in mode-line-format.  Fixing error in `yaoddmuse-update-edit-status'.
@@ -576,9 +578,11 @@
 ;;
 
 ;;; Require
+(require 'cl-macs) ;; cl-declare
 (require 'sgml-mode)
 (require 'skeleton)
 (require 'url)
+(require 'url-http) ;; url-http-end-of-headers is defined here
 (require 'thingatpt)
 (require 'find-func)
 (require 'dired)
@@ -1097,8 +1101,7 @@ If PREFIX is non-nil, will view page after post successful."
   (set-buffer post-buffer)
   ;; Try to save file before post.
   (when buffer-file-name
-    (flet ((message (&rest args)))
-      (basic-save-buffer)))
+    (basic-save-buffer nil))
   ;; Post page.
   (yaoddmuse-post yaoddmuse-wikiname
                   yaoddmuse-pagename
@@ -1919,7 +1922,7 @@ Otherwise return nil."
   "Decode the coding with retrieve page.
 RETRIEVE-BUFFER-NAME is name of retrieve buffer.
 CODING is coding system for decode."
-  (declare (special url-http-end-of-headers))
+  (cl-declare (special url-http-end-of-headers)) ;; it is defined at url-http
   (with-current-buffer (get-buffer retrieve-buffer-name)
     (insert
      (with-current-buffer yaoddmuse-retrieve-buffer
