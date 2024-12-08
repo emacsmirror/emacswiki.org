@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 29 15:53:30 2024 (-0800)
+;; Last-Updated: Sun Dec  8 10:22:34 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 7542
+;;     Update #: 7544
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -641,6 +641,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/12/08 dadams
+;;     Info-mode-menu: Hide item Info-fontify-extra-function if that var is nil (no function defined for extras).
 ;; 2024/01/29 dadams
 ;;     Info-homoglyph: Fixed typo.  Thx to Anonymous on Emacs Wiki.
 ;; 2023/11/29 dadams
@@ -3815,6 +3817,7 @@ candidates."
       :help "Read custom delimiter chars and set fontifying regexp from them."]
      ["Highlighting Extra" Info-toggle-fontify-extra
       :style toggle :selected Info-fontify-extra-function
+      :visible Info-fontify-extra-function
       :help "Toggle option `Info-fontify-extra-function'"]
      ["Highlighting Visited Nodes" Info-toggle-fontify-visited-nodes
       :style toggle :selected Info-fontify-visited-nodes
