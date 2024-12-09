@@ -1,0 +1,52 @@
+Portable Document Format (PDF) is a digital document format under the ISO 32000 standard. A PDF can contain all possible elements to render a page or several pages, independently of the software or harware used to process it. 
+
+== Reading ==
+* DocViewMode -- Library included in Emacs. Converts document pages into images asynchronously to show them. It is costly and requiers other programs (such as Ghostscript and pdftotext).
+* [[PDFTools]] -- Available in [[MELPA]]. A replacemente of DocView for PDF files. Uses a server to render pages on-demand and stored in memory.
+
+=== Annotations ===
+* [org-noter https://github.com/org-noter/org-noter]  -- Available in [[MELPA]]. Save notes in an external Org files while reading PDF documents.
+** [https://github.com/fuxialexander/org-pdftools org-noter-pdf-tools] -- Integrate org-noter with org-pdftools.
+
+== Writing ==
+Using Emacs to write PDF directly is not a convenient option. It is preferable to write the contents in another format, and then convert it to PDF with a program or a compiler.
+
+The following are viable options to create a PDF document.
+
+=== Org exporters ===
+A way to create a PDF document is to write it in OrgMode and export with the ##M-x org-export-dispatch##. Org documents uses an easy syntax and it is fully supported by Emacs. 
+
+* ox-latex -- Included in Emacs by default. LaTeX and PDF exporter enabled by default (use the org-export-dispatch <kbd>C-c C-e</kbd>). Requires the Texlive (LaTeX) suite installed on your system.
+* ox-beamer -- Export Org files to Beamer presentations in PDF.
+: By default, uses level 1 and 2 headers as section and subsection, level 3 headers are new frames, and level 4 are considered as blocks.
+* ox-pandoc -- Export Org files to several formats, including PDF. In this case, it uses the Pandoc program.
+
+=== Markdown ===
+Writing a document using MarkdownMode, and then converting it to PDF with Pandoc is another possible way. 
+
+== Managing PDF documents ==
+* [https://github.com/atgreen/paperless paperless] -- Sorting and filing PDF documents.
+* [https://codeberg.org/kutuptiyini/elisp bibliothek] -- Managing a digital PDF library.
+
+== Org mode support ==
+* org-inline-pdf -- Previewing PDF files.
+* [https://github.com/fuxialexander/org-pdftools org-pdftools] -- Support links in Org mode for PDFView.
+
+== Converting ==
+Tools and libraries to convert from or to PDF.
+
+* UnPdf -- Convert PDF files to plain text.
+
+== Interoperability ==
+* LaTeX is one of the most used languages to create PDF documents, presentations, and books.
+* Libreoffice can export to PDF files.
+* Pandoc can also convert several formats (such as Markdown, plain text, and others) to PDF.
+
+== Miscelaneous ==
+* [https://github.com/ShuguangSun/diffpdf.el diffpdf] -- Available at MELPA
+* [https://github.com/jeremy-compostella/pdfgrep pdfgrep] -- Available at MELPA
+* [https://github.com/dalanicolai/doc-tools-toc doc-toc] -- Available at MELPA
+* [https://github.com/nicolaisingh/saveplace-pdf-view saveplace-pdf-view] -- Available at MELPA
+
+----
+CategoryWriting
