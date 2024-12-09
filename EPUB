@@ -5,7 +5,7 @@ It is usually referred as an electronic book or ebook. Other formats (possibly p
 Internally, EBOOK is a zip file with the ".epub" extension. Its contents are XML, HTML/XHTML, CSS, and other embeded files such as images, fonts, etc. 
 
 == Reading ==
-* DocViewMode
+* DocViewMode -- Library included with Emacs. It converts document pages into images asynchronously. This is costly, and requires other programs (such as mutool/mupdf for EPUB), but a more portable way.
 * nov -- "Featureful EPUB reader mode" at MELPA. https://depp.brause.cc/nov.el.git
 
 === Reading and rendering EPUB internal files ===
