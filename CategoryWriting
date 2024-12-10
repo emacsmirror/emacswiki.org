@@ -1,6 +1,6 @@
 Clicking the title heading to search for pages about writing in natural languages with Emacs.
 
-=== Dictionary and Thesaurus ===
+== Dictionary and Thesaurus ==
 * DictMode -- also comes as a debian package called dictionary-el 
 * Xemacs' -- dictionary.el is probably different from dictionary-el  See DictMode above. 
 * DictWeb -- provides a possibility to query a dict server
@@ -12,13 +12,13 @@ Clicking the title heading to search for pages about writing in natural language
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
 * ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
 
-=== Text Manipulation ===
+== Text Manipulation ==
 * [[Paragraphs]] -- Editing paragraphs. 
 * [[Sentences]] -- Editing sentences. 
 * TypographicalPunctuationMarks -- Insert ‘smart’ quotes
 * AproposUnicode -- Copy, insert and get help on Unicode characters
 
-=== Notes and Authoring ===
+== Notes and Authoring ==
 * DeftMode -- Quickly browse, filer, and edit directories of plain text notes.
 * PersonalDiary -- Using Emacs to maintain a simple daily journal / personal diary.
 * [[Journal]] -- Using Emacs to maintain a simple daily journal. (not the same as JournalMode)
@@ -28,11 +28,11 @@ Clicking the title heading to search for pages about writing in natural language
 * [[Screenplay]] -- Write a dramatic screenplay.
 * [[FountainMode]] -- Write a movie screenplay or stageplay using the [http://fountain.io Fountain markup format].
 
-=== Digital Book File Types ===
+== Digital Book File Types ==
 * [[EPUB]] -- Reading and writing EPUB.
 * [[PDF]] -- Portable Document Format. Reading and writing PDF files.
 
-=== Miscellaneous ===
+== Miscellaneous ==
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
 * PredictiveMode -- minor mode that tries to predict the rest of the word, and offers you an appropriate completion.
 * PrintingFromEmacs -- Publishing your written work.
