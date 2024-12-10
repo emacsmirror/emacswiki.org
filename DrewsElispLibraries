@@ -2,19 +2,24 @@
 
 
 
-This page describes the Emacs-Lisp libraries by DrewAdams that you can find on the EmacsWiki (at http://www.emacswiki.org/elisp) and how to use them. It includes a brief list of recent changes to the list of files. For information on changes to individual files, see the change logs in the files.
+This page describes the latest Emacs-Lisp libraries by DrewAdams, and how to use them. It includes a brief list of recent changes to the list of files. For information on changes to individual files, see the change logs in the files.
 
-All of my libraries that are on %%EmacsWiki%% are also obtainable from [[http://melpa.milkbox.net/|MELPA]].  What's more, you can be pretty sure that they are untampered with, because their wiki pages are locked except to %%EmacsWiki%% administrators.
+(All of these libraries were also obtainable from [[http://melpa.milkbox.net/|MELPA]]. But MELPA no longer pulls libraries from %%EmacsWiki%%.)
 
+%%EmacsWiki%% libraries are also mirrored on some GIT repositories, by others.  But to be sure to get the latest versions of my libraries, download them from the wiki.
 
+You can be pretty sure that my libraries on the wiki are untampered with, because their pages are locked except to %%EmacsWiki%% administrators.
+
+(This page might not be completely up to date.  I may have added some libraries since I last updated the page.)
+
+Cette page est aussi disponible en franglais ;-) : PackagesElispDeDrew, mais cette page ci est plus a jour.
+
+----
 
 This page has the following sections:
 * '''[[#DrewsLibraries]]''' -- describes the libraries
 * '''[[#HowToUseDrewsLibraries]]''' describes how to use the libraries
 * '''[[#Discussion]]''' -- your feedback and discussion about the libraries
-
-Cette page est aussi disponible en franglais ;-) : PackagesElispDeDrew, mais cette page ci est plus a jour.
-
 
 ----
 
