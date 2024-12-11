@@ -55,6 +55,11 @@ There's a bunch of other functionality available to manipulate terms, notes, the
 
 As we saw above, the bot understands and executes a limited and modified subset of lisp we refer to as **fslisp**, meant to help you control some of the bot's behavior. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
+    <deego> ,fslisp 0 0 
+    <fsbot> fslisp: Meant to help you modify bot's behavior. Is NOT an elisp interpreter, nor is compatible with elisp - please use your own Emacs instead! .. + other notes
+
+
+
 *Building blocks:* You have about 1000 such `fs-' commands available, referred to as **botcommands**. Internally, some botcommands are macros and some are functions. These include some powerful building blocks like `fs-while', `fs-mapcar' and cousins, `fs-eval', `fs-read', `fs-error', `fs-setq' and `fs-makunbound', `fs-apply', `fs-funcall', `fs-quote', `fs-lambda', etc.  
 
 
