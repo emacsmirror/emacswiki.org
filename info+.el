@@ -1,4 +1,4 @@
-;;; info+.el --- Extensions to `info.el'.     -*- coding:utf-8 -*-
+;;; info+.el --- Extensions to `info.el'.     -*- coding:utf-8; lexical-binding:nil -*-
 ;;
 ;; Filename: info+.el
 ;; Description: Extensions to `info.el'.
@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec  8 10:22:34 2024 (-0800)
+;; Last-Updated: Thu Dec 12 12:18:54 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 7544
+;;     Update #: 7556
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -641,6 +641,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/12/12
+;;     Added lexical-binding:nil cookie.
+;;     Require cl-lib when available, else defalias cl-case to case.  Use cl-case everywhere.
+;;     Info-fontify-reference-items: Removed quotes from symbol cases in cl-case.
+;;     Info-mode: Use \\= escaping for backquote and apostrophe.
 ;; 2024/12/08 dadams
 ;;     Info-mode-menu: Hide item Info-fontify-extra-function if that var is nil (no function defined for extras).
 ;; 2024/01/29 dadams
@@ -1317,7 +1322,9 @@
 ;;; Code:
 
 (require 'info)
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile (unless (require 'cl-lib nil t)
+                     (require 'cl) ;; case (plus, for Emacs 20: dolist, pop, push)
+                     (defalias 'cl-case 'case)))
 
 ;; These are optional, for cosmetic purposes.
 (require 'thingatpt nil t) ;; (no error if not found): symbol-at-point
@@ -1463,8 +1470,7 @@ available, checked in list order.")
   `((t (:inherit fixed-pitch
                  ,@(let ((family (catch 'info-fixed-pitch
                                    (dolist (fam  info-good-fixed-pitch-font-families)
-                                     (when (member fam (font-family-list))
-                                       (throw 'info-fixed-pitch fam))))))
+                                     (when (member fam (font-family-list)) (throw 'info-fixed-pitch fam))))))
                      (and family `(:family ,family))))))
   "Fixed-pitch face for Info.
 The default value inherits from face `fixed-pitch'.  And if you have a
@@ -2785,7 +2791,7 @@ is on, and it turns them all on, if any is off:
 (defun info--msg-Info-fontify-glossary-words-now ()
   "Echo current value of `Info-fontify-glossary-words'."
   (message "`Info-fontify-glossary-words': %s"
-           (case Info-fontify-glossary-words
+           (cl-case Info-fontify-glossary-words
              ((nil)                               "OFF - no glossary links")
              (face-till-visit-+-mouseover-def     "Show link until visited.  Show definition on mouseover")
              (face-till-visit-+-NO-mouseover-def  "Show link until visited.  NO definition on mouseover")
@@ -2817,7 +2823,7 @@ This toggles between nil and the last non-nil setting (or
   "Cycle option `Info-fontify-glossary-words' through its possible values."
   (interactive "p")
   (when Info-fontify-glossary-words (setq info-last-non-nil-fontify-glossary-words  Info-fontify-glossary-words))
-  (setq Info-fontify-glossary-words  (case Info-fontify-glossary-words
+  (setq Info-fontify-glossary-words  (cl-case Info-fontify-glossary-words
                                        ((nil)                               'face-till-visit-+-mouseover-def)
                                        (face-till-visit-+-mouseover-def     'face-till-visit-+-NO-mouseover-def)
                                        (face-till-visit-+-NO-mouseover-def  'face-+-mouseover-def)
@@ -2959,12 +2965,12 @@ highlighting.  (`$-' is a regexp that cannot match anything.)"
 The three states are off (nil), multiline (symbol `multiline'), and
 same line (other non-nil value)."
   (interactive "p")
-  (setq Info-fontify-quotations  (case Info-fontify-quotations
+  (setq Info-fontify-quotations  (cl-case Info-fontify-quotations
                                    ((nil)  t)
                                    ((t)    'multiline)
                                    (t      nil)))
   (Info-refontify-current-node)
-  (when msgp (message "`Info-fontify-quotations' is now %s" (case Info-fontify-quotations
+  (when msgp (message "`Info-fontify-quotations' is now %s" (cl-case Info-fontify-quotations
                                                               ((nil)      'OFF)
                                                               (multiline  "on (MULTILINE too)")
                                                               (t          "on (SAME LINE only)")))))
@@ -6311,15 +6317,15 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\(\n          \\(.*\\)\\)*"
                             nil t)
     (let ((symb  (intern (match-string 1))))
       (put-text-property (match-beginning 1) (match-end 1)
-                         'font-lock-face (case symb
-                                           ('Constant:       'info-constant-ref-item)
-                                           ('Command:        'info-command-ref-item)
-                                           ('Function:       'info-function-ref-item)
-                                           ('Macro:          'info-macro-ref-item)
-                                           ('Special\ Form:  'info-special-form-ref-item)
-                                           ('Syntax\ class:  'info-syntax-class-item)
-                                           ('User\ Option:   'info-user-option-ref-item)
-                                           ('Variable:       'info-variable-ref-item)))
+                         'font-lock-face (cl-case symb
+                                           (Constant:       'info-constant-ref-item)
+                                           (Command:        'info-command-ref-item)
+                                           (Function:       'info-function-ref-item)
+                                           (Macro:          'info-macro-ref-item)
+                                           (Special\ Form:  'info-special-form-ref-item)
+                                           (Syntax\ class:  'info-syntax-class-item)
+                                           (User\ Option:   'info-user-option-ref-item)
+                                           (Variable:       'info-variable-ref-item)))
       (put-text-property (match-beginning 2) (match-end 2)
                          'font-lock-face 'info-reference-item)
       (when (match-beginning 4)
@@ -6914,13 +6920,13 @@ in its Menu.
 User options you can customize
 ------------------------------
 `Info-fontify-quotations' -
-  Fontify quoted text (‘...’, `...', “...”) and strings (\"...\").
+  Fontify quoted text (‘...’, \\=`...\\=', “...”) and strings (\"...\").
   Cycle with \\[Info-cycle-fontify-quotations].
 `Info-fontify-angle-bracketed-flag' -
   Fontify angle-bracketd names (<...>).
   Toggle with \\[Info-toggle-fontify-angle-bracketed].
 `Info-fontify-isolated-quote-flag' -
-  Fontify isolated quote and backquote (', `).
+  Fontify isolated quote and backquote (\\=', \\=`).
   Toggle with \\[Info-toggle-fontify-isolated-quote].
 `Info-fontify-glossary-words' -
   Fontify and link glossary words.
@@ -6939,8 +6945,8 @@ Faces you can customize
 `info-string' - Face used for strings (e.g. \"toto\")
 `info-double-quoted-name'
               - Face used for curly double-quoted names (e.g. “toto”)
-`info-quoted-name'  - Face for quoted names (e.g. ‘toto’ or `toto')
-`info-single-quote' - Face used for isolated single-quote (e.g. 'foo)
+`info-quoted-name'  - Face for quoted names (e.g. ‘toto’ or \\=`toto\\=')
+`info-single-quote' - Face used for isolated single-quote (e.g. \\='foo)
 
 These are all of the current Info Mode bindings:
 
