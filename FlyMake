@@ -290,7 +290,7 @@ Note the highlights, and the error message for the current line, shown beneath t
 
 === compile_commands.json : extract the build command from the JSON compilation database ===
 
-Many build systems generate a file named <tt>compilation_commands.json</tt>, that provides the original build command for each source file. This patch overrides the internal function <tt>flymake-get-make-cmdline</tt> to extract the syntax-check command from this database (C/C++ only):
+Many build systems (like CMake) can generate a file named <tt>compilation_commands.json</tt>, that provides the original build command for each source file. The following patch allows extracting the syntax-check command from this database (C/C++ only):
 
 <pre>
    (defun fm--find-build-command (source)
@@ -306,19 +306,14 @@ Many build systems generate a file named <tt>compilation_commands.json</tt>, tha
                                 json-data)))))))
 
    (defun fm--generate-check-command (source)
-     "Build the syntax-check command for SOURCE."
-     (let* ((source (replace-regexp-in-string "_flymake" "" source))
-            (cmd (when source (fm--find-build-command source)))
+     "Build the C/C++ syntax-check command for SOURCE."
+     (let* ((cmd (fm--find-build-command buffer-file-name))
+            (cmd (when cmd (concat cmd " -fsyntax-only")))
             (cmd (when cmd (replace-regexp-in-string " -o [^ ]* " " -o /dev/null " cmd))))
-       cmd))
+       (when cmd (split-string cmd))))
 
-   (defun flymake-get-make-cmdline (source _)
-     "Flymake override: use compile_command.json to build the command line for checking the syntax of SOURCE."
-     (let* ((cmd (fm--generate-check-command source))
-            (ls (when cmd (split-string cmd))))
-       (when ls
-         (list (car ls)
-               (cdr ls)))))
+   (custom-set-variables
+     '(flymake-cc-command 'fm--generate-check-command))
 </pre>
 
 
