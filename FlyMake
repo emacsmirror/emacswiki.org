@@ -305,8 +305,8 @@ Many build systems (like CMake) can generate a file named <tt>compilation_comman
                                       (throw 'found entry)))
                                 json-data)))))))
 
-   (defun fm--generate-check-command (source)
-     "Build the C/C++ syntax-check command for SOURCE."
+   (defun fm--generate-check-command ()
+     "Build the C/C++ syntax-check command for current-buffer."
      (let* ((cmd (fm--find-build-command buffer-file-name))
             (cmd (when cmd (concat cmd " -fsyntax-only")))
             (cmd (when cmd (replace-regexp-in-string " -o [^ ]* " " -o /dev/null " cmd))))
