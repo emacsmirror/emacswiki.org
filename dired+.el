@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.10.20
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 13 13:52:09 2024 (-0800)
+;; Last-Updated: Fri Dec 13 14:03:18 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 13888
+;;     Update #: 13889
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -512,6 +512,11 @@
 ;;  This is `Hide/Show' > `Hide/Show Breadcrumbs Header Line' on the
 ;;  `Dir' menu-bar menu.  (A header line remains at the top of the
 ;;  window - no need to scroll to see it.)
+;;
+;;  Click on an ancestor directory in the breadcrumbs to open Dired
+;;  it.  Click on th current (default) directory in the breadcrumbs to
+;;  revert the buffer.  (Reverting uses the current revert function,
+;;  e.g., reruns the `find' command for a `find' Dired buffer.)
 ;;
 ;;  To show breadcrumbs in all Dired buffers by default do this:
 ;;
