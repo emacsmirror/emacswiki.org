@@ -29,6 +29,9 @@ and dirs that results from some possibly long-lasting command, such as `find-dir
 
 * Lets you use `i' on any directory listed, to include its own listing in the same buffer. The directory need not be in the same directory tree as the main Dired directory (Emacs enhancement request #18421).  `i' on an inserted subdir takes you back to the subdir line in the parent listing (it bounces between the two subdir locations).
 
+* You can show a clickable breadcrumbs header line (`Hide/Show' > `Hide/Show Breadcrumbs Header Line' on the `Dir' menu-bar menu). This stays at the top of the window; no need to scroll to see it. To do this for all Dired buffers use command `diredp-global-breadcrumbs-in-header-line-mode'. Click an ancestor directory in the breadcrumbs to open Dired on it. Click the current (default) directory in the breadcrumbs to
+revert the buffer. (Reverting uses the current revert function, e.g., reruns the `find' command for a `find' Dired buffer.)
+
 * Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
 
 * Provides commands `diredp-add-to-dired-buffer' and `diredp-add-to-dired-buffer-other-window', bound globally to
