@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2024.10.20
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 20 15:33:43 2024 (-0700)
+;; Last-Updated: Fri Dec 13 13:52:09 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 13867
+;;     Update #: 13888
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -507,14 +507,19 @@
 ;;  Other Features
 ;;  --------------
 ;;
-;;  You can optionally add a header line to a Dired buffer using
-;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
-;;  header line remains at the top of the window - no need to scroll
-;;  to see it.)  If you want to show the header line automatically in
-;;  all Dired buffers, you can do this:
+;;  To toggle showing a clickable breadcrumbs header line in a Dired
+;;  buffer, use command `diredp-breadcrumbs-in-header-line-mode'.
+;;  This is `Hide/Show' > `Hide/Show Breadcrumbs Header Line' on the
+;;  `Dir' menu-bar menu.  (A header line remains at the top of the
+;;  window - no need to scroll to see it.)
+;;
+;;  To show breadcrumbs in all Dired buffers by default do this:
 ;;
 ;;    (add-hook 'dired-before-readin-hook
 ;;              'diredp-breadcrumbs-in-header-line-mode)
+;;
+;;  To toggle use of breadcrumbs for all Dired buffers, use command
+;;  `diredp-global-breadcrumbs-in-header-line-mode'.
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
@@ -675,6 +680,7 @@
 ;;    `diredp-find-line-file-other-window',
 ;;    `diredp-flag-auto-save-files-recursive',
 ;;    `diredp-flag-region-files-for-deletion',
+;;    `diredp-global-breadcrumbs-in-header-line-mode',
 ;;    `diredp-grepped-files-other-window', `diredp-grep-this-file',
 ;;    `diredp-hardlink-this-file', `diredp-highlight-autofiles-mode',
 ;;    `diredp-image-dired-comment-file',
@@ -821,9 +827,9 @@
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
-;;    `diredp-fit-one-window-frame',
-;;    `diredp--from-wdired-mode-advice' (Emacs 24+),
-;;    `diredp-full-file-name-less-p', `diredp-full-file-name-more-p',
+;;    `diredp-fit-one-window-frame', `diredp--from-wdired-mode-advice'
+;;    (Emacs 24+), `diredp-full-file-name-less-p',
+;;    `diredp-full-file-name-more-p',
 ;;    `diredp-get-args-for-diredp-marked',
 ;;    `diredp-get-args-for-snapshot-cmd',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
@@ -861,7 +867,8 @@
 ;;    `diredp-sort-arbitrary', `diredp-string-less-p',
 ;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
-;;    `diredp-this-subdir', `diredp--to-wdired-mode-advice' (Emacs 24+),
+;;    `diredp-this-subdir', `diredp--to-wdired-mode-advice' (Emacs
+;;    24+), `diredp--turn-on-breadcrumbs-if-dired' (Emacs 22+),
 ;;    `diredp-untag', `diredp-visit-ignore-regexp',
 ;;    `diredp-y-or-n-files-p'.
 ;;
@@ -1046,6 +1053,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/12/13 dadams
+;;     diredp-set-header-line-breadcrumbs: 
+;; 2024/12/05 dadams
+;;     Added: diredp-(global-)breadcrumbs-in-header-line-mode, diredp--turn-on-breadcrumbs-if-dired.
 ;; 2024/10/20 dadams
 ;;     diredp--(to|from)-wdired-mode-advice: Bug fix - use with-silent-modifications.
 ;; 2024/10/08 dadams
@@ -12004,7 +12015,8 @@ descendant of any directory in the buffer, then put it at the end."
 ;; 2. Do not move to the next subdir.
 ;;
 ;;;###autoload
-(defun diredp-hide-subdir-nomove (arg &optional next) ; Bound to `$', menu `Dir' > `Hide/Show' > `Hide/Show Subdir'
+(defun diredp-hide-subdir-nomove (arg &optional next)
+  ;; Bound to `$', `double-mouse-2', menu `Dir' > `Hide/Show' > `Hide/Show Subdir'
     "Hide or unhide the current directory.
 Unlike `dired-hide-subdir', this does not advance the cursor to the
 next directory header line.
@@ -12470,7 +12482,7 @@ show an image preview, then do so.  Otherwise, show text help."
     "In Dired mode hide details.  Outside Dired, do nothing."
     (when (derived-mode-p 'dired-mode) (dired-hide-details-mode 1)))
 
-  ;; Use `eval' of list so file byte-compiled in Emacs 20 will be OK in later versions.
+  ;; Use `eval' so file byte-compiled in Emacs 20 will be OK in later versions.
   (eval '(define-globalized-minor-mode global-dired-hide-details-mode
           dired-hide-details-mode diredp-hide-details-if-dired))
 
@@ -12651,8 +12663,8 @@ If N = 0 then go to this directory's header line.
 
 If `diredp-wrap-around-flag' is non-nil then wrap around if none is
 found before the buffer end (buffer beginning, if ARG is negative).
-Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is nil, return
-nil.
+Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is non-nil,
+return nil.
 
 Non-nil NO-SKIP means do not move to end of header line, and return
 the position moved to so far."
@@ -14955,9 +14967,19 @@ not `\\[dired-sort-toggle-or-edit]', to sort arbitrary-files list"))))
 
 (when (fboundp 'define-minor-mode)      ; Emacs 22+
 
-  ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
-  ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
-  ;;
+  ;; Users can also do this, as an alternative to using `diredp-global-breadcrumbs-in-header-line-mode'.
+  ;; (add-hook 'dired-before-readin-hook 'diredp-breadcrumbs-in-header-line-mode)
+
+  (defun diredp--turn-on-breadcrumbs-if-dired ()
+    "In Dired mode show breadcrumbs in header line.  Elsewhere, do nothing."
+    (when (derived-mode-p 'dired-mode) (diredp-breadcrumbs-in-header-line-mode 1)))
+
+  ;; Macros `define-globalized-minor-mode' and `define-minor-mode' are not defined in Emacs 20,
+  ;; so in order to be able to byte-compile this file in Emacs 20, prohibit their byte-compiling.
+  ;; Use `eval' so file byte-compiled in Emacs 20 will be OK in later versions.
+  (eval '(define-globalized-minor-mode diredp-global-breadcrumbs-in-header-line-mode
+           diredp-breadcrumbs-in-header-line-mode diredp--turn-on-breadcrumbs-if-dired))
+
   (eval '(define-minor-mode diredp-breadcrumbs-in-header-line-mode
            "Toggle the use of breadcrumbs in Dired header line.
 With arg, show breadcrumbs iff arg is positive."
@@ -14969,47 +14991,48 @@ With arg, show breadcrumbs iff arg is positive."
 
   (defun diredp-set-header-line-breadcrumbs ()
     "Show a header line with clickable breadcrumbs to parent directories."
-    (let ((parent  (diredp-parent-dir default-directory))
-          (dirs    ())
-          (text    ""))
+    (let ((parent           (diredp-parent-dir default-directory))
+          (dirs             ())
+          (text             ""))
       (while parent
         (push parent dirs)
         (setq parent  (diredp-parent-dir parent)))
       (dolist (dir  dirs)
-        (let* ((crumbs-map    (make-sparse-keymap))
-               ;; (menu-map      (make-sparse-keymap "Breadcrumbs in Header Line"))
-               ;; The next three are for showing the root as absolute and the rest as relative.
+        (let* (;; First three are for showing the root as absolute and the rest as relative.
                (rootp         (diredp-root-directory-p dir))
                (parent-rootp  (and (not rootp)  (diredp-root-directory-p (diredp-parent-dir dir))))
-               (rdir          dir))
-          ;; (define-key crumbs-map [header-line mouse-3] menu-map)
+               (rdir          dir)
+               (nonleaf-map   (make-sparse-keymap)))
           (unless rootp (setq rdir  (file-name-nondirectory (directory-file-name dir))))
           (when dir
             (setq rdir  (propertize rdir
-                                    'local-map (progn (define-key crumbs-map [header-line mouse-1]
+                                    'local-map (progn (define-key nonleaf-map [header-line mouse-1]
                                                         `(lambda () (interactive)
                                                            (dired ,dir dired-actual-switches)))
-                                                      (define-key crumbs-map [header-line mouse-2]
+                                                      (define-key nonleaf-map [header-line mouse-2]
                                                         `(lambda () (interactive)
                                                            (dired-other-window ,dir dired-actual-switches)))
-                                                      crumbs-map)
+                                                      nonleaf-map)
                                     'mouse-face 'mode-line-highlight
                                     ;;'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
                                     'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
             (setq text  (concat text (if (or rootp  parent-rootp) " "  " / ") rdir)))))
       (let* ((rootp         (diredp-root-directory-p default-directory))
-             (parent-rootp  (and (not rootp)  (diredp-root-directory-p (diredp-parent-dir default-directory)))))
-        (setq text  (if (diredp-root-directory-p default-directory)
+             (parent-rootp  (and (not rootp)  (diredp-root-directory-p (diredp-parent-dir default-directory))))
+             (leaf-map      (make-sparse-keymap)))
+        (setq text  (if rootp
                         default-directory ; Root directory listing.
                       (concat text
-                              (if (or rootp  parent-rootp) " "  " / ")
-                              (file-name-nondirectory (directory-file-name default-directory)))))
+                              (if parent-rootp " "  " / ")
+                              (propertize
+                               (file-name-nondirectory (directory-file-name default-directory))
+                               'local-map (progn (define-key leaf-map [header-line mouse-1] #'revert-buffer)
+                                                 (define-key leaf-map [header-line mouse-2] #'revert-buffer)
+                                                 leaf-map)
+                               'mouse-face 'mode-line-highlight
+                               'help-echo "mouse-1, mouse-2: Revert"))))
         (make-local-variable 'header-line-format)
         (setq header-line-format  text))))
-
-  ;; Users can do this.
-  ;;
-  ;; (add-hook 'dired-before-readin-hook 'diredp-breadcrumbs-in-header-line-mode)
 
   )
 
@@ -17311,6 +17334,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map (kbd "@ M-x") 'diredp-do-command-in-marked)              ; `@ M-x'
 (define-key dired-mode-map (kbd "@ M-:") 'diredp-do-eval-in-marked)                 ; `@ M-:'
 (define-key dired-mode-map "$"       'diredp-hide-subdir-nomove)                    ; `$'
+(define-key dired-mode-map [double-mouse-2] 'diredp-hide-subdir-nomove)             ; `double-mouse-2'
 (define-key dired-mode-map "\M-$"    'dired-hide-subdir)                            ; `M-$'
 (define-key dired-mode-map "="       'diredp-ediff)                                 ; `='
 ;; This replaces the `dired-x.el' binding of `dired-mark-extension'.
