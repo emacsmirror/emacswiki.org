@@ -15,6 +15,29 @@ Eshell is a shell that has its own syntax, but it can also run elisp code. It's 
 * Lines that begin with ##>## are Eshell *outputs*
 * List keybindings with ##C-h m##.
 
+== Features ==
+Eshell has several features implemented by default:
+
+* Eshell scripts and batch files.
+* Aliases
+* Built-in commands.
+: The ordinary Lisp functions that starts with `eshell/'. For instance, when calling `ls' in Eshell, it is calling the `eshell/ls' Elisp function. In other words, you can create your own built-in functions!
+* Elisp functions call (with and without parenthesis).
+: You can call any Elisp function from Eshell!
+* Program functions call as any other shell.
+* Completion (see EshellCompletion).
+* Expansion.
+** Environment variable expansion.
+** Elisp variable expansion.
+* I/O pipes.
+* I/O redirections to files, and buffers.
+: You can use {{{ command >> #<BUFFER NAME> }}} to send the output to a buffer.
+* History (see EshellHistory and EshellDirectoryHistory)
+* Remote access with `cd' and TramP-like syntax.
+* Control flow statements such as if-else, unless-else, while, until, and for-in.
+
+And many other features!
+
 == Aliases ==
 
 You can create an alias (a short nickname for a longer command) in Eshell with the ##alias## command (##alias## on its own lists your aliases):
