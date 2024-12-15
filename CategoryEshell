@@ -48,13 +48,8 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 * EshellRedirection -- redirecting to files, to buffers and to the clipboard
 * EshellMultipleEshellBuffers -- Makes having multiple eshells open/cycling between them easier
 * EshellNavigation
-
-
-
-
-
-
-
+* [https://github.com/dieggsy/esh-autosuggest esh-autosuggest] Fish-like autosuggestion.
+* [https://github.com/LemonBreezes/emacs-fish-completion emacs-fish-completion] Fish completion for Emacs and Eshell.
 
 == External Links ==
 
@@ -66,6 +61,11 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 * [http://www.howardism.org/Technical/Emacs/eshell-present.html Presenting Eshell]
 * [https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/ Eshell is my main shell
 * [http://oneliner-elisp.sourceforge.net/ OneLiner] - Integrate the UNIX shell with Emacs
+
+=== External Articles ===
+* [https://famme.sk/blog/how-about-eshell.html BASH, ZSH, FISH. How about Eshell?] by !TritonFamme
+* [https://www.reddit.com/r/emacs/comments/dl7fez/going_from_fish_to_eshell/  Going from fish to eshell?] A reddit thread.
+
 
 ----
 CategoryShell
