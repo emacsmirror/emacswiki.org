@@ -1,3 +1,17 @@
+Eshell completion can be activated inline by usual with <kbd>TAB</kbd>, and <kbd>M-TAB</kbd>. Also, pcomplete is available with <kbd>C-c TAB</kbd> and it shows a separate side-buffer with all completions listed.
+
+Other completion libraries can also be used. For instace, CompanyMode (and CompanyBox) provides an inline suggestion and completion; fish-completion adds completing strings from the Fish shell; and [https://github.com/dieggsy/esh-autosuggest esh-autosuggest] provides inline suggestions as gray text of the first completing string found.
+
+The default Eshell library to provide completion is the em-cmpl.el. It defines the `eshell-cmp-mode' minor mode with the following keymaps:
+
+|| <kbd>TAB</kbd>     || completion-at-point           ||
+|| <kbd>backtab</kbd> || pcomplete-reverse             ||
+|| <kbd>C-c TAB</kbd> || pcomplete-expand-and-complete ||
+|| <kbd>C-c SPC</kbd> || pcomplete-expand              ||                                                      
+|| <kbd>C-M-i</kbd>   || eshell-complete-lisp-symbol   ||
+|| <kbd>M-?</kbd>     || completion-help-at-point      ||
+|| <kbd>C-c M-h</kbd> || eshell-completion-help        ||
+
 == Customization ==
 
 Eshell offers you completion of filenames.  If several filenames are
