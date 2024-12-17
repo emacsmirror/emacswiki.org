@@ -65,6 +65,10 @@ Yes, there is no recursive parsing of the link text.
 
 == General Issues ==
 
+=== thingatpoint+.el empty apart from comments ===
+[https://www.emacswiki.org/emacs/thingatpt%2b.el thingatpt+.el] is empty apart from comments. I'm not sure if this is intentional, but it did throw an error on Emacs startup after I updated my EmacsWiki packages.
+
+
 === MeatBall links lead to a spam site now. ===
 
 It looks like usemod dot com domain has expired. Some of the MeatBall links now end up on spam sites eg: AppropriateMedia
