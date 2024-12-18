@@ -68,6 +68,9 @@ Yes, there is no recursive parsing of the link text.
 === thingatpoint+.el empty apart from comments ===
 [https://www.emacswiki.org/emacs/thingatpt%2b.el thingatpt+.el] is empty apart from comments. I'm not sure if this is intentional, but it did throw an error on Emacs startup after I updated my EmacsWiki packages.
 
+[new:DrewAdams:2024-12-18 20:31 UTC]
+It seems to have been a problem with the upload. I should have double-checked that it uploaded OK. Looks OK now, so I'm deleting this problem entry. Thanks for reporting it.
+
 
 === MeatBall links lead to a spam site now. ===
 
