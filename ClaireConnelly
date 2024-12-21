@@ -1,22 +1,10 @@
-I use GNU Emacs, mostly on GNU/Linux (Debian and Red Hat).
+I started using Emacs back in 1990, after getting a working terminal program on our Apple //e (taking over from using {{{ prompter }}} (MH) and {{{ ex }}}).
 
-I've tried XEmacs, but something about it puts me off.  I've never quite been able to put my finger on it.  I still think there are some cool things in XEmacs that I'd like to see in GNU Emacs.
+These days I use GNU Emacs, often built from Git, mostly on macOS and GNU/Linux (Debian, CentOS, Fedora), although for some reason I recently bought a ThinkPad dual-booting Windows and Linux, so now I can try to wrangle a configuration that works on all three platforms!
 
-I'm especially looking forward to a really usable Emacs for Mac OS X.  Ideally, it would be Cocoa rather than Carbon, and would behave just slightly more like other Mac OS X applications.  (I generally hate Mac OS editors -- my old favorite was Alpha, in the absence of Emacs.)
+I was a Debian developer for several years (back when I was running Debian on a PowerPC Mac clone), but dropped out after my then-new sysadmin job ate my life.  (I'm kind of retired now.)
 
-: Welcome to the wiki.  Isn't there a native port of Emacs using Cocoa?
-There are tons of links on EmacsForMacOS, including a link to a version 20.7
-built with Cocoa (or so the text claims). -- AlexSchroeder
-
-: Yea, JorgenSchaefer actually used it for quite a while (months) before giving up his powerbook. -- DougAlcorn
-
-: Just to get this right - JorgenSchaefer used a Dual G4 Mac with Mac OS X at work for a while (months). Then I changed the job. :) I used the version from http://www.porkrind.org/emacs/, but that's pretty outdated (2002) by now. -- JorgenSchaefer
-
-: Emacs from CVS works well on OS X.  I've been using it since last summer. -- anon
-
-: Looks like you should try our AquamacsEmacs -- DavidReitter
-
-I've mostly been using <nowiki>SubEthaEdit</nowiki> for HTML and CSS and <nowiki>TeXShop</nowiki> for minor LaTeX editing, but I've just built a new CVS Emacs and it looks really great. (It also looks like it handles PDFTeX and display pretty similarly to <nowiki>TeXShop</nowiki>, which is very cool.)  I added some information about building it for <nowiki>DarwinPorts</nowiki> to the EmacsForMacOS page.  Now all I have to do is port my .emacs over....  --ClaireConnelly
+(Thanks to the folks who suggested alternatives for Mac OS X back when GNU Emacs wasn't quite working for me; I actually tried several of them before going back to GNU Emacs, and I installed Aquamacs for my users for many years.)
 
 ----
 CategoryHomepage
