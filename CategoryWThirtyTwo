@@ -30,12 +30,12 @@ https://www.gnu.org/software/emacs/download.html#windows
 ** Extensive library support including !ImageMagick, Pdf-Tools, and !GnuTLS.
 ** //addpm// modified to not create/update any registry HOME entries. It only creates shortcuts as it should.
 \\\\
-* /Emacs Modified for Windows/ --https://vigou3.gitlab.io/emacs-modified-windows/
-** Stock Emacs with a few modifications for R users. Currently offering version 26.2
-** Includes an installer, AUCTeX, ESS and image libraries.
+* /Emacs Modified for Windows/ --https://emacs-modified.gitlab.io/
+** Stock Emacs with a few modifications for R users. Currently offering version 29.4
+** Includes an installer, AUCTeX, ESS, Hunspell, image libraries, and a starter configuration.
 \\\\
 * /Emacs-w64/  -- http://emacsbinw64.sourceforge.net/
-** As of August 2018, seems to be abandoned: latest snapshot is from 2015, latest release is 25.3.
+** As of August 2018, seems to be abandoned: latest snapshot is from 2015, latest release is 25.3.  (Last update on Sourceforge is from 2017-09-12.)
 ** Unmodified source code very similar to GNU release, but compiled with optimization.
 ** Offers snapshots and pretests as well as full releases.
 
