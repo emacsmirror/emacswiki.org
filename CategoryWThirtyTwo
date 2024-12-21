@@ -17,7 +17,7 @@ https://www.gnu.org/software/emacs/download.html#windows
 === Unofficial Releases ===
 
 * /RHO Emacs/ -- https://gchristensen.github.io/rho-emacs/
-** ρEmacs is a preconfigured distribution of GNU Emacs editor for Microsoft Windows. It offers some enhancements over the standard Emacs experience and targets several Windows-specific issues. Currently offering version 27.2.
+** ρEmacs is a preconfigured distribution of GNU Emacs editor for Microsoft Windows. It offers some enhancements over the standard Emacs experience and targets several Windows-specific issues. Currently offering version 29.4.
 ** Responsive to problem reports. [https://github.com/GChristensen/rho-emacs/issues/5 Issue with M-x grep] in v1.0.2 turned around in a couple of hours.
 \\\\
 * /Unofficial Pretests/ -- https://corwin.bru.st
