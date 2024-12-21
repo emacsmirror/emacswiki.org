@@ -1,4 +1,4 @@
-I started using Emacs back in 1990, after getting a working terminal program on our Apple //e (taking over from using {{{ prompter }}} (MH) and {{{ ex }}}).
+I started using Emacs back in 1990, after finally getting a working terminal program on our Apple //e (taking over from using ##prompter## (MH) and ##ex##).
 
 These days I use GNU Emacs, often built from Git, mostly on macOS and GNU/Linux (Debian, CentOS, Fedora), although for some reason I recently bought a ThinkPad dual-booting Windows and Linux, so now I can try to wrangle a configuration that works on all three platforms!
 
