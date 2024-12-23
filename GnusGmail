@@ -259,8 +259,13 @@ The ##mail## directory here is optional and can be named differently, or you can
 ===Archiving mails===
 What is the equivalent Gnus command to the "Archive" button? (Remove from "Inbox" and stay in "All mail")
 
-[new:IainDalton:2008-09-07 04:28 UTC]
-Remove the "Inbox" tag by deleting from the "INBOX" folder with ##B DEL##.
+You can remove the "Inbox" tag by deleting from the "INBOX" folder with ##B DEL##.
+
+However, because ##B DEL## is applied immediately, reading a message and then "archiving" it will not mark it as read. When Gnus applies changes on exiting the group, the message no longer exists from its point of view, and so the read status is not applied.
+
+To untag messages while keeping them read, you can use some form of expiry.  My approach, at least for "triage" folders such as ##INBOX##, is to set ##nnmail-expiry-wait## to ##immediate## and use ##E## (##gnus-expirable-mark##) to untag messages. Gnus will then correctly mark the message as read on the server before deleting it.
+
+See below for more on expiring messages.
 
 ===Deleting mails===
 How can you delete a mail in Gnus so that it disappears from your Inbox in Gmail and goes to Trash?
