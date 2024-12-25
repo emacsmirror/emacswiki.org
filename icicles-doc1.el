@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Mar 25 07:55:16 2023 (-0700)
+;; Last-Updated: Wed Dec 25 10:47:25 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 28682
+;;     Update #: 28684
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8225,7 +8225,7 @@
 ;;  By default, Icicles (apropos-)matches regexps, but you can use
 ;;  `\b' in a regexp to perform word matching, and you can use `C-`'
 ;;  (`icicle-toggle-regexp-quote') to perform exact (literal)
-;;  matching.  See (@> "What About Special-Character Conflicts?").
+;;  matching.  See (@> "Special Characters in Input Patterns").
 ;;
 ;;(@* "AND Matching and OR Matching")
 ;;  ** AND Matching and OR Matching **
@@ -8621,7 +8621,7 @@
 ;;  (all of the commands mentioned in this section) let you use
 ;;  globbing wildcards.  Remember also that file-name globbing, with
 ;;  its special wildcards, has nothing to do with regexp completion
-;;  matching.  See (@> "What About Special-Character Conflicts?") for
+;;  matching.  See (@> "Special Characters in Input Patterns") for
 ;;  more information about file-name globbing.
 ;;
 ;;(@* "Icicles Commands that Read File Names")
