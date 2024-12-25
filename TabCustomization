@@ -1,0 +1,100 @@
+== Overview ==
+
+By default and history TAB character used for indentation and for autocompletion. Tab character is
+ simpliest approach to implement indentation.
+- most modes have set <code>(setq-local indent-tabs-mode nil)</code>, which means spaces used instead of TAB
+  character \t
+- to set tab lengh use: <code>(setq tab-width 4)</code>
+
+Major modes use mode specific variables that refer to tab-width:
+
+    (defvaralias 'c-basic-offset 'tab-width)
+    (defvaralias 'cperl-indent-level 'tab-width)
+
+Emacs uses #'indent-for-tab-command function to insert “\t”, indent or autocomplete for
+ TAB key.
+
+“indent-for-tab-command” call's chain:
+# calls #'indent-region if region
+# calls insert-tab if tab-always-indent is none and cursor not at the begining of line.
+# calls #'indent-line-function
+# calls (completion-at-point) - always called. Regulated by “tab-first-completion” variable
+
+calls #'indent-line-function
+** if fails calls: indent--default-inside-comment - if 'noindent was returned
+** if fails calls: (default-value 'indent-line-function) - if 'noindent was returned and nil from #'indent--default-inside-comment
+
+tab-always-indent variable
+- t - indents the current line
+- nil - insert TAB/space if not at left margin - uses “indent-tabs-mode” variable to control TAB/Space - in indent-for-tab-command
+- complete - tries to indent the current line, and if the line was already indented, then try (completion-at-point)
+
+tab-first-completion - condition to complete
+- nil (default) - complete
+- eol - Only complete at the end of a line
+- word - complete unless the next character has word syntax (according to `syntax-after')
+- word-or-paren - Unless at a word or parenthesis
+- word-or-paren-or-punct - Unless at a word, parenthesis, or punctuation.
+
+#'indent-line-function may be:
+- #'indent-relative
+- #'indent-relative-first-indent-point
+- #'indent-to-left-margin - Fundamental Mode, Text Mode, etc.
+
+#'indent-line-function should return #'noindent if no success
+
+== TAB in Org binded to “org-cycle” ==
+
+It's call chain:
+# if org-cycle-tab-first-hook return a non-nil value, stopping execution if so.
+# attempts CDLaTeX TAB completion if applicable.
+# checks the element at the point and attempts Toggle visibility, action inside tables, cycle at items using org-cycle-internal-local.
+# if buffer read only go back to heading
+# call org-tab-after-check-for-cycling-hook and org-tab-before-tab-emulation-hook until success.
+# if org-cycle-emulate-tab set, calls <code>(call-interactively (global-key-binding (kbd "TAB")))</code>
+# if all else fails, execute: <code>(org-back-to-heading)</code> and <code>(org-cycle)</code>
+
+To prevent last step we should set one of the hook and return not nil. For ex. <code>(add-hook 'org-tab-before-tab-emulation-hook 't)</code>
+
+== Customizing indentation ==
+For now TAB works: indentation then completion.
+- to modify indentation: rebind indent-line-function
+- to modify completion: do it at to the end of your replacement for indent-line-function
+
+Steps
+# rebind #'indent-line-function by (setq-local indent-line-function #'my/indent) in hook for mode.
+# ensure that function return 'noindent label if it fails to continue chain of calls. see [[indent-for-tab-command-chain]]
+# There is two types of region indentation “line by line” and “all as first” (for this you should write own function and set it to indent-region-function variable.
+# configure completion at the end of your #'my/indent
+# decide what (completion-at-point) should do, set tab-first-completion variable
+# Answer is “line by line” for #'indent-region is enough? If not, setq-local indent-region-function.
+
+=== Template for major mode ===
+
+    (defun my/indent ()
+      "return 'noindent if it fails."
+      (if condition
+          (when (not (eq do-something success))
+            'noindent)
+          ;; else - fallback to default-indentation
+          'noindent))
+
+===  Template for minor mode ===
+If you modify TAB for minor mode you probably want to just add behavior and don't modify major mode TAB key behavior.
+
+To make so you should save indent-line-function to local variable. Here is template:
+
+    (defvar my/indent-line-function-original)
+    
+    (defun my/minor-tab ()
+      (if condition
+          (your-minor-mode-indentation)
+        ;; else
+        (indent--funcall-widened my/indent-line-function-original)
+        ))
+    
+    (defun my/some-mode-hook ()
+      (setq-local my/indent-line-function-original indent-line-function)
+      (setq-local indent-line-function #'my/minor-tab))
+    
+    (add-hook 'some-minor-mode-hook 'my/some-mode-hook)
