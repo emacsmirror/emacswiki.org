@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jun 26 13:10:30 2022 (-0700)
+;; Last-Updated: Wed Dec 25 10:40:27 2024 (-0800)
 ;;           By: dradams
-;;     Update #: 30084
+;;     Update #: 30087
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6843,13 +6843,13 @@
 ;;    you use `C-x 4 f *.el RET', then all files with suffix `el' will
 ;;    be opened.  Regexp matching is used only for apropos (not
 ;;    prefix) completion and cycling.  See
-;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
+;;    (@file :file-name "icicles-doc1.el" :to "Special Characters in Input Patterns").
 ;;
 ;;  * You can use `$' for both environment variables and as a regexp
 ;;    special character.  For example, you can use a pattern such as
 ;;    `$HOME.*t$' to match the files in your home directory (`$HOME')
 ;;    whose names end in `t'.  See
-;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
+;;    (@file :file-name "icicles-doc1.el" :to "Special Characters in Input Patterns").
 ;;
 ;;  * Starting with Emacs 23, you can complete environment variables
 ;;    during file-name completion, using `TAB'.  So you can, for
@@ -6865,7 +6865,7 @@
 ;;    appear as completion candidates with a trailing slash (`/'), and
 ;;    slash (`/') is about the only non word-syntax character that is
 ;;    likely to appear in file-name completions.  See
-;;    (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?").
+;;    (@file :file-name "icicles-doc1.el" :to "Special Characters in Input Patterns").
 ;;
 ;;  * You can use library `ffap.el' with Icicles, if you like, to pick
 ;;    up the file, directory, or URL name under the cursor.  All
@@ -7415,7 +7415,7 @@
 ;;  typing `C-q' to quote them.
 ;;
 ;;    `?'   - see also
-;;            (@file :file-name "icicles-doc1.el" :to "What About Special-Character Conflicts?")
+;;            (@file :file-name "icicles-doc1.el" :to "Special Characters in Input Patterns")
 ;;
 ;;    `SPC' (space)
 ;;
