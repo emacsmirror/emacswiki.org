@@ -1,25 +1,16 @@
 Don't confuse the program <code>msmtp</code> with the ability to use [[MultipleSMTPAccounts]] in Gnus.
 
 == Basic Setup ==
-Here's a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
+=== Requirements ===
+* No Gnus: v0.6+
+* GNU Emacs: 21.3+
+* msmtp: 1.4.9+
+* Platform: Windows or *nix
+
+=== msmtprc ===
+Configure <tt>msmtprc</tt> according to your mail server's requirements (<tt>msmtp --version</tt> will display the location of the configuration file).
 
 <pre>
-No Gnus v0.6 or higher
-GNU Emacs 21.3 or higher
-msmtp version 1.4.9 or higher
-</pre>
-
-The details above can be got by 
-<pre>
-1.	M-x gnus-version in Emacs 
-2.	M-x emacs-version in emacs 
-3.	msmtp --version at the command prompt 
-</pre>
-
-Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp --version</tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
-
-<pre>
-########################
 account anderson
 host smtp.gmail.com
 tls on
@@ -28,8 +19,6 @@ user sivaram.notthere@gmail.com
 password XXXXXXX
 port 587
 
-logfile c:\msmtplog.txt
-########################
 account neo
 host smtp.gmail.com
 tls on
@@ -37,10 +26,9 @@ auth on
 user sivaram.anotherguy@gmail.com
 password XXXXXXX
 port 587
-logfile c:\msmtplog.txt
-########################
 </pre>
 
+=== Emacs ===
 Attention: As in version 1.4.31 of msmtp, there is no need to fiddle with `message-sendmail-extra-arguments'.  Inside your msmtprc file, add the `from' command to each account. msmtp will match the `from' value against the `From: ' field of the e-mail header (only the address).
 
 I have found an alternate way to allow msmtp to determine from the
