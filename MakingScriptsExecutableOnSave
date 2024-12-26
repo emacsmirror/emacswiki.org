@@ -19,14 +19,14 @@ To avoid having to remember to do chmod u+x to set FileModes after saving a perl
 	       (goto-char (point-min))
 	       ;; Always checks every pattern even after
 	       ;; match.  Inefficient but easy.
-	       (dolist (my-shebang-pat my-shebang-patterns)
-	         (if (looking-at my-shebang-pat)
-		     (if (= (shell-command  
-			     (concat "chmod u+x " (buffer-file-name)))
-			    0)
-		         (message (concat 
-			           "Wrote and made executable " 
-			           (buffer-file-name))))))))
+	       (dolist (my-shebang-pattern my-shebang-patterns)
+                 (if (and (looking-at my-shebang-pattern)
+                          (= (shell-command
+                              (concat "chmod u+x \"" (buffer-file-name) "\""))
+                           0))
+                     (message (concat
+                               "Wrote and made executable "
+                               (buffer-file-name)))))))
          ;; This puts message in *Message* twice, but minibuffer output
          ;; looks better.
          (message (concat "Wrote " (buffer-file-name))))))
