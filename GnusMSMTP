@@ -112,37 +112,6 @@ The variable <tt>message-sendmail-extra-arguments</tt> decides which <tt>msmtp</
 
 Thanks to ssSslang on <b>gnu.emacs.gnus</b> who requested for <tt>message-sendmail-extra-arguments</tt> to handle multiple accounts of <tt> msmtp </tt>
 
--- Updated: 4/18/2008 (blbrown): To the original post, I couldn't get msmtp and gnus to work properly.  It kept returning an exit value 78 error.  I went to the msmtp documentation and made sure I could send a message directly from the command line with msmtp.  I would make sure that works first.  Also, here is my ~/__DOT__msmtprc file.
-<pre>
-##################
-defaults
-tls on
-tls_starttls on
-
-account default
-host smtp.gmail.com
-domain smtp.gmail.com
-tls on
-tls_starttls on
-auth on
-user USER@gmail.com
-from USER@gmail.com
-password PASSWORD
-port 587
-logfile /home/USER/msmtplog.txt
-##################
-</pre>
-msmtp complains about the 'default' account settings, so if you receive a generic error while running with emacs; go to the command-line and if see if you receive more verbose error messages.  Also, recheck your rc file.
-
-
-<pre>
-Above configuration tested with:
-OS: Ubuntu Linux 7.10
-Emacs: 22.1.1 x86
-msmtp version 1.4.14
-TLS/SSL library: OpenSSL
-</pre>
-
 <b>Note that tls_cert_check = off makes you susceptible to man-in-the-middle attacks</b>. The correct thing to do is to download the appropriate SSL certificates and configure them as describe in the msmtp man page.
 
 == Yet Another Gnus/MSMTP Setting for Easy Multi-SMTP Sending ==
