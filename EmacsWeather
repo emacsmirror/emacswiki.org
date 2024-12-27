@@ -10,7 +10,7 @@ Interfacing to weather services on the net:
 * [https://github.com/aaron-em/weatherline-mode.el/tree/1.0 weatherline-mode.el] Highly customizable display of current weather in your mode line, using CC-BY-SA 2.0 data from openweathermap.org
 * [https://github.com/hillwithsmallfields/JCGS-emacs/blob/master/information-management/metoffice.el metoffice.el] Fetch and parse data from the UK Government's Meteorological Office, returning alists
 * [https://github.com/bcbcarl/emacs-wttrin emacs-wttrin] An interface to [http://wttr.in/ http://wttr.in]
-* [https://github.com/thomp/noaa noaa] View the NOAA forecast for a given location
+* [https://codeberg.org/thomp/noaa noaa] View the NOAA forecast for a given location
 
 There is also a WThreeM w3m-search-engine-alist on WThreeMSearch for weather.com.
 
