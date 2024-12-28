@@ -94,7 +94,9 @@ To make so you should save indent-line-function to local variable. Here is templ
         ))
     
     (defun my/some-mode-hook ()
-      (setq-local my/indent-line-function-original indent-line-function)
-      (setq-local indent-line-function #'my/minor-tab))
+      (if some-mode
+        (setq-local my/indent-line-function-original indent-line-function)
+       ;; else
+       (setq-local indent-line-function #'my/minor-tab)))
     
     (add-hook 'some-minor-mode-hook 'my/some-mode-hook)
