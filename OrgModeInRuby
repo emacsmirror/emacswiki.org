@@ -1,0 +1,96 @@
+The following are gems (libraries) in Ruby to parse and process Org-mode files:
+
+* [https://rubygems.org/gems/org_mode org_mode]
+* [https://rubygems.org/gems/org-ruby org-ruby]: Parses line by line. Specifically created to export to HTML and Markdown from Ruby.
+
+== Using org-ruby ==
+
+=== Making a tree from org-ruby results ===
+
+<pre>
+# frozen_string_literal: true
+
+require 'org-ruby'
+
+# A simple Tree class
+class Tree
+  def initialize(parent, data)
+    @parent = parent
+    @data = data
+    @children = []
+  end
+
+  attr_reader :parent
+  attr_accessor :data, :children
+
+  def add_child(data)
+    t = Tree.new self, data
+    @children.push t
+    t
+  end
+
+  def level
+    return 0 if @parent.nil? # is the root!
+
+    @parent.level + 1
+  end
+
+  def depth_first(level, &block)
+    block.call level, @data unless @data.nil?
+    @children.each do |child|
+      child.depth_first level + 1, &block
+    end
+    nil
+  end
+end
+
+# Make a Tree instance from an org file.
+#
+# @param path [String] The Org file path.
+#
+# @return A Tree instance.
+def maketree_org(path)
+  p = Orgmode::Parser.load path
+
+  curtree = Tree.new nil, nil
+  maintree = curtree
+  p.headlines.each do |headline|
+    if headline.level > curtree.level
+      # Case:
+      # * You were here
+      # ** you are here now
+      curtree = curtree.add_child headline
+    else
+      (curtree.level - headline.level + 1).times do
+        # Go to the parent as many times the difference in level up.
+        # Case:
+        # *** You were here
+        # *** This is a sibling, you are here now
+        # Or case:
+        # *** you were here
+        # * you are here now
+        curtree = curtree.parent
+      end
+
+      curtree = curtree.add_child headline
+    end
+  end
+
+  maintree
+end
+
+# Print the tree headlines.
+#
+# @param tree [Tree] A Tree instance to go through.
+def print_tree(tree)
+  tree.depth_first 0 do |level, data|
+    # This block is executed on each node.
+    # Data is a Orgmode::Headline instance.
+    puts ('  ' * level) + data.to_s
+    data.body_lines[1..].each do |line|
+      puts ('  ' * level) + line.to_s
+    end
+  end
+end
+</pre>
+
