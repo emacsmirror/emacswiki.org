@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 12 12:18:54 2024 (-0800)
+;; Last-Updated: Tue Jan  7 20:29:39 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 7556
+;;     Update #: 7560
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -641,6 +641,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/01/07 dadams
+;;     info-display-manual: If manual not yet shown then use a new buffer name: *info*<N> (Emacs 30).
 ;; 2024/12/12
 ;;     Added lexical-binding:nil cookie.
 ;;     Require cl-lib when available, else defalias cl-case to case.  Use cl-case everywhere.
@@ -7067,9 +7069,17 @@ currently visited manuals."
           (setq found  buffer
                 blist  ()))))
     (if found
-        (Info--pop-to-buffer-same-window found)
+        (let ((window  (get-buffer-window found t)))
+          (if (not window)
+              (if (fboundp 'info-pop-to-buffer)
+                  (info-pop-to-buffer nil found) ; Emacs 30+
+                (Info--pop-to-buffer-same-window found))
+            (raise-frame (window-frame window)) ; Use window already showing buffer, rasing frame.
+            (select-frame-set-input-focus (window-frame window))
+            (select-window window)))
+      ;; The buffer doesn't exist; create it.
       (info-initialize)
-      (info (Info-find-file manual)))))
+      (info (Info-find-file manual) (generate-new-buffer-name "*info*")))))
 
 ;; Emacs 27+ removed `Info-edit-mode'.  Restore it.
 ;;
