@@ -4,13 +4,13 @@
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2025, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:23:21 2018 (-0800)
+;; Last-Updated: Wed Jan  8 11:11:44 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 228
+;;     Update #: 282
 ;; URL: https://www.emacswiki.org/emacs/download/pp-c-l.el
 ;; Doc URL: https://emacswiki.org/emacs/PrettyControlL
 ;; Keywords: display, convenience, faces
@@ -112,6 +112,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 
+;; Quiet the byte-compiler
+
+(defvar pretty-control-l-mode)
+
+
 ;; Convenience function suggested by Kim Storm to emacs-devel@gnu.org, in response to
 ;; my email 2007-02-05, subject: "cannot understand Elisp manual node Glyphs".
 ;; Added to Emacs as `make-glyph-code' starting with Emacs 23.
@@ -150,7 +155,7 @@ Don't forget to mention your Emacs and library versions."))
       '((((type x w32 mac graphic) (class color))
          (:foreground "Blue" :background "DarkSeaGreen1"))
         (t (:inverse-video t))))
-  "*Face used to highlight `pp^L-^L-vector'."
+  "*Face used to highlight display-table entry for Control-l (`^L') char."
   :group 'Pretty-Control-L :group 'faces)
 
 ;;;###autoload
@@ -211,7 +216,7 @@ and `pp^L-^L-string-post'."
     ;; loading it into Emacs 21+ will define variable `pretty-control-l-mode'.
     (eval '(define-minor-mode pretty-control-l-mode
             "Toggle pretty display of Control-l (`^L') characters.
-With ARG, turn pretty display of `^L' on if and only if ARG is positive."
+ With ARG, turn pretty display of `^L' on if and only if ARG is positive."
             :init-value nil :global t :group 'Pretty-Control-L
             :link `(url-link :tag "Send Bug Report"
                     ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
@@ -266,7 +271,7 @@ With ARG, turn pretty display of `^L' on if and only if ARG is positive."
 (defun refresh-pretty-control-l (&optional _frame)
   "Reinitialize `pretty-control-l-mode', if on, to update the display."
   (interactive)
-  (when pretty-control-l-mode (pretty-control-l-mode t)))
+  (when pretty-control-l-mode (pretty-control-l-mode 1)))
 
 ;;;;;;;;;;;;;;;;;;;;
 
