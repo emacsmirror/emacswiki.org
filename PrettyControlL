@@ -20,6 +20,17 @@ Everything between the commented lines corresponds to a single Control-l charact
 
 You can toggle the pretty display on and off, using minor mode `pretty-control-l-mode'.
 
+'''Options'''
+
+* Face `##pp^L-highlight##': Face used to highlight the display-table entry for Control-l (`^L') characters. 
+* Option `##pp^L-^L-string##': Highlighted string displayed in place of each Control-l (^L) character.  Default value: ##Section (Printable Page)## prefixed and postfixed with 10 SPC chars.
+* Option `##pp^L-^L-string-function##': Function to produce string displayed in place of a Control-l (^L) char. If non-`nil', this is used instead of `##pp^L-^L-string##'.
+* Options `##pp^L-^L-string-pre##' and `##pp^L-^L-string-post##': strings displayed before and after `##pp^L-^L-string##'.
+
+
+
+
+
 See Also: OverlayControlL for an alternative approach, which uses an overlay.
 
 
