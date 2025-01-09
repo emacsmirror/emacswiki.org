@@ -12,9 +12,9 @@ While Control-l is useful as a section or page separator, `##^L##' or `##\014##'
 
 In Emacs, you can give any character a different display appearance, by redefining its entry in the current display table. Library <tt>[[pp-c-l.el]]</tt> does this to give Control-l a better appearance. You can easily customize this appearance, without fiddling with the display table yourself.  
 
+[:defaultImage]
 This screenshot shows the default appearance:
 
-[:defaultImage]
 [[image:DefaultPrettyControlImagee]]
 
 Or as it appears with my setup:
