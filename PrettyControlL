@@ -14,6 +14,10 @@ In Emacs, you can give any character a different display appearance, by redefini
 
 This screenshot shows the default appearance:
 
+[[image:DefaultPrettyControlImagee]]
+
+Or as it appears with my setup:
+
 [[image:PrettyControlLImage]]
 
 Everything between the commented lines corresponds to a single Control-l character. It is (by default) the equivalent of a newline followed by 10 spaces, the text "##Section (Printable Page)##" and 10 more spaces.
