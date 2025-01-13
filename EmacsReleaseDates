@@ -74,7 +74,7 @@ An excerpt from Irving Stone's ''Agony and the Ecstasy.''
 
 '' 'It is my pleasure that you finish it in a matter of days.'
 
-'' 'It will be done, Holy Father, when it will be done.' '' 
+'' 'It will be done, Holy Father, when it will be done.' ''
 
 ----
 
@@ -143,7 +143,7 @@ Inconceivable.
 than nothing.
 
 <pre>
- 90 
+ 90
  91  2
  92 10
  93 13
@@ -178,7 +178,7 @@ towards stabilization.
 : Date: 2001-07-17 09:39:47 PST
 
 Thaddeus L. Olczyk wrote:
- 
+
 : OK. This would seem to be bad news. It means we have to wait at least
   66 days after 104 was released before we can be sure that there won't
   be a 105.
@@ -238,7 +238,7 @@ date for Emacs 104, using
 <pre>
       ToDate[FromDate[{2001,7,13,0,0,0}] + Floor[N[104^Pi]] 3600 24])
 </pre>
- 
+
 : Emacs' calendar package couldn't handle this:
 
 <pre>
@@ -255,18 +255,50 @@ Calendar is unable to compute the date of its own final release".
 == Pretest numerology ==
 
 # First pretest for Emacs 21 released on 2000-11-17 [http://lists.gnu.org/archive/html/emacs-devel/2000-11/msg00230.html]
-# Emacs 21 released on 2001-10-28 (346 days in pretest)
+# Emacs 21 released on 2001-10-28 (345 days in pretest)
+#
 # First pretest for Emacs 22 released on 2006-11-27 [http://lists.gnu.org/archive/html/emacs-devel/2006-10/msg00898.html]
-# Emacs 22 released on 2007-06-03 (189 days in pretest)
+# Emacs 22 released on 2007-06-03 (188 days in pretest)
+#
 # First pretest for Emacs 23 released on 2009-02-01 [http://lists.gnu.org/archive/html/emacs-devel/2009-02/msg00051.html]
-# Emacs 23 released on 2009-07-29 (179 days in pretest)
+# Emacs 23 released on 2009-07-29 (178 days in pretest)
+#
 # First pretest for Emacs 24 released on 2011-09-25 [http://lists.gnu.org/archive/html/emacs-devel/2011-09/msg00613.html]
-# Emacs 24 released on 2012-06-10 (260 days in pretest)
+# Emacs 24 released on 2012-06-10 (259 days in pretest)
+#
 # First pretest for Emacs 25 released on 2016-01-30 [http://lists.gnu.org/archive/html/emacs-devel/2016-01/msg01745.html]
-# Emacs 25 released on 2016-09-17 (245 days in pretest)
-# First pretest for Emacs 26 released on 2017-10-11 [http://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00408.html]
-# ...
+# Emacs 25 released on 2016-09-17 (231 days in pretest)
+#
+# First pretest for Emacs 26.1 released on 2017-10-11 [https://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00408.html]
+# Emacs 26.1 released on 2018-05-28 (229 days in pretest)
+#
+# First pretest for Emacs 26.2 released on 2018-11-19 [https://lists.gnu.org/archive/html/emacs-devel/2018-11/msg00295.html]
+# Emacs 26.2 released on 2019-04-12 (144 days in pretest)
+#
+# First pretest for Emacs 26.3 released on 2019-06-12 [https://lists.gnu.org/archive/html/emacs-devel/2019-06/msg00273.html]
+# Emacs 26.3 released on 2019-08-28 (77 days in pretest)
+#
+# First pretest for Emacs 27.1 released on 2020-02-29 [https://lists.gnu.org/archive/html/emacs-devel/2020-03/msg00045.html]
+# Emacs 27.1 released on 2020-08-10 (163 days in pretest)
+#
+# First pretest for Emacs 27.2 released on 2020-12-18 [https://lists.gnu.org/archive/html/emacs-devel/2020-12/msg01120.html]
+# Emacs 27.2 released on 2021-03-25 (97 days in pretest)
+#
+# First pretest for Emacs 28.1 released on 2021-12-02 [https://lists.gnu.org/archive/html/emacs-devel/2021-12/msg00217.html]
+# Emacs 28.1 released on 2022-04-04 (123 days in pretest)
+#
+# First pretest for Emacs 28.2 released on 2022-06-30 [https://lists.gnu.org/archive/html/emacs-devel/2022-06/msg01274.html]
+# Emacs 28.2 released on 2022-09-12 (74 days in pretest)
+#
+# First pretest for Emacs 29.1 released on 2023-04-10 [https://lists.gnu.org/archive/html/emacs-devel/2023-04/msg00258.html]
+# Emacs 29.1 released on 2023-07-30 (111 days in pretest)
+#
+# First pretest for Emacs 29.2 released on 2023-10-19 [https://lists.gnu.org/archive/html/emacs-devel/2023-10/msg00363.html]
+# Emacs 29.2 released on 2024-01-18 (91 days in pretest)
+#
+# First pretest for Emacs 30.1 released on 2024-09-11 [https://lists.gnu.org/archive/html/emacs-devel/2024-09/msg00305.html]
 
-----
-CategoryHistory
-CategoryHumor
+Compare also:
+
+* https://alpha.gnu.org/gnu/emacs/pretest/
+* https://ftp.gnu.org/pub/gnu/emacs/
