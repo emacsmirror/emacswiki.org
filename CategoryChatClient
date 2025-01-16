@@ -19,7 +19,9 @@ There is also an IRC bouncer, a proxy, to make your IRC connections persistent:
 * Matrix protocol clients
 ** [https://github.com/alphapapa/ement.el Ement.el]: the standard Matrix client for Emacs.
 ** [https://matrix.org/docs/projects/client/emacs-maelstrom/ Emacs Maelstrom] ([https://savannah.nongnu.org/projects/maelstrom-el Savannah]): an old prototype client.
-
+** Chat rooms at matrix.org
+*** [https://app.element.io/#/room/#emacs:matrix.org #emacs:matrix.org]: the main Emacs discussion
+*** [https://app.element.io/#/room/#emacs-space:matrix.org #emacs-space:matrix.org]: list of related chat rooms
 
 * Jabber clients
 ** [[Gajim]] -- Some function to be able to talk with Gajim from Emacs.
