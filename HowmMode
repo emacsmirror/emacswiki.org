@@ -157,6 +157,7 @@ Answer from [[khi]]:
 * [https://github.com/kaorahi/howm/issues/9 repeated TODOs]
 * [https://github.com/kaorahi/howm/pull/10#issuecomment-2347294087 drag and drop] via [[smart-dnd.el]]
 * [https://emacs.stackexchange.com/questions/82586/howm-is-there-a-way-to-create-a-new-note-without-the-link-to-the-original-file modifying default contents of new notes]
+* [https://github.com/kaorahi/howm/issues/33#issuecomment-2608592904 integrating Denote with Howm]
 
 = Mentions =
 
