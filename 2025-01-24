@@ -2,7 +2,7 @@ Sadly, I'm fighting bots again. The site was mostly unreachable for a day or mor
 Here's a Munin graph of server load for a week. Normal load is between 0.5 and 1.0.
 The server has two virtual cores, so a load of up to 2.0 means happy happy.
 A load of nearly 40 means sad faces at Casa Emacs Wiki.
-There's more [on my blog](https://alexschroeder.ch/view/2025-01-23-bots-devouring-the-web)
+There's more [https://alexschroeder.ch/view/2025-01-23-bots-devouring-the-web on my blog]
 for the curious.
 -- [[Alex Schroeder]]
 
