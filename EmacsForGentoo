@@ -1,14 +1,22 @@
-== Emacs, XEmacs and related packages in Gentoo GNU/Linux ==
-
 [http://www.gentoo.org Gentoo] is a distribution of GNU/Linux.  Gentoo includes packages for GNU Emacs, BZR GNU Emacs and XEmacs.
 
-[http://www.gentoo.org/proj/en/lisp/emacs/ Gentoo Emacs/Elisp project]
+== Site-lisp ==
+Elisp packages available for installation <code>emerge --search 'app-emacs/*'</code> called “site-lisp”.
 
-List of [http://packages.gentoo.org/category/app-emacs?full_cat GNU Emacs packages]
+Emacs compiles with <code>--enable-locallisppath=/etc/emacs:/usr/share/emacs/site-lisp</code>. Directory /etc/emacs/ contains site-start.el
+ that is one of emacs predefined name for initialization file.
 
-List of [http://packages.gentoo.org/category/app-xemacs?full_cat XEmacs packages]
+Ways to disable site-lisp:
+* comment <code>(require 'site-gentoo)</code> in /etc/emacs/site-start.el
+* run emacs with flag <code>emacs --no-site-lisp</code>
 
-Other Emacs Lisp files are available indirectly from non-Emacs Lisp packages which support the "emacs" USE flag.
+In site-lisp there is
+* site-gentoo.el - order INFOPATH, add site-lisp folders to load-path.
+* site-gentoo.d/50{package}.el - contains <code>(add-to-list)</code> and <code>(autoload)</code>, used for regenerate site-gentoo.el
+
+Related manual pages: [https://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html]
+[https://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html]
+[https://www.gnu.org/software/emacs/manual/html_node/eintr/Site_002dwide-Init.html]
 
 
 == Notes ==
@@ -34,10 +42,6 @@ Gentoo has a BZR GNU Emacs package which integrates seamlessly into your filesys
 
 Each package responds to several other USE flags governing everything from choice  of supporting applications (ispell/aspell, MTA, etc.), GUI toolkit to be used (or not used) when building the software (GTK+, Xaw3d, Motif, etc.), support for types of images (PNG, TIFF, JPEG, GIF, XPM are all optional) and internationalization options (use NLS, LEIM etc.).
 
-== Maintainers on EmacsWiki ==
-
-MatthewKennedy, UlrichMüller, ChristianFaulhammer ...
-
 == Problems ==
 
 (best reported to [http://bugs.gentoo.org Gentoo Bugzilla])
@@ -55,6 +59,16 @@ You see there are plenty tools for different operations, but using them separate
 [new] M-x anything-gentoo in Lisp:anything-config.el provide sources to browse gentoo package and do differents actions on it.
 You have of course to install Anything on your emacs.
 
+== Links ==
+
+[http://www.gentoo.org/proj/en/lisp/emacs/ Gentoo Emacs/Elisp project]
+
+List of [http://packages.gentoo.org/category/app-emacs?full_cat GNU Emacs packages]
+
+List of [http://packages.gentoo.org/category/app-xemacs?full_cat XEmacs packages]
+
+Other Emacs Lisp files are available indirectly from non-Emacs Lisp packages which support the "emacs" USE flag.
+
 
 -- ThierryVolpiatto
 
@@ -66,3 +80,4 @@ The anything package has been replaced by [https://github.com/emacs-helm/helm He
 See also: EmacsForDebian
 ----
 CategoryPorts
+
