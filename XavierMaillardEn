@@ -1,111 +1,33 @@
 Hi and welcome on my modest EmacsWiki page. I am XavierMaillard, a
-french DBA spending his spare time hacking FreeSoftware (and editing
+french guy spending his spare time hacking FreeSoftware (and editing
 this place).
 
 I am a FreeSoftware hacktivist.
 
 I am member of a few associations related to FreeSoftware promotion and alterglobalisation:
 
-* [http://april.org APRIL]
+* [http://april.org APRIL] <= discontinued (no more time)
 * [http://lolica.org LOLICA] <= discontinued (no more motivation)
 * [http://attac.fr ATTAC France] <= discontinued (conflicted with positions)
 
 I use GNU Emacs since ages (at least I feel I didn't use anything else :p) and love *Lisp language.
+In fact I got away for a long time and getting back since 2025.
 
 ==Contact me==
 
 * irc: [::xma] on the EmacsChannel (rare)
 * mail: (rot13 "kzn@tah.bet") ;; (rather long to answer)
 * mail2: (rot13 "knivre@znvyyneq.vz") ;; <- C-x C-e
-* jabber ID: xavier@maillard.im (currently down: server blowned away :/)
 
 == Modes I am using ==
 
-=== Mail tasks ===
-
-I have tested all mail modes for emacs from Gnus to MH-E but I am not
-very interested in tweaking/sorting/archiving. I have to admit that
-Gnus is marvelous but it is so huge that I spent my time
-tweaking/hacking it thus I lost precious time.
-
-MH-E was a good way to use NMH in Emacs but after some time of
-thinking I have decided that, given the fact I was living 100% of my
-time in Emacs, NMH layer was too much. NMH, though, is quite a cool
-mail handling system I would recommend for any serious shell user.
-
-In the end, RmailMode is really what I need(ed). It is simple, basic
-but pretty efficient.
-
-=== IM ===
-
-I used to only use IRC but as time goes, I am more and more using
-Jabber. Thus my client of choice is JabberEl. For the rare occasions I
-am under IRC, I am using [[rcirc]].
-
-=== NNTP ===
-
-Gnus, all is said.
-
-=== Notes and organization ===
-
-Once again, I have tried so many modes always trying to have the
-perfect tools that I spent too much time playing with the setup.
-
-Why did I switch to howm ? I like free-form notes taking tool. Plus,
-howm is really powerfull to search *anything* *at any given time*
-*anywhere* into my notes. To my knowing, this is the only one tool
-doing this. The big cons is its lack of documentation.
-
-What I like about it:
-
-# free form notes
-# awesome searching capabilities (nothing can beat it at this)
-# looks like a wiki (perfect for me)
-# extensible easily
-# is a MinorMode
-
-What I dislike:
-
-# small community
-# documentation is in japanese :/
-
-[new:XavierMaillard:2009-02-17 18:57 UTC]
-After months of howm, howm sounds less interesting for these reasons:
-
-# I am duplicating many note content everywhere (codes, ...)
-# Saving one note can take really long (due to huge amount of notes)
-# Searching is not really useful since some system daemon could do
-  that (and even more and better -i.e rlocate for example and this
-  could be made available via [[Anything]])
-
-I am more and more using topic-oriented notes -i.e. notes about sql,
-about free software, ... I am huge fan of EevMode which is of great
-help for that but going that way also means to renounce to HowmMode
-and to choose something different, something working with the One Big
-File approach.
-
-=== Other modes ===
-
-In unsorted order:
-
+* RmailMode what else ?
+* HowmMode can't explain why but in this chaos, I am fine and feel comfident
 * InteractivelyDoThings
-* OddmuseMode (current Maintainer)
-* InPlaceAnnotations (current Maintainer)
-* ColorTheme (current maintainer)
-* DarcsSum
+* OddmuseMode
 * ShellMode
-* SqlMode
-* NeroEl (maintaining a fork)
 * VC
-* PredictiveMode
-* EevMode (can't live without it)
-* [[Anything]] (new and really fun)
-* RecordsMode (current maintainer)
-
-== Me and EmacsWiki: my work done ==
-
-* [http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=XavierMaillard Contributions to the Wiki]
-* [http://www.emacswiki.org/cgi-bin/wiki?action=rc&all=1&showedit=1&from=1&rcuseronly=zeDek Contributions to the Wiki II]
+* EevMode (need to checkout if it is still working for me, doubt it)
 
 === Page initiated ===
 
@@ -153,6 +75,4 @@ Are there any good personal journal org-mode based tutorial available somewhere 
 This can't be considered a serious thing, but, I recently cleaned up some things and I am running an OddMuse instance at [[https://www.maillard.im]]. It is housing something like a blog and editings by my sons (currently not online).
 
 ----
-Cette page est disponible en [XavierMaillardFr français]
-
 CategoryHomepage
