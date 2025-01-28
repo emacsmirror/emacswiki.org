@@ -42,6 +42,9 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * M-SPC will remove all except 1 space between characters.  Suppose you have
 'a <blanks> tree' & point is positioned just after the 'a' (or anywhere in the space between the words), hitting M-SPC will make it 'a tree'.   --SivaramN
 ** With recent Emacs there's ##cycle-spacing## command which can cycle between one space, no spaces and original spacing. Evaluate ##(substitute-key-definition 'just-one-space (lambda () (interactive) (cycle-spacing -1 t)) (current-global-map))## to test it easily. -- mina86
+
+----
+
 *** I run Emacs in Microsoft Windows WSL environment, which basically lets you run a Linux environment within or under Windows.  But Windows intercepts the <code>M-SPC</code> key.  So I bound the cycle-spacing command to <code>C-c h SPC</code> by first setting up a named keymap I called <code>my-hyper-map</code> and then defining <code>C-c h</code> as a key prefix for accessing pairs of keys and their corresponding commands:
 <pre>
 (defvar-keymap my-hyper-map
@@ -54,6 +57,14 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 **** So <code>C-c h SPC</code> invokes the <code>cycle-spacing</code> command at point.  If point is located in the midst of a sequence of spaces, they are replaced by a single space.  (As mentioned above, the <code>cycle-spacing</code> can be invoked repeatedly, resulting the second time in the removal even of the single space and the third time in the restoration of all the previously deleted spaces.)
 **** One nice thing about the approach I use is that it's easy to add additional key/command pairs, as I have done in this example with <code>C-c h \</code>.  Since the backslash (<code>\</code>) has special meaning, I had to double it to represent a single backslash.  This key sequence invokes the <code>delete-horizontal-space</code> command, which deletes all spaces and tab characters around point.
 **** I called my map <code>my-hyper-map</code> because I was thinking of the Hyper key on keyboards long ago.  I don't have such a key, but I think of the <code>C-c h</code> as my own Hyper key, a prefix to as many commands as I care to stuff into the keymap I defined.  I only showed two of them here, but I actually have three keymaps each with its own set of commands ''I'' care about enough that I want my own choice of key sequences for them.
+
+[new:DrewAdams:2025-01-28 04:42 UTC]
+Does this not work for you?
+
+    (w32-register-hot-key [M-tab])
+
+----
+
 * [http://www.emacswiki.org/emacs/thesaurus.el Use an online thesaurus] to replace the word at point with a synonym of your choosing. 
 
 * A few months ago, I finally wrote code to do incremental numbering of columns.  My life is better for it: http://www.antisleep.com/download/elisp/gse-number-rect.el -- ScottEvans
