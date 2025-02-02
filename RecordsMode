@@ -7,7 +7,7 @@ Project is currently hosted on Github at
 * https://github.com/xmailla/records
 
 XavierMaillard is the current maintainer of records starting at 1.5.1 "redux"
-release (see https://launchpad.net/records/1.5/1.5.2)
+release (see https://github.com/xmailla/records/releases/tag/1.5.2)
 
 This release adds no new feature except it is likely it will build successfully now. Please test and report any bug on the launchpad project.
 
