@@ -1,3 +1,4 @@
+[[zh:katana]]
 <code>ansi-color.el</code> translates ANSI SGR (Select Graphic Rendition) escape sequences like "Esc [ 30 m" into EmacsOverlays, TextProperties, or XEmacsExtents with face colours, bold, etc.
 
 These escape sequences are best known as "ANSI" which is where they were first standardized.  They can be found in ECMA-48 (section 3.8.117, identical to ISO/IEC 6429), freely available as a PDF file.
