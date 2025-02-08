@@ -118,6 +118,22 @@ To set the VisualLineMode on a file by file basis using emacs local variables, t
     #  local variables:
     #    eval: (visual-line-mode t)
 
+
+[new]
+The above doesn't seem to work for me.  However, either one of these work to open a file in emacs with `visual-line-mode` enabled on a per-file basis (2025-02-08):
+
+1) As the FIRST line in the file, use
+    # -*- eval: (visual-line-mode 1); -*-
+
+OR
+
+2) At the END of the file, add the block
+    # Local Variables:
+    # eval: (visual-line-mode 1)
+    # End:
+
+-- [[AstroFloyd]]
+
 ----
 CategoryEditing
 CategoryFilling
