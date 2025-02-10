@@ -1,6 +1,6 @@
 Emacs uses Git as its version control system.
 
-This is a quick-start guide to using [http://git-scm.com Git] for
+This is a quick-start guide to using [https://git-scm.com Git] for
 Emacs development.  It presents a simple Git workflow oriented toward
 the "regular contributor," whether a "core" committer, a maintainer of
 a well-defined package (/e.g./, a major mode), or simply someone who
@@ -24,7 +24,7 @@ Some features described on EmacsWiki are available only in the latest
 need to build Emacs using the development source code. This page is
 about that source code and how to use it.  First and foremost, every
 contributor should be acquainted with and follow the guidelines in the source code repository
-[http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file].
+[https://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file].
 
 "VCS means never having to say you're sorry."  It's true, but it's
 still worth being careful, even with git.  In the workflows described
@@ -140,7 +140,7 @@ The default merge driver is not aware of the special structure of ChangeLog file
 and thus will frequently create merge conflicts in those files when you merge your
 local changes with upstream, or merge 2 branches that diverged a little.  The
 Gnulib project contains a
-[http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/git-merge-changelog.c
+[https://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/git-merge-changelog.c
 merge driver for ChangeLog files] that avoids these problems.  Please consider
 installing it; for the instructions, see  [[#UsefulAddOns]] near the end of this page.
 
@@ -152,10 +152,10 @@ contributions to Emacs (whether or not you're one of the Emacs
 maintainers).  You can also use this way just to track the Emacs
 sources, even if you never contribute changes.
 
-For the general public, Emacs's repo lives at ##git://git.sv.gnu.org/emacs##. Committers should prefix it with their Savannah user-id: ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##. Apply ##git clone## to these; it will clone the repo into a directory named 'emacs':
+For the general public, Emacs's repo lives at ##https://git.sv.gnu.org/git/emacs.git##. Committers should prefix it with their Savannah user-id: ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##. Apply ##git clone## to these; it will clone the repo into a directory named 'emacs':
 
       git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git  # For those with write access
-      git clone git://git.sv.gnu.org/emacs.git                  # For the rest of us
+      git clone https://git.sv.gnu.org/git/emacs.git            # For the rest of us
 
 [:RegularDevelopmentBranch]
 == Workflow for Regular Development ==
@@ -236,7 +236,7 @@ No one else will see the commits until you send them upstream.
 
 (Note: the Emacs project will continue to keep versioned ChangeLog
 files.  See
-[http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00334.html
+[https://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00334.html
 this mail] for more.)
 
 If the task isn't done yet, keep working.  Edit yet more source files,
@@ -295,7 +295,7 @@ upstream yourself (see [[#MergeToUpstream]]).
 === Good Commenting Practice ===
 
 See the
-[http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file] 
+[https://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file] 
 in the Emacs source code repository for more up-to-date commit-log
 and other instructions.
 
@@ -567,7 +567,7 @@ some instructions on installing it and on configuring your Git to use it.
 
 It can be installed using
 
-    git clone git://git.savannah.gnu.org/gnulib.git
+    git clone https://git.savannah.gnu.org/git/gnulib.git
     cd gnulib
     ./gnulib-tool --create-testdir --dir=/tmp/testdir123 git-merge-changelog
     cd /tmp/testdir123
@@ -578,7 +578,7 @@ It can be installed using
 Some GNU/Linux distributions also provide packages for it.
 
 MS-Windows users can download a pre-compiled binary from
-[http://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download the ezwinports site].
+[https://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download the ezwinports site].
 
 To enable  git-merge-changelog, add to .git/config of the checkout (or to your $HOME/.gitconfig)
 the lines
@@ -616,11 +616,11 @@ and to the .gitattributes file
 [:OtherResources]
 === Other Resources ===
 
-* [http://git-scm.com/ Git home site]
+* [https://git-scm.com/ Git home site]
 * [https://www.kernel.org/pub/software/scm/git/docs/user-manual.html Git User's manual]
 * [https://git-scm.com/docs/gittutorial Official Git tutorial]
-* [http://git-scm.com/book The Git Book]
-* [http://blog.anvard.org/conversational-git/ Conversational Git], a very gentle introduction to Git
+* [https://git-scm.com/book The Git Book]
+* [https://blog.anvard.org/conversational-git/ Conversational Git], a very gentle introduction to Git
 * GitQuickStartForEmacsDevs provides an alternate, more CVS-like, simpler workflow.
 
 ---------
