@@ -7,7 +7,7 @@ The scratch buffer is handy but we tend to kill it to get rid of its content.
 [new]
 https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=10f347a06286272c7dcfdeb47b3511b6f53adcbd
 
-29.1 added `C-x scratch-buffer`
+29.1 added `M-x scratch-buffer`
 [new]
 
 [new:DrewAdams:2004-12-25 18:26 UTC]
