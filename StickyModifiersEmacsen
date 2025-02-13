@@ -1,0 +1,31 @@
+== XEmacs ==
+
+In this same line of thought try out <code>(setq modifier-keys-are-sticky t)</code>. From the documentation, "This means that you can release the modifier key before pressing down the key that you wish to be modified.  Although this is non-standard behavior, it is recommended because it reduces the strain on your hand, thus reducing the incidence of the dreaded Emacs-pinky syndrome."
+
+== GNU Emacs ==
+
+Unfortunately, this cool feature isn't implemented in GNU Emacs.
+
+[new]
+GNU Emacs-21.3 seem to support sticky modifier keys - SureshKolla
+
+[new]
+How does GNU Emacs-21.3 support sticky modifier keys?  Can't find it in my copy. -Benjamin Rutt
+
+Lisp:sticky.el enables sticky shift by another sticky key (semicolon and so on). -- [[rubikitch]]
+
+  S-M-: (with-temp-buffer (url-insert-file-contents "http://www.emacswiki.org/emacs/download/sticky.el") (eval-buffer))
+  (use-sticky-key ?\; sticky-alist:en)
+
+[new]
+On Windows, I found a way to set <lwindow>, <rwindow> and <apps> as sticky modifiers, without OS settings:
+
+  (setq w32-pass-lwindow-to-system nil) ;; prevent single keypress from activating Start Menu
+  (setq w32-lwindow-modifier 'nil)      ;; make sure it's not used as a modifier
+  
+  (define-key key-translation-map (kbd "<lwindow>") 'event-apply-super-modifier)
+  (define-key key-translation-map (kbd "<apps>") 'event-apply-alt-modifier)
+  
+  (global-set-key (kbd "s-k") 'kill-whole-line)
+
+now you can press <lwindow> and (after releasing <lwindow>) then `k' to kill the whole line. And in this way, you can use those `system hotkeys' (such as win+r, win+l) in emacs and Windows at the same time.  -- BaManzi
