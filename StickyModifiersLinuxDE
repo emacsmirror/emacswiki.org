@@ -1,0 +1,63 @@
+== X.org ==
+
+X.org provides sticky keys support via so-called "!AccessX" functionality in the XKB (XKeyboard) module bundled with X.org. GNOME and KDE both provide GUI interfaces for viewing and modifying !AccessX settings, as described below. Lighter-weight window managers (e.g., FVWM, !IceWM, Sawtooth), however, do not; users of these window managers must use a CLI interface instead, as described below. (Of course, some may view this as an advantage!)
+
+== CLI Interface ==
+
+[http://www.math.missouri.edu/~stephen/software xkbset] is a CLI interface to !AccessX and other XKB-specific functionality. It's quite helpful -- though a tad oddly documented.
+
+Debian users install ##xkbset## by:
+
+  apt-get install xkbset
+
+Gentoo and Exherbo install ##xkbset## by first downloading [http://bugs.gentoo.org/185954 this ebuild], moving it into a local overlay, regenerating that local overlay's cache (''...beyond the scope of this page''), and:
+
+  paludis --install xkbset
+
+After installation, run <code>xkbset h</code> to display help for all options, <code>xkbset q</code> to display all current options, and <code>xkbset q exp</code> to display all current expiration settings.
+
+Now, temporarily enable sticky keys for the current X.org session via:
+
+  # Enable "sticky keys" for all modifier keys, while also enabling "latchlock"
+  # (i.e., pressing any modifier key twice in a row locks that key
+  # on) and disabling "twokey" (i.e., pressing any modifier key and another key
+  # at the same time permanently disables "sticky keys"). Note that enabling
+  # "sticky" automatically enables sticky keys for Apple- and Windows-specific
+  # modifier keys as well, including: <Shift>, <Ctrl>, <Alt>, <Fn>, and <Apple>.
+  xkbset -bell -feedback sticky -twokey latchlock
+ 
+  # Disable expiration of "sticky keys" after the specified time in seconds. When
+  # expiration is enabled, sticky keys are permanently disabled after that many
+  # seconds. This is quite unhelpful.
+  xkbset exp 64 '=sticky' '=twokey' '=latchlock'
+
+If that works, permanently enable sticky keys for all X.org sessions by placing the above two commands in your user-local X.org autostart file, ''~/.xinitrc''.
+
+== Gnome ==
+
+Gnome 2.0 implements this; use <code>gnome-control-center</code> to configure. 
+You can find more information at [http://developer.gnome.org/projects/gap/ The GNOME Accessibility Project].
+
+[new]
+
+I found the following settings to my liking within GNOME 2.14.3 on Ubuntu Dapper Drake:
+
+http://img175.imageshack.us/img175/3762/screenshotkeyboardaccesai7.png
+
+Turning off repeat keys has the unfortunate side effect of making it difficult to delete text in programs other than Emacs or Vim, but it thankfully prevents that annoying dialog box from popping up when you hold one of the modifier keys down for too long.  Unchecking "disable if two keys pressed together" makes it so that you can hold down a modifier key and hit a key without being accosted by the exact same dialog box.
+
+One thing I found lacking in the documentation was that pressing a modifier key twice turned it on indefinitely until the same modifier key was pressed again.  Nice to know.
+
+ -- Sam
+
+== KDE ===
+
+KDE also implements this; find "Regional & Accessibility > Accessibility > Keyboard" in KControl. You can find more information at [http://accessibility.kde.org/ KDE Accessibility Project]
+
+=== A More Flexible Approach (key remapping daemons) ===
+
+The !StickyKeys feature provided by most OSes is rather inflexible, since it doesn't allow choosing which modifiers will be sticky.
+
+A more flexible option is to implement homegrown !StickyKeys using one of the software options described below.  This allows you to configure some modifiers as sticky and let others behave as before.
+
+These options translate keypresses before they're received by the desktop environment.  And they work regardless of whether X, Wayland or some other GUI framework applies.  In addition to !StickyKeys, these programs allow nearly any keyboard customization you can think of.
