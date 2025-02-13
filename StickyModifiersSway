@@ -4,7 +4,7 @@ Although originally used for X11 a xkb file is Wayland compositor compatible and
 
 = To Long, Didn't Read =
 
-Go to [[keymap_with_sticky_modifiers]] and save the xkb file on your computer disk.  It is a plain text file.  You can inspect its contents.
+If you are using en-US keyboard, then go to [[keymap_with_sticky_modifiers]] and save the plain text file as a file (Save as...) on your computer disk.  It is a plain text file.  You can inspect its contents.
 
 Note where the file was saved, then let sway load the file with
 
