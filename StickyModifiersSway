@@ -2,6 +2,54 @@ In the Sway Window Manager sticky modifiers can be enabled by loading a custom k
 
 Although originally used for X11 a xkb file is Wayland compositor compatible and can be directly loaded in Sway through its configuration file.
 
+= To Long, Didn't Read =
+
+Go to [[keymap_with_sticky_modifiers]] and save the xkb file on your computer disk.  It is a plain text file.  You can inspect its contents.
+
+Note where the file was saved, then let sway load the file with
+
+  swaymsg input "type:keyboard" xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
+
+Now try it out!  It has the following features:
+
+Sticky Keys
+- Ctrl, Shift, Super, Alt are sticky
+
+Sticky Keys Demo
+- Launch Emacs
+- Press and release Ctrl
+- Caps Lock indicator will be turned on, this is telling you that a Sticky Modifier is engaged
+- Press and release letter x
+- Now Echo Area will show C-x
+- Caps Lock indicator will be turned off.
+
+Cancel a Sticky Modifier
+- Press and release Ctrl
+- Caps Lock indicator will be turned on, this is telling you that a Sticky Modifier is engaged
+- Press and release Ctrl
+- Caps Lock indicator will be turned off, this is telling you that the sticky modifier is disengaged
+
+Revert to non sticky behavior
+- Launch Emacs
+- Press and hold Ctrl
+- Press and release letter x
+- Release Ctrl
+- Now Echo Area will show C-x
+
+
+Easier to Access Modifiers
+- Caps Lock is now Left Ctrl
+- Apostrophe key is now Right Ctrl
+- Menu key is now Right Super
+
+Remapped Keys
+- Apostrophe is now located on Tab key
+- Tab key is now located on Lower-Right Ctrl
+- You can access TAB with C-i
+
+
+= How the xkb file was produced =
+
 Firstly run the bash script below to create two sticky keyboard variant files:
 
 - keymap_with_sticky_modifiers.xkb - a latched sticky modifier setup in which a modifier is activated by a following key press.
