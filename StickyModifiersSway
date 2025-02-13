@@ -48,6 +48,9 @@ Remapped Keys
 * Tab key is now located on Lower-Right Ctrl
 * You can access TAB with C-i
 
+Finally, if you are satisfied with the result, put the line in your sway config
+
+  input "type:keyboard" xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
 
 = How the xkb file was produced =
 
