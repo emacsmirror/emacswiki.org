@@ -1,0 +1,45 @@
+=== Kmonad ===
+
+[https://github.com/kmonad/kmonad Kmonad] is a cross-platform keyboard configuration daemon.
+
+It uses a lisp-like configuration syntax and comes with an Emacs major-mode for editing configuration files.
+
+It is written in Haskell.
+
+=== Keyd ===
+
+[https://github.com/rvaiya/keyd Keyd] is a keyboard configuration daemon for Linux.
+
+It is written in C, and its configuration files use a simple Unix-Conf syntax.
+
+Here is a Keyd configuration that implements !StickyKeys and turns !CapsLock into an additional "Ctrl" key.
+
+    [ids]
+     
+    *
+     
+    # Latching (first press activates modifier's layer for next key)
+     
+    [main]
+    capslock = oneshot(control)
+    control = oneshot(control)
+    shift = oneshot(shift)
+    leftalt = oneshot(alt)
+    rightalt = oneshot(alt)
+    meta = oneshot(meta)
+     
+    # Locking (second press locks modifier until pressed again)
+     
+    [control]
+    control = toggle(control)
+    capslock = toggle(control)
+     
+    [shift]
+    shift = toggle(shift)
+     
+    [alt]
+    leftalt = toggle(alt)
+    rightalt = toggle(alt)
+     
+    [meta]
+    meta = toggle(meta)
