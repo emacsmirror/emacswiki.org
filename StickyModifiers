@@ -1,260 +1,35 @@
 One way to reduce repetitive-strain injury from Emacs is to avoid pressing two keys simultaneously with the same hand.  That is, avoid using [[modifier key]]s. For C-KEY, use one hand for KEY and the other for Ctrl.  For M-KEY, do similarly as for C-KEY, or press and release Esc and then press KEY.  And of course, take advantage of the automatic indenting and other features of Emacs that save keystrokes.
 
-== Emacsen-level ==
+= Emacsen-level =
+See [[StickyModifiersEmacsen]]
 
-=== XEmacs ===
+= OS-level =
 
-In this same line of thought try out <code>(setq modifier-keys-are-sticky t)</code>. From the documentation, "This means that you can release the modifier key before pressing down the key that you wish to be modified.  Although this is non-standard behavior, it is recommended because it reduces the strain on your hand, thus reducing the incidence of the dreaded Emacs-pinky syndrome."
-
-=== GNU Emacs ===
-
-Unfortunately, this cool feature isn't implemented in GNU Emacs.
-
-[new]
-GNU Emacs-21.3 seem to support sticky modifier keys - SureshKolla
-
-[new]
-How does GNU Emacs-21.3 support sticky modifier keys?  Can't find it in my copy. -Benjamin Rutt
-
-Lisp:sticky.el enables sticky shift by another sticky key (semicolon and so on). -- [[rubikitch]]
-
-  S-M-: (with-temp-buffer (url-insert-file-contents "http://www.emacswiki.org/emacs/download/sticky.el") (eval-buffer))
-  (use-sticky-key ?\; sticky-alist:en)
-
-[new]
-On Windows, I found a way to set <lwindow>, <rwindow> and <apps> as sticky modifiers, without OS settings:
-
-  (setq w32-pass-lwindow-to-system nil) ;; prevent single keypress from activating Start Menu
-  (setq w32-lwindow-modifier 'nil)      ;; make sure it's not used as a modifier
-  
-  (define-key key-translation-map (kbd "<lwindow>") 'event-apply-super-modifier)
-  (define-key key-translation-map (kbd "<apps>") 'event-apply-alt-modifier)
-  
-  (global-set-key (kbd "s-k") 'kill-whole-line)
-
-now you can press <lwindow> and (after releasing <lwindow>) then `k' to kill the whole line. And in this way, you can use those `system hotkeys' (such as win+r, win+l) in emacs and Windows at the same time.  -- BaManzi
-
-== OS-level ==
-
-=== Microsoft Windows ===
+== Microsoft Windows ==
 
 On MS Windows it is the operating system that implements this feature for any application. It is in the Control Panel under Accessability Options and is called !StickyKeys, see [http://www.microsoft.com/enable/training/windowsxp/stickykeys.aspx/ Accessibility Tutorials for Windows].
 
-=== OS X ===
+== OS X ==
 
 Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One goes to "Universal Access" in "System Preferences" and selects "Keyboard" in the horizontal menu across the top of the screen.  It is self-explanatory from there on. (Citing a message from John Gage on emacs-nxml-mode list.)
 
-=== Linux ===
+== Linux ==
 
-==== Sway Window Manager ====
-
-In the Sway Window Manager sticky modifiers can be enabled by loading a custom keyboard configuration file defined using the X keyboard extension (xkb) standard.
-
-Although originally used for X11 a xkb file is Wayland compositor compatible and can be directly loaded in Sway through its configuration file.
-
-Firstly run the bash script below to create two sticky keyboard variant files:
-
-- keymap_with_sticky_modifiers.xkb - a latched sticky modifier setup in which a modifier is activated by a following key press.
-
-- keymap_with_locked_modifiers.xkb - a locking sticky modifier setup in which a modifier will be locked on a double tap and then unlocked with a single tap.
-
-  #!/bin/bash
-  DST=$HOME/.config
-  # Reset keyboard layout (to your preferred language)
-  setxkbmap gb
-  # Apply sticky modifier changes and save to a specific file
-  xkbcomp $DISPLAY -xkb - | \
-  sed 's|SetMods|LatchMods|g' > \
-  $DST/keymap_with_sticky_modifiers.xkb
-  # Reset keyboard layout (to your preferred language)
-  setxkbmap gb
-  # Apply locked modifiers changes and save to a specific file
-  xkbcomp $DISPLAY -xkb - | \
-  sed 's|SetMods|LatchMods|g' | \
-  sed 's|,clearLocks);|,clearLocks,latchToLock);|g' > \
-  $DST/keymap_with_locked_modifiers.xkb
-
-At this point you can activate Sticky Keys by loading the new xkb keymap in the Sway config as follows:
-
-  input "type:keyboard" {
-      xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
-  }
-
-Optionally modify the xkb file directly after generation to use the “Caps Lock” keyboard indicator LED for indicating a sticky modifier is active, like so :
-
-  indicator "Caps Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Control+Mod1+Shift;
-  };
-
-This turns on the Caps Lock LED whenever a Control, Alt (Mod1) or Shift key is sticky locked giving a visual hint to any locked keys.  Although useful on a laptop if you are using a full sized keyboard each modifier can be linked to its own indicator LED, for example:
-
-  indicator "Caps Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Control;
-  };
-  indicator "Num Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Mod1;
-  };
-  indicator "Scroll Lock" {
-      whichModState= locked;
-      modifiers= Shift;
-  };
-
-As part of this keyboard redefinition it might also be useful to remap the Caps Lock key to the Control modifier.  One way to achieve this in Sway is to modify the config file as follows:
-
-  input type:keyboard {
-     xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
-     xkb_options ctrl:nocaps
-  }
-
-However, as we are redefining our keyboard layout we can directly modify the xkb configuration file in the following manner:
-
-replace:
-
-  key <CAPS> {         [       Caps_Lock ] };
-
-with
-
-  key <CAPS> {         [       Control_L ] };
-
-replace:
-
-  modifier_map Lock { <CAPS> };
-
-with
-
-  modifier_map Control { <CAPS> };
-
-For bonus points, and to ensure that the right Alt modifier functions like a regular Alt thereby distributing the keys more evenly between the left and right hands, perform the following steps:
-
-add:
-
-  modifier_map Mod1 { <RALT> };
-
-set the definition of key <RALT> to:
-
-  key <RALT> {         [           Alt_L,          Meta_L ] };
-
-==== Console ====
+=== Console ===
 
 For Linux console you can use ##loadkeys## from ##kbd## package to set Control, Alt and Shift keys to SCtrl, SAlt, SShift keycodes. See e.g. [http://www.tldp.org/HOWTO/Keyboard-and-Console-HOWTO-15.html Keyboard and Console HOWTO:  15. Examples of use of loadkeys and xmodmap].
 
-==== X.org ====
+=== Desktop Environment ===
 
-X.org provides sticky keys support via so-called "!AccessX" functionality in the XKB (XKeyboard) module bundled with X.org. GNOME and KDE both provide GUI interfaces for viewing and modifying !AccessX settings, as described below. Lighter-weight window managers (e.g., FVWM, !IceWM, Sawtooth), however, do not; users of these window managers must use a CLI interface instead, as described below. (Of course, some may view this as an advantage!)
+For wlroot-based and Sway, see [[StickyModifiersSway]].
 
-===== CLI Interface =====
+For Gnome and KDE, see [[StickyModifiersLinuxDE]].
 
-[http://www.math.missouri.edu/~stephen/software xkbset] is a CLI interface to !AccessX and other XKB-specific functionality. It's quite helpful -- though a tad oddly documented.
+== Keyboard Configuration Daemons ==
 
-Debian users install ##xkbset## by:
+See [[StickyModifiersKeyboardConfigDaemon]].  Some of them are cross-platform.
 
-  apt-get install xkbset
-
-Gentoo and Exherbo install ##xkbset## by first downloading [http://bugs.gentoo.org/185954 this ebuild], moving it into a local overlay, regenerating that local overlay's cache (''...beyond the scope of this page''), and:
-
-  paludis --install xkbset
-
-After installation, run <code>xkbset h</code> to display help for all options, <code>xkbset q</code> to display all current options, and <code>xkbset q exp</code> to display all current expiration settings.
-
-Now, temporarily enable sticky keys for the current X.org session via:
-
-  # Enable "sticky keys" for all modifier keys, while also enabling "latchlock"
-  # (i.e., pressing any modifier key twice in a row locks that key
-  # on) and disabling "twokey" (i.e., pressing any modifier key and another key
-  # at the same time permanently disables "sticky keys"). Note that enabling
-  # "sticky" automatically enables sticky keys for Apple- and Windows-specific
-  # modifier keys as well, including: <Shift>, <Ctrl>, <Alt>, <Fn>, and <Apple>.
-  xkbset -bell -feedback sticky -twokey latchlock
- 
-  # Disable expiration of "sticky keys" after the specified time in seconds. When
-  # expiration is enabled, sticky keys are permanently disabled after that many
-  # seconds. This is quite unhelpful.
-  xkbset exp 64 '=sticky' '=twokey' '=latchlock'
-
-If that works, permanently enable sticky keys for all X.org sessions by placing the above two commands in your user-local X.org autostart file, ''~/.xinitrc''.
-
-===== Gnome =====
-
-Gnome 2.0 implements this; use <code>gnome-control-center</code> to configure. 
-You can find more information at [http://developer.gnome.org/projects/gap/ The GNOME Accessibility Project].
-
-[new]
-
-I found the following settings to my liking within GNOME 2.14.3 on Ubuntu Dapper Drake:
-
-http://img175.imageshack.us/img175/3762/screenshotkeyboardaccesai7.png
-
-Turning off repeat keys has the unfortunate side effect of making it difficult to delete text in programs other than Emacs or Vim, but it thankfully prevents that annoying dialog box from popping up when you hold one of the modifier keys down for too long.  Unchecking "disable if two keys pressed together" makes it so that you can hold down a modifier key and hit a key without being accosted by the exact same dialog box.
-
-One thing I found lacking in the documentation was that pressing a modifier key twice turned it on indefinitely until the same modifier key was pressed again.  Nice to know.
-
- -- Sam
-
-===== KDE ======
-
-KDE also implements this; find "Regional & Accessibility > Accessibility > Keyboard" in KControl. You can find more information at [http://accessibility.kde.org/ KDE Accessibility Project]
-
-=== A More Flexible Approach (key remapping daemons) ===
-
-The !StickyKeys feature provided by most OSes is rather inflexible, since it doesn't allow choosing which modifiers will be sticky.
-
-A more flexible option is to implement homegrown !StickyKeys using one of the software options described below.  This allows you to configure some modifiers as sticky and let others behave as before.
-
-These options translate keypresses before they're received by the desktop environment.  And they work regardless of whether X, Wayland or some other GUI framework applies.  In addition to !StickyKeys, these programs allow nearly any keyboard customization you can think of.
-
-==== Kmonad ====
-
-[https://github.com/kmonad/kmonad Kmonad] is a cross-platform keyboard configuration daemon.
-
-It uses a lisp-like configuration syntax and comes with an Emacs major-mode for editing configuration files.
-
-It is written in Haskell.
-
-==== Keyd ====
-
-[https://github.com/rvaiya/keyd Keyd] is a keyboard configuration daemon for Linux.
-
-It is written in C, and its configuration files use a simple Unix-Conf syntax.
-
-Here is a Keyd configuration that implements !StickyKeys and turns !CapsLock into an additional "Ctrl" key.
-
-    [ids]
-     
-    *
-     
-    # Latching (first press activates modifier's layer for next key)
-     
-    [main]
-    capslock = oneshot(control)
-    control = oneshot(control)
-    shift = oneshot(shift)
-    leftalt = oneshot(alt)
-    rightalt = oneshot(alt)
-    meta = oneshot(meta)
-     
-    # Locking (second press locks modifier until pressed again)
-     
-    [control]
-    control = toggle(control)
-    capslock = toggle(control)
-     
-    [shift]
-    shift = toggle(shift)
-     
-    [alt]
-    leftalt = toggle(alt)
-    rightalt = toggle(alt)
-     
-    [meta]
-    meta = toggle(meta)
-
-== APIs ===
+== APIs ==
 
 The underlying API-level framework is called MSAA on MS Windows and ATK in GNOME. The applications have to use this to support Sticky Modifiers (and a lot of other accessiblity options). In some cases this is very simple due to the way the frameworks are built.
 
