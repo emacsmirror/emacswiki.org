@@ -1,5 +1,6 @@
 [[fr:HowmEtCalendar]]
 Code snippets to integrate HowmMode with the Emacs CalendarMode. 
+See also https://github.com/kaorahi/howm/issues/45 for updates and related links.
 
 These are pasted from http://www.bookshelf.jp/cgi-bin/goto.cgi?file=meadow&node=howm%20calendar
 
