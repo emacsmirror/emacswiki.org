@@ -1,4 +1,4 @@
-Emacs-related support for [https://en.wikipedia.org/wiki/Large_language_model Large language models] (LLMs)., grouped roughly by category.
+Emacs-related support for [https://en.wikipedia.org/wiki/Large_language_model Large language models] (LLMs), grouped roughly by category.
 
 Chat / General Purpose / Foundational
 * [https://github.com/karthink/gptel gptel] ([https://melpa.org/#/gptel MELPA]), created by karthink.  "gptel is a simple Large Language Model chat client, with support for multiple models/backends."  Supports these providers: The services Open AI/!ChatGPT, Gemini, Azure, Kagi (!FastGPT & Summarizer), Ollama, GPT4All, llama.cpp, and llamafile. 
