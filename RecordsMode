@@ -11,7 +11,5 @@ release (see https://github.com/xmailla/records/releases/tag/1.5.2)
 
 This release adds no new feature except it is likely it will build successfully now. Please test and report any bug on the launchpad project.
 
-Currently, it is broken with recent emacs version. Please allow some time for me to fix this.
-
 ----
 CategoryPersonalInformationManager CategoryTodo CategoryModes CategoryJournaling
