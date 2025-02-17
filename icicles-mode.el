@@ -1,14 +1,14 @@
-;;; icicles-mode.el --- Icicle Mode definition for Icicles
+;;; icicles-mode.el --- Icicle Mode definition for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-mode.el
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Jan 26 10:33:17 2022 (-0800)
+;; Last-Updated: Mon Feb 17 11:27:20 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 10296
+;;     Update #: 10298
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -21,10 +21,10 @@
 ;;   `auth-source', `autofit-frame', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
-;;   `col-highlight', `color', `crosshairs', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `color', `crosshairs', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `custom', `dired', `dired+',
+;;   `dired-aux', `dired-loaddefs', `dired-x', `doremi',
 ;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
 ;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `facemenu',
 ;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `fit-frame',
@@ -37,13 +37,13 @@
 ;;   `image', `image-dired', `image-file', `image-mode', `info',
 ;;   `info+', `isearch+', `isearch-prop', `kmacro', `levenshtein',
 ;;   `macroexp', `mb-depth', `mb-depth+', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `zones'.
+;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
