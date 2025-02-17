@@ -28,5 +28,5 @@ Magit
 
 !GitHub Copilot
 * [https://github.com/copilot-emacs/copilot.el copilot] ([https://melpa.org/#/copilot MELPA]), "An unofficial Copilot plugin for Emacs."
-* [https://github.com/chep/copilot-chat.el copilot-chat] ([MELPA https://melpa.org/#/copilot-chat]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
+* [https://github.com/chep/copilot-chat.el copilot-chat] ([https://melpa.org/#/copilot-chat MELPA]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
 
