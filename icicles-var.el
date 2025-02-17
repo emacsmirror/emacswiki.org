@@ -1,14 +1,14 @@
-;;; icicles-var.el --- Internal variables for Icicles
+;;; icicles-var.el --- Internal variables for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-var.el
 ;; Description: Internal variables for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Jan  4 12:15:16 2023 (-0800)
+;; Last-Updated: Mon Feb 17 12:14:09 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 1902
+;;     Update #: 1909
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,7 +20,7 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `eieio',
 ;;   `eieio-core', `eieio-loaddefs', `el-swank-fuzzy', `epg-config',
@@ -54,8 +54,9 @@
 ;;    `icicle-apropos-value-last-initial-cand-set',
 ;;    `icicle-auto-complete-key-idle-timer' (Emacs 22+),
 ;;    `icicle-auto-no-icomplete-mode-p', `icicle-auto-no-sort-p',
-;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
-;;    `icicle-bookmark-types', `icicle-buffer-complete-fn',
+;;    `icicle-bookmark-completing-p', `icicle-bookmark-history',
+;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-types',
+;;    `icicle-buffer-complete-fn', `icicle-buffer-completing-p',
 ;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
 ;;    `icicle-bufflist', `icicle-candidate-action-fn',
 ;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
@@ -89,7 +90,7 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-face-remapping-Completions',
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
-;;    `icicle-fancy-cands-internal-p',
+;;    `icicle-fancy-cands-internal-p', `icicle-file-completing-p',
 ;;    `icicle-file-name-completion-table' (Emacs 24+),
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
@@ -306,6 +307,9 @@ This automatic turning off happens when there are at least
 This automatic turning off happens when there are at least
 `icicle-sorting-max-candidates' completion candidates.")
 
+(defvar icicle-bookmark-completing-p nil
+  "Non-nil means we are completing a bookmark name.")
+
 (defvar icicle-bookmark-history nil "History for bookmark names.")
 
 (defvar icicle-bookmark-list-names-only-p nil
@@ -331,6 +335,9 @@ function `icicle-buffer-multi-complete'.
 If the value is nil then:
 * If `icicle-bufflist' is a list of buffers then it is used.
 * Otherwise, the list of all buffer names is used.")
+
+(defvar icicle-buffer-completing-p nil
+  "Non-nil means we are completing a buffer name.")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
 
@@ -614,6 +621,9 @@ can be costly.")
 (defvar icicle-fancy-cands-internal-p nil
   "Same as `icicle-fancy-candidates-p', but for internal use only.
 Do not set or bind this.  This is bound only by `completing-read'.")
+
+(defvar icicle-file-completing-p nil
+  "Non-nil means we are completing a file name.")
 
 (when (> emacs-major-version 23)
   (defvar icicle-file-name-completion-table
