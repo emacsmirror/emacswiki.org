@@ -1,14 +1,14 @@
-;;; icicles-mcmd.el --- Minibuffer commands for Icicles
+;;; icicles-mcmd.el --- Minibuffer commands for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-mcmd.el
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Nov  3 11:57:40 2022 (-0700)
+;; Last-Updated: Mon Feb 17 11:23:11 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 19886
+;;     Update #: 19888
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,7 +20,7 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
 ;;   `dired', `dired-loaddefs', `doremi', `doremi-frm', `easymenu',
@@ -34,7 +34,7 @@
 ;;   `icicles-var', `image', `image-dired', `image-mode', `info',
 ;;   `info+', `isearch+', `isearch-prop', `kmacro', `levenshtein',
 ;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `palette',
+;;   `mouse3', `mwheel', `nadvice', `naked', `package', `palette',
 ;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
 ;;   `ring', `second-sel', `seq', `strings', `syntax',
 ;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
