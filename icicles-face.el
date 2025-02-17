@@ -1,14 +1,15 @@
-;;; icicles-face.el --- Faces for Icicles
+;;; icicles-face.el --- Faces for Icicles   -*- lexical-binding:nil -*-
+
 ;;
 ;; Filename: icicles-face.el
 ;; Description: Faces for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Wed Jan 26 09:54:40 2022 (-0800)
+;; Last-Updated: Mon Feb 17 11:20:55 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 749
+;;     Update #: 751
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-face.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
