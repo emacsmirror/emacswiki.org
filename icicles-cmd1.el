@@ -1,14 +1,14 @@
-;;; icicles-cmd1.el --- Top-level commands for Icicles
+;;; icicles-cmd1.el --- Top-level commands for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-cmd1.el
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jul 27 15:16:15 2023 (-0700)
+;; Last-Updated: Mon Feb 17 11:56:04 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 27662
+;;     Update #: 27666
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -20,7 +20,7 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `auth-source', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl', `cl-generic', `cl-lib', `cl-macs',
+;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
 ;;   `cmds-menu', `col-highlight', `color', `crosshairs', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
 ;;   `dired', `dired-loaddefs', `doremi', `doremi-frm', `easymenu',
@@ -34,13 +34,13 @@
 ;;   `icicles-opt', `icicles-var', `image', `image-dired',
 ;;   `image-mode', `info', `info+', `isearch+', `isearch-prop',
 ;;   `kmacro', `levenshtein', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
-;;   `palette', `password-cache', `pp', `pp+', `radix-tree', `rect',
-;;   `replace', `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
-;;   `timer', `url-handlers', `url-parse', `url-vars', `vline',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -654,6 +654,7 @@
 (defvar icicle-custom-themes)           ; In `icicles-opt.el' (Emacs 24+)
 (defvar icicle-custom-themes-accumulate-flag) ; In `icicles-opt.el' (Emacs 24+)
 (defvar icicle-custom-themes-update-flag) ; In `icicles-opt.el' (Emacs 24+)
+(defvar icicle-inhibit-try-switch-buffer) ; In `icicles-var.el'
 (defvar icicle--last-toggle-transforming-msg) ; Here
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar icomplete-mode)                 ; In `icomplete.el'
