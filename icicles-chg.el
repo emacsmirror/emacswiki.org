@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Oct 28 09:44:07 2024 (-0700)
+;; Last-Updated: Mon Feb 17 12:25:49 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 11947
+;;     Update #: 11952
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2023/07/27 dadams
 ;;     icicle-repeat-complex-command: Updated per vanilla, for Emacs 25+.
 ;;     icicle-repeat-complex-command--called-interactively-skip is only for Emacs 24.
@@ -1223,6 +1225,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2022/06/25 dadams
 ;;     icicle-ido-like-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2022/05/22 dadams
@@ -2212,6 +2216,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2020/11/12 dadams
 ;;     Added soft-require of hexrgb.el (but not really needed).
 ;; 2014/10/19 dadams
@@ -2350,6 +2356,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
+;;     icicle-read-from-minibuffer: Increased max-specpdl-size for the duration, to avoid possible
+;;      "Variable binding exceeds max-specpdl-size" error.
 ;; 2024/10/28 dadams
 ;;     icicle-insert-candidates: Emacs 28+ doesn't use icomplete-tidy.
 ;; 2023/07/27 dadams
@@ -4508,6 +4518,10 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
+;; 2023/10/22 dadams
+;;     icicle-define-(bookmark-command-1|search-bookmark-command): Bind icicle-bookmark-completing-p.
 ;; 2018/10/15 dadams
 ;;     icicle-buffer-bindings, icicle-file-bindings:
 ;;       Always set icicle-sort-comparer to icicle-(buffer|file)-sort.
@@ -4777,6 +4791,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2022/11/03 dadams
 ;;     icicle-display-candidates-in-Completions: Check hist-cand membership with abs filename.
 ;;       Code for Emacs 20 crash is just for hist cand.
@@ -6626,6 +6642,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2017/11/25 dadams
 ;;     icicle-last-non-minibuffer-buffer: Exclude killed buffers.
 ;; 2017/06/25 dadams
@@ -7948,6 +7966,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2022/06/26 dadams
 ;;     icicle-default-value: Minor doc-string fixes.
 ;; 2022/05/22 dadams
@@ -8936,6 +8956,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
+;; 2023/10/22 dadams
+;;     Added: icicle-(bookmark|buffer|file)-completing-p.
 ;; 2020/12/05 dadams
 ;;     icicle-re-no-dot:
 ;;       Changed value to be that of directory-files-no-dot-files-regexp.  See comment in code.
@@ -9425,6 +9449,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2025/02/17 dadams
+;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2023/07/27 dadams
 ;;     Version 2023.07.27
 ;; 2022/01/26 dadams
