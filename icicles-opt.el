@@ -1,14 +1,14 @@
-;;; icicles-opt.el --- User options (customizable variables) for Icicles
+;;; icicles-opt.el --- User options (customizable variables) for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-opt.el
 ;; Description: User options (customizable variables) for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jun 26 12:59:51 2022 (-0700)
+;; Last-Updated: Mon Feb 17 11:28:01 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 6247
+;;     Update #: 6249
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,17 +20,17 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl', `cl-generic', `cl-lib', `cl-macs', `cmds-menu',
-;;   `col-highlight', `crosshairs', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `el-swank-fuzzy', `epg-config', `ffap',
-;;   `ffap-', `fit-frame', `font-lock', `font-lock+', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hexrgb', `hl-line',
-;;   `hl-line+', `info', `info+', `kmacro', `levenshtein',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
-;;   `rect', `replace', `second-sel', `seq', `strings', `syntax',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `cus-edit', `cus-face', `cus-load', `cus-start',
+;;   `cus-theme', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `el-swank-fuzzy', `epg-config', `ffap', `ffap-', `fit-frame',
+;;   `font-lock', `font-lock+', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
+;;   `help-macro+', `help-mode', `hexrgb', `hl-line', `hl-line+',
+;;   `info', `info+', `kmacro', `levenshtein', `macroexp',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `password-cache', `pp', `pp+', `radix-tree', `rect',
+;;   `replace', `second-sel', `seq', `strings', `syntax',
 ;;   `tabulated-list', `text-mode', `thingatpt', `thingatpt+',
 ;;   `url-handlers', `url-parse', `url-vars', `vline',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
