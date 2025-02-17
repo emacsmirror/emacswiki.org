@@ -10,7 +10,7 @@ The following is a list of highlights from the upcoming Emacs 30 release.  As to
 
 == Android Support ==
 
-Just as Emacs runs on different operating systems (GnuLinux, [[BSD]], [[DOS]], ...) runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
+Just as Emacs runs on different operating systems (GnuLinux, [[BSD]], [[DOS]], ...) so it now runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
 
 See EmacsOnAndroid and https://lwn.net/Articles/936576/. Developed by PoLu, see https://lists.gnu.org/archive/html/emacs-devel/2022-12/msg01358.html.
 
