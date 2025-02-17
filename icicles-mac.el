@@ -1,14 +1,14 @@
-;;; icicles-mac.el --- Macros for Icicles
+;;; icicles-mac.el --- Macros for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-mac.el
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Wed Jan 26 09:52:09 2022 (-0800)
+;; Last-Updated: Mon Feb 17 09:38:49 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 1304
+;;     Update #: 1309
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -115,9 +115,10 @@
   (defvar minibuffer-prompt-properties nil))
 
 ;; Quiet the byte-compiler.
-(defvar icicle-buffer-completing-p)
-(defvar icicle-file-completing-p)
-(defvar icicle-inhibit-try-switch-buffer)
+(defvar icicle-bookmark-completing-p)   ; In `icicles-var.el'
+(defvar icicle-buffer-completing-p)     ; In `icicles-var.el'
+(defvar icicle-file-completing-p)       ; In `icicles-var.el'
+(defvar icicle-inhibit-try-switch-buffer) ; In `icicles-var.el'
 (defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar read-file-name-completion-ignore-case)
 
