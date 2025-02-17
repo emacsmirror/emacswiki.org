@@ -1,14 +1,14 @@
-;;; icicles-fn.el --- Non-interactive functions for Icicles
+;;; icicles-fn.el --- Non-interactive functions for Icicles   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles-fn.el
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Oct 28 09:43:00 2024 (-0700)
+;; Last-Updated: Mon Feb 17 09:37:08 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 15325
+;;     Update #: 15330
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1809,17 +1809,19 @@ Returns the modified copy of PLIST."
 ;; REPLACE ORIGINAL `read-from-minibuffer' (built-in function),
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Respect `icicle-default-value'.
+;; 1. Respect `icicle-default-value'.
 ;;
-;; We use HIST-m@%=!$+&^*z instead of HIST, to avoid name capture by `minibuffer-history-variable's
-;; value.  If we didn't need to be Emacs 20-compatible, then we could employ
-;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
+;; 2. Increase `max-specpdl-size' for the duration, to avoid possible "Variable binding exceeds max-specpdl-size".
+;;
+;; 3. We use HIST-m@%=!$+&^*z instead of HIST, to avoid name capture by `minibuffer-history-variable's
+;;    value.  If we didn't need to be Emacs 20-compatible, then we could employ
+;;    `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'icicle-ORIG-read-from-minibuffer)
   (defalias 'icicle-ORIG-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
 
 (defun icicle-read-from-minibuffer (prompt &optional initial-contents keymap read
-                                    hist-m@%=!$+&^*z default-value inherit-input-method)
+                                           hist-m@%=!$+&^*z default-value inherit-input-method)
   "Read a string from the minibuffer, prompting with string PROMPT.
 The optional second arg INITIAL-CONTENTS is an alternative to
   DEFAULT-VALUE.  Vanilla Emacs considers it to be obsolete, but
@@ -1905,8 +1907,9 @@ for POSITION."
 ;;;                                 ")" (substring prompt (match-beginning 2) (match-end 2)))
 ;;;                       (concat prompt def-value))))
     )
-  (icicle-ORIG-read-from-minibuffer
-   prompt initial-contents keymap read hist-m@%=!$+&^*z default-value inherit-input-method))
+  (let ((max-specpdl-size  (+ 2000 max-specpdl-size)))
+    (icicle-ORIG-read-from-minibuffer
+     prompt initial-contents keymap read hist-m@%=!$+&^*z default-value inherit-input-method)))
 
 
 ;; REPLACE ORIGINAL `minibuffer-default-add-completions' defined in `simple.el',
