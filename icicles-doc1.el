@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Dec 25 10:47:25 2024 (-0800)
+;; Last-Updated: Mon Feb 17 12:42:34 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 28684
+;;     Update #: 28685
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
