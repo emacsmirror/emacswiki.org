@@ -1,16 +1,16 @@
-;;; icicles.el --- Minibuffer input completion and cycling.
+;;; icicles.el --- Minibuffer input completion and cycling.   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: icicles.el
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2023.07.27
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 27 09:18:27 2023 (-0700)
+;; Last-Updated: Mon Feb 17 12:31:17 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 23743
+;;     Update #: 23749
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -963,8 +963,9 @@
 ;;    `icicle-bookmark-bookmark-file-p',
 ;;    `icicle-bookmark-bookmark-list-p', `icicle-bookmark-cleanup',
 ;;    `icicle-bookmark-cleanup-on-quit',
-;;    `icicle-bookmark-delete-action', `icicle-bookmark-desktop-p',
-;;    `icicle-bookmark-dired-p', `icicle-bookmark-dired-this-dir-p',
+;;    `icicle-bookmark-completing-p', `icicle-bookmark-delete-action',
+;;    `icicle-bookmark-desktop-p', `icicle-bookmark-dired-p',
+;;    `icicle-bookmark-dired-this-dir-p',
 ;;    `icicle-bookmark-dired-wildcards-p', `icicle-bookmark-file-p',
 ;;    `icicle-bookmark-file-this-dir-p', `icicle-bookmark-flagged-p',
 ;;    `icicle-bookmark-function-p', `icicle-bookmark-gnus-p',
@@ -991,9 +992,10 @@
 ;;    `icicle-bounds-of-thing-at-point',
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-apropos-complete-match',
-;;    `icicle-buffer-cand-help', `icicle-buffer-modified-p',
-;;    `icicle-buffer-multi-complete', `icicle-buffer-name-prompt',
-;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
+;;    `icicle-buffer-cand-help', `icicle-buffer-completing-p',
+;;    `icicle-buffer-modified-p', `icicle-buffer-multi-complete',
+;;    `icicle-buffer-name-prompt', `icicle-buffer-smaller-p',
+;;    `icicle-buffer-sort-*...*-last',
 ;;    `icicle-cached-files-without-buffers',
 ;;    `icicle-call-then-update-Completions',
 ;;    `icicle-cancel-Help-redirection', `icicle-candidate-action-1',
@@ -1092,10 +1094,11 @@
 ;;    `icicle-face-valid-attribute-values',
 ;;    `icicle-ffap-file-remote-p', `icicle-ffap-url-p',
 ;;    `icicle-file-accessible-directory-p',
-;;    `icicle-file-compressed-p', `icicle-file-desktop-p',
-;;    `icicle-file-directory-p', `icicle-file-elc-p',
-;;    `icicle-file-executable-p', `icicle-file-exists-p',
-;;    `icicle-file-locked-p', `icicle-file-name-absolute-p',
+;;    `icicle-file-completing-p', `icicle-file-compressed-p',
+;;    `icicle-file-desktop-p', `icicle-file-directory-p',
+;;    `icicle-file-elc-p', `icicle-file-executable-p',
+;;    `icicle-file-exists-p', `icicle-file-locked-p',
+;;    `icicle-file-name-absolute-p',
 ;;    `icicle-file-name-apropos-candidates',
 ;;    `icicle-file-name-directory',
 ;;    `icicle-file-name-directory-w-default',
@@ -1173,6 +1176,7 @@
 ;;    `icicle-Info-node-is-indexed-by-topic',
 ;;    `icicle-Info-read-node-name',
 ;;    `icicle-Info-read-node-of-content',
+;;    `icicle-inhibit-try-switch-buffer',
 ;;    `icicle-input-from-minibuffer',
 ;;    `icicle-input-is-a-completion-p', `icicle-insert-candidates',
 ;;    `icicle-insert-candidate-action',
