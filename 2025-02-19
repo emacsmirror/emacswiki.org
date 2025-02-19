@@ -1,0 +1,15 @@
+[new]
+The bots have been at it again!
+For a while, load hovered around 80 to 110.
+I switched off the site for a few hours.
+Right now it's back up and some expensive requests that the bots like to use redirects to [https://www.emacswiki.org/nobots /nobots].
+If this happens more than two times, fail2ban should ban the IP number for ten minutes.
+If this happens more than three times, fail2ban should ban the IP number for a week.
+Sadly, fail2ban doesn't ban the entire network, so all those rented machines the AI bros use to ingest the training data from sites like this one don't all get banned.
+Oh well. For the moment it's yet another band aid.
+Another cost they successfully offloaded to the human sysadmins out there.
+I can't begin to tell you how much I hate these large language model fuckers.
+I can spend more time optimizing my site or my software for them.
+Change the architecture of the software that served me well for more than twenty years, for them.
+Pay more money for RAM and start adding more caches, for them.
+All to serve them the texts we wrote for each other, not for them.
