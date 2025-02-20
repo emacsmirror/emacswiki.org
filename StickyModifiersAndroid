@@ -7,7 +7,7 @@ Since Android 4.1 an app can provide additional keyboard layouts via Key Charact
 
 
 == Too Long; Didn't Read ==
-Go to [[EmacsAndroidKeymap]], download and extract the zip file as apk file.  You can inspect its contents.  It only contains a Key Character Map.
+Go to [[EmacsAndroidKeymap]], download the base64 encoded zip file then extract the file.  You can inspect its contents.  It only contains a Key Character Map.
 
 Install the apk, then go to Settings / System / Languages & input / Physical keyboard / KEYBOARD NAME / Choose keyboard layout / ExKeyMo Layout.
 
