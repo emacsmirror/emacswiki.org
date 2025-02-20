@@ -53,7 +53,7 @@ that can run Java.
 
   If you are using emacs, launch =calc=, press apostrophe, enter
   =16#0038= then press return.
-* Now you know the keycode of the key you wish to remap.
+* Now you know the decimal keycode of the key you wish to remap.
 
 == Install OpenJDK ==
 
@@ -77,6 +77,7 @@ keys using the following syntax:
  #+begin_example
  type OVERLAY
  # remap LANG to ALT
+ # use decimal key code
  map key 100 ALT_LEFT
  # remap ALT GR to ALT
  map key 122 ALT_LEFT
