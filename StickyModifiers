@@ -13,6 +13,11 @@ On MS Windows it is the operating system that implements this feature for any ap
 
 Turning "Sticky Keys" on in the Macintosh is extremely easy (OSX 10.4.4). One goes to "Universal Access" in "System Preferences" and selects "Keyboard" in the horizontal menu across the top of the screen.  It is self-explanatory from there on. (Citing a message from John Gage on emacs-nxml-mode list.)
 
+
+== Android ==
+
+See [[StickyModifiersLinuxAndroid]].
+
 == Linux ==
 
 === Console ===
