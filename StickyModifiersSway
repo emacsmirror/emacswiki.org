@@ -54,66 +54,61 @@ Finally, if you are satisfied with the result, put the line in your sway config
 
 = How the xkb file was produced =
 
-Firstly run the bash script below to create two sticky keyboard variant files:
+== Obtain a dump of your current keyboard layout ==
 
-* keymap_with_sticky_modifiers.xkb - a latched sticky modifier setup in which a modifier is activated by a following key press.
-* keymap_with_locked_modifiers.xkb - a locking sticky modifier setup in which a modifier will be locked on a double tap and then unlocked with a single tap.
+Make sure you did not disable Xwayland, then run
+ xkbcomp $DISPLAY kbd.dump
 
-  #!/bin/bash
-  DST=$HOME/.config
-  # Reset keyboard layout (to your preferred language)
-  setxkbmap gb
-  # Apply sticky modifier changes and save to a specific file
-  xkbcomp $DISPLAY -xkb - | \
-  sed 's|SetMods|LatchMods|g' > \
-  $DST/keymap_with_sticky_modifiers.xkb
-  # Reset keyboard layout (to your preferred language)
-  setxkbmap gb
-  # Apply locked modifiers changes and save to a specific file
-  xkbcomp $DISPLAY -xkb - | \
-  sed 's|SetMods|LatchMods|g' | \
-  sed 's|,clearLocks);|,clearLocks,latchToLock);|g' > \
-  $DST/keymap_with_locked_modifiers.xkb
+You now have a complete description of the currently used keyboard layout.
 
-At this point you can activate Sticky Keys by loading the new xkb keymap in the Sway config as follows:
+== Enable Sticky Behavior ==
+Use sed, or your favorite editor (!) to change all instances of SetMods into LatchMods
 
-  input "type:keyboard" {
-      xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
-  }
+ sed -i 's|SetMods|LatchMods|g' kbd.dump
 
-Optionally modify the xkb file directly after generation to use the “Caps Lock” keyboard indicator LED for indicating a sticky modifier is active, like so :
+This will make all modifiers --
 
-  indicator "Caps Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Control+Mod1+Shift;
-  };
+ Control+Shift+Alt+Meta+Super+Hyper+Lock;
 
-This turns on the Caps Lock LED whenever a Control, Alt (Mod1) or Shift key is sticky locked giving a visual hint to any locked keys.  Although useful on a laptop if you are using a full sized keyboard each modifier can be linked to its own indicator LED, for example:
+-- sticky.  Namely, press then release the modifier, followed by pressing another key, will behave
+as if the keys have been pressed together.
 
-  indicator "Caps Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Control;
-  };
-  indicator "Num Lock" {
-      !allowExplicit;
-      whichModState= locked;
-      modifiers= Mod1;
-  };
-  indicator "Scroll Lock" {
-      whichModState= locked;
-      modifiers= Shift;
-  };
+If the same modifier is pressed and released after the first press-release, the stickiness will be deactivated.
 
-As part of this keyboard redefinition it might also be useful to remap the Caps Lock key to the Control modifier.  One way to achieve this in Sway is to modify the config file as follows:
+== You are done ! ==
 
-  input type:keyboard {
-     xkb_file $HOME/.config/keymap_with_locked_modifiers.xkb
-     xkb_options ctrl:nocaps
-  }
+Now instruct sway to load the keymap file.
 
-However, as we are redefining our keyboard layout we can directly modify the xkb configuration file in the following manner:
+ swaymsg input "type:keyboard" xkb_file $HOME/kbd.dump
+
+If you do not like it, enter
+
+ swaymsg reload
+
+to restore to the previous state.
+
+== Caps Lock indicator as Sticky indicator ==
+
+You can use Caps Lock indicator as an indicator for stickiness by changing the block
+
+ indicator "Caps Lock" {
+   ...
+ }
+
+into
+
+      indicator "Caps Lock" {
+          whichModState= latched+locked;
+          modifiers= Control+Shift+Alt+Meta+Super+Hyper+Lock;
+      };
+
+In the same way, you can make use of NumLock and Scroll Lock indicators.
+
+This turns on the Caps Lock LED whenever a Control, Alt (Mod1) or Shift key is sticky locked giving a visual hint to any locked keys.
+
+== Remapping Keys ==
+
+we can directly modify the xkb configuration file in the following manner:
 
 replace:
 
@@ -131,12 +126,55 @@ with
 
   modifier_map Control { <CAPS> };
 
-For bonus points, and to ensure that the right Alt modifier functions like a regular Alt thereby distributing the keys more evenly between the left and right hands, perform the following steps:
+== Opinionated Keymap for Emacs ==
 
-add:
+For en-US keyboard only.
 
-  modifier_map Mod1 { <RALT> };
+I know it is not for everybody, but for a more ergonomic and symmetrical layout, I opted to map both Caps Lock and Apostrophe to Ctrl.  To compensate,
 
-set the definition of key <RALT> to:
+Tab -> Apostrophe
+Right Ctrl -> Tab
 
-  key <RALT> {         [           Alt_L,          Meta_L ] };
+I can use Ctrl-I as replacement for Tab.
+
+Implementation:
+
+ <     key  <TAB> {         [             Tab,    ISO_Left_Tab ] };
+ ---
+ >     key  <TAB> {         [      apostrophe,        quotedbl ] };
+ 1309c1309
+ <     key <AC11> {         [      apostrophe,        quotedbl ] };
+ ---
+ >     key <AC11> {         [       Control_R,       Control_R ] };
+ 1351c1351
+ <     key <CAPS> {         [       Caps_Lock ] };
+ ---
+ >     key <CAPS> {         [       Control_L,       Control_L ] };
+ 1426,1430c1426,1430
+ <     key <KATA> {         [        Katakana ] };
+ <     key <HIRA> {         [        Hiragana ] };
+ <     key <HENK> {         [     Henkan_Mode ] };
+ <     key <HKTG> {         [ Hiragana_Katakana ] };
+ <     key <MUHE> {         [        Muhenkan ] };
+ ---
+ >     key <KATA> {         [        Alt_L ] };
+ >     key <HIRA> {         [        Alt_L ] };
+ >     key <HENK> {         [        Alt_L ] };
+ >     key <HKTG> {         [        Alt_L ] };
+ >     key <MUHE> {         [        Alt_L ] };
+ 1432c1432
+ <     key <RCTL> {         [       Control_R ] };
+ ---
+ >     key <RCTL> {         [             Tab ] };
+ 1472c1472
+ <     key <COMP> {         [            Menu ] };
+ ---
+ >     key <COMP> {         [         Super_R ] };
+ 1580a1581
+ >     modifier_map Control { <AC11> };
+ 1584c1585
+ <     modifier_map Lock { <CAPS> };
+ ---
+ >     modifier_map Control { <CAPS> };
+ 1587d1587
+ <     modifier_map Control { <RCTL> };
