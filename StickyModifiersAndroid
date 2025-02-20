@@ -18,6 +18,92 @@ Demo
 * Tab is now Apostrophe
 * Left Ctrl is now Tab
 
-== How the apk file was built ==
+= How the APK was built =
 
-See [https://github.com/ris58h/exkeymo-web].
+This article describes how to define custom keyboard layouts on
+android.
+
+== Assumptions ==
+
+I assume you have enabled USB Debugging on your phone and a computer
+that can run Java.
+
+== Find out the key code of the keys you wish to remap ==
+
+* Connect your phone to the computer.
+* Run =adb shell=.
+* Execute =getevent= command.
+* Press the key you wish to remap.
+  #+begin_example
+  add device 1: /dev/input/event9
+    name:     "Tab S3 Book Cover Keyboard"
+
+  # key pressed
+  /dev/input/event9: 0004 0004 00000031
+  /dev/input/event9: 0001 0038 00000001
+  /dev/input/event9: 0000 0000 00000000
+
+  # key released
+  /dev/input/event9: 0004 0004 00000031
+                          vvvv keycode in hex
+  /dev/input/event9: 0001 0038 00000000
+  /dev/input/event9: 0000 0000 00000000
+  #+end_example
+* Convert the keycode to decimal form.
+
+  If you are using emacs, launch =calc=, press apostrophe, enter
+  =16#0038= then press return.
+* Now you know the keycode of the key you wish to remap.
+
+== Install OpenJDK ==
+
+On NixOS, this can be done via =nix-shell -p jdk=.
+
+== Install exkeymo-web ==
+
+Follow the instructions at [[https://github.com/ris58h/exkeymo-web]].
+
+As a unpriviledged user, I needed to execute
+ #+begin_example
+ java -Dserver.port=8098 -jar target/exkeymo-web-*-jar-with-dependencies.jar
+ #+end_example
+to launch the program.
+
+== Using exkeymo-web ==
+
+Visit [[http://localhost:8098]].  Select "Complex" tab.  Then remap the
+keys using the following syntax:
+
+ #+begin_example
+ type OVERLAY
+ # remap LANG to ALT
+ map key 100 ALT_LEFT
+ # remap ALT GR to ALT
+ map key 122 ALT_LEFT
+ # remap CAPS LOCK to CTRL_LEFT
+ map key 58 CTRL_LEFT
+ # remap TAB to APOSTROPHE
+ map key 15 APOSTROPHE
+ # remap CTRL_LEFT to TAB
+ map key 29 TAB
+ # remap APOSTROPHE to CTRL_RIGHT
+ map key 40 CTRL_RIGHT
+ # remap keyboard switch to app switch
+ map key 706 APP_SWITCH
+ #+end_example
+Finally click download.
+== Install and switch to the new layout ==
+
+Copy the apk file to your phone and install it.  Then go to
+"Settings/System/Language & Input/Physical Keyboard."  Tap on the
+keyboard name.  Then select "Set up keyboard layouts".  Select the
+primary language you wish to use and the overlay keyboard.
+
+== Test the results ==
+
+Now launch Termux and see if the new layout is working correctly.
+
+== Change Layout ==
+
+Remember to completely remove the old layout app before installing a
+new layout.
