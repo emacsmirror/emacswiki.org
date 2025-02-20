@@ -1,0 +1,23 @@
+= Sticky Modifiers =
+Supported on Android 14+.  Go to Settings / System / Languages & input / Physical keyboard / Built-in Keyboard / Sticky Keys.
+
+= Remap Ctrl =
+
+Since Android 4.1 an app can provide additional keyboard layouts via Key Character Map files. Since then, it's possible to customize a keyboard layout without root access by installing an app that contains requred layout.
+
+
+== Too Long; Didn't Read ==
+Go to [[EmacsAndroidKeymap]], download and extract the zip file as apk file.  You can inspect its contents.  It only contains a Key Character Map.
+
+Install the apk, then go to Settings / System / Languages & input / Physical keyboard / KEYBOARD NAME / Choose keyboard layout / ExKeyMo Layout.
+
+Demo
+* Launch F-Droid Emacs or Termux Emacs
+* Caps Lock is now Left Ctrl
+* Apostrophe is now Right Ctrl
+* Tab is now Apostrophe
+* Left Ctrl is now Tab
+
+== How the apk file was built ==
+
+See [https://github.com/ris58h/exkeymo-web].
