@@ -1,16 +1,16 @@
-;;; start.el --- Main Emacs startup file: require/autoload other files.
+;;; start.el --- Main Emacs startup file: require/autoload other files.   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: start.el
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2025, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct 11 13:47:25 2024 (-0700)
+;; Last-Updated: Thu Feb 20 16:48:19 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 3117
+;;     Update #: 3120
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2025/02/20 dadams
+;;     compile+ doesn't work with Emacs 28+.
 ;; 2024/10/11 dadams
 ;;     Don't try to require framemove for Emacs < 26.  That tries to require cl-seq, with no provide.
 ;; 2023/03/25 dadams
@@ -522,10 +524,14 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (require 'help-mode+ nil t)           ; Extensions to `help-mode.el'.
   (require 'help-fns+ nil t)            ; Extensions to `help-fns.el'.
   (require 'descr-text+ nil t))         ; Extensions to `descr-text.el'.
-(if (< emacs-major-version 22)
-    (require 'compile+20 nil t)         ; Highlighting, etc.
-  (require 'compile+ nil t)             ; Highlighting.
-  (require 'grep+ nil t))               ; Highlighting.
+;; `compile+.el' doesn't work with Emacs 28+.
+(cond ((< emacs-major-version 22)
+       (require 'compile+20 nil t))     ; Highlighting, etc.
+      ((< emacs-major-version 28)
+       (require 'compile+ nil t)        ; Highlighting.
+       (require 'grep+ nil t))          ; Highlighting.
+      (t
+       (require 'grep+ nil t)))         ; Highlighting.
 (require 'highlight nil t)              ; Highlighting commands. Also loads `menu-bar+.el'.
 
 (require 'menu-bar+ nil t)              ; Extensions to `menu-bar.el'.  Also loads `info+.el'.
