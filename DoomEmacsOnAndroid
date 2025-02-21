@@ -148,7 +148,7 @@ This file must be regenerated when Android Emacs has been updated. Otherwise the
 
 In Android Emacs:
 [code]
-$ M-x shell
+M-x shell
 $ cd $HOME/.config/emacs/.local
 $ mv env old.env
 [/code]
@@ -156,21 +156,21 @@ $ mv env old.env
 Restart emacs.
 If emacs can not find binaries that are in Termux bin direcory, then the environment variable PATH will have to be updated, in a shell session. And "doom sync" need to be run:
 [code]
-$ M-x shell
+M-x shell
 $ export PATH=/data/data/com.termux/files/usr/bin:$PATH
 $ $HOME/.config/emacs/bin/doom sync
 [/code]
 
 Restart emacs. Now regenerate the <tt>env</tt> file:
 [code]
-$ M-x shell
+M-x shell
 $ $HOME/.config/emacs/bin/doom env
 [/code]
 
 =Updating Doom Emacs=
 To upgrade to a new git version of Doom Emacs, in Android Emacs:
 [code]
-$ M-x shell
+M-x shell
 $ doom upgrade --force
 [/code]
 
@@ -183,13 +183,13 @@ $ doom sync -u
 
 To update after changes to <tt>$HOME/.config/doom/init.el</tt> or <tt>$HOME/.config/packages.el</tt>:
 [code]
-$ M-x shell
+M-x shell
 $ doom sync
 [/code]
 
 To update all emacs packages that have got new versions in their repos on the internet:
 [code]
-$ M-x shell
+M-x shell
 $ doom sync -u
 [/code]
 
@@ -204,14 +204,14 @@ should tangle the file, if the automatic tangling seems to hang.
 =Directories for fonts=
 Applications may look for fonts in directories <tt>$HOME/fonts</tt> and <tt>$HOME/.local/share/fonts</tt>. Make a symbolic link from one to another, to have a unique font directory:
 [code]
-$ M-x shell
+M-x shell
 $ mkdir -p $HOME/.local/share/fonts
 $ ln -s $HOME/.local/share/fonts $HOME/fonts
 [/code]
 
 Alternatively, move the font directory to /sdcard/fonts:
 [code]
-$ M-x shell
+M-x shell
 $ cd $HOME
 $ tar cf - fonts | (cd /sdcard; tar xf -)
 $ mv fonts junk-fonts; ln -s /sdcard/fonts
