@@ -1,16 +1,16 @@
-;;; grep+.el --- Extensions to standard library `grep.el'.
+;;; grep+.el --- Extensions to standard library `grep.el'.   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: grep+.el
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2021, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  3 15:53:42 2021 (-0800)
+;; Last-Updated: Thu Feb 20 17:00:22 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 766
+;;     Update #: 768
 ;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -102,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/02/20 dadams
+;;     compile+.el doesn't work for Emacs 28+.
 ;; 2021/01/03 dadams
 ;;     grep-default-command: Use grep-tag-default for Emacs 27.
 ;;     Don't bother to modify grep-tag-default for Emacs 26+.
@@ -195,7 +197,8 @@
 ;;
 ;;; Code:
 
-(require 'compile+ nil t) ;; (no error if not found) - to pick up enhancements for grep too.
+(when (< emacs-major-version 28)
+  (require 'compile+ nil t)) ;; (no error if not found) - to pick up enhancements for grep too.
 (require 'grep)
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
