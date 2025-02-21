@@ -154,7 +154,7 @@ $ mv env old.env
 [/code]
 
 Restart emacs.
-If emacs can not find binaries that are in Termux bin direcory, then the environment variable PATH will have to be updated, in a shell session. And "doom sync" need to be run:
+If emacs can not find binaries that are in Termux bin direcory, then the environment variable PATH will have to be updated, in a shell session. And "doom sync" need to be run, to create and populate directory $HOME/.config/emacs/.local/straight/build-<emacs-version>:
 [code]
 M-x shell
 $ export PATH=/data/data/com.termux/files/usr/bin:$PATH
