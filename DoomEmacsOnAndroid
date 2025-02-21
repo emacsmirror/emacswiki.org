@@ -153,6 +153,13 @@ $ cd $HOME/.config/emacs/.local
 $ mv env old.env
 [/code]
 
+Restart emacs.
+If emacs can not find binaries that are in Termux bin direcory, then the environment variable PATH will have to be updated, in this shell session:
+[code]
+$ export PATH=/data/data/com.termux/files/usr/bin:$PATH
+$ $HOME/.config/emacs/bin/doom sync
+[/code]
+
 Restart emacs. Now regenerate the <tt>env</tt> file:
 [code]
 $ M-x shell
