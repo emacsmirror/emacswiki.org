@@ -1,23 +1,21 @@
 [[zh:MovingTheCtrlKey_zh_CN]]
 This page explains how to move the Control key. Some users find that this can help to avoid "Emacs pinky" (RepeatedStrainInjury). 
 
-But note that some users find that doing this <i>causes</i> Emacs pinky because you're extending your left pinky to hit Ctrl all the time. Better to keep the standard layout and press the Ctrl keys on either side of the keyboard with either the tip of your pinky (fan out your fingers and rotate your wrist toward the center of your body), your pinky fingernail (curl it under) or the knuckle at the base of the pinky (open your hand and slam it down). Get used to them all; the first word in RepeatedStrainInjury is Repeated.
-
-== Introduction ==
+= Introduction =
 For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press than Control, crucial to Emacs yet really awkwardly located.
 
 When Emacs was first written, most keyboards had Ctrl to the left of A, either immediately to the left or with CapsLock in between.  Thus, it was a convenient and logical choice of key for creating Emacs commands.  When personal computers went mainstream in the 80's, Ctrl was moved out of the way, presumably because the target users (office workers) wouldn't need Ctrl as often as CapsLock.
 
-== GNU/Linux ==
+But note that some users find that doing this <i>causes</i> Emacs pinky because you're extending your left pinky to hit Ctrl all the time. Better to keep the standard layout and press the Ctrl keys on either side of the keyboard with either the tip of your pinky (fan out your fingers and rotate your wrist toward the center of your body), your pinky fingernail (curl it under) or the knuckle at the base of the pinky (open your hand and slam it down). Get used to them all; the first word in RepeatedStrainInjury is Repeated.
+
+
+= GNU/Linux =
 
 Note that separate keyboard mappings are often used for X (graphical sessions) and for virtual consoles. (On Debian, you may be able to use <code>/etc/default/keyboard</code> file for both.)
 
 === Sway Window Manager ===
 
-You can use [https://raw.githubusercontent.com/ne9z/ergo-keyboard-layout/main/swaywm-emacs-ergo-keymap.txt this keymap].  Right click the link and save the keymap as text file, then load it in sway config with
-<pre>
-    input "type:keyboard" xkb_file $HOME/path_to_key_map.txt
-</pre>
+See [[StickyModifiersSway]], which remaps Caps Lock to Left Ctrl and the Apostrope key to Right Ctrl.
 
 === GNOME Desktop Environment ===
 
@@ -337,31 +335,7 @@ to activate and deactivate continually.
 [:Android]
 == Android ==
 
-When using a Bluetooth hardware keyboard attached to a android tablet or phone you might consider changing the SHIFT key also to CTRL. To do this Android wide, you need to have root access obviously. Open a console and gain root access with:
-<pre>
-$ su
-</pre>
-
-Then remount /system and change the desired keys in <code>/system/usr/keymaps</code> with the editor of your choice, e.g. nano:
-
-<pre>
-# mount -o rw,remount /system
-# nano /system/usr/keylayout/Generic.kl
-</pre>
-
-Again Key 58 is the SHIFT key. Set it to CTRL_LEFT for instance. Save the file and restart your tablet/phone.
-
-=== Another method ===
-
-Files placed in /system will be replaced during an Android system update. Instead of overwriting the Generic.kl file, you can copy it as /data/system/devices/keylayout/Vendor_XXXX_Product_XXXX.kl and make the appropriate changes in that file.
-
-You can find out the Vendor and Product id of your external keyboard by running
-
-<pre>
-cat /proc/bus/input/devices
-</pre>
-
-Your keyboard's info should appear. Ensure that the created .kl file, as well as any directory you create to place it in, has the appropriate permissions i.e. the keylayout file should not be world-writable, or Android will not load it.
+See [[StickyModifiersAndroid]], which also explains how to remap keys without root.
 
 [:Using space bar as both space and control]
 == Using space bar as both space and control ==
