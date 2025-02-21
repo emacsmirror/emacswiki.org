@@ -1,20 +1,20 @@
-;;; tool-bar+.el --- Extensions to standard library tool-bar.el
+;;; tool-bar+.el --- Extensions to tool-bar.el   -*- lexical-binding:nil -*-
 ;;
 ;; Filename: tool-bar+.el
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2025, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 16:11:33 2018 (-0800)
+;; Last-Updated: Fri Feb 21 09:18:48 2025 (-0800)
 ;;           By: dradams
-;;     Update #: 253
+;;     Update #: 256
 ;; URL: https://www.emacswiki.org/emacs/download/tool-bar%2b.el
-;; Doc URL: https://emacswiki.org/emacs/ToolBar
+;; Doc URL: https://emacswiki.org/emacs/ToolBar#ToolBarPlus
 ;; Keywords: tool-bar, convenience, mouse, button, frame
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x, 27.x, 28.x, 29.x, 30.x
 ;;
 ;; Features that might be required by this library:
 ;;
