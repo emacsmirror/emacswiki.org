@@ -12,6 +12,12 @@ Chat / General Purpose / Foundational
 * [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with !OpenAI's !ChatGPT models such as GPT3."
 * [https://github.com/stuhlmueller/gpt.el gpt.el] ([https://melpa.org/#/gpt MELPA]), created by Stuhlmueller. "A simple Emacs package for calling instruction-following language models."
 * [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for !OpenAI, allowing custom commands and interactions."
+* [https://github.com/emacs-openai/chatgpt chatgpt], created by Emacs OpenAI. "Use ChatGPT inside Emacs."
+** [https://github.com/emacs-openai/chatgpt-sideline chatgpt-sideline], created by Emacs OpenAI. "Sideline support for chatgpt."
+* [https://github.com/emacs-openai/deepl deepl], created by Emacs OpenAI. "Elisp library for the DeepL API."
+* [https://github.com/emacs-openai/google-gemini google-gemini], created by Emacs OpenAI. "Elisp library for the Google Gemini API."
+* [https://github.com/emacs-openai/openai openai], created by Emacs OpenAI. "Elisp library for the OpenAI API."
+
 
 Development
 * [https://github.com/tninja/aider.el aider] ([https://melpa.org/#/aider MELPA]), created by Tninja.  "`aider' is an Emacs plugin that acts as an AI pair programming assistant, facilitating code modifications and enhancing productivity within Emacs."
@@ -29,6 +35,9 @@ Knowledge Management
 * [https://github.com/ahyatt/ekg ekg] ([https://melpa.org/#/ekg MELPA]), created by Andrew Hyatt.  "`ekg' is an Emacs knowledge graph application for notes and structured data, using SQLite for storage."
 * [https://github.com/s-kostyaev/elisa elisa] ([https://melpa.org/#/elisa MELPA]), created by Sergey Kostyaev.  "`elisa' is an Emacs Lisp Information System Assistant that provides informative answers to user queries through retrieval-augmented generation."
 
+Consult
+* [https://github.com/armindarvish/consult-omni consult-omni], created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
+
 Org Mode
 * [https://github.com/rksm/org-ai org-ai], ([https://melpa.org/#/org-ai MELPA]), created by Robert Krahn.  "Provides a minor-mode for org-mode and a global minor-mode that allows you to interact with the !OpenAI API, with Stable Diffusion, as well as various local LLMs."
 * [https://github.com/xenodium/ob-chatgpt-shell ob-chatgpt-shell] ([https://melpa.org/#/ob-chatgpt-shell MELPA]), created by Xenodium.  "`ob-chatgpt-shell' evaluates !ChatGPT shell blocks within Emacs org babel, integrating AI responses into your Org documents."
@@ -41,5 +50,12 @@ Magit
 * [https://github.com/copilot-emacs/copilot.el copilot] ([https://melpa.org/#/copilot MELPA]), "An unofficial Copilot plugin for Emacs."
 * [https://github.com/chep/copilot-chat.el copilot-chat] ([https://melpa.org/#/copilot-chat MELPA]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
 
-Consult
-* [https://github.com/armindarvish/consult-omni consult-omni], created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
+DALL-E
+* [https://github.com/emacs-openai/dall-e dall-e], created by Emacs OpenAI. "Use DALL-E inside Emacs."
+
+UniteAI
+* [https://github.com/emacs-openai/lsp-uniteai lsp-uniteai], created by Emacs OpenAI. "lsp-mode client leveraging [https://github.com/freckletonj/uniteai uniteai]."
+* [https://github.com/emacs-openai/eglot-uniteai eglot-uniteai], created by Emacs OpenAI. "Eglot Clients for [https://github.com/freckletonj/uniteai uniteai]."
+
+GPTScript
+* [https://github.com/emacs-openai/gptscript-mode gptscript-mode], created by Emacs OpenAI. "Major mode for editing [https://github.com/gptscript-ai/gptscript GPTScript] natural language."
