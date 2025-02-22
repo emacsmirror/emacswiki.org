@@ -12,9 +12,9 @@ Chat / General Purpose / Foundational
 * [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with !OpenAI's !ChatGPT models such as GPT3."
 * [https://github.com/stuhlmueller/gpt.el gpt.el] ([https://melpa.org/#/gpt MELPA]), created by Stuhlmueller. "A simple Emacs package for calling instruction-following language models."
 * [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for !OpenAI, allowing custom commands and interactions."
-* [https://github.com/emacs-openai/chatgpt chatgpt], created by Emacs !OpenAI. "Use ChatGPT inside Emacs."
+* [https://github.com/emacs-openai/chatgpt chatgpt], created by Emacs !OpenAI. "Use !ChatGPT inside Emacs."
 ** [https://github.com/emacs-openai/chatgpt-sideline chatgpt-sideline], created by Emacs !OpenAI. "Sideline support for chatgpt."
-* [https://github.com/emacs-openai/deepl deepl], created by Emacs !OpenAI. "Elisp library for the DeepL API."
+* [https://github.com/emacs-openai/deepl deepl], created by Emacs !OpenAI. "Elisp library for the !DeepL API."
 * [https://github.com/emacs-openai/google-gemini google-gemini], created by Emacs !OpenAI. "Elisp library for the Google Gemini API."
 * [https://github.com/emacs-openai/openai openai], created by Emacs !OpenAI. "Elisp library for the !OpenAI API."
 
@@ -27,7 +27,7 @@ Development
 * [https://github.com/emacs-openai/codegpt codegpt], created by Emacs !OpenAI. "Allows you to use GPT-3 inside Emacs for generating code or natural language responses."
 * [https://github.com/Exafunction/codeium.el codeium], created by Exafunction. "Free, ultrafast Copilot alternative for Emacs, providing AI code completions."
 * [https://github.com/shuxiao9058/tabnine tabnine] ([https://melpa.org/#/tabnine MELPA]), created by Shuxiao. "An unofficial !TabNine package for Emacs, providing AI-assisted code completion."
-** [https://github.com/TommyX12/company-tabnine company-tabnine] ([https://melpa.org/#/company-tabnine MELPA]), created by Tommy X12. "A company-mode backend for TabNine, the all-language autocompleter."
+** [https://github.com/TommyX12/company-tabnine company-tabnine] ([https://melpa.org/#/company-tabnine MELPA]), created by Tommy X12. "A company-mode backend for !TabNine, the all-language autocompleter."
 * [https://github.com/jart/emacs-copilot emacs-copilot], created by Jart. "Large language model code completion for Emacs, providing real-time suggestions."
 * [https://github.com/AnselmC/le-gpt.el le-gpt] ([https://melpa.org/#/le-gpt MELPA]), created by Anselm C. "a feature-rich fork of gpt.el that adds project awareness, completion, region transform, and more to come.  The aim is to make sure Emacs stays up-to-date with modern GPT support, essentially aiming for a !CursorAI for Emacs." 
 
@@ -53,7 +53,7 @@ Magit
 DALL-E
 * [https://github.com/emacs-openai/dall-e dall-e], created by Emacs !OpenAI. "Use DALL-E inside Emacs."
 
-UniteAI
+!UniteAI
 * [https://github.com/emacs-openai/lsp-uniteai lsp-uniteai], created by Emacs !OpenAI. "lsp-mode client leveraging [https://github.com/freckletonj/uniteai uniteai]."
 * [https://github.com/emacs-openai/eglot-uniteai eglot-uniteai], created by Emacs !OpenAI. "Eglot Clients for [https://github.com/freckletonj/uniteai uniteai]."
 
