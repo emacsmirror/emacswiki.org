@@ -9,33 +9,33 @@ Chat / General Purpose / Foundational
 ** [https://emacsconf.org/2023/talks/llm/ LLM clients in Emacs, functionality and standardization] - talk from EmacsConf 2023.
 ** Used by ekg, elisa, ellama and magit-gptcommit.
 * [https://github.com/xenodium/chatgpt-shell chatgpt-shell] ([https://melpa.org/#/chatgpt-shell MELPA]), created by Xenodium.  "`chatgpt-shell' is a comint-based !ChatGPT shell for Emacs."   There is an associated org-babel package [https://melpa.org/#/ob-chatgpt-shell ob-chatgpt-shell].
-* [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with OpenAI's ChatGPT models such as GPT3."
+* [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with !OpenAI's !ChatGPT models such as GPT3."
 * [https://github.com/stuhlmueller/gpt.el gpt.el] ([https://melpa.org/#/gpt MELPA]), created by Stuhlmueller. "A simple Emacs package for calling instruction-following language models."
-* [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for OpenAI, allowing custom commands and interactions."
+* [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for !OpenAI, allowing custom commands and interactions."
 
 Development
 * [https://github.com/tninja/aider.el aider] ([https://melpa.org/#/aider MELPA]), created by Tninja.  "`aider' is an Emacs plugin that acts as an AI pair programming assistant, facilitating code modifications and enhancing productivity within Emacs."
 * [https://github.com/s-kostyaev/ellama ellama] ([https://melpa.org/#/ellama MELPA], [https://elpa.gnu.org/packages/ellama.html ELPA]), created by Sergey Kostyaev. "Ellama is a tool for interacting with large language models from Emacs."  Supports the same providers as Andrew Hyatt's llm, which it uses.
 * [https://github.com/lanceberge/elysium elysium] ([https://melpa.org/#/elysium MELPA]), created by Lance Berge.  "`elysium' allows automatic application of AI-generated code changes in Emacs, facilitating a smoother coding experience."
 * [https://github.com/daedsidog/evedel evedel] ([https://melpa.org/#/evedel MELPA]), created by Daedus Iod.  "`evedel' is an instructed LLM programmer/assistant for Emacs, aiding in code generation and interaction via context-aware instructions."
-* [https://github.com/emacs-openai/codegpt codegpt], created by Emacs OpenAI. "Allows you to use GPT-3 inside Emacs for generating code or natural language responses."
+* [https://github.com/emacs-openai/codegpt codegpt], created by Emacs !OpenAI. "Allows you to use GPT-3 inside Emacs for generating code or natural language responses."
 * [https://github.com/Exafunction/codeium.el codeium], created by Exafunction. "Free, ultrafast Copilot alternative for Emacs, providing AI code completions."
-* [https://github.com/shuxiao9058/tabnine tabnine] ([https://melpa.org/#/tabnine MELPA]), created by Shuxiao. "An unofficial TabNine package for Emacs, providing AI-assisted code completion."
+* [https://github.com/shuxiao9058/tabnine tabnine] ([https://melpa.org/#/tabnine MELPA]), created by Shuxiao. "An unofficial !TabNine package for Emacs, providing AI-assisted code completion."
 ** [https://github.com/TommyX12/company-tabnine company-tabnine] ([https://melpa.org/#/company-tabnine MELPA]), created by Tommy X12. "A company-mode backend for TabNine, the all-language autocompleter."
 * [https://github.com/jart/emacs-copilot emacs-copilot], created by Jart. "Large language model code completion for Emacs, providing real-time suggestions."
-* [https://github.com/AnselmC/le-gpt.el le-gpt] ([https://melpa.org/#/le-gpt MELPA]), created by Anselm C. "a feature-rich fork of gpt.el that adds project awareness, completion, region transform, and more to come.  The aim is to make sure Emacs stays up-to-date with modern GPT support, essentially aiming for a CursorAI for Emacs." 
+* [https://github.com/AnselmC/le-gpt.el le-gpt] ([https://melpa.org/#/le-gpt MELPA]), created by Anselm C. "a feature-rich fork of gpt.el that adds project awareness, completion, region transform, and more to come.  The aim is to make sure Emacs stays up-to-date with modern GPT support, essentially aiming for a !CursorAI for Emacs." 
 
 Knowledge Management
 * [https://github.com/ahyatt/ekg ekg] ([https://melpa.org/#/ekg MELPA]), created by Andrew Hyatt.  "`ekg' is an Emacs knowledge graph application for notes and structured data, using SQLite for storage."
 * [https://github.com/s-kostyaev/elisa elisa] ([https://melpa.org/#/elisa MELPA]), created by Sergey Kostyaev.  "`elisa' is an Emacs Lisp Information System Assistant that provides informative answers to user queries through retrieval-augmented generation."
 
 Org Mode
-* [https://github.com/rksm/org-ai org-ai], ([https://melpa.org/#/org-ai MELPA]), created by Robert Krahn.  "Provides a minor-mode for org-mode and a global minor-mode that allows you to interact with the OpenAI API, with Stable Diffusion, as well as various local LLMs."
-* [https://github.com/xenodium/ob-chatgpt-shell ob-chatgpt-shell] ([https://melpa.org/#/ob-chatgpt-shell MELPA]), created by Xenodium.  "`ob-chatgpt-shell' evaluates ChatGPT shell blocks within Emacs org babel, integrating AI responses into your Org documents."
+* [https://github.com/rksm/org-ai org-ai], ([https://melpa.org/#/org-ai MELPA]), created by Robert Krahn.  "Provides a minor-mode for org-mode and a global minor-mode that allows you to interact with the !OpenAI API, with Stable Diffusion, as well as various local LLMs."
+* [https://github.com/xenodium/ob-chatgpt-shell ob-chatgpt-shell] ([https://melpa.org/#/ob-chatgpt-shell MELPA]), created by Xenodium.  "`ob-chatgpt-shell' evaluates !ChatGPT shell blocks within Emacs org babel, integrating AI responses into your Org documents."
 * [https://github.com/ultronozm/ai-org-chat.el ai-org-chat], created by ultronozm (Paul Nelson).  "Supports a threaded AI chat inside any org-mode buffer."
 
 Magit
-* [https://github.com/douo/magit-gptcommit magit-gptcommit] ([https://melpa.org/#/magit-gptcommit MELPA]), created by Douo.  "`magit-gptcommit' generates Git commit messages in Magit using LLMs like ChatGPT, streamlining the commit process."
+* [https://github.com/douo/magit-gptcommit magit-gptcommit] ([https://melpa.org/#/magit-gptcommit MELPA]), created by Douo.  "`magit-gptcommit' generates Git commit messages in Magit using LLMs like !ChatGPT, streamlining the commit process."
 
 !GitHub Copilot
 * [https://github.com/copilot-emacs/copilot.el copilot] ([https://melpa.org/#/copilot MELPA]), "An unofficial Copilot plugin for Emacs."
@@ -43,4 +43,3 @@ Magit
 
 Consult
 * [https://github.com/armindarvish/consult-omni consult-omni], created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
-
