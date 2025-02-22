@@ -22,6 +22,7 @@ Knowledge Management
 Org Mode
 * [https://github.com/rksm/org-ai org-ai], ([https://melpa.org/#/org-ai MELPA]), created by Robert Krahn.  "Provides a minor-mode for org-mode and a global minor-mode that allows you to interact with the OpenAI API, with Stable Diffusion, as well as various local LLMs."
 * [https://github.com/xenodium/ob-chatgpt-shell ob-chatgpt-shell] ([https://melpa.org/#/ob-chatgpt-shell MELPA]), created by Xenodium.  "`ob-chatgpt-shell' evaluates ChatGPT shell blocks within Emacs org babel, integrating AI responses into your Org documents."
+* [https://github.com/ultronozm/ai-org-chat.el ai-org-chat], created by ultronozm (Paul Nelson).  "Supports a threaded AI chat inside any org-mode buffer."
 
 Magit
 * [https://github.com/douo/magit-gptcommit magit-gptcommit] ([https://melpa.org/#/magit-gptcommit MELPA]), created by Douo.  "`magit-gptcommit' generates Git commit messages in Magit using LLMs like ChatGPT, streamlining the commit process."
