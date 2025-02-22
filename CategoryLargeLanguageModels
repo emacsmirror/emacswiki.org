@@ -2,16 +2,16 @@ Emacs-related support for [https://en.wikipedia.org/wiki/Large_language_model La
 
 Chat / General Purpose / Foundational
 * [https://github.com/karthink/gptel gptel] ([https://melpa.org/#/gptel MELPA]), created by karthink.  "gptel is a simple Large Language Model chat client, with support for multiple models/backends."  Supports these providers: The services Open AI/!ChatGPT, Gemini, Azure, Kagi (!FastGPT & Summarizer), Ollama, GPT4All, llama.cpp, and llamafile. 
-** [https://github.com/karthink/gptel-quick gptel-quick] ([https://melpa.org/#/gptel-quick MELPA]), created by Karthink. "Quick LLM lookups in Emacs for easier summarization or explanation."
+** [https://github.com/karthink/gptel-quick gptel-quick], created by Karthink. "Quick LLM lookups in Emacs for easier summarization or explanation."
 ** [https://github.com/rob137/Corsair Corsair] ([https://melpa.org/#/corsair MELPA]), created by rob137. "Corsair is an Emacs package that helps gather text to populate LLM prompts for GPTel."
 ** Used by corsair, elysium and evedel.
 * [https://github.com/ahyatt/llm llm] ([https://elpa.gnu.org/packages/llm.html ELPA]), created by Andrew Hyatt. "This library provides an interface for interacting with Large Language Models (LLMs)."  Supports these providers: Open AI (and compatible), Gemini, Vertex, Ollama, GPT4ALL, llama.cpp.
 ** [https://emacsconf.org/2023/talks/llm/ LLM clients in Emacs, functionality and standardization] - talk from EmacsConf 2023.
 ** Used by ekg, elisa, ellama and magit-gptcommit.
 * [https://github.com/xenodium/chatgpt-shell chatgpt-shell] ([https://melpa.org/#/chatgpt-shell MELPA]), created by Xenodium.  "`chatgpt-shell' is a comint-based !ChatGPT shell for Emacs."   There is an associated org-babel package [https://melpa.org/#/ob-chatgpt-shell ob-chatgpt-shell].
-* [https://github.com/iwahbe/chat.el chat.el] ([https://melpa.org/#/chat MELPA]), created by Iwahbe. "A pure Emacs package for interacting with OpenAI's ChatGPT models such as GPT3."
+* [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with OpenAI's ChatGPT models such as GPT3."
 * [https://github.com/stuhlmueller/gpt.el gpt.el] ([https://melpa.org/#/gpt MELPA]), created by Stuhlmueller. "A simple Emacs package for calling instruction-following language models."
-* [https://github.com/stevemolitor/robby robby] ([https://melpa.org/#/robby MELPA]), created by Steve Molitor. "Extensible Emacs interface for OpenAI, allowing custom commands and interactions."
+* [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for OpenAI, allowing custom commands and interactions."
 
 Development
 * [https://github.com/tninja/aider.el aider] ([https://melpa.org/#/aider MELPA]), created by Tninja.  "`aider' is an Emacs plugin that acts as an AI pair programming assistant, facilitating code modifications and enhancing productivity within Emacs."
