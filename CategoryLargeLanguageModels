@@ -18,11 +18,11 @@ Development
 * [https://github.com/s-kostyaev/ellama ellama] ([https://melpa.org/#/ellama MELPA], [https://elpa.gnu.org/packages/ellama.html ELPA]), created by Sergey Kostyaev. "Ellama is a tool for interacting with large language models from Emacs."  Supports the same providers as Andrew Hyatt's llm, which it uses.
 * [https://github.com/lanceberge/elysium elysium] ([https://melpa.org/#/elysium MELPA]), created by Lance Berge.  "`elysium' allows automatic application of AI-generated code changes in Emacs, facilitating a smoother coding experience."
 * [https://github.com/daedsidog/evedel evedel] ([https://melpa.org/#/evedel MELPA]), created by Daedus Iod.  "`evedel' is an instructed LLM programmer/assistant for Emacs, aiding in code generation and interaction via context-aware instructions."
-* [https://github.com/emacs-openai/codegpt codegpt] ([https://melpa.org/#/codegpt MELPA]), created by Emacs OpenAI. "Allows you to use GPT-3 inside Emacs for generating code or natural language responses."
-* [https://github.com/Exafunction/codeium.el codeium] ([https://melpa.org/#/codeium MELPA]), created by Exafunction. "Free, ultrafast Copilot alternative for Emacs, providing AI code completions."
+* [https://github.com/emacs-openai/codegpt codegpt], created by Emacs OpenAI. "Allows you to use GPT-3 inside Emacs for generating code or natural language responses."
+* [https://github.com/Exafunction/codeium.el codeium], created by Exafunction. "Free, ultrafast Copilot alternative for Emacs, providing AI code completions."
 * [https://github.com/shuxiao9058/tabnine tabnine] ([https://melpa.org/#/tabnine MELPA]), created by Shuxiao. "An unofficial TabNine package for Emacs, providing AI-assisted code completion."
 ** [https://github.com/TommyX12/company-tabnine company-tabnine] ([https://melpa.org/#/company-tabnine MELPA]), created by Tommy X12. "A company-mode backend for TabNine, the all-language autocompleter."
-* [https://github.com/jart/emacs-copilot emacs-copilot] ([https://melpa.org/#/emacs-copilot MELPA]), created by Jart. "Large language model code completion for Emacs, providing real-time suggestions."
+* [https://github.com/jart/emacs-copilot emacs-copilot], created by Jart. "Large language model code completion for Emacs, providing real-time suggestions."
 * [https://github.com/AnselmC/le-gpt.el le-gpt] ([https://melpa.org/#/le-gpt MELPA]), created by Anselm C. "a feature-rich fork of gpt.el that adds project awareness, completion, region transform, and more to come.  The aim is to make sure Emacs stays up-to-date with modern GPT support, essentially aiming for a CursorAI for Emacs." 
 
 Knowledge Management
@@ -42,5 +42,5 @@ Magit
 * [https://github.com/chep/copilot-chat.el copilot-chat] ([https://melpa.org/#/copilot-chat MELPA]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
 
 Consult
-* [https://github.com/armindarvish/consult-omni consult-omni] ([https://melpa.org/#/consult-omni MELPA]), created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
+* [https://github.com/armindarvish/consult-omni consult-omni], created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
 
