@@ -12,11 +12,11 @@ Chat / General Purpose / Foundational
 * [https://github.com/iwahbe/chat.el chat.el], created by Iwahbe. "A pure Emacs package for interacting with !OpenAI's !ChatGPT models such as GPT3."
 * [https://github.com/stuhlmueller/gpt.el gpt.el] ([https://melpa.org/#/gpt MELPA]), created by Stuhlmueller. "A simple Emacs package for calling instruction-following language models."
 * [https://github.com/stevemolitor/robby robby], created by Steve Molitor. "Extensible Emacs interface for !OpenAI, allowing custom commands and interactions."
-* [https://github.com/emacs-openai/chatgpt chatgpt], created by Emacs OpenAI. "Use ChatGPT inside Emacs."
-** [https://github.com/emacs-openai/chatgpt-sideline chatgpt-sideline], created by Emacs OpenAI. "Sideline support for chatgpt."
-* [https://github.com/emacs-openai/deepl deepl], created by Emacs OpenAI. "Elisp library for the DeepL API."
-* [https://github.com/emacs-openai/google-gemini google-gemini], created by Emacs OpenAI. "Elisp library for the Google Gemini API."
-* [https://github.com/emacs-openai/openai openai], created by Emacs OpenAI. "Elisp library for the OpenAI API."
+* [https://github.com/emacs-openai/chatgpt chatgpt], created by Emacs !OpenAI. "Use ChatGPT inside Emacs."
+** [https://github.com/emacs-openai/chatgpt-sideline chatgpt-sideline], created by Emacs !OpenAI. "Sideline support for chatgpt."
+* [https://github.com/emacs-openai/deepl deepl], created by Emacs !OpenAI. "Elisp library for the DeepL API."
+* [https://github.com/emacs-openai/google-gemini google-gemini], created by Emacs !OpenAI. "Elisp library for the Google Gemini API."
+* [https://github.com/emacs-openai/openai openai], created by Emacs !OpenAI. "Elisp library for the !OpenAI API."
 
 
 Development
@@ -51,11 +51,11 @@ Magit
 * [https://github.com/chep/copilot-chat.el copilot-chat] ([https://melpa.org/#/copilot-chat MELPA]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
 
 DALL-E
-* [https://github.com/emacs-openai/dall-e dall-e], created by Emacs OpenAI. "Use DALL-E inside Emacs."
+* [https://github.com/emacs-openai/dall-e dall-e], created by Emacs !OpenAI. "Use DALL-E inside Emacs."
 
 UniteAI
-* [https://github.com/emacs-openai/lsp-uniteai lsp-uniteai], created by Emacs OpenAI. "lsp-mode client leveraging [https://github.com/freckletonj/uniteai uniteai]."
-* [https://github.com/emacs-openai/eglot-uniteai eglot-uniteai], created by Emacs OpenAI. "Eglot Clients for [https://github.com/freckletonj/uniteai uniteai]."
+* [https://github.com/emacs-openai/lsp-uniteai lsp-uniteai], created by Emacs !OpenAI. "lsp-mode client leveraging [https://github.com/freckletonj/uniteai uniteai]."
+* [https://github.com/emacs-openai/eglot-uniteai eglot-uniteai], created by Emacs !OpenAI. "Eglot Clients for [https://github.com/freckletonj/uniteai uniteai]."
 
 GPTScript
-* [https://github.com/emacs-openai/gptscript-mode gptscript-mode], created by Emacs OpenAI. "Major mode for editing [https://github.com/gptscript-ai/gptscript GPTScript] natural language."
+* [https://github.com/emacs-openai/gptscript-mode gptscript-mode], created by Emacs !OpenAI. "Major mode for editing [https://github.com/gptscript-ai/gptscript GPTScript] natural language."
