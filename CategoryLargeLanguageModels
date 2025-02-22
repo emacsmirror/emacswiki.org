@@ -40,8 +40,6 @@ Magit
 !GitHub Copilot
 * [https://github.com/copilot-emacs/copilot.el copilot] ([https://melpa.org/#/copilot MELPA]), "An unofficial Copilot plugin for Emacs."
 * [https://github.com/chep/copilot-chat.el copilot-chat] ([https://melpa.org/#/copilot-chat MELPA]), by Cédric Chépied, "Chat with Github copilot in Emacs !"
-* [https://github.com/chep/copilot-chat.el copilot-chat.el] ([https://melpa.org/#/copilot-chat MELPA]), created by Chep. "Chat with GitHub Copilot directly in Emacs."
-* [https://github.com/copilot-emacs/copilot.el copilot.el] ([https://melpa.org/#/copilot MELPA]), created by Copilot Emacs. "An unofficial Copilot plugin for Emacs that leverages GitHub's Copilot."
 
 Consult
 * [https://github.com/armindarvish/consult-omni consult-omni] ([https://melpa.org/#/consult-omni MELPA]), created by Armindarvish. "A powerful versatile omni search tool inside Emacs, allowing results from various custom sources."
