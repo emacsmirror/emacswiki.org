@@ -21,6 +21,7 @@ Chat / General Purpose / Foundational
 
 Development
 * [https://github.com/tninja/aider.el aider] ([https://melpa.org/#/aider MELPA]), created by Tninja.  "`aider' is an Emacs plugin that acts as an AI pair programming assistant, facilitating code modifications and enhancing productivity within Emacs."
+* [https://github.com/MatthewZMD/aidermacs Aidermacs], created by Matthew Zeng, "Aidermacs brings Cursor-like AI-powered development to your Emacs workflow by integrating Aider ... deeply integrating with Emacs paradigms."
 * [https://github.com/s-kostyaev/ellama ellama] ([https://melpa.org/#/ellama MELPA], [https://elpa.gnu.org/packages/ellama.html ELPA]), created by Sergey Kostyaev. "Ellama is a tool for interacting with large language models from Emacs."  Supports the same providers as Andrew Hyatt's llm, which it uses.
 * [https://github.com/lanceberge/elysium elysium] ([https://melpa.org/#/elysium MELPA]), created by Lance Berge.  "`elysium' allows automatic application of AI-generated code changes in Emacs, facilitating a smoother coding experience."
 * [https://github.com/daedsidog/evedel evedel] ([https://melpa.org/#/evedel MELPA]), created by Daedus Iod.  "`evedel' is an instructed LLM programmer/assistant for Emacs, aiding in code generation and interaction via context-aware instructions."
