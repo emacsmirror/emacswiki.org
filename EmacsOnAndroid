@@ -39,5 +39,7 @@ In Debian/Ubuntu
 ====GNU/Linux in a chroot jail (requires root)====
 For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
 
+==Caps Lock as Ctrl and Sticky Keys==
+Useful if you are using an external physical keyboard.  See [[StickyModifiersAndroid]]
 ----
 CategoryPorts
