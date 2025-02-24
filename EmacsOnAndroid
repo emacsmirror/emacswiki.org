@@ -5,13 +5,13 @@ See GoogleAndroid for tips about using Emacs to develop Android applications.
 
 ===FSF GUI port===
 
-A port of Emacs to Android as a GUI application will constitute part of the upcoming Emacs 30.1 release, and is already present within the Emacs Git repository.
+A port of Emacs to Android as a GUI application is available in Emacs 30.1.
 
 This port features extensive support for touch screen input and on-screen keyboards, coupled with accessing storage devices mounted through "content providers" via the Storage Access Framework, and a plenitude of other features.
  
-Regularly updated prebuilt snapshots of the in-development source code are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
+Regularly updated prebuilts of both development snapshots and releases are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
 
-F-Droid also provides prebuilts, but they are outdated, have fewer dependencies bundled, and do not work on older systems.
+F-Droid also provides prebuilts, but they are at times outdated, and do not work on older systems.
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
