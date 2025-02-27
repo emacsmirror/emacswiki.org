@@ -1,3 +1,5 @@
+(See also MovingTheCtrlKey.)
+
 Swapping Control and CapsLock is all well and good, but it often feels like it doesn't go far enough.  Keyboard shortcuts seem to have been written with old Unix and Sun keyboards in mind, where Control and Alt were reversed.  Since resoldering a keyboard isn't an option for most people, why not just swap Control and Alt programatically to use the keyboard the way it was meant to be used?
 
 This works especially well if you turn CapsLock into a Control key, effectively giving you two Control keys under your thumbs and three Alt keys, one of which is immediately under your left pinky.
