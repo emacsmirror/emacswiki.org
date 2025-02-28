@@ -1,7 +1,6 @@
 == Native Smooth Scrolling ==
 
-The next release of Emacs, Emacs 29, will come with built-in support
-for pixel-based scrolling.
+Starting from Emacs 29, it has built-in support for pixel-based scrolling.
 
 You can enable it using `pixel-scroll-precision-mode'.  You will need
 to build with XInput 2 support (which should be on by default, but may
@@ -36,12 +35,12 @@ you want.
 
 == smooth-scroll.el ==
 
-[http://www.emacswiki.org/emacs/smooth-scroll.el "smooth-scroll.el"] provides a minor mode "smooth-scroll-mode" which brings
+[https://github.com/k-talo/smooth-scroll.el "smooth-scroll.el"] provides a minor mode "smooth-scroll-mode" which brings
 "smooth scrolling" and "in-place scrolling" feature to Emacs.
 
 == smooth-scrolling.el ==
 
-http://emacs.wordpress.com/2007/09/10/smooth-scrolling/
+https://github.com/aspiers/smooth-scrolling
 
 == sublimity-scroll.el ==
 
@@ -68,6 +67,9 @@ This is distributed with Emacs and allows scrolling by pixel lines.
 {{{
 (good-scroll-mode 1)
 }}}
+
+== ultra-scroll.el ==
+[https://github.com/jdtsmith/ultra-scroll ultra-scroll] provides pixel-precise smooth scrolling based on pixel-scroll-precision-mode.
 
 == Sniplets ==
 
