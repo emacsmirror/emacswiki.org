@@ -23,18 +23,7 @@ I don't think I've ever run into this. Anybody else? -- AlexSchroeder
 
 I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
 
-
-
-
-
-
-
-
-
-
-
 == Markup/Generation Issues==
-
 
 === Can markup be used in headers? <code>I have failed to do so.</code> ===
 Is this documented somewhere?
@@ -51,8 +40,6 @@ Emphasis markup using apostrophes is the only inline markup that can be nested: 
 [new]
 The irony being that markup in headers **is** rendered in the (javascript-built) TOC -- MichaelPaulukonis
 
-
-
 === Apostrophes etc. not prettified in links ==
 
 * ##ain't -- it -- "nice"## => ain't -- it -- "nice"
@@ -66,11 +53,18 @@ Yes, there is no recursive parsing of the link text.
 
 == General Issues ==
 
-
-
 === MeatBall links lead to a spam site now. ===
 
 It looks like usemod dot com domain has expired. Some of the MeatBall links now end up on spam sites eg: AppropriateMedia
+
+=== Many pages missing from Google search results ===
+
+At least until fairly recently, most pages used to show up in Google search results in a reasonable way, often in a general search, certainly if using "site:www.emacswiki.org".  For me today (2025-03-02), that no longer happens; it seems like some pages are searchable but most are not.
+* https://www.google.com/search?q=site%3Aemacswiki.org+Orgmode returns only a CategoryHumor page
+* https://duckduckgo.com/?t=h_&q=site%3Aemacswiki.org+Orgmode returns reasonable results
+* https://www.bing.com/search?q=site%3Aemacswiki.org+Orgmode returns reasonable results
+
+Google have some useful-looking advice on diagnostics for site admins [https://support.google.com/webmasters/answer/9012289?hl=en here].
 
 ----
 CategoryEmacsWikiSite
