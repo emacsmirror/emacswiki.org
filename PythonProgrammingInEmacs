@@ -225,16 +225,16 @@ The support includes completion, syntax highlighting, virtualenvs, enabling a pa
 readline has historically been used in Python to provide enhanced line-editing and interactive command-line features for REPLs, but with variable support across operating systems, causing many issues.
 
 *Don't try to fix non-existent problems!!* The issues below may already be dealt with by packages you are using.  For example
-- Python 3.13 introduced a new interactive interpreter that reimplements some readline functionality in Python
-- IPython since version 5.0 uses prompt_toolkit for tab completion
+* Python 3.13 introduced a new interactive interpreter that reimplements some readline functionality in Python
+* IPython since version 5.0 uses prompt_toolkit for tab completion
 
 You may see messages like "Your ‘python-shell-interpreter’ doesn’t seem to support readline"
-- On Windows, GNU readline support has not been included in CPython historically. To work around this install the Python package `pyreadline3'.  The earlier `pyreadline' package is no longer supported.
-- On macOS, GNU readline support has not been included in CPython historically (a similar BSD-licensed package is used instead).  To work around this, install the Python package `gnureadline'.
+* On Windows, GNU readline support has not been included in CPython historically. To work around this install the Python package `pyreadline3'.  The earlier `pyreadline' package is no longer supported.
+* On macOS, GNU readline support has not been included in CPython historically (a similar BSD-licensed package is used instead).  To work around this, install the Python package `gnureadline'.
 
 For further recent discussion see 
-- [https://github.com/ludwigschwardt/python-gnureadline/tree/main here] - main page for the `gnureadline' Python package
-- [https://www.danliden.com/notes/20240709-python-readline.html Python interpreter doesn't seem to support readline error in Emacs on MacOS] - from 2024, includes links to earlier discussions.
+* [https://github.com/ludwigschwardt/python-gnureadline/tree/main main page for the `gnureadline' Python package] 
+* [https://www.danliden.com/notes/20240709-python-readline.html Python interpreter doesn't seem to support readline error in Emacs on MacOS] - from 2024, includes links to earlier discussions.
 
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
