@@ -224,7 +224,7 @@ The support includes completion, syntax highlighting, virtualenvs, enabling a pa
 =====Troubleshooting readline issues=====
 readline has historically been used in Python to provide enhanced line-editing and interactive command-line features for REPLs, but with variable support across operating systems, causing many issues.
 
-*Don't try to fix non-existent problems!!* The issues below may already be dealt with by packages you are using.  For example
+/Don't try to fix non-existent problems!!/ The issues below may already be dealt with by packages you are using.  For example
 * Python 3.13 introduced a new interactive interpreter that reimplements some readline functionality in Python
 * IPython since version 5.0 uses prompt_toolkit for tab completion
 
