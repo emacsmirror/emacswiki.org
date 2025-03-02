@@ -217,11 +217,25 @@ Viewing the results from [https://docs.python.org/3/library/profile.html the Pyt
 
 === Interactive environments - Shells, REPLs and notebooks ===
 ====The Python shell====
-You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions. Please note that on MacOS the natively shipped Python version comes without proper readline support. You might want to install other versions and use them as default for the `run-python` command.
+You can open an interactive Python shell with `run-python' ("C-c C-p"), and send code for execution by the shell process using the `python-shell-send-*' functions.
 
-The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point' and thus works with CompanyMode as well.
+The support includes completion, syntax highlighting, virtualenvs, enabling a package (so relative imports work), and remote execution (for files opened with TrampMode).  Completion is provided through `completion-at-point'.
 
-Native completion is disabled on Windows per the comment at the definition of `python-shell-completion-native-disabled-interpreters' but non-native completion should still work -- you can test this by eval'ing `(completion-at-point)' in the inferior shell buffer.
+=====Troubleshooting readline issues=====
+readline has historically been used in Python to provide enhanced line-editing and interactive command-line features for REPLs, but with variable support across operating systems, causing many issues.
+
+*Don't try to fix non-existent problems!!* The issues below may already be dealt with by packages you are using.  For example
+- Python 3.13 introduced a new interactive interpreter that reimplements some readline functionality in Python
+- IPython since version 5.0 uses prompt_toolkit for tab completion
+
+You may see messages like "Your ‘python-shell-interpreter’ doesn’t seem to support readline"
+- On Windows, GNU readline support has not been included in CPython historically. To work around this install the Python package `pyreadline3'.  The earlier `pyreadline' package is no longer supported.
+- On macOS, GNU readline support has not been included in CPython historically (a similar BSD-licensed package is used instead).  To work around this, install the Python package `gnureadline'.
+
+For further recent discussion see 
+- [https://github.com/ludwigschwardt/python-gnureadline/tree/main here] - main page for the `gnureadline' Python package
+- [https://www.danliden.com/notes/20240709-python-readline.html Python interpreter doesn't seem to support readline error in Emacs on MacOS] - from 2024, includes links to earlier discussions.
+
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
 {{{
@@ -241,7 +255,6 @@ pydoc.help = pydoc.Helper(output = sys.stdout)
 
 [https://github.com/jackkamm/ipython-shell-send-el ipython-send-shell] provides replacements for the built-in `python-send-*' commands that support IPython magic commands.
 
-As noted above with the Python shell, native completion is disabled on Windows.
 ====Emacs IPython Notebook (EIN)====
 [https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides an IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  This replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
 ==== ob-python====
