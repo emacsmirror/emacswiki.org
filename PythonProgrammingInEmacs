@@ -74,9 +74,6 @@ For [https://github.com/davidhalter/jedi jedi]:
 For [https://pypi.python.org/pypi/rope rope]:
 * [https://github.com/python-rope/ropemacs Ropemacs] can be used as a backend for both CompanyMode and AutoComplete.
 
-An experiment:
-* [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el AutoComplete support in IPython shell buffers]
-
 ===Code navigation===
 The built-in `python-mode' includes support for ImenuMode code navigation. By default it uses a tree-like index, presenting top-level definitions that can be drilled into. To use a flat menu instead, you can use this:
 {{{
