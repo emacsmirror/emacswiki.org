@@ -81,13 +81,14 @@ An experiment:
 ===Code navigation===
 The built-in `python-mode' includes support for ImenuMode code navigation. By default it uses a tree-like index, presenting top-level definitions that can be drilled into. To use a flat menu instead, you can use this:
 {{{
-(add-hook 'python-mode-hook (lambda () (setq-local imenu-create-index-function #'python-imenu-create-flat-index))
-          #'python-imenu-use-flat-index)
+(add-hook 'python-mode-hook (lambda () (setq-local imenu-create-index-function #'python-imenu-create-flat-index)))
 }}}
+
+LspMode's `lsp-ui-imode' shows a persistent graphical navigation tree in a side window.
 
 The tools built on jedi support using it to find definitions. [https://github.com/tkf/emacs-jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers but is not on MELPA.
 
-[[Helm]] provides an interface for navigating buffers via `helm-semantic-or-imenu'. 
+[[Helm]] provides an interface for navigating buffers via `helm-semantic-or-imenu' and `helm-imenu-in-all-buffers'. 
 
 [https://melpa.org/#/helm-cscope helm-cscope] provides a Helm interface to [https://melpa.org/#/xcscope xcscope].  [https://pypi.python.org/pypi/pycscope/ pycscope] supports generating the required cscope index of Python source trees.
 
