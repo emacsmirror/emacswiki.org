@@ -79,16 +79,9 @@ An experiment:
 * [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el AutoComplete support in IPython shell buffers]
 
 ===Code navigation===
-
-The built-in [https://www.emacswiki.org/emacs/ProgrammingWithPythonDotEl python.el] has support for [https://www.emacswiki.org/emacs/ImenuMode imenu] code navigation. By default it uses a tree structure for navigation which presents only top level definitions that can then be 'drilled in to'. If you prefer a flat menu then you can add the following snippet (retrieved from [https://github.com/fgallina/python.el/issues/135#issuecomment-18459589 GitHub]) to your [https://www.emacswiki.org/emacs/InitFile init file]:
-
+The built-in `python-mode' includes support for ImenuMode code navigation. By default it uses a tree-like index, presenting top-level definitions that can be drilled into. To use a flat menu instead, you can use this:
 {{{
-(defun python-imenu-use-flat-index
-    ()
-  (setq imenu-create-index-function
-        #'python-imenu-create-flat-index))
-
-(add-hook 'python-mode-hook
+(add-hook 'python-mode-hook (lambda () (setq-local imenu-create-index-function #'python-imenu-create-flat-index))
           #'python-imenu-use-flat-index)
 }}}
 
