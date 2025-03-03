@@ -82,7 +82,7 @@ The built-in `python-mode' includes support for ImenuMode code navigation. By de
 
 LspMode's `lsp-ui-imode' shows a persistent graphical navigation tree in a side window.
 
-The tools built on jedi support using it to find definitions. [https://github.com/tkf/emacs-jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers but is not on MELPA.
+The tools built on jedi support using it to find definitions. [https://melpa.org/#/jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers.
 
 [[Helm]] provides an interface for navigating buffers via `helm-semantic-or-imenu' and `helm-imenu-in-all-buffers'. 
 
