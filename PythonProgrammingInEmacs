@@ -27,7 +27,7 @@ The main [LanguageServerProtocol] clients support Python programming with variou
 * [LspMode] 
 ====LSP servers===
 General-purpose servers
-* [https://github.com/microsoft/pyright Pyright] by Microsoft, closed-source, lsp-mode configuration [https://emacs-lsp.github.io/lsp-pyright/ here].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
+* [https://github.com/microsoft/pyright Pyright] by Microsoft, lsp-mode configuration [https://emacs-lsp.github.io/lsp-pyright/ here].  See [https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535 here] for a gist of a full-featured Python config using [https://github.com/emacs-lsp/lsp-mode lsp-mode], `lsp-ui', `lsp-pyright', `pyvenv', `treemacs' and `dap-mode'.
 * [https://github.com/DetachHead/basedpyright basedpyright], a fork of Pyright with various type checking improvements, features from [https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance Pylance], and more.  Microsoft's creation of Pylance as a proprietary product had led to community concerns; basedpyright provides a freer and more community-focused alternative.
 * [https://github.com/python-lsp/python-lsp-server Python LSP Server], aka "pylsp", forked from Palantir's unmaintained pyls, open-source, extensible via a plug-in mechanism, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-pylsp/ here]
 * [https://github.com/pappasam/jedi-language-server jedi] language server, lsp-mode configuration [https://emacs-lsp.github.io/lsp-mode/page/lsp-jedi/ here]
