@@ -49,9 +49,16 @@ The openSUSE Tumbleweed ##emacs-*## packages are officially [https://build.opens
 
 === Arch ===
 
-An ##emacs-nativecomp## package is available in the official ##extra## repository, which is enabled by default.
+Emacs package bundle is already built with native compilation by default and it is available in the official ##extra## repository.
 
-    pacman -S emacs-nativecomp
+    # To install the stable release:
+    pacman -S emacs
+
+    # To install without GUI (only run on terminal emulator):
+    pacman -S emacs-nox
+
+    # To install with PGTK enabled: 
+    pacman -S emacs-wayland
 
 === Debian/unstable ===
 
