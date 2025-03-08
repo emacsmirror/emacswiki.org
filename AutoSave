@@ -1,3 +1,4 @@
+[[ja:自動保存]]
 [[es:AutoGuardar]]
 By default, Emacs automatically saves your changes to a file intermittently. If anything should happen, you can recover a file with `M-x recover-file'. Auto-saving can be turned on globally or on a per-buffer basis with `M-x auto-save-mode' (users of Emacs 26.1 and later may prefer `M-x auto-save-visited-mode').  Note that auto-saving and backing up are different concepts and serve different purposes.
 
