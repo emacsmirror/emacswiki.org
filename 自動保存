@@ -1,0 +1,135 @@
+[[es:AutoGuardar]]
+既定では、Emacsはあなたのファイルに対する変更を断続的かつ自動的に保存します。もし何かが起きたとしても、あなたは`M-x recover-file'でファイルをリカバーできます。自動保存は`M-x auto-save-mode'に基づきグローバルもしくはバッファ毎に有効化されます（Emacs 26.1もしくはそれ以降の利用者は`M-x auto-save-visited-mode'を好むかもしれません)。自動保存とバックアップは異なる概念であり異なる目的を果たすことに注意してください。
+
+Emacsマニュアルエントリ「[[Manual:Auto Save]] (emacs)」も参照してください。
+
+== 全ファイルを１つのディレクトリに置くには ==
+
+既定では、自動保存ファイルは現在編集中のファイル名を捩った「<tt>#<i>ファイル名</i>#</tt>」の形でカレントディレクトリに格納されます。もしあなたがあなたのファイルツリーをEmacsのバックアップファイルで乱したくないのならば、あなたはそれらを専用ディレクトリに保存できます：
+
+    (setq backup-directory-alist
+          `(("." . ,(concat user-emacs-directory "backups"))))
+
+システムの「##temp##」ディレクトリへの保存も選択肢の１つですが、危険な一手でもあります、なぜなら通常のLinuxセットアップにおいてはあなたがそれらのバックアップファイルを再び見れる保証がありません：
+
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
+
+これは##temporary-file-directory##によって指定されたディレクトリに全ての自動保存と[BackupDirectory バックアップ]を置きます（例、Windows上では##C:/Temp/##、Linux上では##/tmp/##)。
+
+あるいはさらに劇的なのは：
+
+    ;; 「$TMPDIR/emacs$UID/」にある全tempファイルを保存します                                                        
+    (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+    (setq backup-directory-alist
+        `((".*" . ,emacs-tmp-dir)))
+    (setq auto-save-file-name-transforms
+        `((".*" ,emacs-tmp-dir t)))
+    (setq auto-save-list-file-prefix
+        emacs-tmp-dir)
+
+== 現在のファイルバッファと自動保存ファイルとの差分を表示するには == 
+
+    (defun my/diff-auto-save-file ()
+      "現在のバッファを用いて自動保存#ファイル#との差分を取得します。"
+      (interactive)
+      (diff (make-auto-save-file-name) (current-buffer) nil 'noasync))
+
+
+== 自動保存ファイルを削除するには == 
+
+    (defun auto-save-file-remove ()
+      "自動保存#ファイル#がもし存在するなら削除します。"
+      (interactive)
+      (let ((filename (make-auto-save-file-name)))
+        (if (not (file-exists-p filename))
+            (message (concat "ファイル " filename " は存在しません"))
+          ;; else
+          (delete-file filename nil) ; no trash
+          (message (concat "ファイル " filename " の削除に成功。"))
+          )))
+
+== シンボリックリンクまたは自動保存ファイルのインターロック ==
+
+「.#*」の体裁を取るシンボリックリンクは自動保存ファイルではなく、同一ファイルの同時編集を防ぐためのインターロック（排他ロック）であることに注意してください。
+詳細については EmacsManual にある Manual:Interlocking を参照してください。
+
+== バッファ保存の自動実行 ==
+
+Emacs 26.1およびそれ以降については:
+
+[[Manual:Auto Save Files]] (emacs)に書かれているように::
+[quote]
+  If you want auto-saving to be done in the visited file rather than
+in a separate auto-save file, enable the global minor mode
+`auto-save-visited-mode'.  In this mode, auto-saving is identical to
+explicit saving.
+（訳：もしあなたが自動保存に分割自動保存ファイルよりもむしろ訪れたファイルで
+それを遂行させたいなら、グローバルマイナーモード `auto-save-visited-mode' を
+有効にしましょう。本モードでは、自動保存は明示的な保存と同一です。）
+[/quote]
+
+旧バージョンのEmacsもしくは、より柔軟性を高めるために、あなたはサードパーティパッケージを使えます：
+
+=== アイドルタイマーを通じて経時インターバル経た後に… ===
+
+https://github.com/ChillarAnand/real-auto-save - Emacsにてあなたの全バッファ/ファイルを一定間隔で自動的に保存します!
+
+=== 全バッファを自動保存で保存する… ===
+
+私は `auto-save-hook' を使用するのが好きで、そしてそれはうまく機能するようですが、しかし私は全バッファを保存したいと思ってます、なぜなら私が自動保存される前に当該バッファからよそに切り替える場合、私はそれがその後次回保存される時にそれに保存しといて欲しいから。そこで私は上記の２つのソリューションの一部を組み合わせました（これは私が書いた初めての elisp コードで、明らかな問題が発生する可能性があります)：
+
+{{{
+(defun full-auto-save ()
+  (interactive)
+  (save-excursion
+    (dolist (buf (buffer-list))
+      (set-buffer buf)
+      (if (and (buffer-file-name) (buffer-modified-p))
+          (basic-save-buffer)))))
+(add-hook 'auto-save-hook 'full-auto-save)
+}}}
+
+=== フォーカスフックを通じた入力フォーカスの喪失で… ===
+
+フォーカスの利得/喪失についての新しいフックがGnu Emacs 24.4で追加されました: <code>focus-in-hook</code> および <code>focus-out-hook</code>。
+
+もしあなたがこれらのフックを兼ね備えたバージョンのEmacsを実行中なら、あなたは（以下を）追加できます
+
+  (defun save-all ()
+    (interactive)
+    (save-some-buffers t))
+  
+  (add-hook 'focus-out-hook 'save-all)
+
+（上記を）あなたの.emacsファイルに、そしてそれはフォーカスの喪失につき全ファイルを保存するように仕向けます。
+
+*留意点が２つ：*
+
+これらのフックはEmacsフレームがフォーカスを得るもしくは失ういかなる時も発動します。これはもしあなたがEmacsフレームの間で Alt-Tab もしくは Alt-` をする場合、focus-out-hook および focus-in-hook が走り出すことを意味します。（MacOS および Windows はアプリケーション-レベル・フォーカスの概念を持ちますが、しかしXは明らかにそうではありません。これらのフックはフレームレベルにて適用され、したがって、それらは全３プラットフォームで同じ様に働きます。)
+
+これらのフックはエンド-ユーザによって使われることを意図しており、パッケージ内での利用は考えられていません。もしあなたがこれらのフックを他人のために設定したら、彼らはイライラする可能性が高いです。(特にもし彼らがEmacs自身のデバッグ、もしくは単にウィンドウの上にマウスを置くだけでそこに焦点が切り替わる"focus follows mouse"環境で働いている場合。)
+
+=== ユーザ-定義シグナルで… ===
+
+別のアプローチとしてはUSR1シグナルを受け取った時に（上記で定義された）`full-auto-save'を実行することをemacsに伝えることが挙げられる。
+  
+  (define-key special-event-map [sigusr1] #'full-auto-save)
+
+emacsにシグナルを送るためのシェルスクリプトを作成する。
+  
+  #!/usr/bin/env sh
+  pkill -USR1 emacs
+
+そしてあなたがウィンドウを切り替える度にあなたのウィンドウマネージャにスクリプトを実行するよう伝える。
+私はsawfishを使っているので次の様にする：
+
+  ;;.sawfish/rc code
+  (defun save-emacs () 
+    (system "save-emacs &"))
+  (add-hook 'leave-workspace-hook save-emacs)
+
+----
+CategoryFiles
