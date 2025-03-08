@@ -1,2 +1,5 @@
 greader is a GNU Emacs interface for multiple text to speech softwares.
 It is a part of GNU Emacs and distributed through GNU ELPA.
+----
+TextToSpeech
+CategoryAccessibility
