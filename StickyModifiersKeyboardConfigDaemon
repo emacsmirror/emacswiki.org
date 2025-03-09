@@ -1,3 +1,9 @@
+The !StickyKeys feature provided by most OSes is rather inflexible, since it doesn't allow choosing which modifiers will be sticky.
+
+A more flexible option is to implement homegrown !StickyKeys using one of the software options described below.  This allows you to configure some modifiers as sticky and let others behave as before.
+
+These options translate keypresses before they're received by the desktop environment.  And they work regardless of whether X, Wayland or some other GUI framework applies.  In addition to !StickyKeys, these programs allow nearly any keyboard customization you can think of.
+
 === Kmonad ===
 
 [https://github.com/kmonad/kmonad Kmonad] is a cross-platform keyboard configuration daemon.
