@@ -1,4 +1,8 @@
-One way to reduce repetitive-strain injury from Emacs is to avoid pressing two keys simultaneously with the same hand.  That is, avoid using [[modifier key]]s. For C-KEY, use one hand for KEY and the other for Ctrl.  For M-KEY, do similarly as for C-KEY, or press and release Esc and then press KEY.  And of course, take advantage of the automatic indenting and other features of Emacs that save keystrokes.
+One way to reduce repetitive-strain injury from Emacs is to avoid pressing two keys simultaneously with the same hand.  That is, avoid holding down a [[modifier key]] while pressing another key with the same hand.
+
+One approach is to use both the left- and right-hand modifiers (if your keyboard has them), so that for a C-KEY sequence you use one hand for Ctrl and the other for KEY.  For M-KEY, do similarly as for C-KEY, or press and release Esc and then press KEY.
+
+Another approach is to enable "Sticky" modifier keys, enabling you to press-and-release the modifier rather than holding it down.  This is generally an OS-level customisation (i.e. not specific to Emacs).
 
 = Emacsen-level =
 See [[StickyModifiersEmacsen]]
