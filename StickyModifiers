@@ -32,7 +32,7 @@ For Linux console you can use ##loadkeys## from ##kbd## package to set Control, 
 
 For wlroot-based and Sway, see [[StickyModifiersSway]].
 
-For Gnome and KDE, see [[StickyModifiersLinuxDE]].
+For X.org, Gnome, and KDE, see [[StickyModifiersLinuxDE]].
 
 == Keyboard Configuration Daemons ==
 
