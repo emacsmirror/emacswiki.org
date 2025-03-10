@@ -1,0 +1,8 @@
+Bray ([https://melpa.org/#/bray MELPA] [https://codeberg.org/ideasman42/emacs-bray CodeBerg]), is a minimal modal editing mode for Emacs.  Bray allows you to define a modal editing workflow through your own configuration with minimal overhead.
+
+Unlike most other systems, Bray doesn't make any assumptions about which modes (called states) are defined, so you may define any number of states each with their own key-maps. While states cannot inherit settings, key-maps can be shared between states.
+
+For further information see https://codeberg.org/ideasman42/emacs-bray
+
+----
+CategoryModalEditing
