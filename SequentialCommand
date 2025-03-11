@@ -74,7 +74,7 @@ It would be even simpler if there is a way of getting the name of function which
 These are re-implemented in Lisp:sequential-command.el and Lisp:sequential-command-config.el . See `seq-home' and `seq-end'. -- [[rubikitch]]
 
 [new:rubikitch:2008-11-05 10:12 UTC]
-For electric upcase/capitalize/downcase see Lisp:sequential-comand-config.el .
+For electric upcase/capitalize/downcase see Lisp:sequential-command-config.el .
 
 I bound M-u/M-c/M-l to seq-(upcase|capitalize|downcase)-backward-word. -- [[rubikitch]]
 
