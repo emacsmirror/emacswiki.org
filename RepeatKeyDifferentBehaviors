@@ -26,6 +26,8 @@ The following are additional ways to make a command or key act differently when 
 
 * DoubleChar -- Hit a char twice and given a delay get one insertion or another one.
 
+* KeyChord -- Invoke a different command when a single key is quickly pressed twice (or when two keys are pressed simultaneously).
+
 ----
 CategoryCommands
 CategoryKeys
