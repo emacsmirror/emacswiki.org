@@ -15,6 +15,19 @@ F-Droid also provides prebuilts, but they are at times outdated, and do not work
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
+===Modifier Bar===
+Don't forget to enable modifier bar via (modifier-bar-mode), if you find menu bars and tool bars cubersome.
+
+You can use (tool-bar-position 'bottom) to adjust its position.
+You need to enable tool bar for modifier bar to work.
+
+Demo with Org Agenda
+[[image:EmacsOnAndroidModifierBar]]
+===Always show soft keyboard===
+In some cases, such as the agenda dispatcher, the buffer is read-only, but the query still depends on a key press.  In this case, the default behavior is to hide the soft keyboard.
+
+You can set (touch-screen-display-keyboard t) to avoid this pitfall.
+
 ===Emacs within a GNU/Linux chroot===
 Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
 
