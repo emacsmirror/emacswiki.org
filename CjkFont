@@ -1,0 +1,49 @@
+= Introduction =
+
+https://en.wikipedia.org/wiki/Han_unification
+
+Unicode Consortium made the controversial decision to map multiple different glyphs onto the same Unicode code point.
+
+In their opinion, these national variants essentially represent the same {HanZi, Kanji, Hanja} character and are therefore merged.
+
+The computer should then be able to select the correct variant by using system locale information and different fonts.  Such as
+
+* Noto Sans Mono CJK JP
+* Noto Sans Mono CJK SC
+* Noto Sans Mono CJK TW
+
+However, in the case that the system locale is not set to that of a CJK country -- commonly set to American English en-US.UTF8 -- Emacs default to Japanese variant of the glyph.  Which is inconvenient for native readers of Simplified Chinese.
+
+= Select a National Variant in Emacs =
+
+We make use of fallback fonts.  That is, the font used for the Latin alphabet remain unchanged.  We only select the font for Han characters.
+
+= Select Default Font for Latin Alphabet =
+
+Use Menu bar (or M-`) - Options - Set Default Font to set a default font for latin alphabet.
+
+Use Menu bar (or M-`) - Options - Save Option to save the changes in your init file.
+
+It should be similar to the following:
+
+ (custom-set-faces
+  '(default ((t (:family "JuliaMono" :foundry "corm" :slant normal :weight regular :height 113 :width normal)))))
+
+= Select Fallback Font for Han Script =
+
+Now, use =C-h v face-font-family-alternatives= to set the correct national variant as fallback font for Han Script, and save the changes:
+
+ (custom-set-variables
+  '(face-font-family-alternatives
+   ; this line is added for simplified chinese in mainland china
+   '(("JuliaMono" "Noto Sans Mono CJK SC")
+   ; this are the default values
+     ("Monospace" "courier" "fixed")
+      ("Monospace Serif" "Courier 10 Pitch" "Consolas" "Courier Std"
+       "FreeMono" "Nimbus Mono L" "courier" "fixed")
+      ("courier" "CMU Typewriter Text" "fixed")
+      ("Sans Serif" "helv" "helvetica" "arial" "fixed")
+      ("helv" "helvetica" "arial" "fixed")))
+
+
+You're done.
