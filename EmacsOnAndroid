@@ -1,9 +1,7 @@
 This is about installing Emacs into an Android device. 
 See GoogleAndroid for tips about using Emacs to develop Android applications.
 
-==Ways to run Emacs on Android devices==
-
-===FSF GUI port===
+=FSF GUI port=
 
 A port of Emacs to Android as a GUI application is available in Emacs 30.1.
 
@@ -15,25 +13,46 @@ F-Droid also provides prebuilts, but they are at times outdated, and do not work
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
-===Modifier Bar===
-Don't forget to enable modifier bar via (modifier-bar-mode), if you find menu bars and tool bars cubersome.
+==Modifier Bar==
+If you need the modifiers, (Ctrl, Meta, Super), enable modifier bar.  It is part of the tool bar.  See below for a demo.
 
 You can use (tool-bar-position 'bottom) to adjust its position.
 You need to enable tool bar for modifier bar to work.
 
-Demo with Org Agenda
-[[image:EmacsOnAndroidModifierBar]]
-===Always show soft keyboard===
+However, for convenience, you should access frequently used functions in the menu bar, see below.
+
+==Customize Menu Bar==
+Most Android systems do not have a physical keyboard.  But this need not be a hindrance.  You can add frequently used functions to your own menu bar.
+
+In my case, I use Org Agenda and Magit frequently on my phone.  On my laptop, (org-agenda) is bounded to "C-c a".  On my phone, I use
+
+  (easy-menu-define my-menu global-map
+    "My Customized Menu for using Emacs on Android."
+    '("My"
+      ("File"
+       ["Save buffers" save-some-buffers])
+      ("Org"
+       ["Agenda List" org-agenda-list]
+       ["Global TODO List" org-todo-list]
+       ["Search for Keywords" org-search-view])
+      ("Magit"
+       ["Status" magit-status])))
+
+This code fragment defines the new menu, "My", and adds three submenus, "File", "Org", and "Magit".
+
+For a demo, scroll to the bottom of this page.
+
+==Always show soft keyboard==
 In some cases, such as the agenda dispatcher, the buffer is read-only, but the query still depends on a key press.  In this case, the default behavior is to hide the soft keyboard.
 
 You can set (touch-screen-display-keyboard t) to avoid this pitfall.
-===Disable text conversion===
+==Disable text conversion==
 In order to support features such as auto-correct, auto-complete, input characters are not directly processed by native android emacs.  Rather, a text conversion is performed.
 
 This is helpful if you rely on Android to input complex text.  However, if you wish to use emacs built-in input methods, you need to disable the conversion by setting (overriding-text-conversion-style nil).
 
 See also the function set-text-conversion-style.
-===Emacs within a GNU/Linux chroot===
+=Emacs within a GNU/Linux chroot=
 Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
 
 With UserLand, you can install a variety of different distributions. 
@@ -53,11 +72,12 @@ In Debian/Ubuntu
 
 [code]apt update && apt install emacs[/code]
 
-===Run Linux inside a jail===
-====GNU/Linux in a chroot jail (requires root)====
-For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
-
-==Caps Lock as Ctrl and Sticky Keys==
+=Caps Lock as Ctrl and Sticky Keys=
 Useful if you are using an external physical keyboard.  See [[StickyModifiersAndroid]]
+
+=Demo=
+
+[[image:EmacsOnAndroidEasyMenuBar]]
+[[image:EmacsOnAndroidModifierBar]]
 ----
 CategoryPorts
