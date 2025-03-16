@@ -31,6 +31,7 @@ Development
 ** [https://github.com/TommyX12/company-tabnine company-tabnine] ([https://melpa.org/#/company-tabnine MELPA]), created by Tommy X12. "A company-mode backend for !TabNine, the all-language autocompleter."
 * [https://github.com/jart/emacs-copilot emacs-copilot], created by Jart. "Large language model code completion for Emacs, providing real-time suggestions."
 * [https://github.com/AnselmC/le-gpt.el le-gpt] ([https://melpa.org/#/le-gpt MELPA]), created by Anselm C. "a feature-rich fork of gpt.el that adds project awareness, completion, region transform, and more to come.  The aim is to make sure Emacs stays up-to-date with modern GPT support, essentially aiming for a !CursorAI for Emacs." 
+* [https://github.com/captainflasmr/ollama-buddy ollama-buddy] ([https://melpa.org/#/ollama-buddy MELPA]), created by James Dyer (captainflasmr) "A friendly Emacs interface for interacting with Ollama models." 
 
 Knowledge Management
 * [https://github.com/ahyatt/ekg ekg] ([https://melpa.org/#/ekg MELPA]), created by Andrew Hyatt.  "`ekg' is an Emacs knowledge graph application for notes and structured data, using SQLite for storage."
