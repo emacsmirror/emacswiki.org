@@ -19,6 +19,24 @@ Remember to Read https://ftp.gnu.org/gnu/emacs/android/README
 
 It contains download links and answers to many android-specific Emacs quirks, how to inter-operate with termux, and more.
 
+==Wrapping Long Lines==
+
+As typical phone screen is in portrait mode, text with 70-char column width might become unwieldy to read.  You can try using the following packages from Elpa:
+
+ visual-fill
+ adaptive-wrap
+
+by Stefan Monnier, et al.
+
+Then, as indicated in the README file, simultaneously enable three minor modes:
+
+* visual-line-mode (emacs built-in)
+* visual-fill-mode (from package visual-fill)
+* adaptive-wrap-prefix-mode (from package adaptive-wrap)
+
+Scroll to the bottom for a demo.
+
+
 ==Modifier Bar==
 If you need the modifiers, (Ctrl, Meta, Super), enable modifier bar.  It is part of the tool bar.  See below for a demo.
 
