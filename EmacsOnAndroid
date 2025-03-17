@@ -13,6 +13,12 @@ F-Droid also provides prebuilts, but they are at times outdated, and do not work
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
+==Download and Android-specific quirks==
+
+Remember to Read https://ftp.gnu.org/gnu/emacs/android/README
+
+It contains download links and answers to many android-specific Emacs quirks, how to inter-operate with termux, and more.
+
 ==Modifier Bar==
 If you need the modifiers, (Ctrl, Meta, Super), enable modifier bar.  It is part of the tool bar.  See below for a demo.
 
