@@ -19,6 +19,7 @@ For CuaMode it may be natural to use
 
 This will override `M-left' and `M-right' but these are duplicated by `C-left' and `C-right' which are probably more natural for a CuaMode user.
 
+The shift plus arrow keys are also used by OrgMode, which provides its own workaround. See the Orgmode page, section 'Conflicts' ([[OrgMode#h5o-8]])
 == Terminals ==
 
 Some terminals do not support modified arrow keys.  To use a prefix instead of a modifier, add something like the following to your InitFile.
