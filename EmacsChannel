@@ -23,6 +23,7 @@ Below is a list of all the Emacs-related IRC channels on the Libera Chat IRC ser
 ; #emacs: is the generic Emacs channel
 ; #emacs-beginners: is also open for questions. See EmacsBeginnersChannel
 ; #emacs-til: a channel to share something you learned about Emacs today
+; #emacs-dev: automated commit, bug status change, build notifications and chat
 ; #xemacs: is the XEmacsChannel
 
 === Emacs channels in languages other than English ===
