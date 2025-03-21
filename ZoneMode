@@ -21,7 +21,7 @@ If you want to try out a particular Zone program, here is an interactive command
       (completing-read
        "Program: "
        (mapcar 'symbol-name zone-programs))))
-    (let ((zone-programs (list (intern pgm))))
+    (let ((zone-programs (vector (intern pgm))))
       (zone)))
 
 To make your own program, add it to `zone-programs'.
