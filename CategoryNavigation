@@ -37,6 +37,8 @@ Navigating through the text of large buffers, or multiple buffers, especially co
 
 == Other Navigation Libraries ==
 
+* AceJump -- Quickly moving the cursor to ANY position in current view.
+* AvyPage -- Jump to arbitrary positions in visible text and select text quickly.
 * VisibleBookmarks -- Visible buffer-local bookmarks and the ability to jump between them.
 * [[EAssist]] -- find a function name by typing only part of it
 * GonzuiForEmacs -- Emacs interface of `gonzui', a source code search engine.
