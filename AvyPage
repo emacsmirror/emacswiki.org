@@ -1,4 +1,4 @@
-Avy is a GNU Emacs package for jumping to visible text using a char-based decision tree. 
+Avy is an external package for jumping to visible text using a char-based decision tree. 
 
 Project page: https://github.com/abo-abo/avy
 
