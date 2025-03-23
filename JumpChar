@@ -1,0 +1,5 @@
+jump-char is an external package to navigation by character occurrence.
+
+Like `isearch' can it be especially useful for quickly moving to a single character on the same line or a short distance away.
+
+Project page: https://github.com/lewang/jump-char
