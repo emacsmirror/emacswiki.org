@@ -3,3 +3,6 @@ Avy is a GNU Emacs package for jumping to visible text using a char-based decisi
 Project page: https://github.com/abo-abo/avy
 
 It can do more than the official documentation suggests, as explained in Karthink's excellent blogpost https://karthinks.com/software/avy-can-do-anything/
+
+----
+CategoryNavigation
