@@ -223,6 +223,9 @@ $ mv fonts junk-fonts; ln -s /sdcard/fonts
 $ ls fonts
 [/code]
 
+=Emacs does not look for fonts in sub-dir of fonts directory=
+Emacs only searches for fonts/*.ttf. It does not search for fonts in sub-directories of the fonts directory.
+
 =Path name in HOME dir, in config file=
 To reliably use <tt>$HOME</tt> in a path name, in emacs config file:
 [code]
