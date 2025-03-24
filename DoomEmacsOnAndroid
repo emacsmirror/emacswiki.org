@@ -226,6 +226,17 @@ $ ls fonts
 =Emacs does not look for fonts in sub-dir of fonts directory=
 Emacs only searches for fonts/*.ttf. It does not search for fonts in sub-directories of the fonts directory.
 
+=How to change font on the fly=
+To change font on the fly, assign a new <tt>font-spec</tt> to <tt>doom-font</tt>, then call <tt>doom/reload-font</tt>:
+[code]
+(defun my/regular-font ()
+  (interactive)
+  (setq doom-font (font-spec :family "Iosevka Comfy" :size 20 :weight 'regular)
+        doom-variable-pitch-font (font-spec :family "Iosevka Comfy Motion Duo" :size 20))
+  (doom/reload-font))
+[/code]
+Note that <tt>font-spec</tt> does not recognize keyword <tt>:height</tt>.
+
 =Path name in HOME dir, in config file=
 To reliably use <tt>$HOME</tt> in a path name, in emacs config file:
 [code]
