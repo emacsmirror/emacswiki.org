@@ -23,13 +23,15 @@ Via the Random button, I came across : https://www.emacswiki.org/emacs/1000_Word
 
 Is there a preferred way to handle this sort of thing?  
 
+edit: looks like the 1000_Words page has been corrected (thanks, Alex!) but the overall question remains.
+
 == CamelCase Syntax ==
 
 In re: "Camel Case Auto-split Syntax" by Mike Abrams earlier, since it seems to be okay to start changing these, I certainly will!
 
 That said, this page: https://www.emacswiki.org/emacs/TextFormattingRules#h5o-7 says "Words in CamelCase (mixed case) are transformed into links to other wiki pages".
 
-To clarify, is that no longer the case?
+Edit: if I'd read the *very next line* I would have an answer: "[[Words in double brackets]] are also transformed into links to other wiki pages. This works for all characters except punctuation characters." 
 
 == GuidedTour:GnuEmacs ==
 
