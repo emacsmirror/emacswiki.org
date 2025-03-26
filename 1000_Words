@@ -7,7 +7,7 @@ Back when I learned English, I was told that I'd be able to understand 80% of al
 
 This package provides two modes derived from Text Mode: `1000-words-mode' and `2000-words-mode'.
 
-* Lisp:1000-words.el
+* https://src.alexschroeder.ch/1000-words.git/
 
 ----
 CategoryModes
