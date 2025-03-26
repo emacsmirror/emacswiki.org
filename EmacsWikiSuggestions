@@ -15,6 +15,36 @@ Discussion about the "Goto Bar", the links at the top and bottom of each page, i
 Discussion about the TextFormattingRules used in contributing to pages  is at TextFormattingDiscussion.
 
 '''Add your suggestions below this line.'''
+
+
+== Orphan pages? == 
+
+Via the Random button, I came across : https://www.emacswiki.org/emacs/1000_Words .  The code it links to doesn't exist (nor does the page), and the parent page itself doesn't appear to be linked elsewhere on the site (? - newish here so I did do a search, but unsure if there's other ways to check.)
+
+Is there a preferred way to handle this sort of thing?  
+
+== CamelCase Syntax ==
+
+In re: "Camel Case Auto-split Syntax" by Mike Abrams earlier, since it seems to be okay to start changing these, I certainly will!
+
+That said, this page: https://www.emacswiki.org/emacs/TextFormattingRules#h5o-7 says "Words in CamelCase (mixed case) are transformed into links to other wiki pages".
+
+To clarify, is that no longer the case?
+
+== GuidedTour:GnuEmacs ==
+
+...isn't a 'guided tour'.  Can we change the title of the page to 'General Overview' or some such?
+
+OR: 
+
+what would an actual guided tour look like?
+
+== Mark offsite links ==
+
+(I have a couple of small quibbles to put here, but will list them each separately.  Apologies if that isn't a site norm.)
+
+Can we mark links that go directly to another site with an outbound arrow, or just text to that effect? (example: WikiPedia:Emacs)
+
 == Does anyone object to me removing XEmacs references? ==
 
 Hi.  The wiki still prominently refers to XEmacs, which is dead.  Users aware of the current Emacs landscape get the impression that the wiki is stale.  And clueless users might even install XEmacs and be disappointed with the whole Emacs concept.  So, does anyone object to me removing as many XEmacs references as my time and energy permit?
@@ -359,7 +389,7 @@ How is that going to work? The way I see it, an Instant Answer can take a search
 
 In conformity to the many other application wikis out there, the emacs wiki should at least use a sans-serif font as default across its pages.
 
-Many other application wikis use a sans serif font, not to mention Wikipedia itself. Some examples include [https://wiki.archlinux.org/index.php/Arch_Linux Arch] and [https://en.wiktionary.org/wiki/Wiktionary:Main_Page Wikitionary].
+Many other application wikis use a sans serif font, not to mention Wikipedia itself. Some examples include the Arch Linux wiki and [https://en.wiktionary.org/wiki/Wiktionary:Main_Page Wikitionary].
 
 [new:AlexSchroeder:2017-07-10 08:17 UTC]
 There's a [https://github.com/bburns/emacswiki-light-theme github repo] for the new css, so I think that it would be better to place your suggestion there.
