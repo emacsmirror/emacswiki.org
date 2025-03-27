@@ -16,6 +16,11 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Obsolete info/pkg/etc ==
+
+I just marked a package obsolete [https://www.emacswiki.org/emacs/Emacs_X_Window_Manager here], but wondering if there's a preferred term or way of doing this.
+
+(in re: XEmacs references, below)
 
 == Orphan pages? == 
 
