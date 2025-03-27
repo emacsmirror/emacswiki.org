@@ -1,0 +1,20 @@
+Newbie.
+
+True story: I built Emacs from master for years as part of a daily morning routine, and never used it.  It was like a strange meditation.
+
+I finally dove in this year and it's become a mild obsession.
+
+Running list of possibly irrational Emacsoid peeves:
+
+# packages which change the appearance of something and don't include screenshots.
+# packages whose documentation consists primarily of a list of keybindings.
+# instructions for beginners that focus on lists of default keybindings.
+
+The annoyance with keybindings is because it's part of what kept me away from Emacs and seems, in retrospect, fairly unnecessary.  Now I've come to realize that I can find almost anything with a simple M-x <package-name>, and if I'm not sure, taking a guess at a keyword.  Also disagree with the widely disseminated advice to remove the menu-bar from init; it's very helpful for discoverability.  
+
+I'm starting to suspect that a lot of frequently referenced tutorials and/or inits/configs have some ur-source from 1993 or so.
+
+
+Current mysteries:
+# 'M-x' reappears in minibuffer after issuing command; seems somewhat intermittent.
+# how to stop messing with my init, which probably isn't helping with tracking down the above.
