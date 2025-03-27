@@ -38,3 +38,15 @@ You don't have permission to access /Emacs/DL/EmacsW32/EmacsCVS/ptch/Emacs-23-Cv
 
 -- FosterBoondoggle 2014-06-11 02:48 UTC
 
+
+----
+
+[now]
+Eli Zaretskii seems to be maintaining a 28.2 port here: https://sourceforge.net/projects/ezwinports/files/ (2022)
+
+There's also: https://cygwin.com/packages/summary/emacs-w32.html (29.2-.4, 2024).
+
+Do either of those work here?
+
+-- Cena 2025-03-27 16:21 UTC
+
