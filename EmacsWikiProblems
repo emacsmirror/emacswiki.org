@@ -9,6 +9,16 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Can't cancel Admin comment ==
+[now]
+I rather confusedly ended up on the Administration page for the NearMap page after trying unsuccessfully to submit a comment on that page.  
+While on the Admin page, I cannot cancel the comment textfield/save button; eg, "Comments on NearMap needs attention".
+
+
+== Error on Administration->Nice Index ==
+[now]
+The [https://www.emacswiki.org/emacs?action=printable-index Nice Index of All Pages] leads to a `Invalid action parameter printable-index` error.
+
 == Revisioning Problems ==
 
 [:EditingGetsOldPageText]
