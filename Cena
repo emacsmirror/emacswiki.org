@@ -1,8 +1,6 @@
-Newbie.
+Newbie (2025).
 
 True story: I built Emacs from master for years as part of a daily morning routine, and never used it.  It was like a strange meditation.
-
-I finally dove in this year and it's become a mild obsession.
 
 Running list of possibly irrational Emacsoid peeves:
 
@@ -18,3 +16,5 @@ I'm starting to suspect that a lot of frequently referenced tutorials and/or ini
 Current mysteries:
 # 'M-x' reappears in minibuffer after issuing command; seems somewhat intermittent.
 # how to stop messing with my init, which probably isn't helping with tracking down the above.
+
+Other: non-traditional (eg, old) undergrad in computer science, ham radio, banjo, unsolved mysteries.
