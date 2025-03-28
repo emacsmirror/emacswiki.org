@@ -169,6 +169,14 @@ I use Yasnippet for initial skeletons:
 
 -- OlafDietsche
 
+== Escaping a `completing-read` Loop ==
+
+The default handler for Emacs Lisp files has a skeleton with a completing-read in it.
+If you're using [[Vertico]], it might not be obvious how to get out of the completing-read gracefully.
+
+*SOLUTION*:  Hit M-RET
+
+*CREDIT*: [https://old.reddit.com/r/emacs/comments/1iup1jb/autoinsert_keyword_selection_becomes_never_ending/ @mepcotterell]
 
 == See also ==
 
