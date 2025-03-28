@@ -1,14 +1,17 @@
 The idea is to create a user style sheet to override the defaults
 your browser is presenting you.  See also [[CSS]].
 
-== Finding the Mozilla User Style Sheet ==
 
-* http://www.squarefree.com/userstyles/ -- notes about finding the user style sheet and some suggested settings
-* http://www.w3.org/TR/CSS2/ -- the spec for CSS2
 
-In my case, the user style sheet is located here:
+== User Stylesheets ==
 
-    /home/alex/.mozilla/alex/k5vntcoo.slt/chrome/userContent.css
+In the past, it was possible to override a site's CSS via a custom user stylesheet, but as of this writing in 2025, Google Chrome no longer supports user stylesheets.
+
+While they're still technically possible with Firefox, Mozilla [https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration does not recommend them] as of 2024.
+
+Emacs' [eww] browser [https://www.gnu.org/software/emacs/manual/html_mono/eww.html does not support CSS] at all.
+
+
 
 == Settings ==
 
@@ -75,7 +78,7 @@ If you use display:none for the logo, then the entire element will be
 gone, and therefore img.logo:after or img.logo:before will have no
 effect.  Use visibility:hidden instead.
 
-Positionning does not seems to work for the inserted content. So
+Positioning does not seems to work for the inserted content. So
 you'll probably have to find a workaround for your stylesheet.
 
 A useful ressource for more info about generated content:
