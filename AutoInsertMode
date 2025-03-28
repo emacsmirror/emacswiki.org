@@ -1,8 +1,12 @@
+== About ==
+
 A mode that comes with Emacs that automagically inserts text into new buffers based on file extension or the major mode.  See GIT:autoinsert.el or the Info manual [[https://www.gnu.org/software/emacs/manual/html_node/autotype/Autoinserting.html|Autotyping]].
 
 Use it by running `M-x auto-insert-mode'.  Or manually insert new text in files with `M-x auto-insert'.  Try it with an elisp file, for example.  The result is quite impressive: The entire [[GPL]] notice will be inserted for you.
 
 A common way to configure what should be inserted for a type of file is by adding a skeleton to the `auto-insert-alist'.  The syntax is based on SkeletonMode.
+
+== Examples ==
 
 Here is a skeleton for a [[C++]] file that you can try by EvaluatingExpressions or by adding to you InitFile.
 
