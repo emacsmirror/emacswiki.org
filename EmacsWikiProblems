@@ -10,14 +10,19 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
 == Can't cancel Admin comment ==
-[now]
+[new]
 I rather confusedly ended up on the Administration page for the NearMap page after trying unsuccessfully to submit a comment on that page.  
 While on the Admin page, I cannot cancel the comment textfield/save button; eg, "Comments on NearMap needs attention".
 
+[new]
+I'm not sure what you mean. Perhaps I don't see the problem because I'm an admin. What exactly is the problem? From any page X on the wiki, you can click the "Administration" Link, where it will say "X needs attention: ##______## [Save]" where you can provide an explanation of why the page needs attention, and then you can click the save button. There's no need to cancel this? Or is there some complication I'm not seeing. -- [[Alex Schroeder]]
 
 == Error on Administration->Nice Index ==
-[now]
+[new]
 The [https://www.emacswiki.org/emacs?action=printable-index Nice Index of All Pages] leads to a `Invalid action parameter printable-index` error.
+
+[new]
+Fixed by removing it. -- [[Alex Schroeder]]
 
 == Revisioning Problems ==
 
