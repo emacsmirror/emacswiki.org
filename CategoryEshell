@@ -4,6 +4,11 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 
 == Categories ==
 
+== Manual ==
+
+* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html The Eshell manual] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
+* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell Source code] (`M-x find-library eshell RET')
+
 === General Usage ===
 * [EshellAlias Aliases] -- Alias ##open## to ##open-file## etc.
 * [EshellFunctions Functions] -- Writing functions in Eshell
@@ -53,8 +58,6 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 
 == External Links ==
 
-* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html The Eshell manual] ([http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/eshell.texi TexInfo source])
-* [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/eshell Source code] (`M-x find-library eshell RET')
 * [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Mastering Eshell]
 * [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
 * [http://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/ Eshell completion for git, bzr, and hg]
