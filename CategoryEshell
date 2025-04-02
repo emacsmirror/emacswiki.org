@@ -37,7 +37,7 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 === About Eshell ===
 * EshellHistory and EshellDirectoryHistory
 * EshellWishList -- wish list and questions.
-* EshellManual -- Texinfo source for a reference manual based on the comments in the source
+* EshellManual -- commentary and Texinfo source for the first edition of the manual (c. 2000).
 * EshellElDoc -- ElDoc functionality for Eshell
 
 
