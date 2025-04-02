@@ -58,17 +58,19 @@ Eshell was written by JohnWiegley, and later maintained by [[aidalgol|Aidan Gaul
 
 == External Links ==
 
-* [http://www.masteringemacs.org/articles/2010/12/13/complete-guide-mastering-eshell/ Mastering Eshell]
+* [https://www.masteringemacs.org/article/complete-guide-mastering-eshell A Complete Guide to Mastering Eshell]
 * [http://www.howardism.org/Technical/Emacs/eshell-fun.html Eschewing Z-Shell for Eshell]
 * [http://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/ Eshell completion for git, bzr, and hg]
 * [http://www.howardism.org/Technical/Emacs/eshell-present.html Presenting Eshell]
 * [https://www.reddit.com/r/emacs/comments/6y3q4k/yes_eshell_is_my_main_shell/ Eshell is my main shell
 * [http://oneliner-elisp.sourceforge.net/ OneLiner] - Integrate the UNIX shell with Emacs
-
-=== External Articles ===
 * [https://famme.sk/blog/how-about-eshell.html BASH, ZSH, FISH. How about Eshell?] by !TritonFamme
 * [https://www.reddit.com/r/emacs/comments/dl7fez/going_from_fish_to_eshell/  Going from fish to eshell?] A reddit thread.
 
+=== External Video ===
 
+* [https://emacsconf.org/2022/talks/eshell/ Top 10 reasons why you should be using Eshell] by Howard Abrams at the [https://emacsconf.org/2022/ 2022 EmacsConf].
+
+* [https://www.youtube.com/watch?v=RhYNu6i_uY4 Introduction to Eshell] from the [https://www.youtube.com/watch?v=RhYNu6i_uY4 London Emacs Group], 2017.
 ----
 CategoryShell
