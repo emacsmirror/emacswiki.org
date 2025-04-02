@@ -2,15 +2,15 @@ The idea is to create a user style sheet to override the defaults
 your browser is presenting you.  See also [[CSS]].
 
 
-
 == User Stylesheets ==
+
+/Note:/
 
 In the past, it was possible to override a site's CSS via a custom user stylesheet, but as of this writing in 2025, Google Chrome no longer supports user stylesheets.
 
 While they're still technically possible with Firefox, Mozilla [https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration does not recommend them] as of 2024.
 
-Emacs' [eww] browser [https://www.gnu.org/software/emacs/manual/html_mono/eww.html does not support CSS] at all.
-
+Emacs' [https://www.gnu.org/software/emacs/manual/html_mono/eww.html eww] does not support CSS at all.
 
 
 == Settings ==
