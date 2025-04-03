@@ -1,37 +1,52 @@
-Let's see how things are organized in the Git repository.  We will focus on the master branch.
-
-== Build configuration ==
-
-This is not very interesting. It's a lot of stuff that makes Emacs
-compile and run on many platforms and architectures.
-
-Emacs --like a lot of GNU projects-- use the GNU autotools.
+This is a detailed overview of the Emacs source code, focusing on the [https://git.savannah.gnu.org/cgit/emacs.git/tree/ the master branch].
 
 
-* <b>autogen.sh</b> --- Little script that checks you have the right version
-                 of autotools to build the configure script.
+== Prerequisite: GNU Autotools == 
 
-* <b>autogen/</b> --- Some pre-built generated files for autoconf. See
-               README inside.
+Emacs --like a lot of GNU projects-- uses the [https://www.gnu.org/software/automake/manual/html_node/Autotools-Introduction.html GNU Autotools], which are used to create the [https://www.gnu.org/software/automake/manual/html_node/GNU-Build-System.html GNU Build System], which in turn allows one to finally build Emacs (or other software).
 
-* <b>config.bat</b> --- Configuration script for MSDOS. All I can say is
-                 scripting on MSDOS doesn't seem very fun.
+The GNU Autotools is made up of [https://www.gnu.org/software/automake/manual/html_node/index.html Automake], [https://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.72/html_node/index.html Autoconf], and [https://www.gnu.org/software/libtool/manual/html_node/index.html Libtool], along with [https://gcc.gnu.org/ GCC, the GNU C Compiler] and [https://www.gnu.org/software/gnulib/manual/html_node/index.html gnulib].  
 
-* <b>configure.ac, m4/</b> --- Source file used by autoconf to generate the
-      configure script. Pretty hairy.
+GNU has more details about the Autotools in their [https://www.gnu.org/software/automake/faq/autotools-faq.html#What-are-the-_0060_0060Autotools_0027_0027_003f FAQ].
 
-* <b>GNUmakefile</b> --- From the file headers: This GNUmakefile is for GNU
-                  Make.  It is for convenience, so that one can run
-                  'make' in an unconfigured source tree.  In such a
-                  tree, this file causes GNU Make to first create a
-                  standard configuration with the default options, and
-                  then reinvokes itself on the newly-built Makefile.
-                  If the source tree is already configured, this file
-                  defers to the existing Makefile.
 
-* <b>make-dist</b> --- Script to make a release tarball.
+== The / directory ==
 
-* <b>Makefile.in</b> --- The makefile not yet processed by autotools.
+This contains several scripts, text files, and subdirectories containing the source code for Emacs.   
+
+=== Text files ==
+
+The text files provide a great deal of information about building Emacs, and should be your first stop.  In particular:
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL INSTALL] and [https://git.savannah.gnu.org/cgit/emacs.git/tree/INSTALL.REPO INSTALL.REPO] --- instructions on installing the source from a tarball and the git repository, respectively.
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/README README] --- an overview of the repo and it's contents.
+
+* The CHANGELOG.n files, where N=some number, provide a rolling account of changes to the source code.  [https://git.savannah.gnu.org/cgit/emacs.git/tree/ChangeLog.4 ChangeLog.4] documents all the changes leading up to the release of v30.1 (February 2025).  [https://git.savannah.gnu.org/cgit/emacs.git/tree/ChangeLog.5 ChangeLog.5] starts the notes for any changes for the 30.1 release.
+
+=== Build scripts ==
+
+The scripts allow you to build Emacs.  They are, in approximate order of use:
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/autogen.sh autogen.sh] --- script that checks you have the right versions
+                 of autotools to build the <code>configure</code> script.  It generates the <code>configure.ac</code> script and associated helpers.
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/configure.ac configure.ac] --- is the input used by Autoconf to
+                construct the <code>configure</code> script.
+
+* Note that the above-mentioned configure script - executed by typing <code>./configure</code> in the terminal - isn't generated until <code>autogen.sh</code> and <code>configure.ac</code> are run for the first time on your local computer.
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/config.bat config.bat] --- Configuration script for MSDOS machines.
+
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/Makefile.in Makefile.in] --- a template used by the <code>configure</code> script to create a <code>Makefile</code>.  It isn't generated until <code>./configure</code> is run.
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/GNUmakefile GNUMakefile] --- this is a Makefile that allows you to build Emacs without first configuring it via the <code>configure</code> script.
+
+* [https://git.savannah.gnu.org/cgit/emacs.git/tree/make-dist make-dist] --- this is a shell script which allows you to create a tarball for release.
+
+
+=== Compilation notes ===
 
 I recommand reading the INSTALL.REPO if you want to build the git
 `master' branch. Basically, if you have all dependancies to build the default
