@@ -8,7 +8,7 @@
 * See [[Htmlize]]
 
 
-= Mkhtml =
+= Mkhtml = /obsolete/
 
 Mkhtml, by DrewAdams, lets you create hypertext-linked HTML output from Emacs buffers. It uses the [[Htmlize]] library by HrvojeNiksic.
 
@@ -31,7 +31,7 @@ In buffers other than `Info' and `Dired', Mkhtml adds item '''HTMLize Buffer''' 
 Mkhtml works with GnuEmacs 20; it has not been tested with Emacs 21 or more recent.
 
 '''Get it here:'''
-* Mkhtml: Lisp:mkhtml.el /obsolete/
+* Mkhtml: Lisp:mkhtml.el 
 
 * Htmlize: [https://github.com/hniksic/emacs-htmlize Github]
 
