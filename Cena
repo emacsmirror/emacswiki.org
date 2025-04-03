@@ -2,25 +2,38 @@ Newbie (2025).
 
 True story: I built Emacs from master for years as part of a daily morning routine, and never used it.  It was like a strange meditation.
 
-Running list of possibly irrational Emacsoid peeves:
+My current methodology for editing EmacsWiki:
+
+* click 'Random'
+* can I make a useful edit to this page in 5 minutes or less?  If yes, do it.  Often this is just updating links, version numbers, or minor typos.
+* if not, click 'Random' OR
+* edit the more complex page a section at a time. (This is new, so we'll see how it goes.)
+
+I've made it an org-habit to make at least one edit to the wiki every day! (And I also just noticed there's no page for habits!)
+
+==== Pages which need creating: =====
+
+ - org-habit
+ - tads-mode (IF lang)
+ - hugo-mode (IF lang, and also the file itself needs finding)
+
+==== Running list of possibly irrational Emacsoid peeves from a newbie: ====
 
 # packages which change the appearance of something and don't include screenshots.
 # packages whose documentation consists primarily of a list of keybindings.
 # instructions for beginners that focus on lists of default keybindings.
+# the incredible amount of assumed knowledge in almost every area (packages, terminology, ability to describe a problem, etc) and often an associated obliviousness by 'oldbies' to the sheer amount of information a newbie has to take in to even begin to, say,  'ask good questions' ala ESR (as I've seen recommended).  This is my current worst peeve.
 
 The annoyance with keybindings is because it's part of what kept me away from Emacs and seems, in retrospect, fairly unnecessary.  Now I've come to realize that I can find almost anything with a simple M-x <package-name>, and if I'm not sure, taking a guess at a keyword.  Also disagree with the widely disseminated advice to remove the menu-bar from init; it's very helpful for discoverability.  
 
 I'm starting to suspect that a lot of frequently referenced tutorials and/or inits/configs have some ur-source from 1993 or so.
 
 
-Current mysteries:
+==== Current mysteries: ====
 # 'M-x' reappears in minibuffer after issuing command; seems somewhat intermittent.
 # how to stop messing with my init, which probably isn't helping with tracking down the above.
 
+----
 Other: non-traditional (eg, old) undergrad in computer science, ham radio, banjo, reading but not playing RPGs, unsolved mysteries, and others without number. 
 
-
-
-----
-
-CategoryGames
+CategoryPeople
