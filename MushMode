@@ -4,7 +4,14 @@ But there are other alternatives -- mu.el and [[eMUDs]].  Some of us use Lisp:mu
 
 == RMOO =
 
-[https://github.com/lisdude/rmoo RMOO], with an eye to do actual programming.
+[https://github.com/lisdude/rmoo RMOO], with an eye to do actual programming. (v1.3)
+
+[https://github.com/toddsundsted/rmoo RMOO] (v1.1)
+
+== FPL MOO =
+
+FPL-Moo is on [https://github.com/heow/fpl-moo Github]. (v1.1.22)
+
 
 == mu.el =
 
