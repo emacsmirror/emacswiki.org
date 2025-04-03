@@ -1,4 +1,3 @@
-
 == Inform 7 ==
 
 Source: https://github.com/alexispurslane/inform7-mode (2023)
@@ -29,6 +28,7 @@ New features:
 See also MalyonMode, WikiPedia:Inform.
 
 
+related:
 [[eMUDs]]
 MushMode
 MudMode
