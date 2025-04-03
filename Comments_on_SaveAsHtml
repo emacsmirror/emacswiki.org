@@ -1,0 +1,28 @@
+[new]
+The below comments were originally on the main page; moved them here.
+
+[new]
+Hey, mkhtml.el calls the function `htmlize-make-face-hash', that seems to have been dropped out of htmlize.el ages ago! Cheers :), EduardoOchs
+[new:DrewAdams:2004-12-29 01:16 UTC]
+Yeah, I know. I haven't really updated mkhtml.el in years. It works with an old version of htmlize.el. Maybe someday I'll get around to updating it. Sorry about that :-(. -- DrewAdams
+
+
+[new]
+your package mkhtml need package mktml-htmlize, but I can not found it, :-(. -- [[ahei]]
+
+[new:DrewAdams:2009-10-28 02:54 UTC]
+I just uploaded it: <tt>[[mkhtml-htmlize.el]]</tt>. See the `NOTE' I just added to the Commentary. MKHTML is very old. There are no doubt better things nowadays that do something similar. I posted MKHTML in case someone finds it useful. 
+
+I used to use MKHTML a lot, and it worked well for what it did. I no longer maintain it, and it does not work with recent versions of ##htmlize.el##. (If someone else wants to maintain MKHTML and bring it up to date, they are welcome to -- let me know.) Personally, I no longer have any need to create HTML pages from text files, code files, [[Dired]] buffers, and [[InfoMode|Info]] pages. If you need to do that, then it might be that MKHTML is still the best thing for that -- dunno.
+
+I posted ##mkhtml-htmlize.el## only for use with MKHTML. It is simply an old version of ##htmlize.el##, the version that I believe I was using with <tt>[[mkhtml.el]]</tt>, back when I used that.  I thought I had posted it before (perhaps someone deleted it). Sorry for any confusion.  HTH.  -- DrewAdams
+
+[new]
+mkhtml does not wok well in emacs 22 and 23, but thank you all the way. -- [[ahei]]
+
+[new:DrewAdams:2009-10-28 13:37 UTC]
+
+OK, thanks for the info. I'm not surprised. It probably needs a little tweaking.  -- DrewAdams
+
+-- Cena 2025-04-03 17:46 UTC
+
