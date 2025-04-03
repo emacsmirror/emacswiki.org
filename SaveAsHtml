@@ -31,8 +31,9 @@ In buffers other than `Info' and `Dired', Mkhtml adds item '''HTMLize Buffer''' 
 Mkhtml works with GnuEmacs 20; it has not been tested with Emacs 21 or more recent.
 
 '''Get it here:'''
-* Mkhtml: Lisp:mkhtml.el
-* Htmlize: http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
+* Mkhtml: Lisp:mkhtml.el /obsolete/
+
+* Htmlize: [https://github.com/hniksic/emacs-htmlize Github]
 
 [new]
 Hey, mkhtml.el calls the function `htmlize-make-face-hash', that seems to have been dropped out of htmlize.el ages ago! Cheers :), EduardoOchs
