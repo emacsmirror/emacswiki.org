@@ -1,6 +1,11 @@
 This is a subpage of CategoryModes.  It lists modes for playing portable games mode for emacs
 
+
 * [[igo]] - Mode for playing go/weichi/baduk in emacs
+
+* [https://www.emacswiki.org/emacs/InformMode inform-mode] - Inform 6 and 7 programming modes for the Z-Machine.
+
+
 
 
 ----
