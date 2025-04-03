@@ -52,3 +52,8 @@ For example, a search on "Company" could retrieve the following:
 
 Thus, searching for Company retrieves all listed employees.  Searching
 for Manager turns up all Staffer entries.
+
+----
+CategoryPersonalInformationManager
+
+CategoryHypermedia
