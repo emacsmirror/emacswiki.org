@@ -252,7 +252,7 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 
 * Regexp searching (`C-M-s') is a great way to learn about regexps -- see [[IncrementalSearch#RegexpSearches|Regexp Searches]]. Change your regexp on the fly and see immediately what difference the change makes.
 
-* [[Rx notation]] is an easier way to write regular expressions. Use the [[rx]] function in LispInteractionMode to convert it to Emacs's conventional string syntax.
+* [[Rx notation]] is an easier way to write regular expressions. Use the [[rx]] function in LispInteractionMode to convert conventional string regexp syntax to rx syntax.
 
 * If you are stumped by a complex regular expression, try using the [[xr]] package to convert it to [[Rx notation]]. 
 
