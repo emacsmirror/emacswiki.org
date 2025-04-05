@@ -1,13 +1,10 @@
 A vocabulary tester by CyprianLaskowski.  Once you provide it with a
 vocab list, it will test you on it until you know your stuff.
 
-You can get it here:
+You can get version 0.5 here:
 
-* http://24.71.17.22/elisp/lib/vocab-test.el
+https://github.com/cyplas/elisp/blob/master/vocab-test.el
 
---
-
-You can't anymore ... and the only version on the net is 0.2 but i am very sure there must be a version 0.5 as i have still some fragments of it here. Can somebody provide it? -MarioDomgoergen
 
 --
 
