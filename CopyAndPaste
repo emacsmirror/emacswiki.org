@@ -43,7 +43,30 @@ Finally, in other applications, pasting usually replaces the selected text with 
   (delete-selection-mode)
 == Wayland ==
 
-Although Emacs 29 has an option to build with pure GTK and therefore is supposed to support Wayland clipboard natively, that support does not work if emacs is run in a tty, or when run inside multiple displays.  For that to work, the wl-clipboard program is needed (you need to install wl-clipboard first):
+Although Emacs 29 has an option to build with pure GTK and therefore is supposed to support Wayland clipboard natively, it may have issues depending on configuration of the system or the environment Emacs is being run in.
+
+=== Pure GTK with primary clipboard disabled ===
+
+When Emacs is built with pure GTK, if the primary clipboard is disabled in the system as a whole, then pasting will work as expected, but copying from Emacs to the clipboard will only give a blank entry there.
+This behaviour happens even when Emacs's primary clipboard is disabled and can be corrected as follows:
+
+{{{
+;; credit: Lukas Barth at https://www.lukas-barth.net/blog/emacs-wsl-copy-clipboard/
+(setq select-active-regions nil)
+}}}
+
+It may also be necessary to make sure that ##select-enable_clipboard##, ##select-enable-primary##, and ##interprogram-cut-function## are at their default settings:
+
+{{{
+(setq select-enable-clipboard 't)
+(setq select-enable-primary nil)
+(setq interprogram-cut-function #'gui-select-text)
+}}}
+
+
+=== Pure GTK with terminal, multiple displays ===
+
+The support also does not work if Emacs is run in a terminal (tty), or inside multiple displays. For that to work, the ##wl-clipboard## program is needed (you need to install ##wl-clipboard## first):
 
 {{{
   ;; credit: yorickvP on Github
