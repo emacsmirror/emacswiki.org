@@ -77,7 +77,7 @@ This is helpful if you rely on Android to input complex text.  However, if you w
 
 See also the function set-text-conversion-style.
 ==CJK Font==
-See [[CJKFont]].
+See [[CjkFont]].
 =Emacs within a GNU/Linux chroot=
 Emacs on Android, without requiring root or special setup, can be installed in a chroot environment such as provided by [https://userland.tech/ UserLand] which can even give an optional desktop environment. 
 
