@@ -171,7 +171,7 @@ A package that supports Vim-like incrementing and decrementing is [https://githu
 ----
 
 There is also another simple package that provides 2 commands to
-increase/decrease the number at point or on the current line:
+increase/decrease the number at point, on the current line or all numbers within a region (with support for rectangular regions):
 [https://github.com/alezost/shift-number.el shift-number].
 
 ----
