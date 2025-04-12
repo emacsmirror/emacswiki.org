@@ -179,4 +179,8 @@ increase/decrease the number at point, on the current line or all numbers within
 See [[number-mark.el]], ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
 
 ----
+
+Calc's [[https://www.gnu.org/savannah-checkouts/gnu/emacs/manual/html_node/calc/Embedded-Mode-Overview.html embedded mode]] can also be used for arbitrary in-place operations on buffers.
+
+----
 CategoryEditing
