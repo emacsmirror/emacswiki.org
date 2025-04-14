@@ -3,6 +3,8 @@
 == 2022-12 ==
 This package seems to be abandonware, in that the most recent git commit at the linked repository is dated 2014-01-12.
 
+Planner has largely been superceded by OrgMode and OrgAgenda.
+
 == Introduction ==
 
 Planner is a PersonalInformationManager (PIM) by JohnWiegley. You can use it to manage your tasks, schedule, notes,
@@ -32,9 +34,9 @@ There is a good intro on how to use the PlannerMode in the planner.el file.
 
 == Getting Planner ==
 
-The current version is at 
+The current version and documentation is at 
 
-* http://download.gna.org/planner-el/
+* http://wjsullivan.net/static/doc/planner/
 
 You can get the latest development snapshot at http://repo.or.cz/w/planner-el.git.
 
