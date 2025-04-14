@@ -27,6 +27,10 @@ These support IJulia, the Julia kernel for Jupyter.
 
 == Other Information ==
 
+* Emacs and Julia: How to (2024): https://discourse.julialang.org/t/emacs-and-julia-how-to/123623
+
+* Some tidbits related to above in [https://julialang.zulipchat.com/#narrow/channel/228210-emacs/topic/Emacs.20and.20Julia.3A.20how.20to/with/489309826 JuliaLang's Zulip].
+
 * A blog post about editing Julia code with Emacs http://www.wilfred.me.uk/blog/2014/11/16/editing-julia-code-with-emacs/
 
 ----
