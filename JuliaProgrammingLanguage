@@ -16,7 +16,11 @@
 
 == Org integration ==
 
+* [https://code.tecosaur.net/tec/ox-pluto/src/branch/master/ox-pluto.el ox-pluto] for [https://plutojl.org Pluto.jl] notebooks.
+
 * [https://github.com/shg/ob-julia-vterm.el.git ob-julia-vterm]
+
+* [https://github.com/shg/julia-vterm.el julia-vterm] is required for ob-julia-vterm.
 
 == Jupyter integration ==
 
