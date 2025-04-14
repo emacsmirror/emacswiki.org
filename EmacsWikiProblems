@@ -10,6 +10,25 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
 == Comments on Pages ==
+
+[new]
+
+I was trying to make a quick update to the OrgMode page (adding commands for building from source) and ran afoul of the dreaded 'http' error.  I ran through the page updating links to https (did not actually check the links - a project for another day).
+
+Then I ran into an error with a page referring me to the BannedContent page.  I checked the link in question and it's 404, so deleted.
+
+On my third try at preview/save, I got the same error for brool.com :
+
+`Rule "/index\.php" matched "XXX" on this page. Reason: Comments on StyleGuide. See BannedContent for more information.`
+
+This page IS up, and I actually don't see it listed in the BannedContent, so I'm not sure what this is about.
+
+Anyway, the http thing in particular has come up often enough that I'm wondering if there's any easy fix?  It's often an easy fix on my end(updating links, say), but on a page like OrgMode 's it becomes a whole project by itself, and is the sort of thing that can easily derail quick updates/fixes to pages. (Like, I had to give up on my actual update to write this here, and then I have to go do something else.  Maybe tomorrow! :))
+
+edit: I can't even save this because the error above is triggering the BannedContent error on save. Replaced with 'XXX'.
+
+-- [[Cena]]
+ 
 [new]
 
 I recently came across a page, last updated in 2008, with comments on the page itself ( SaveAsHtml ) .  I moved the comments to the Talk page, but then saw the same thing on the Htmlize page, and that made me wonder if comments on the page is a feature rather than a bug. 
