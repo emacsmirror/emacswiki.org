@@ -1,17 +1,17 @@
 Bazaar (aka <code>bzr</code>) is a distributed version control system much like [[Git]], [[Mercurial]]
 and DaRcs.
 
-Bazaar is available from http://bazaar-vcs.org.
+Bazaar is available from https://launchpad.net/bzr. The last update was in 2016.
 
 == Modes ==
 
-* [[VC]] -- supports Bazaar through the vc-bzr.el backend. Is distributed with Emacs since version 22.2. You can also get it [http://www.loveshack.ukfsn.org/emacs/vc-bzr.el here].
+* [[VC]] -- supports Bazaar through the vc-bzr.el backend. It has been distributed with Emacs since version 22.1 [https://launchpad.net/vc-bzr ref].
 * [[DVC]] -- supports Bazaar.
 * Lisp:bazaar.el -- A user interface specific to Bazaar.
 
 == Emacs no longer uses Bazaar ==
 
-In the past, Emacs used Bazaar. Nowadays, Emacs uses Git instead.
+Emacs used Bazaar from 2009-2014. Nowadays, Emacs uses Git instead.
 
 See [EmacsFromGit] or [GitForEmacsDevs].
 
