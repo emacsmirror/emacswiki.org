@@ -1,52 +1,52 @@
-Page for OrgMode user (formerly a PlannerMode user) RaymondZeitler.
+I use Emacs. I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v30.1 on my most modern computer that runs Windows 10 Pro 2009 64-bit.
 
-I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v24.1.1 on Windows 7 Professional SP1 64-bit.
+My background is electrical engineering.  However I specialize in automating data mining and analysis, as well as computer administration, CAD and circuit simulation.  I use MS-DOS Batch file, Visual Basic, VBScript, Lisp, Fortran and Python.
 
-My background is electrical engineering, but I spend more time designing photomasks and surface acoustic wave devices, and writing code in Visual Basic, Basic, NTScript, VBScript, Fortran and Perl.  My specialty is in applying the techniques of computer automation to design processes, data processing and computer maintenance.  Emacs is also my HTML editor.
+I used to use PlannerMode to organize my many endless work projects. I originally used PlannerMode for a personal journal and a work plan, so I came up with a quick and dirty way of having two planner-directories. I called this "select-planner-directory" and I posted the snippet in PlannerModeContrib. "select-planner-directory" was intended to work with the version of Planner that's based on emacs-wiki.
 
-I used to use PlannerMode to organize my many endless work projects.  I originally used PlannerMode for a personal journal and a work plan, so I came up with a quick and dirty way of having two planner-directories.  I called this "select-planner-directory" and I posted the snippet in PlannerModeContrib.  "select-planner-directory" was intended to work with the version of Planner that's based on emacs-wiki.
+But I decided to try OrgMode in June 2010. When I hunkered down and followed the JohnWiegley online tutorial, I became hooked.
 
-But I decided to try OrgMode in June 2010.  When I hunkered down and followed the JohnWiegley online tutorial, I became hooked.
+When I upgraded to Emacs 30.1, I changed my .emacs to remove unnecessary packages.
+I am a senior member of IEEE, and served for many years on the Executive Committee of my local section.
 
-On June 8, 2010 I upgraded to Emacs 23.2, and I changed my .emacs to remove unnecessary packages (like gnuserv).  My OrgMode and PlannerMode settings reside in separate .orgmode and .plan files.  My .orgmode file also contains org-decrypt-to-kill-ring, which I wrote based on org-decrypt-entry.  My .plan (which I maintain here for historical reasons) contains a new version of "select-planner-directory", which I named "select-planner-project".
-
-I am an Officer for an IEEE Section in Region 1.
-
-I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that pertain to Emacs, Org or Planner should be directed to an expert.
+I can be reached at r.zeitler@ieee.org.  But questions or comments that pertain to Emacs should be directed to an expert.
 
 My .emacs:
 <pre>
-;;; .emacs for version 24.1 on Raymond Zeitler's work computer.
-;; Time-stamp: <2013-03-14 11:02:19 rayz>
-;;
+;;; -*- lexical-binding: t -*-
+;;; Time-stamp: "2025-04-17 09:34:58 RayZ"
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
+
 (setq initial-frame-alist '((top . 0) (left . 0)
-			    (width . 135) (height . 67)
+			    (width . 135) (height . 45)
 			    (cursor-type . bar)
-			    (font . "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-70-iso8859-1")))
+			    ))
+
 (setq frame-title-format '("GNU Emacs " emacs-version ": %b" (buffer-file-name ": %f")))
-;; Always end a file with a newline
-(setq require-final-newline t)
-(setq line-move-visual nil)
-(setq printer-name "LPT2")
-(add-hook 'write-file-hooks 'time-stamp)
+(keymap-global-set "C-+" 'text-scale-increase)
+(keymap-global-set "C-=" 'text-scale-decrease)
 
-(load "~/MyLisp/csrshp")
-(load "~/MyLisp/fill-mod")
-(load "~/MyLisp/msc.el")
-(load "~/MyLisp/m2c.el")
-(load "~/MyLisp/remcr.kbm")
-(load "~/MyLisp/cpr.kbm")
-(load "~/MyLisp/stp2scr.kbm")
-(load "~/MyLisp/rep2csv.kbm")
-(load "~/MyLisp/exeln")
-(load "~/MyLisp/exelnA")
-(load "~/MyLisp/unfill.kbm")
-(load "~/.abbrev_defs")
+;; The following two functions are from http://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
 
-(load "c:/emacs-23.4/site-lisp/patn-insert")
-
-(require 'hfyview)
-(setq hfyview-quick-print-in-files-menu t)
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
 
 ;; Function to insert the current date
 (defun insert-date-and-time ()
@@ -59,304 +59,58 @@ My .emacs:
   (interactive)
   (shell-command (concat "start " (buffer-file-name))))
 
+(defun exeln ()
+  "Execute the current line as a shell command."
+  (interactive)
+  (shell-command (buffer-substring (line-beginning-position)
+                                   (line-end-position))))
 
-;;; Keybindings
-(global-set-key [f6] 'query-replace-regexp)
-(global-set-key [f5] 'nonincremental-re-search-forward)
-(global-set-key [S-f5] 'nonincremental-repeat-re-search-forward)
-(global-set-key [C-tab] 'next-buffer)
-(global-set-key [C-S-tab] 'previous-buffer)
-(global-set-key "\C-cx" 'exeln)
-(global-set-key "\C-cA" 'exelnA)
-(global-set-key "\C-cc" 'shellfn)
-(global-set-key [M-q] 'fill-region-or-paragraph)
-(global-set-key "\C-cd" 'insert-date-and-time)
-(global-set-key "\C-cf" 'find-file-at-point)
-(global-set-key "\C-ch" 'hfyview-buffer)
-(global-set-key "\C-c\M-w" 'org-decrypt-to-kill-ring)
-(define-key function-key-map [C-kp-home] [?\M-<])
-(define-key function-key-map [C-kp-end] [?\M->])
+(keymap-global-set "C-<tab>" 'next-buffer)
+(keymap-global-set "C-S-<tab>" 'previous-buffer)
+(keymap-global-set "C-c x" 'exeln)
+(keymap-global-set "C-c s" 'shellfn)
+(keymap-global-set "C-c d" 'insert-date-and-time)
+(keymap-global-set "M-q" 'fill-paragraph)
+(keymap-global-set "C-c f" 'find-file-at-point)
 ; The following is from Francis Litterio <franl@world.std.com>
-(global-set-key [S-left] #'(lambda () (interactive) (scroll-left 1)))
-(global-set-key [S-right] #'(lambda () (interactive) (scroll-right 1)))
+(keymap-global-set "S-<left>" #'(lambda () (interactive) (scroll-left 1)))
+(keymap-global-set "S-<right>" #'(lambda () (interactive) (scroll-right 1)))
 
-;;; Modes
-
-;; Required statements for Org Mode
-(load "~/.orgmode")
-
-
-(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
-(setq visual-basic-mode-indent 4)
-(autoload 'dos-mode "dos" "Edit Dos scripts." t)
-(autoload 'csv-mode "csv-mode-rz" "Major mode for editing comma-separated value files." t)
-(load "c:/emacs-23.4/nxhtml/autostart.el")
-(column-number-mode t)
-(abbrev-mode 1)
-(tool-bar-mode nil)
-(global-font-lock-mode 1)
-(delete-selection-mode t)
-(global-auto-revert-mode 1)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'text-mode-hook 'flyspell-mode)
-
-(setq auto-mode-alist (append '(
-				("\\.\\(frm\\|bas\\|asp\\|vbs\\|wsc\\|cls\\)$" . visual-basic-mode)
-                                ("\\.plan$" . emacs-lisp-mode)
-				("\\.\\(dev\\|dxf\\|str\\|ebc\\|mat\\|and\\|stp\\|scr\\|csv\\|pat\\|mmm\\|msk\\)$" . fundamental-mode)
-				("\\.\\(bat\\|cmd\\)$" . dos-mode)) auto-mode-alist))
-
-;; Ispell addition
-(setq ispell-dictionary-alist
-      '((nil "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B") nil raw-text-dos)
-        ("american" "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B")
-         nil raw-text-dos)
-        ("british" "[A-Za-z]" "[^A-Za-z]" "[']" nil
-         ("-B" "-d" "british") nil raw-text-dos)
-        ("english" "[A-Za-z]" "[^A-Za-z]" "[']" nil ("-B")
-         nil raw-text-dos)))
-
-(load "~/.plan")
+(keymap-global-set "C-c a" 'org-agenda)
 
 (server-start)
+;; per https://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html
+;; See also: https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
+;; ...and: https://www.gnu.org/software/emacs/manual/html_node/emacs/emacsclient-Options.html
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(before-save-hook '(time-stamp))
  '(column-number-mode t)
- '(doc-view-ghostscript-program "C:\\\\Program Files\\\\gs\\\\gs9.05\\\\bin\\\\gswin64c.exe")
- '(epa-file-cache-passphrase-for-symmetric-encryption t)
- '(inhibit-startup-screen nil)
- '(major-mode (quote text-mode))
- '(org-agenda-custom-commands (quote (("x" "My agenda" agenda "" ((org-agenda-ndays 7) (org-agenda-skip-function (quote my-org-skip-sunrise)))) ("d" todo "DELEGATED" nil) ("c" todo "DONE|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "<[^>
-]+>"))) (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-agenda-files (quote ("~/probe3.org" "~/mask.org" "c:/Mask/N637A/M637.org" "~/16-bit.org" "~/todo.org" "~/SSDFC.org" "~/f90.org" "~/PSTATS.org" "~/LRID.org")))
- '(org-agenda-ndays 7)
- '(org-agenda-show-all-dates t)
- '(org-agenda-skip-deadline-if-done t)
- '(org-agenda-skip-scheduled-if-done t)
- '(org-agenda-start-on-weekday nil)
- '(org-deadline-warning-days 14)
- '(org-default-notes-file "~/notes.org")
- '(org-fast-tag-selection-single-key (quote expert))
- '(org-indent-mode-turns-off-org-adapt-indentation nil)
- '(org-indent-mode-turns-on-hiding-stars t)
- '(org-log-done (quote time))
- '(org-modules (quote (org-bbdb org-bibtex org-crypt org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
- '(org-mouse-features (quote (yank-link activate-stars activate-bullets activate-checkboxes)))
- '(org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 1))))
- '(org-refile-use-outline-path (quote file))
- '(org-remember-store-without-prompt t)
- '(org-remember-templates (quote ((116 "* TODO %?
-  %u" "~/todo.org" "Tasks") (110 "* %u %?" "~/notes.org" "Notes"))))
- '(org-reverse-note-order t)
- '(printer-name "LPT2")
- '(read-buffer-completion-ignore-case t)
- '(read-quoted-char-radix 10)
- '(remember-annotation-functions (quote (org-remember-annotation)))
- '(remember-handler-functions (quote (org-remember-handler)))
- '(require-final-newline t)
- '(truncate-lines t))
+ '(delete-selection-mode t)
+ '(inhibit-startup-screen t)
+ '(mode-line-position-column-format '("C%"))
+ '(org-agenda-files
+   '("c:/Users/RayZ/AppData/Roaming/RZHOME/blog.org"
+     "c:/Users/RayZ/AppData/Roaming/RZHOME/bills.org"))
+ '(org-mouse-features
+   '(yank-link activate-stars activate-bullets activate-checkboxes))
+ '(package-selected-packages
+   '(csv-mode elpy git-modes gnuplot helm htmlize mastodon org-journal
+	      python-mode swift-mode toc-org))
+ '(show-trailing-whitespace t)
+ '(size-indication-mode t))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-hide ((((background light)) (:foreground "grey88")))))
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-</pre>
-
-My .orgmode
-<pre>
-;;; .orgmode -- setup for Org-mode version 7.01g
-;; Time-stamp: <2010-10-27 16:52:01 rayz>
-;; Based on John Wiegley's org-mode tutorial:
-;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
-;; Moved the contents of the custom-set-variables block into my own.
-
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-(org-indent-mode 1)
-(require 'org-crypt)
-(org-crypt-use-before-save-magic)
-(setq org-crypt-key "blah-blah")
-
-(defun org-decrypt-to-kill-ring ()
-  "Save to the kill ring the decrypted content of the current headline.
-Based on `org-decrypt-entry' from org-crypt.el version 6.36c."
-  (interactive)
-  (require 'epg)
-  (save-excursion
-    (org-back-to-heading t)
-    (forward-line)
-    (when (looking-at "-----BEGIN PGP MESSAGE-----")
-      (let* ((beg (point))
-             (end (save-excursion
-                    (search-forward "-----END PGP MESSAGE-----")
-                    (forward-line)
-                    (point)))
-             (epg-context (epg-make-context nil t t))
-             (decrypted-text
-	      (decode-coding-string
-	       (epg-decrypt-string
-		epg-context
-		(buffer-substring-no-properties beg end))
-	       'utf-8)))
-        (kill-new decrypted-text)
-        nil))))
-
-
-(define-key mode-specific-map [?a] 'org-agenda)
-
-(eval-after-load "org"
-  '(progn
-     (define-prefix-command 'org-todo-state-map)
-
-     (define-key org-mode-map "\C-cx" 'org-todo-state-map)
-
-     (define-key org-todo-state-map "x"
-       #'(lambda nil (interactive) (org-todo "CANCELLED")))
-     (define-key org-todo-state-map "d"
-       #'(lambda nil (interactive) (org-todo "DONE")))
-     (define-key org-todo-state-map "f"
-       #'(lambda nil (interactive) (org-todo "DEFERRED")))
-     (define-key org-todo-state-map "l"
-       #'(lambda nil (interactive) (org-todo "DELEGATED")))
-     (define-key org-todo-state-map "s"
-       #'(lambda nil (interactive) (org-todo "STARTED")))
-     (define-key org-todo-state-map "w"
-       #'(lambda nil (interactive) (org-todo "WAITING")))
-
-; 2010-10-27 RZ  Added so that I can switch from an Org buffer with my custom keystroke
-     (org-defkey org-mode-map [(control tab)] 'next-buffer)
-     (org-defkey org-mode-map [(control shift tab)] 'previous-buffer)
-
-))
-
-(require 'remember)
-
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
-
-(define-key global-map [(control meta ?r)] 'remember)
-
-(message "Loaded: %s" (buffer-file-name))
-</pre>
-
-My .plan:
-<pre>
-;;; .plan --- Initialize planner-mode.
-;; Time-stamp: <2008-06-02 12:34:05 rayz>
-;; 
-(add-to-list 'load-path "C:/emacs-23.2/remember-2.0")
-(add-to-list 'load-path "C:/emacs-23.2/planner-3.42")
-(add-to-list 'load-path "C:/emacs-23.2/muse-3.12/lisp")
-(require 'planner)
-(require 'planner-diary)
-(require 'planner-multi)
-(require 'remember-planner)
-(setq planner-diary-use-diary t)
-(planner-diary-insinuate)
-(setq planner-carry-tasks-forward 0)
-(setq planner-reverse-chronological-notes nil)
-(setq planner-tasks-file-behavior 'close)
-(setq planner-tasks-never-suppress-fixing-flag t)
-(setq remember-handler-functions '(remember-planner-append))
-(setq remember-annotation-functions planner-annotation-functions)
-
-(setq calendar-latitude 99.9)
-(setq calendar-longitude 99.9)
-(setq calendar-location-name "MyTown, CT")
-(setq calendar-timezone -300)
-(setq calendar-standard-time-zone-name "EST")
-(setq calendar-daylight-time-zone-name "EDT")
-(setq planner-diary-include-all-output-flag t)
-(setq planner-day-page-template "<lisp>(planner-diary-entries-here)</lisp>\n\n* Tasks\n\n\n* Schedule\n\n\n* Notes")
-(planner-insinuate-calendar)
-(planner-install-extra-task-keybindings)
-
-(define-key planner-mode-map [tab] nil)
-(define-key planner-mode-map [(control ?i)] nil)
-(define-key planner-mode-map "\C-c\C-n" nil)
-(define-key planner-mode-map "\C-c\C-t\C-n" nil)
-(global-set-key " p" 'select-planner-project)
-(global-set-key (kbd "\C-c\C-t\C-n") 'planner-create-task-from-note)
-(global-set-key (kbd "\C-c\C-n\C-t") 'planner-create-note-from-task)
-(global-set-key (kbd "<f9> r") 'remember)
-
-;; These settings are for select-planner-project...
-(setq spp-planner-personal-project "Journal")
-(setq spp-planner-work-project "Plans")
-(setq spp-save-buffers-before-kill t)
-
-
-(setq planner-project "Plans") ; default project is for work.
-(setq muse-project-alist
-      '(("Plans"        ;; use value of `planner-project'
-         ("C:/jrnl/Work"           ;; where your Planner pages are located
-          :major-mode planner-mode
-          :visit-link planner-visit-link)
-
-         ;; This next part is for specifying where Planner pages
-         ;; should be published and what Muse publishing style to
-         ;; use.  In this example, we will use the XHTML publishing
-         ;; style.
-
-         (:base "planner-xhtml"
-                ;; value of `planner-publishing-directory'
-                :path "C:/JOBS/Plans"))
-	("Journal"
-	  ("C:/jrnl/PERSONAL/muse"
-          :major-mode planner-mode
-          :visit-link planner-visit-link)
-         (:base "planner-xhtml"
-                ;; value of `planner-publishing-directory'
-                :path "C:/jrnl/PERSONAL/pub"))))
-
-(defun select-planner-project (&optional arg)
-  "Change `planner-project' to one of two different projects,
-such as personal project and a professional project.  Use
-\\[universal-argument] to set `planner-project' to
-`spp-planner-personal-project'.  Otherwise set it to
-`spd-planner-work-project'.  Setting
-`spp-save-buffers-before-kill' forces a save of all planner
-buffers before killing them.  If nil, user is prompted before
-unsaved buffers are killed."
-  (interactive "*P")
-  (let ((spp spp-planner-work-project))
-    (if arg
-	(setq spp spp-planner-personal-project))
-    (if (eq spp planner-project)
-	(message "Planner is already using %s." spp)
-      (if spp-save-buffers-before-kill
-	  (planner-save-buffers))
-      (spp-kill-buffers)
-      (setq planner-project spp)
-      (message "Planner is switching to %s." spp)
-      (plan))))
-
-(defun spp-kill-buffers ()
-  "Kill all planner buffers.
-Copied from `planner-save-buffers'."
-  (interactive)
-  (let ((buffers (delq nil
-                  (mapcar
-                   (lambda (buf)
-                     (with-current-buffer buf
-                       (when (and (planner-derived-mode-p 'planner-mode)
-                                  (planner-page-name))
-                         buf)))
-                   (buffer-list)))))
-    (while buffers
-      (when (buffer-live-p (car buffers))
-        (kill-buffer (car buffers)))
-      (setq buffers (cdr buffers)))))
-
-(message "Loaded: %s" (buffer-file-name))
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "outline" :slant normal :weight regular :height 102 :width normal))))
+ '(trailing-whitespace ((t (:background "pale goldenrod")))))
 </pre>
 
 ----
