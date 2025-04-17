@@ -2,6 +2,13 @@
 
 Emacs' `repeat' command (`C-x z') only repeats the last command, DotMode is a better emulation of vi's `.' command as it actually tries to repeat the last buffer change.
 
+=== Repeat-FU ===
+
+Repeat functionality that supports multiple back-ends, allowing for sophisticated detection of the range of commands to repeat.
+
+See: https://melpa.org/#/repeat-fu
+
+
 === EmacsFaq ===
 
 As seen in the EmacsFaq:
