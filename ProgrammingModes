@@ -68,6 +68,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * HaskellMode 
 * HaxeMode
 * IdlMode, IdlWaveMode
+* InformMode -- interactive fiction programming in Inform 6 & 7.
 * ILispMode -- CommonLisp / [[Scheme]]
 * IniMode -- Windows-style .ini files
 * JasminMode -- Jasmin Java bytecode assembler
