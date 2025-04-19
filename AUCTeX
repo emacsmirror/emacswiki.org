@@ -1,18 +1,14 @@
 [[es: AUCTeXEs]]
 
+The current version of Auctex is 14.0.9 from 2025-02-25.
+
 From the introduction in the AUCTeX manual:
 
-: !AUCTeX is a comprehensive customizable integrated environment for writing input files for !TeX/LaTeX/ConTeXt/Texinfo using Emacs or XEmacs.
+AUCTeX is an integrated environment for editing LaTeX, ConTeXt, docTeX, [https://www.emacswiki.org/emacs/Texinfo Texinfo], and [https://www.emacswiki.org/emacs/TeX TeX] files.
 
-: It lets you process your source files by running TeX and related tools (such as output filters, post processors for generating indices and bibliographies, and viewers) from inside Emacs. !AUCTeX lets you browse through the errors !TeX reported, while it moves the TextCursor directly to the reported error, and displays some documentation for that particular error. This will even work when the document is spread over several files.
+Although AUCTeX contains a large number of features, there are no reasons to despair. You can continue to write TeX and LaTeX documents the way you are used to, and only start using the multiple features in small steps. AUCTeX is not monolithic, each feature described in this manual is useful by itself, but together they provide an environment where you will make very few LaTeX errors, and makes it easy to find the errors that may slip through anyway. 
 
-: One component of !AUCTeX that LaTeX users will find attractive is ##preview-latex##, a combination of folding and in-source previewing that provides true "What You See Is What You Get" experience in your sourcebuffer, while letting you retain full control. ##preview-latex## comes with its own manual.
-
-: !AUCTeX automatically indents your `LaTeX-source', not only as you write it -- you can also let it indent and format an entire document. It has a special outline feature, which can greatly help you `getting an overview' of a document.
-
-: Apart from these special features, !AUCTeX provides a large range of handy Emacs macros, which in several different ways can help you write your documents fast and painlessly.
-
-!AUCTeX's home page can be found at http://www.gnu.org/software/auctex/ and there is a summary project page on Freshmeat at http://freshmeat.net/projects/auctex/.
+!AUCTeX's home page can be found at https://www.gnu.org/software/auctex/ and there is a summary project page on https://savannah.gnu.org/projects/auctex .
 
 ##C-c C-c## to run !LaTeX over your document, then, once it has compiled correctly, ##C-c C-c## again to view it, or if it failed to compile correctly, ##C-c `## to see the errors.
 
@@ -71,11 +67,11 @@ If it doesn't work, try this :
 
 == Synchronize with Zotero ==
 
-[http://www.zotero.org/ Zotero] is an excellent bibliography manager. With [http://code.google.com/p/zotexo/ zotexo.el] you can associate a zotero collection with your .tex file and make it automatically synchronize with zotero. 
+[https://www.zotero.org/ Zotero] is an excellent bibliography manager. With [http://code.google.com/p/zotexo/ zotexo.el] you can associate a zotero collection with your .tex file and make it automatically synchronize with zotero. 
 
 == Add-Ons ==
 
-* [http://people.debian.org/~psg/elisp/latex-units.el latex-units.el] -- Add a Units sub-menu to !AUCTeX's math-mode's menu (by Peter S. Galbraith).
+* [https://people.debian.org/~psg/elisp/latex-units.el latex-units.el] -- Add a Units sub-menu to !AUCTeX's math-mode's menu (by Peter S. Galbraith).
 * [[Lisp:pstricks.el]] -- add some functionalities for using pstricks with !AUCTeX (Jean-Philippe Georget)
 
 [new]
@@ -200,15 +196,15 @@ AUCTeX has a built-in way to enter math symbols quickly: see the [https://www.gn
 One downside is that it doesn't insert Unicode symbols. [https://gist.github.com/akalin/b524942b0b3776dfd26c45841253ee4a This gist] lets you define which symbols insert Unicode symbols, so e.g. <code>` a</code> would insert <code>α</code> instead of <code>\alpha</code>.
 
 === Auto-Completion ===
-Several ac-sources for the marvelous  [http://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [http://code.google.com/p/ac-math/ here].
+Several ac-sources for the marvelous  [https://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [https://github.com/vspinu/ac-math here].
 
-https://ac-math.googlecode.com/svn/trunk/latex-symbols.png
+LatexSymbols
 
-It allows for a context dependent completion of LaTeX tags and unicode symbols.
-In order to make full use of unicode functionality you need to use [http://tug.ctan.org/pkg/unicode-math unicode-math] package.
+It allows for a context dependent completion of LaTeX tags and Unicode symbols.
+In order to make full use of unicode functionality you need to use [https://ctan.org/pkg/unicode-math Unicode-Math] package.
 
 === Company-math ===
-The author of [[AutoCompleteSources|ac-math]] provides 'company-math' (get source at Melpa or [https://github.com/vspinu/company-math here]) which is an alternative autocompletion using [[CompanyMode]]. It is also nice to display unicode math symbols in Emacs LaTeX documents which can be texed with XeTeX or LuaTeX using the [http://tug.ctan.org/pkg/unicode-math unicode-math] package (see [[company-math]]).
+The author of [[AutoCompleteSources|ac-math]] provides 'company-math' (get source at Melpa or [https://github.com/vspinu/company-math here]) which is an alternative autocompletion using [[CompanyMode]]. It is also nice to display Unicode math symbols in Emacs LaTeX documents which can be texed with XeTeX or LuaTeX using the [https://ctan.org/pkg/unicode-math Unicode-Math] package (see [[company-math]]).
 
 === Anything and LaCarte for Math Input ===
 [new:RedBlue:2010-06-26 09:37 UTC]
