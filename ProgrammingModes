@@ -118,6 +118,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * SnobolMode -- SNOBOL
 * TclMode -- Tcl/Tk
 * TaclMode -- Tandem Advanced Command Language
+* TADS3-mode -- interactive fiction programming using [https://www.tads.org/ TADS3].
 * TalMode -- Tandem Application Language
 * TieMode -- Tensilica Instruction Extension (TIE) Language
 * TuaregMode -- ObjectiveCaml
