@@ -63,7 +63,7 @@ If it doesn't work, try this :
 
 == SwifTeX ==
 
-[http://www.ctan.org/tex-archive/support/emacs-modes/swiftex/swiftex-doc.txt SwifTeX] (by the author of !docTeX, the mode for editing self-documenting !LaTeX code) is derived from the !LaTeX mode in "tex-mode.el" (distributed with Emacs) using the autoloaded function <code>`define-derived-mode'</code>. It has untested option to derive from !AUCTeX's !LaTeX-mode.
+[https://ctan.org/pkg/swiftex SwifTeX] (by the author of !docTeX, the mode for editing self-documenting !LaTeX code) is derived from the !LaTeX mode in "tex-mode.el" (distributed with Emacs) using the autoloaded function <code>`define-derived-mode'</code>. It has untested option to derive from !AUCTeX's !LaTeX-mode.
 
 == Synchronize with Zotero ==
 
@@ -75,7 +75,7 @@ If it doesn't work, try this :
 * [[Lisp:pstricks.el]] -- add some functionalities for using pstricks with !AUCTeX (Jean-Philippe Georget)
 
 [new]
-pstricks.el has been added to the latest auctex cvs version with some changes to make it work better. (2009-06-25)
+pstricks.el has been added to the latest Auctex cvs version with some changes to make it work better. (2009-06-25)
 
 == TeX Documentation ==
 
@@ -187,8 +187,6 @@ LaTeX label definitions also are automatically recognized by PredictiveMode, so 
 
 
 
-
-
 == Mathematical Symbols ==
 === LaTeX-math-mode ===
 AUCTeX has a built-in way to enter math symbols quickly: see the [https://www.gnu.org/software/auctex/manual/auctex/Mathematics.html#Mathematics Entering Mathematics] section of the manual.
@@ -198,7 +196,7 @@ One downside is that it doesn't insert Unicode symbols. [https://gist.github.com
 === Auto-Completion ===
 Several ac-sources for the marvelous  [https://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [https://github.com/vspinu/ac-math here].
 
-LatexSymbols
+[[image:LatexSymbols]]
 
 It allows for a context dependent completion of LaTeX tags and Unicode symbols.
 In order to make full use of unicode functionality you need to use [https://ctan.org/pkg/unicode-math Unicode-Math] package.
