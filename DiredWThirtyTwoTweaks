@@ -8,6 +8,28 @@ See also
 MsShellExecute,
 DiredTweaks.
 
+== Debounce for dired-up-directory ==
+
+The command dired-up-directory is by default bound to "^", and at least on a Swedish keyboard this character is produced by the use of a [https://en.wikipedia.org/wiki/Dead_key dead key], I.E. press shift and the "^¨~"-key, then press space and you will get a "^" character. Now, in Linux it is possible to press the "^¨~"-key again as the second keypress, which will result in a single "^", but if you do this on Windows it will translate to "^^", which of course will take you up two directories if pressed in dired.
+
+So, to get around the above issue, the following code implements a debounce function for dired-up-directory, so that the same key combination will work in both Linux and Windows, at least for navigation purposes in dired.
+
+ ;; Debouncer function for "^^" on windows
+ (when (string-equal system-type "windows-nt")
+   (with-eval-after-load 'dired
+     (defvar my-dired-up-directory-last-time 0
+       "Time for last execution of my-dired-up-directory")
+
+     (defun my-dired-up-directory ()
+       "Debounce function for dired-up-directory. Ignore repeated ^ within a short time period."
+       (interactive)
+       (let ((current-time (float-time)))
+         (when (> (- current-time my-dired-up-directory-last-time) 0.05)
+           (dired-up-directory)
+           (setq my-dired-up-directory-last-time current-time))))
+
+     (define-key dired-mode-map (kbd "^") 'my-dired-up-directory) ))
+
 ----
 CategoryDirectories
 CategoryWThirtyTwo
