@@ -4,13 +4,13 @@
 ;; Description: Bookmark+: extensions to standard library `bookmark.el'.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2024.10.15
-;; Last-Updated: Tue Oct 15 14:23:30 2024 (-0700)
-;;           By: dradams
-;;     Update #: 15086
+;; Version: 2025.04.27
+;; Last-Updated: Sun Apr 27 18:15:48 2025 (-0700)
+;;           By: Drew Adams
+;;     Update #: 15088
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
