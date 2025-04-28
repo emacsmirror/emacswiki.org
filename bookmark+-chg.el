@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 15 14:27:18 2024 (-0700)
-;;           By: dradams
-;;     Update #: 17025
+;; Last-Updated: Sun Apr 27 18:50:27 2025 (-0700)
+;;           By: Drew Adams
+;;     Update #: 17037
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2025/04/27 dadams
+;;     Rename loop to cl-loop everywhere, and defalias cl-loop to loop.
+;;     bookmark-write-file, bmkp-write-alist-bookmarks-to-file, bmkp-temporary-bookmarking-mode:
+;;       bookmark-insert-file-format-version-stamp for Emacs > 25 requires an arg.
+;;     bmkp-desktop-read: Removed interactive spec.
+;;     bmkp-sLLtore-org-link-1: Handle renaming of org-store-link-props.
 ;; 2024/02/01 dadams
 ;;     Move bmkp-make-plain-predicate to bookmark+-mac.el, changing it to a macro.
 ;; 2023/10/24 dadams
@@ -2727,6 +2733,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2025/04/27 dadams
+;;     Version: 2025.04.27
 ;; 2024/10/15 dadams
 ;;     Version: 2024.10.15
 ;; 2024/03/23 dadams
