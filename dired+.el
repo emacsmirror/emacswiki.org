@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2024.10.20
+;; Version: 2025.04.28
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 13 14:18:44 2024 (-0800)
+;; Last-Updated: Mon Apr 28 16:03:32 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13890
+;;     Update #: 13899
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -20,25 +20,30 @@
 ;;
 ;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `browse-url',
 ;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
-;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
-;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
-;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
-;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
-;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
-;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
-;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
-;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
-;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
-;;   `package', `palette', `password-cache', `pp', `pp+',
-;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
-;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
-;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
-;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `zones'.
+;;   `cmds-menu', `col-highlight', `crosshairs', `dired', `dired+',
+;;   `dired-aux', `dired-loaddefs', `dired-x', `dnd', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core', `exif',
+;;   `facemenu', `facemenu+', `faces', `faces+', `fit-frame',
+;;   `font-lock', `font-lock+', `font-lock-menus', `frame-cmds',
+;;   `frame-fns', `fringe', `generate-lisp-file', `gv', `help+',
+;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
+;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
+;;   `icons', `image', `image-converter', `image-dired',
+;;   `image-dired-external', `image-dired-tags', `image-dired-util',
+;;   `image-file', `image-mode', `info', `info+', `json', `kmacro',
+;;   `macroexp', `mailcap', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mwheel', `nadvice', `naked', `package', `palette',
+;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
+;;   `ring', `second-sel', `seq', `strings', `syntax',
+;;   `tabulated-list', `text-mode', `text-property-search',
+;;   `thingatpt', `thingatpt+', `timer', `url', `url-cookie',
+;;   `url-domsuf', `url-expand', `url-handlers', `url-history',
+;;   `url-methods', `url-parse', `url-privacy', `url-proxy',
+;;   `url-util', `url-vars', `vline', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget', `xdg',
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1058,6 +1063,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/04/28 dadams
+;;     dired-do-search, dired-do-query-replace-regexp: Unquoted FILES arg for fileloop-initialize-(search|replace).
 ;; 2024/12/13 dadams
 ;;     diredp-set-header-line-breadcrumbs: 
 ;; 2024/12/05 dadams
@@ -11321,7 +11328,7 @@ When invoked interactively, raise an error if no files are marked."
   (if (< emacs-major-version 27)
       (tags-search regexp `(dired-get-marked-files nil ',arg #'dired-nondirectory-p nil ,interactivep))
     (fileloop-initialize-search
-     regexp `(dired-get-marked-files nil ',arg #'dired-nondirectory-p nil ,interactivep) 'default)
+     regexp (dired-get-marked-files nil arg #'dired-nondirectory-p nil interactivep) 'default)
     (fileloop-continue)))
 
 
@@ -11374,7 +11381,7 @@ Emacs 26 or prior)."
           (error "File `%s' is visited read-only" file))))
     (if (< emacs-major-version 27)
         (tags-query-replace from to delimited `',dgmf-arg)
-      (fileloop-initialize-replace from to `',dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
+      (fileloop-initialize-replace from to dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
       (fileloop-continue))))
 
 
