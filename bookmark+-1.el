@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Mar 23 21:36:20 2024 (-0700)
-;;           By: dradams
-;;     Update #: 9681
+;; Last-Updated: Sun Apr 27 18:38:44 2025 (-0700)
+;;           By: Drew Adams
+;;     Update #: 9703
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -807,6 +807,7 @@
 (eval-when-compile (unless (require 'cl-lib nil t)
                      (require 'cl)
                      (defalias 'cl-case                'case)
+                     (defalias 'cl-loop                'loop)
                      (defalias 'cl-multiple-value-bind 'multiple-value-bind)
                      (defalias 'cl-typecase            'typecase)))
 
@@ -941,10 +942,14 @@
 (defvar icicle-bookmark-completing-p)   ; In `icicles-var.el'
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
 (defvar icicle-completion-candidates)   ; In `icicles-var.el'
+(defvar icicle-delete-candidate-object) ; In `icicles-opt.el'
 (defvar icicle-mode)                    ; In `icicle-mode.el'
 (defvar icicle-multi-completing-p)      ; In `icicles-var.el'
+(defvar icicle-must-pass-after-match-predicate) ; In `icicles-var.el'
+(defvar icicle-proxy-candidates)        ; In `icicles-var.el'
 (defvar icicle-saved-completion-candidates) ; In `icicles-var.el'
 (defvar icicle-searching-p)             ; In `icicles-var.el'
+(defvar icicle-unpropertize-completion-result-flag) ; In `icicles-opt.el'
 (defvar Info-current-node)              ; In `info.el'
 (defvar Info-current-file)              ; In `info.el'
 (defvar kmacro-counter)                 ; In `kmacro.el'
@@ -3572,8 +3577,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
       (if (file-exists-p file)
           (bookmark-maybe-upgrade-file-format)
         (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header, etc.
-        (unless (boundp 'bookmark-file-coding-system) ; Emacs < 25.2.
-          (bookmark-insert-file-format-version-stamp))
+        (unless (> emacs-major-version 25) (bookmark-insert-file-format-version-stamp)) ; See below for > 25
         (insert "(\n)"))
       (setq start  (and (file-exists-p file)
                         (or (save-excursion (goto-char (point-min))
@@ -3632,7 +3636,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                                    (cdr prop) " ")
                           ")\n")))
               (insert " )\n")))))
-      (when (boundp 'bookmark-file-coding-system) ; Emacs 25.2+.  See bug #25365
+      (when (> emacs-major-version 25)
         ;; Make sure specified encoding can encode the bookmarks.  If not, suggest utf-8-emacs as default.
         (with-coding-priority '(utf-8-emacs)
           (setq coding-system-for-write  (select-safe-coding-system (point-min) (point-max)
@@ -5031,7 +5035,8 @@ With a prefix arg you are instead prompted for the clone name.
 When called from Lisp:
  * BOOKMARK is a bookmark name or a bookmark record.
  * Optional CLONE is the clone name.
- * Optional non-nil CONFIRM-OVERWRITE-P means prompt to confirm overwriting an existing bookmark."
+ * Optional non-nil CONFIRM-OVERWRITE-P means prompt to confirm
+   overwriting an existing bookmark."
   (interactive
    (let* ((orig     (bookmark-completing-read "Clone bookmark" (bmkp-default-bookmark-name)))
           ;; Remove any `bmkp-full-record' property from name.
@@ -5905,8 +5910,8 @@ non-nil, require confirmation if the file already exists."
       (if (file-exists-p file)
           (bookmark-maybe-upgrade-file-format)
         (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
-        (if (boundp 'bookmark-file-coding-system) ; Insert timestamp and an empty bookmark list.
-            (bookmark-insert-file-format-version-stamp bookmark-file-coding-system) ; Emacs 25.2+
+        (if (> emacs-major-version 25) ; Insert timestamp and an empty bookmark list.
+            (bookmark-insert-file-format-version-stamp coding-system-for-write)
           (bookmark-insert-file-format-version-stamp))
         (insert "(\n)"))
       (let ((blist  (bookmark-alist-from-buffer)))
@@ -7274,17 +7279,17 @@ If it is a record then it need not belong to `bookmark-alist'."
 (when (and (fboundp 'cl-puthash)  (not (fboundp 'puthash))) ; Emacs 20 with `cl-extra.el' loaded.
   (defalias 'puthash 'cl-puthash))
 
-(if (fboundp 'puthash)                  ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
+(if (fboundp 'puthash) ; Emacs 21+, or Emacs 20 with `cl-extra.el' loaded.
     (defun bmkp-remove-dups (sequence &optional test)
       "Copy of SEQUENCE with duplicate elements removed.
 Optional arg TEST is the test function.  If nil, test with `equal'.
 See `make-hash-table' for possible values of TEST."
       (setq test  (or test  #'equal))
       (let ((htable  (make-hash-table :test test)))
-        (loop for elt in sequence
-              unless (gethash elt htable)
-              do     (puthash elt elt htable)
-              finally return (loop for i being the hash-values in htable collect i))))
+        (cl-loop for elt in sequence
+                 unless (gethash elt htable)
+                 do     (puthash elt elt htable)
+                 finally return (cl-loop for i being the hash-values in htable collect i))))
 
   (defun bmkp-remove-dups (list &optional use-eq)
     "Copy of LIST with duplicate elements removed.
@@ -10113,7 +10118,6 @@ This function does nothing in Emacs versions prior to Emacs 22."
 (defun bmkp-desktop-read (file)
   "Load desktop-file FILE, then run `desktop-after-read-hook'.
 Return t if FILE was loaded, nil otherwise."
-  (interactive)
   (unless (file-name-absolute-p file) ; Should never happen.
     (setq file  (expand-file-name file bmkp-desktop-default-directory)))
   (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
@@ -10269,8 +10273,7 @@ Non-interactively, VARIABLE is the restrictions variable to use."
                                 `(,id ,(zz-readable-marker beg) ,(zz-readable-marker end) ,@extra)))
                             (symbol-value variable))))))))
       (call-interactively #'bookmark-set)
-      (when (and msgp  (not (featurep 'zones))
-                 (message "Bookmark created, but you need `zones.el' to use it")))))
+      (and msgp  (not (featurep 'zones))  (message "Bookmark created, but you need `zones.el' to use it"))))
 
   )
 
@@ -13755,8 +13758,8 @@ Don't forget to mention your Emacs and library versions."))
                       (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect new-file))
                         (goto-char (point-min))
                         (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header.
-                        (if (boundp 'bookmark-file-coding-system) ; Emacs 25.2+
-                            (bookmark-insert-file-format-version-stamp bookmark-file-coding-system)
+                        (if (> emacs-major-version 25)
+                            (bookmark-insert-file-format-version-stamp coding-system-for-write)
                           (bookmark-insert-file-format-version-stamp))
                         (insert "(\n)"))
                       (bmkp-empty-file new-file)
@@ -13988,7 +13991,9 @@ See command `bmkp-store-org-link'."
                             (format "Store %sOrg link for bookmark" (if other-win "other-window " ""))))
                (link       (format "bookmark%s:%s" (if other-win "-other-win" "") bmk))
                (bmk-desc   (format "Bookmark: %s" bmk)))
-          (org-store-link-props :type "bookmark" :link link :description bmk-desc))))
+          (if (fboundp 'org-store-link-props)
+              (org-store-link-props :type "bookmark" :link link :description bmk-desc) ; < Org 9.3 (renamed)
+            (org-link-store-props :type "bookmark" :link link :description bmk-desc)))))
 
   (advice-add 'org-store-link :before #'bmkp-reset-bmkp-store-org-link-checking-p)
   (defun bmkp-reset-bmkp-store-org-link-checking-p (&rest _IGNORE)
