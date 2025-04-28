@@ -76,6 +76,12 @@ My .emacs:
 (keymap-global-set "S-<left>" #'(lambda () (interactive) (scroll-left 1)))
 (keymap-global-set "S-<right>" #'(lambda () (interactive) (scroll-right 1)))
 
+;; C-backspace should delete previous word, not whitespace up to word...
+;; from https://emacs.stackexchange.com/questions/30616/py-hungry-delete-backwards-instead-backward-kill-word-in-python-mode-el
+(add-hook 'python-mode-hook
+          (lambda ()
+            (define-key python-mode-map (kbd "<C-backspace>") 'backward-kill-word)))
+
 (keymap-global-set "C-c a" 'org-agenda)
 
 (server-start)
@@ -83,33 +89,55 @@ My .emacs:
 ;; See also: https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 ;; ...and: https://www.gnu.org/software/emacs/manual/html_node/emacs/emacsclient-Options.html
 
+;; per https://emacs.stackexchange.com/questions/80908/using-hunspell-in-emacs-on-windows-10
+(setenv "LANG" "en_US.UTF-8")
+(setenv "DICPATH" "C:\\Program Files\\LibreOffice\\share\\extensions\\dict-en\\")
+(setq-default ispell-program-name "C:\\Users\\Public\\Programs\\Hunspell\\bin\\hunspell.exe")
+(setq-default ispell-complete-word-dict "~/english-words.txt")
+;(global-set-key (kbd "C-/") 'ispell-word)
+;(global-set-key (kbd "C-M-/") 'ispell-region)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(before-save-hook '(time-stamp))
+ '(blink-matching-paren t)
+ '(column-number-indicator-zero-based nil)
  '(column-number-mode t)
  '(delete-selection-mode t)
  '(inhibit-startup-screen t)
  '(mode-line-position-column-format '("C%"))
  '(org-agenda-files
-   '("c:/Users/RayZ/AppData/Roaming/RZHOME/blog.org"
-     "c:/Users/RayZ/AppData/Roaming/RZHOME/bills.org"))
+   '("~/SDB.org" "~/blog.org" ~/bills.org"))
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-deadline-warning-days 8)
  '(org-mouse-features
    '(yank-link activate-stars activate-bullets activate-checkboxes))
+ '(org-reverse-note-order t)
+ '(org-todo-keywords
+   '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "DEFERRED(f!)" "|"
+	       "CANCELLED(c!)" "DONE(n!)")))
  '(package-selected-packages
    '(csv-mode elpy git-modes gnuplot helm htmlize mastodon org-journal
-	      python-mode swift-mode toc-org))
+	      python python-mode swift-mode toc-org))
+ '(show-paren-style 'parenthesis)
  '(show-trailing-whitespace t)
- '(size-indication-mode t))
+ '(size-indication-mode t)
+ '(text-mode-hook
+   '(turn-on-flyspell turn-on-auto-fill text-mode-hook-identify))
+ '(tool-bar-mode nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "outline" :slant normal :weight regular :height 102 :width normal))))
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "outline" :slant normal :weight regular :height 92 :width normal))))
+ '(show-paren-match ((t (:background "pale green"))))
+ '(show-paren-mismatch ((t (:background "yellow" :foreground "red" :weight bold))))
  '(trailing-whitespace ((t (:background "pale goldenrod")))))
 </pre>
 
