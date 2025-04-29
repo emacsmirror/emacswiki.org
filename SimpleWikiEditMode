@@ -266,9 +266,9 @@ copyright to the FSF at some point in the far away future.
 === Recent Changes ===
 
 Use
-http://wwww.emacswiki.org/emacs?action=rc&raw=1 to see
+http://www.emacswiki.org/emacs?action=rc&raw=1 to see
 recent changes, use
-http://wwww.emacswiki.org/emacs?action=browse&id=RecentChanges&raw=2
+http://www.emacswiki.org/emacs?action=browse&id=RecentChanges&raw=2
 to see and edit the intro text.  -- AlexSchroeder
 
 TODO: simple elisp functions to access it
