@@ -28,9 +28,10 @@ Anyway, the http thing in particular has come up often enough that I'm wondering
 edit: I can't even save this because the error above is triggering the BannedContent error on save. Replaced with 'XXX'.
 
 -- [[Cena]]
+
+== Comments on the page itself
  
 [new]
-
 I recently came across a page, last updated in 2008, with comments on the page itself ( SaveAsHtml ) .  I moved the comments to the Talk page, but then saw the same thing on the Htmlize page, and that made me wonder if comments on the page is a feature rather than a bug. 
 
 The Htmlize page is somewhat different in that the comments are primarily of the 'tips and hints' variety, so maybe useful in their own right.
@@ -39,6 +40,8 @@ Just checking before I move more!
 
 --[[Cena]]
 
+[new]
+Yeah, in the beginning, Emacs Wiki didn't have comment pages. People just left comments on the page itself. If you come upon such pages, it's perfectly OK to move the comments to the comment page. -- Alex Schroeder
 
 == Can't cancel Admin comment ==
 [new]
