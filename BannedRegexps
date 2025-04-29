@@ -15,12 +15,11 @@
 # When you make an addition to this page and you aren't sure how many existing
 # pages this will affect, take a look at this link (it's very slow):
 # https://www.emacswiki.org/emacs/?action=list-banned-content
-\s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
+\s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http:...) usually mean spam
 a\shref="?http # 2024-02-11 direct HTML links mean spam
 img\s+src= # 2024-02-11 direct HTML links mean spam
 URL=http # 2024-02-07 borked bbCode links mean spam
 (((customer(\scare)?|printer|tech(nical)?)\s(service|support)|toll\sfree|antivirus)(\sphone)?\s(number|n\.u\.m\.b\.e\.r)) # 2016-07-04 phone numbers usually means spam
-#
 saksx-diploms
 srednee24.com
 online\s+pharmacy
