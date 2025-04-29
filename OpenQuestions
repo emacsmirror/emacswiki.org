@@ -15,7 +15,10 @@ The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] sh
 I clicked on the "View All Changes" button on the bottom of page [https://www.emacswiki.org/emacs?action=history;id=emacs-init.el History of emacs-init.el] and got a page that told something about problems with bots, and it warned me that my IP address will be banned if I'll see the same page again. I didn't try to repeat it. I'm no bot and don't want to be banned. What is going on here ?
 
 [new]
-I needed a URL that the bots had in their datasets but that real humans rarely visit, so that’s the one I picked. See [https://alexschroeder.ch/view/2025-03-21-defence-summary bit defence summary] for the current state of affairs. – Alex Schroeder
+I needed a URL that the bots had in their datasets but that real humans rarely visit, so that’s the one I picked. See [https://alexschroeder.ch/view/2025-03-21-defence-summary bot defence summary] for the current state of affairs. – Alex Schroeder
+
+[new:DrewAdams:2025-04-29 20:41 UTC]
+Wow! I had **no idea** fighting these hordes was so complicated. We really are very lucky to have this site and your energy and diligence defending it. **Thank you!**
 
 ===Adding options to mudraw in DocViewMode===
 [new]
