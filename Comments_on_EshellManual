@@ -21,3 +21,10 @@ At the beginning, Eshell had no manual at all. Once the manual exists, pages suc
 
 -- Alex Schroeder 2025-04-29 05:09 UTC
 
+
+----
+
+I don’t think we need to preserve the page history – it can be found in git, if you really want.
+
+-- Alex Schroeder 2025-04-29 05:11 UTC
+
