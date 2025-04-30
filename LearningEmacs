@@ -12,10 +12,10 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 ** [https://www.masteringemacs.org/reading-guide Mastering Emacs reading guide]
 ** [http://xahlee.info/emacs/index.html Xah Emacs Tutorial]
 ** EmacsCrashCourse.
-** [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
+** [https://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
 ** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
 ** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
-** [http://www.jesshamrick.com/2012/09/10/absolute-beginners-guide-to-emacs/ Absolute Beginners Guide to Emacs] - another Emacs intro for newbies.
+** [http://www.jesshamrick.com/post/2012-09-10-absolute-beginners-guide-to-emacs/ Absolute Beginners Guide to Emacs] - another Emacs intro for newbies.
 * [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs.
 * [[https://emacs.amodernist.com/ Emacs configuration generator]] - for setting up a configuration driven by optional inclusion with explanations of what is being enabled. 
 * Consider trying out one of the StarterKits. There are many varying accounts of people switching to and from starter kits to hand-rolled configurations. However, these will certainly help in getting started faster and as references.
@@ -23,7 +23,7 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 Some people learn best by doing, not reading.  To learn by doing, get yourself a text file
 to play around with. Make a backup copy if you're nervous about
 losing it. But don't worry -- Emacs makes it
-hard to lose your work, and it has a great '''[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html undo]]''' command: '''`##C-/##'''' or `##C-_##'.
+hard to lose your work, and it has a great '''[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html undo]]''' command: '''`##C-/##'''' or `##C-_##'.
 
 Emacs [[key binding]]s can be intimidating at first since they are quite
 distinct from those used in other applications and platforms.  Keep
