@@ -1,5 +1,3 @@
-Note: repository is here: https://github.com/emacsattic/typopunct/
-
 ;;; typopunct.el --- Automatic typographical punctuation marks
 
 ;; Copyright (C) 2003  Free Software Foundation, Inc.
