@@ -45,6 +45,19 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 }}}
 
 =====Automatic maximization at startup=====
+
+======Via Emacs-GTK======
+1. Add the following lines to your `init.el` file:
+<pre>
+(desktop-save-mode 1)
+(setq desktop-save t)
+</pre>
+2. Launch Emacs.
+3. Manually maximize the Emacs window.
+4. Close Emacs.
+5. The maximized window state `(fullscreen . maximized)` will be saved in your `.emacs.desktop` file.
+
+======With Elisp======
 Probably the simplest way to configure fullscreen or maximized mode in Emacs is to customize the ##default-frame-alist## variable. The ##default-frame-alist## is a list of property lists that specify the initial appearance of Emacs frames. Each property list contains a set of key-value pairs that define frame properties. To maximize the initial frame and any new frames opened from it by default, you can add the ##(fullscreen . maximized)## property to ##default-frame-alist## using the ##push## function:
 
 {{{
