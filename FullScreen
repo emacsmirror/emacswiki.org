@@ -58,11 +58,19 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 5. The maximized window state `(fullscreen . maximized)` will be saved in your `.emacs.desktop` file.
 
 ======With Elisp======
-Probably the simplest way to configure fullscreen or maximized mode in Emacs is to customize the ##default-frame-alist## variable. The ##default-frame-alist## is a list of property lists that specify the initial appearance of Emacs frames. Each property list contains a set of key-value pairs that define frame properties. To maximize the initial frame and any new frames opened from it by default, you can add the ##(fullscreen . maximized)## property to ##default-frame-alist## using the ##push## function:
+From https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Start-Emacs-maximized
+
+Run Emacs with the ‘--maximized’ command-line option or put the following form at the top of your early init file (see [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html Early Init File] in The GNU Emacs Manual).
 
 {{{
 (push '(fullscreen . maximized) default-frame-alist)
 }}}
+
+Note that while some customizations of default-frame-alist could have undesirable effects when modified in the early init file, it is okay to do it in this particular case. Adding it to the top of your normal init file will also work, but leads to a visible resizing of the window that some find distracting. 
+
+Addendum:
+
+When Emacs loads the ##init file## in GNU/Linux, frame settings (##default-frame-alist##, ##initial-frame-alist##, ##set-frame-size##) are slightly deferred, which can lead to the distracting windows resizing upon startup.
 
 The ##push## function adds an element to the beginning of a list. In this case, it adds the ##'(fullscreen . maximized)## list to the beginning of ##default-frame-alist##. Emacs recognizes the ##(fullscreen . maximized)## parameter and automatically applies it when creating the initial frame and any new frames opened from it. This means that after evaluating the ##push## expression, the initial frame will be maximized, and any subsequently opened frames will also be maximized by default. Alternatively, you can use other list manipulation functions like ##add-to-list## or ##custom-set-variables## to achieve the same result:
 
@@ -76,27 +84,6 @@ The ##push## function adds an element to the beginning of a list. In this case, 
 }}}
 
 However, ##push## is generally considered the fastest approach because it doesn't evaluate its second argument, unlike ##add-to-list## and ##custom-set-variables##. By setting ##(fullscreen . maximized)## in ##default-frame-alist##, you can ensure that the initial frame and any new Emacs frames opened from it are maximized without needing to explicitly evaluate the expression each time.
-
-======To avoid the slightly distracting visual effect======
-A deviant graphical behavior in Emacs (GTK) compared to the vast majority of GUI programs, is that Emacs starting with its default frame size and then switching to fullscreen when you maximize it (from now on referred to as the "frame effect").
-
-When Emacs loads the ##init file## in GNU/Linux, frame settings (##default-frame-alist##, ##initial-frame-alist##, ##set-frame-size##) are slightly deferred, which can lead to the "frame effect" upon startup.
-
-The early init file is processed prior to the initialization of the regular ##init file##, allowing the frame settings to take precedence. To ensure that Emacs starts maximized without first displaying the default frame size, it is necessary to add the relevant code to the [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html early init file]:
-{{{
-(push '(fullscreen . maximized) default-frame-alist)
-}}}
-
-This code has been successfully tested in various environments, including:
-* GNU/Linux (both X11 and Wayland)
-* macOS
-* Windows
-
-Remember to add the code to the top of early-init.el if you have created it earlier to prevent any load delay.
-
-While some customizations of `default-frame-alist' could have undesirable effects when modified in early-init.el, it is generally safe to do so in this particular case.
-
-In essence, the code above will make Emacs behave as if you had launched it with the emacs --maximize argument, automatically maximizing the window each time you open Emacs. This eliminates the slightly distracting visual effect that can occur when Emacs loads the frame settings after startup.
 
 ==== Maximize/restore using library frame-cmds.el ====
 [:frame-cmds.el]
