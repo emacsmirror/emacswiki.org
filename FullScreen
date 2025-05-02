@@ -44,8 +44,6 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 (global-set-key (kbd "M-RET") 'toggle-frame-maximized)
 }}}
 
-=====Automatic maximization at startup=====
-
 ======Via Emacs-GTK======
 * Add the following lines to your `init.el` file:
 <pre>
@@ -56,6 +54,8 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 * Manually maximize the Emacs window.
 * Close Emacs.
 * The maximized window state `(fullscreen . maximized)` will be saved in your `.emacs.desktop` file.
+
+=====Automatic maximization at startup=====
 
 ======With Elisp======
 From https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Start-Emacs-maximized
