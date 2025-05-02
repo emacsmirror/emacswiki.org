@@ -56,8 +56,6 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 * The maximized window state `(fullscreen . maximized)` will be saved in your `.emacs.desktop` file.
 
 =====Automatic maximization at startup=====
-
-======With Elisp======
 From https://www.gnu.org/software/emacs/manual/html_mono/efaq.html#Start-Emacs-maximized
 
 Run Emacs with the ‘--maximized’ command-line option or put the following form at the top of your early init file (see [https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html Early Init File] in The GNU Emacs Manual).
