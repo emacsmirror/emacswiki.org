@@ -20,6 +20,8 @@ I needed a URL that the bots had in their datasets but that real humans rarely v
 [new:DrewAdams:2025-04-29 20:41 UTC]
 Wow! I had **no idea** fighting these hordes was so complicated. We really are very lucky to have this site and your energy and diligence defending it. **Thank you!**
 
+[new] Thank you for explaining & best wishes. – E3D3
+
 ===Adding options to mudraw in DocViewMode===
 [new]
 How to send arguments to mudraw with doc-view? I don't really know how to do this. I could possibly hack my way using doc-view.el, but my previous excursions show me that I can deal with simple stuff, and something more complex takes me days off my actual job. I know that DocViewMode can set customizations for ghostscript, for instance, but setting them for mudraw is not possible yet. I managed to do a static change that allows me to have inverted colors (look at the ,##"-I"##):
