@@ -230,10 +230,9 @@ typographical convention.
 
 Note that you may always type `C-q C-\"', `C-q C-\' or `C-q C--' to
 insert the default ASCII characters."
-  nil
-  " Typo"
-  typopunct-map)
-
+:init-value nil
+:lighter " Typo"
+:keymap typopunct-map)
 
 (defun typopunct-change-language (language &optional default)
   "Change language assumed by `typopunct-mode' to LANGUAGE.
