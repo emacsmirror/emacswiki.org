@@ -1,10 +1,11 @@
 This page lists major modes used to edit data.
 
 * CsvMode -- comma separated files, <code>.csv</code>
-* Gedcom-mode -- genealogical data format from Ancestry/Family Search.
+* [https://www.emacswiki.org/emacs/GEDCOM Gedcom-mode] -- genealogical data format from Ancestry/Family Search.
 * MoMode -- gettext <code>.mo</code> compiled message catalogues
 * YamlMode -- YAML <code>.yml</code> files
 * [[X12Mode]] -- X12 data format
 ----
 CategoryModes
+
 CategoryData
