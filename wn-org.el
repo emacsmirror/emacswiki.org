@@ -1,1 +1,1 @@
-https://github.com/Henry/dot-emacs/blob/master/my-lisp/wn-org.el
+The original link 404s, and the author provided no other information about what this package is.
