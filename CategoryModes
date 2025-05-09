@@ -72,6 +72,7 @@ Other pages (could this please be split in [MajorMode major] and [MinorMode mino
 * FortuneMode -- interface to write fortunes quickly
 * FreexMode -- a personal wiki on steroids
 * FvwmMode -- major mode to edit FVWM configuration files
+* Gedcom-mode -- major mode for editing Gedcom Lifelines files.
 * GlassesMode -- change the way StudlyCaps/CamelCase is displayed
 * GnuplotModes -- modes to edit gnuplot files
 * GoLispMode -- analyze, cross-reference, and jump around lisp files
