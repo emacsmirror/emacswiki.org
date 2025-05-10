@@ -1,5 +1,4 @@
 Minimalist GNU For Windows
-==========================
 
 * https://sourceforge.net/projects/mingw/ : "MinGW: A native Windows port of the GNU Compiler Collection (GCC), with freely distributable import libraries and header files for building native Windows applications; includes extensions to the MSVC runtime to support C99 functionality. All of MinGW's software will execute on the 64bit Windows platforms."  (last update: 2021)
 
