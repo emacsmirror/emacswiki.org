@@ -258,6 +258,7 @@ Then put the following in your emacs config file:
 [code]
 (customize-set-variable 'user-emacs-directory "/sdcard/emacs/cache/")
 (setq doom-cache-dir user-emacs-directory)
+(customize-set-variable 'bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory))
 (customize-set-variable 'bookmark-save-flag 1) ; Save bookmark list immediately when it has been updated.
 (after! recentf
   (progn
