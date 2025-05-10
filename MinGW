@@ -1,10 +1,8 @@
 Minimalist GNU For Windows
 
-* https://sourceforge.net/projects/mingw/ : "A native Windows port of the GNU Compiler Collection (GCC), with freely distributable import libraries and header files for building native Windows applications; includes extensions to the MSVC runtime to support C99 functionality. All of MinGW's software will execute on the 64bit Windows platforms."  (last update: 2021)
+* [https://sourceforge.net/projects/mingw/ minGW] : "A native Windows port of the GNU Compiler Collection (GCC), with freely distributable import libraries and header files for building native Windows applications; includes extensions to the MSVC runtime to support C99 functionality. All of MinGW's software will execute on the 64bit Windows platforms."  (last update: 2021)
 
-* https://www.mingw-w64.org/ : "A collection of header files, import libraries, libraries and tools that, when combined with a compiler toolchain, such as GCC or LLVM, provides a complete development environment for building native Windows applications and libraries.
-
-Mingw-w64 is an advancement of the original mingw.org project.... It was forked in 2007 in order to provide 64-bit support and newer APIs. It has since then gained wide use and distribution." (last update: 2025)
+* [https://www.mingw-w64.org/ minGW-64] : "Mingw-w64 is an advancement of the original mingw.org project.... It was forked in 2007 in order to provide 64-bit support and newer APIs. It has since then gained wide use and distribution." (last update: 2025)
 
 
 
