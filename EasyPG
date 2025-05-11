@@ -39,7 +39,7 @@ EPA will prompt for the key only the first time you save the file, assuming you 
 
 Alternatively, set [https://www.gnu.org/software/emacs/manual/html_node/epa/Encrypting_002fdecrypting-gpg-files.html#index-epa_002dfile_002dselect_002dkeys-43 epa-file-select-keys] to [b]something other than `t' or `nil'[/b].
 
-== Use the Minibuffer for Pasword Prompts ==
+== Use the Minibuffer for Password Prompts ==
 
 To make !EasyPG prompt for the GPG password in the minibuffer (rather than a GUI popup), Add the following to ##~/.gnupg/gpg-agent.conf##:
 
