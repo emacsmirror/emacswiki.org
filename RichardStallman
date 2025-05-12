@@ -1,4 +1,4 @@
-portrait:http://www.emacswiki.org/cgi-bin/wiki/download/RichardStallmanPortrait
+[[image:RichardStallmanPortrait]]
 
 '''Author of Emacs''', GCC, GDB, glibc and other software,
 founder of the FreeSoftwareFoundation (FSF), founder of the '''GNU''' Project.
@@ -7,12 +7,12 @@ of MitAiLab hacker fame.
 
 * [[WikiPedia:Richard Stallman]] -- his biographical entry in [http://www.wikipedia.org/ WikiPedia], and associated links
 * [https://www.internethalloffame.org/inductee/richard-stallman/ Internet Hall of Fame 2013 Inductee] -- biography as [https://www.internethalloffame.org/ Internet Hall of Fame] Innovator; [https://www.internethalloffame.org/wp-content/uploads/2013/06/Richard-Stallman-Hall-of-Fame-Acceptance-Speech-2013.ogv 3-minute acceptance speech]
-* [http://www.faifzilla.org/ Free As In Freedom] is a biography, but RMS has said that it contains errors
-* [http://www.stallman.org/ Homepage]
-* [http://www.fsf.org/blogs/rms/ Blog]
-* [http://www.foo.be/docs-free/rms-essays.pdf Free Software, Free Society] -- essays by RMS (PDF)
+* [https://www.gutenberg.org/ebooks/5768 Free As In Freedom], by Sam Williams (2004).  This is a biography, but RMS has said that it contains errors.
+* [https://stallman.org/ RMS' Homepage]
+* [https://www.fsf.org/blogs/rms/ RMS' blog at FSF]
+* [http://www.foo.be/docs-free/rms-essays.pdf Free Software, Free Society] -- essays by RMS (2002) (PDF)
 * ChurchOfEmacs -- and his alter-ego Saint IGNUcius.
-* [http://www.softpanorama.org/People/Stallman/index.shtml Soft Panorama People index] - a nice timeline with interesting details.
+* [https://softpanorama.org/People/Stallman/index.shtml Soft Panorama People index] - a nice timeline with interesting details.
 
 RMS uses Emacs. He also apparently suffered from RepeatedStrainInjury.
 
@@ -44,7 +44,7 @@ RMS' autoreply:
   concerned, I appear to be well outside the solar
   system."
 
-There a famous [http://www.art.net/Studios/Hackers/Hopkins/Don/text/rms-vs-doctor.html flame-war about the "evils of natalism"] that is documented and run through `doctor.el' by DonHopkins.
+There a famous [http://www.art.net/studios/hackers/hopkins/Don/text/rms-vs-doctor.html flame-war about the "evils of natalism"] that is documented and run through `doctor.el' by DonHopkins.
 
 ----
 CategoryHomepage
