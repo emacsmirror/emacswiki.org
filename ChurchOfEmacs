@@ -1,14 +1,14 @@
  Organization: The Church of Emacs
 
-Many emacs hackers maintain weird pages out there that refer to the
+Many Emacs hackers maintain weird pages out there that refer to the
 Church of Emacs.  Some have it in in their "Organization" header when
 they post to EmacsNewsgroups.  Others wrote code to produce Emacs
 related religious texts based on existing religious texts.  Here are
 some links:
 
 * RichardStallman has a page on [[http://www.stallman.org/saint.html St IGNUcius]]
-* PerAbrahamsen's  [[https://googledrive.com/host/0B6LMD0u8OhYYZEotN2QyR1hwR1k/ theological issues]] page, on Google drive.  (It used to be at %%http://www.dina.dk/~abraham/religion/%%.  Perhaps that URL will come back someday (the Google Drive link is also broken, you can find the document on the Internet Archive instead: http://web.archive.org/web/20120224082609/http://www.dina.dk/~abraham/religion/)  Per has also posted to [[https://plus.google.com/105607129061953936165#communities/101818454981911211159 alt.religion.emacs]] (see next) recently.
-* DeepakGoel has written faith.el (Helps reinforce and spread faith in the ONE TRUE EDITOR) https://web.archive.org/web/20110822020844/http://www.gnufans.net/~deego/emacspub/lisp-mine/faith/
+* PerAbrahamsen's  [[https://web.archive.org/web/20120717030554/ theological issues]] page, on the Internet Archive.  
+* DeepakGoel has written [https://web.archive.org/web/20110822020844/http://www.gnufans.net/~deego/emacspub/lisp-mine/faith/ faith.el] (Helps reinforce and spread faith in the ONE TRUE EDITOR).
 
 ** You can spread that faith with erc!
 
@@ -20,13 +20,13 @@ some links:
           (mapconcat 'identity (split-string (faith-quote) "\n") " ")))
 
 
+
 During a discussion with Saint IGNUcius in Zarautz, Spain, we discovered that the saint key of the church of Emacs is META, and no other.
 
-* See also the [[alt.religion.emacs]] newsgroup.
-* TerrenceBrannon is impressed with the hymn OnwardEmacsCoders
-and has written "The Book of Emacs" - 
-http://groups.google.com/group/alt.religion.emacs/browse_thread/thread/61e8ff3d322a7a48/4b10bf60fba869cc#4b10bf60fba869cc
-He also is not sure why this is considered in the category humor.
+* See also the [[https://groups.google.com/g/alt.religion.emacs alt.religion.emacs]] newsgroup.
+* TerrenceBrannon is impressed with the hymn OnwardEmacsCoders and has written [https://groups.google.com/g/alt.religion.emacs The Book of Emacs] - He also is not sure why this is considered in the category humor.
+
+A more recently discovered text is [https://groups.google.com/g/alt.religion.emacs/c/qOAqJ3N49Jg The Codex of Emacs Enlightenment] by Lukas Haigner.
 
 ----
 [new]
