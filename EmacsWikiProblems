@@ -9,6 +9,17 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== RSS for ElispArea == 
+
+[new]
+
+Ran across this page https://www.emacswiki.org/emacs/2005-04-27 , which is showing an `XML::RSS is not available on this system.` error.  
+
+*Does* the ElispArea have a feed?  
+
+I did try to use `?action=rss&rcidonly=EmacsLisp&all=1&days=28` (from https://oddmuse.org/wiki/Including_RSS_Feeds) but the response says per page feeds aren't available. 
+
+
 == Comments on Pages ==
 
 [new]
