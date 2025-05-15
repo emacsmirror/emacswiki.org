@@ -245,6 +245,17 @@ To reliably use <tt>$HOME</tt> in a path name, in emacs config file:
 
 should expand to <tt>/data/data/org.gnu.emacs/files/storage/shared/stardict</tt>
 
+=Suggestion: Enable menu-bar and tool-bar, after init=
+To enable <tt>menu-bar</tt> and <tt>tool-bar</tt>, add the following to emacs config file:
+[code]
+(add-hook 'after-init-hook
+          (lambda ()
+            (progn
+              (menu-bar-mode 1)
+              (tool-bar-mode 1)
+              (tooltip-mode 1))))
+[/code]
+
 =Suggestion: Move user-emacs-directory to /sdcard/emacs/cache/=
 To reduce the risk of loosing precious files such as <tt>recentf</tt> and <tt>bookmarks</tt> it might be a
 good idea to move directory <tt>$HOME/.config/emacs/.local/cache/</tt>
