@@ -29,7 +29,7 @@ If you're using unixy system with non-root access and would like to install emac
     $ git clone https://github.com/spack/spack.git
     $ ./spack/bin/spack install emacs@master+native+tls
 
-if spack doesn't work, set ##SPACK_PYTHON## to python3 path. You can customize more, see https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/emacs/package.py for options.
+if spack doesn't work, set ##SPACK_PYTHON## to python3 path. You can customize more, see https://github.com/spack/spack/blob/develop/var/spack/repos/spack_repo/builtin/packages/emacs/package.py for options.
 
 === Fedora ===
 
