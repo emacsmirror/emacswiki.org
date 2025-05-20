@@ -1,6 +1,6 @@
 setup.el provides a macro to ease repetitive configuration patterns in Emacs. This is done by providing context sensitive local macros, that expand to regular, pure EmacsLisp.
 
-The package is available on GnuELPA and is currently maintained by PhilipKaludercic on SourceHut: https://git.sr.ht/~pkal/setup.
+The package is available on GnuELPA and is currently maintained by PhilipKaludercic on Codeberg: https://codeberg.org/pkal/setup.el .
 
 Setup is self-documented: To get an overview of all known local macros, just read the DocString for the setup macro.
 
