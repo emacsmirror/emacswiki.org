@@ -1,0 +1,21 @@
+----
+
+With `adaptive-fill-mode` enabled, Emacs determines the fill prefix automatically from the text in each paragraph being filled, rather than using a predetermined value. 
+
+See also:
+
+* [https://www.gnu.org/software/emacs/manual/html_node/emacs/Adaptive-Fill.html Emacs Manual for Adaptive Fill]
+
+* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Adaptive-Fill.html Emacs Lisp manual for Adaptive Fill functions.]
+
+* [https://so.nwalsh.com/2020/01/31-adaptive-fill-mode Norman Walsh on Adaptive Fill Mode].
+
+
+
+
+
+----
+
+CategoryFiling
+
+CategoryModes
