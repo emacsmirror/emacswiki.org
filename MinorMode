@@ -11,8 +11,11 @@ Some minor modes have a command that turns them on and off. For example:
 
 Some minor modes do not have an on and off command. For example:
 
-* `adaptive-fill-mode'
-* `auto-hscroll-mode'
+* `adaptive-fill-mode' : see AdaptiveFillMode
+
+When Adaptive Fill Mode is enabled, Emacs determines the fill prefix automatically from the text in each paragraph being filled rather than using a predetermined value
+
+* `auto-hscroll-mode' 
 * `indent-tabs-mode'
 * `shift-select-mode'
 * `ediff-word-mode' -- Part of EdiffMode
