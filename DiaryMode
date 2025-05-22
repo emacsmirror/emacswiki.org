@@ -228,21 +228,22 @@ im insert monthly diary entry
 
 === MHC ===
 
-There is an alternative calendar mode called MHC which has some
+There is an alternative calendar mode called MHC which has some interesting features. It requires installation of a Ruby gem.
 
-interesting features. It has a web site at
-http://www.quickhack.net/mhc/
-(caution: Japanese reading skills are
-probably useful).
+* site:  http://www.quickhack.net/mhc/
 
+* github: https://github.com/yoshinari-nomura/mhc
 
+=== Features ===
 
-It has hooks for adding entries to the task list / calendar from
-incoming mail messages (provides hook functions for Gnus, Mew, and
-Wanderlust) and there are facilities for merging calendars with Pilots
-and other popular handheld devices. Appointments are stored in
-standard MH folders, so they can be accessed and modified by external
-utilities as well. There is also experimental LDAP calendar support.
+* import from existing Emacs buffers : MHC will guess the title, date, time and description from the content of buffer.
+
+* Simple plain-text data format : MHC stores articles in similar format to MH (email); you can manipulate them by many other text-manipulation tools, editors, UNIX command-line tools or your own scripts.
+
+* Flexible output format : currently plain-text, iCalendar, S-formula (mhc.el, calfw), org-table, howm, JSON: (full-calendar) are supported.
+
+* Selective export to Google Calendar with flexible filters and modifiers : MHC can export custom-filtered calendars to Google Calendar via CalDaV. 
+
 
 === iCalendar import/export ===
 
