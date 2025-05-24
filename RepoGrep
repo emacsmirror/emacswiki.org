@@ -2,12 +2,4 @@
 
 *repo-grep-multi* offers a recursive grep across multiple repositories/folders contained in the same directory as the repository in which the search is initiated.
 
-Features:
-
-* Automatically detects Git or SVN repository roots
-* One-key search for symbol under cursor
-* Multi-repository search within a parent directory
-* Regular expression support
-* Customisable search behaviour (case-sensitivity, file exclusions)
-
 https://github.com/BHFock/repo-grep
