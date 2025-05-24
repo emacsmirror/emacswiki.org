@@ -2,4 +2,4 @@
 
 *repo-grep-multi* offers a recursive grep across multiple repositories/folders contained in the same directory as the repository in which the search is initiated.
 
-https://github.com/BHFock/repo-grep
+[https://github.com/BHFock/repo-grep repo-grep.el]
