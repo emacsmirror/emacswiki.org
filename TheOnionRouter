@@ -1,11 +1,12 @@
 '''The onion router''', or [::Tor], is a software package that allows you to use an anonymity network to keep secret the details of your Internet activity.
-
 * http://www.torproject.org/
 * [[WikiPedia:Tor (anonymity network)]]
 * [https://wiki.torproject.org/noreply/TheOnionRouter TorProject:TheOnionRouter]
-
 [[Anonymous]] editors of the Wiki can use this tool to keep their IP address secret.  See UserName for more information.
-
 == Tor and vc ==
-
 If you wish to route all vc (VersionControl) through tor, set vc-tor to t.
+== eww (url) ==
+E.g.\\
+<code>HTTPTunnelPort 9999</code>\\
+
+<code>(setopt url-proxy-services '(("https" . "localhost:9999") ("http" . "localhost:9999")))</code>
