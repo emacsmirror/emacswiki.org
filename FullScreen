@@ -44,7 +44,7 @@ Add this to the init file to toggle frame maximization with Alt+Return:
 (global-set-key (kbd "M-RET") 'toggle-frame-maximized)
 }}}
 
-======Save the last window toggle status======
+======Save the last frame toggle status======
 * Add the following lines to your `init.el` file:
 {{{
 (desktop-save-mode 1)
