@@ -8,4 +8,4 @@ If you wish to route all vc (VersionControl) through tor, set vc-tor to t.
 == eww ==
 [[eww]] e.g.\\
 <code>HTTPTunnelPort 9999</code>\\
-<code>(setopt url-proxy-services '(("https" . "localhost:9999") ("http" . "localhost:9999") ("no_proxy" . "^\\(.*\\.\\)?example\\.com")))</code>
+<code>(setopt url-proxy-services '(("https" . "localhost:9999") ("http" . "localhost:9999") ("no_proxy" . "^\\(.*\\.\\)?example\\.com$")))</code>
