@@ -110,7 +110,7 @@ There is a simple solution for this. You can customize `magic-mode-alist', which
 	  magic-mode-alist))
 
 
-Brining it altogether into a elisp fragment that works, define a variable site-lisp-path to where nxml-mode is and:
+Bringing it altogether into a elisp fragment that works, define a variable site-lisp-path to where nxml-mode is and:
 {{{
 ;path to where nxml is
 (set 'nxml-path (concat site-lisp-path "nxml-mode/"))
@@ -241,6 +241,47 @@ You can use which-func-mode to show this info in the modeline, you just have to 
 
 Breaks if there is text that looks like start of a element in a comment, e.g. `<!-- <example' -- MiserableVariable
 
+[new]
+An alternative nxml-where that also generates predicates for position. Ignores namespaces, and generates redundant predicate for document element.
+
+<pre>
+(defun nxml-where ()
+  "Display the hierarchy of XML elements the point is on as a location path."
+  (interactive)
+  (let ((location-path nil)
+	(name "")
+	(count 0))
+    (save-excursion
+      (save-restriction
+        (widen)
+	(if (looking-at "<")
+	    (forward-char))
+        (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                    (condition-case nil
+                        (progn
+                          (nxml-backward-up-element) ; always returns nil
+			  (setq count 1)
+			  (save-excursion
+			    (setq name (xmltok-start-tag-local-name))
+			    (while (condition-case nil
+				       (progn
+					 (nxml-backward-element)
+					 (if (equal name (xmltok-start-tag-local-name))
+					     (setq count (1+ count)))
+					 t)
+				     (error nil))))
+                          t)
+                      (error nil)))
+          (setq location-path (cons (cons name  count) location-path)))))
+    (setq location-path
+	    (format "/%s"
+		     (mapconcat
+		      (lambda (e) (format "%s[%d]" (car e) (cdr e)))
+		      location-path "/")))
+    (if (called-interactively-p t)
+	(message "%s" location-path)
+      location-path)))
+</pre>
 == False-positive validation errors ==
 
 Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:
