@@ -171,3 +171,4 @@
 ^XXX\. # 2025-06-02 [2601:0000:0000:0000:0000:0000:0000:0000 - 2601:0fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on NethackMode
 ^XXX\. # 2025-06-02 [2601:0440:0000:0000:0000:0000:0000:0000 - 2601:047f:ffff:ffff:ffff:ffff:ffff:ffff] Comments on NethackMode
 ^77\. # 2025-06-02 [77.0.0.0 - 77.255.255.255] Comments on NethackMode
+^83\. # 2025-06-02 [83.0.0.0 - 83.255.255.255] Comments on NethackMode
