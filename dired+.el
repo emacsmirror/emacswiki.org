@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2025.04.28
+;; Version: 2025.06.02
 ;; Package-Requires: ()
-;; Last-Updated: Mon Apr 28 16:03:32 2025 (-0700)
+;; Last-Updated: Mon Jun  2 10:30:32 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13899
+;;     Update #: 13913
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -20,30 +20,25 @@
 ;;
 ;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `browse-url',
+;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
 ;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
-;;   `cmds-menu', `col-highlight', `crosshairs', `dired', `dired+',
-;;   `dired-aux', `dired-loaddefs', `dired-x', `dnd', `doremi',
-;;   `doremi-frm', `easymenu', `eieio', `eieio-core', `exif',
-;;   `facemenu', `facemenu+', `faces', `faces+', `fit-frame',
-;;   `font-lock', `font-lock+', `font-lock-menus', `frame-cmds',
-;;   `frame-fns', `fringe', `generate-lisp-file', `gv', `help+',
-;;   `help-fns', `help-fns+', `help-macro', `help-macro+',
-;;   `help-mode', `hexrgb', `highlight', `hl-line', `hl-line+',
-;;   `icons', `image', `image-converter', `image-dired',
-;;   `image-dired-external', `image-dired-tags', `image-dired-util',
-;;   `image-file', `image-mode', `info', `info+', `json', `kmacro',
-;;   `macroexp', `mailcap', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mwheel', `nadvice', `naked', `package', `palette',
-;;   `password-cache', `pp', `pp+', `radix-tree', `rect', `replace',
-;;   `ring', `second-sel', `seq', `strings', `syntax',
-;;   `tabulated-list', `text-mode', `text-property-search',
-;;   `thingatpt', `thingatpt+', `timer', `url', `url-cookie',
-;;   `url-domsuf', `url-expand', `url-handlers', `url-history',
-;;   `url-methods', `url-parse', `url-privacy', `url-proxy',
-;;   `url-util', `url-vars', `vline', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget', `xdg',
-;;   `zones'.
+;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
+;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
+;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
+;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
+;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
+;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
+;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
+;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -273,9 +268,12 @@
 ;;  similar, and then saving that set of file names for re-creating
 ;;  such a Dired buffer later.
 ;;
-;;  1. Use `C-M-*' (`diredp-marked-other-window') or `diredp-marked',
-;;     to create a snapshot Dired buffer.  Then bookmark that buffer.
-;;     Just jump to the bookmark to restore the snapshot buffer.
+;;  1. Use `diredp-marked(-other-window)') (`M-*') or
+;;     `diredp-marked-in-any-buffers(-other-window)' (`C-M-*'), to
+;;     create a snapshot Dired buffer.
+;;
+;;     Then bookmark that buffer.  Just jump to the bookmark to
+;;     restore the snapshot buffer.
 ;;
 ;;  2. Use command `diredp-define-snapshot-dired-commands', to create
 ;;     two commands (for same-window and other-window) that will
@@ -708,8 +706,9 @@
 ;;    `diredp-insert-subdirs', `diredp-insert-subdirs-recursive',
 ;;    `diredp-kill-this-tree', `diredp-list-marked-recursive',
 ;;    `diredp-load-this-file', `diredp-mark', `diredp-mark-autofiles',
-;;    `diredp-marked', `diredp-marked-other-window',
-;;    `diredp-marked-recursive',
+;;    `diredp-marked', `diredp-marked-in-any-buffers',
+;;    `diredp-marked-in-any-buffers-other-window',
+;;    `diredp-marked-other-window', `diredp-marked-recursive',
 ;;    `diredp-marked-recursive-other-window',
 ;;    `diredp-mark-extension-recursive',
 ;;    `diredp-mark-files-containing-regexp-recursive',
@@ -844,8 +843,9 @@
 ;;    `diredp-get-args-for-snapshot-cmd',
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-image-filename',
-;;    `diredp-get-subdirs', `diredp-hide-details-if-dired' (Emacs
-;;    24.4+), `diredp-hide/show-details' (Emacs 24.4+),
+;;    `diredp-get-marked-files-in-all-buffers', `diredp-get-subdirs',
+;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
+;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles', `diredp-image-dired-required-msg',
 ;;    `diredp-internal-do-deletions', `diredp-invoke-command',
 ;;    `diredp-invoke/eval-in-this-file', `diredp-invoke-in-this-file',
@@ -1063,6 +1063,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/06/02 dadams
+;;     Added: diredp-get-marked-files-in-all-buffers, diredp-marked-in-any-buffers(-other-window).
+;;     diredp-multiple-dired-menu: Added diredp-marked-in-any-buffers(-other-window).
+;;                                 Don't require any marks, to enable menu.
+;;     Bound diredp-marked-in-any-buffers-other-window to C-M-*.
+;;     Changed bindings of diredp-marked(-recursive)-other-window to (M+) M-* from (M+) C-M-*.
 ;; 2025/04/28 dadams
 ;;     dired-do-search, dired-do-query-replace-regexp: Unquoted FILES arg for fileloop-initialize-(search|replace).
 ;; 2024/12/13 dadams
@@ -7766,7 +7772,7 @@ When called from Lisp, optional arg DETAILS is passed to
 
 ;;;###autoload
 (defun diredp-marked-recursive-other-window (dirname &optional ignore-marks-p details)
-  ;; Bound to `M-+ C-M-*', menu `Multiple' > `Marked Here and Below' > `Dired (Marked) in Other Window'
+  ;; Bound to `M-+ M-*', menu `Multiple' > `Marked Here and Below' > `Dired (Marked) in Other Window'
   "Same as `diredp-marked-recursive', but uses a different window.
 
 When called from Lisp, optional arg DETAILS is passed to
@@ -9405,7 +9411,7 @@ defuns in your init file, for persistent access."
 
 ;;;###autoload
 (defun diredp-marked-other-window (dirname &optional arg switches)
-  ;; Bound to `C-M-*', menu `Multiple' > `Dired' > `Dired Marked in Other Window'
+  ;; Bound to `M-*', menu `Multiple' > `Dired' > `Dired Marked in Other Window'
   "Same as `diredp-marked', but uses a different window."
   (interactive (diredp-get-args-for-diredp-marked))
   (unless (or arg  (save-excursion (goto-char (point-min))
@@ -9428,6 +9434,60 @@ defuns in your init file, for persistent access."
                  files
                  (and (or (equal raw '(4))  (< narg 1))  ; `C-u', negative, or 0
                       (read-string "Dired listing switches: " dired-listing-switches))))))
+
+(defun diredp-get-marked-files-in-all-buffers ()
+  "Return names of files and directories marked in any Dired buffers.
+Like `dired-get-marked-files', but for all Dired buffers."
+  (diredp-delete-dups
+   (let ((dired-bufs  (delq nil (mapcar (lambda (d.b)
+                                          (and (buffer-live-p (cdr d.b))
+                                               (cdr d.b)))
+                                        dired-buffers))))
+     (apply #'nconc
+            (mapcar (lambda (buf)
+                      (with-current-buffer buf
+                        (let ((files  (dired-get-marked-files nil nil nil t)))
+                          (setq files  (and (cdr files)  (if (eq (car files) t)
+                                                             (cadr files)
+                                                           files))))))
+                    dired-bufs)))))
+
+;; Inspired by enhancement request (bug) #78658, proposed by Phil Sainty (psainty@orcon.net.nz).
+;;
+;;;###autoload
+(defun diredp-marked-in-any-buffers (&optional buffer-name)
+  "Dired the files and directories marked in any Dired buffers.
+Like `diredp-marked-files', but for all Dired buffers.
+With a prefix argument you're prompted for the name of the resulting
+Dired buffer.  Otherwise, the name is `MARKED-ANYWHERE'."
+  (interactive (list (if current-prefix-arg
+                         (read-string "Resulting Dired buffer name: ")
+                       "MARKED-ANYWHERE")))
+  (let ((files  (diredp-get-marked-files-in-all-buffers)))
+    (unless files (user-error "No marked files in any Dired buffer"))
+    (let ((common  (try-completion "" files)))
+      (unless (directory-name-p common) (setq common  (diredp-parent-dir common)))
+      (let ((default-directory  (or common  default-directory)))
+        (dired (cons buffer-name (if common
+                                     (mapcar (lambda (file) (file-relative-name file common)) files)
+                                   files)))))))
+
+;;;###autoload
+(defun diredp-marked-in-any-buffers-other-window (&optional buffer-name)
+  ;; Bound to `C-M-*', menu `Multiple' > `Dired' > `Dired Marked Anywhere, in Other Window'
+  "Same as `diredp-marked-in-all-buffers', but uses another window."
+  (interactive (list (if current-prefix-arg
+                         (read-string "Resulting Dired buffer name: ")
+                       "MARKED-ANYWHERE")))
+  (let ((files  (diredp-get-marked-files-in-all-buffers)))
+    (unless files (user-error "No marked files in any Dired buffer"))
+    (let ((common  (try-completion "" files)))
+      (unless (directory-name-p common) (setq common  (diredp-parent-dir common)))
+      (let ((default-directory  (or common  default-directory)))
+        (dired-other-window
+         (cons buffer-name (if common
+                               (mapcar (lambda (file) (file-relative-name file common)) files)
+                             files)))))))
 
 ;; Similar to `dired-mark-extension' in `dired-x.el'.
 ;; The difference is that this uses prefix arg to unmark, not to determine the mark character.
@@ -16202,26 +16262,23 @@ If no one is selected, symmetric encryption will be performed.  "
   "`Dired' submenu for Dired menu-bar `Multiple' menu.")
 (define-key diredp-menu-bar-multiple-menu [multiple-dired]
   `(menu-item "Dired" ,diredp-multiple-dired-menu
-    :enable (save-excursion (goto-char (point-min))
-                            (and (re-search-forward (dired-marker-regexp) nil t)
-                                 (re-search-forward (dired-marker-regexp) nil t)))
-    :help "Open Dired on marked files and dirs only"))
+    :help "Open Dired on marked files and directories"))
 
 (define-key diredp-multiple-dired-menu [diredp-define-snapshot-dired-commands]
   '(menu-item "Define Dired Commands for Marked" diredp-define-snapshot-dired-commands
-    :help "Define commands to dired the marked files and dirs"))
+              :help "Define commands to dired the marked files and dirs"))
+(define-key diredp-multiple-dired-menu [diredp-marked-in-any-buffers-other-window]
+  '(menu-item "Dired Marked Anywhere, in Other Window" diredp-marked-in-any-buffers-other-window
+              :help "Open Dired on marked in any Dired buffers, in other window"))
+(define-key diredp-multiple-dired-menu [diredp-marked-in-any-buffers]
+  '(menu-item "Dired Marked Anywhere" diredp-marked-in-any-buffers
+              :help "Open Dired on marked in any Dired buffers"))
 (define-key diredp-multiple-dired-menu [diredp-marked-other-window]
-  '(menu-item "Dired Marked in Other Window" diredp-marked-other-window
-    :enable (save-excursion (goto-char (point-min))
-                            (and (re-search-forward (dired-marker-regexp) nil t)
-                                 (re-search-forward (dired-marker-regexp) nil t)))
-    :help "Open Dired on marked files and dirs only, in other window"))
+  '(menu-item "Dired Marked Here, in Other Window" diredp-marked-other-window
+              :help "Open Dired on files and dirs marked here, in other window"))
 (define-key diredp-multiple-dired-menu [diredp-marked]
-  '(menu-item "Dired Marked" diredp-marked
-    :enable (save-excursion (goto-char (point-min))
-                            (and (re-search-forward (dired-marker-regexp) nil t)
-                                 (re-search-forward (dired-marker-regexp) nil t)))
-    :help "Open Dired on marked files and dirs only"))
+  '(menu-item "Dired Marked Here" diredp-marked
+              :help "Open Dired on files and dirs marked here"))
 
 
 ;; `Multiple' > `Omit' menu.
@@ -17354,7 +17411,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "*B"      'diredp-mark-autofiles)                        ; `* B'
 (define-key dired-mode-map "*R"      'diredp-restore-markings)                      ; `* R'
 (define-key dired-mode-map "*S"      'diredp-save-markings)                         ; `* S'
-(define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)         ; `C-M-*'
+(define-key dired-mode-map (kbd "M-*") 'diredp-marked-other-window)                 ; `M-*'
+(define-key dired-mode-map (kbd "C-M-*") 'diredp-marked-in-any-buffers-other-window) ; `C-M-*'
 (define-key dired-mode-map "\M-a"    'dired-do-search)                              ; `M-a'
 (define-key dired-mode-map "\M-b"    'diredp-do-bookmark)                           ; `M-b'
 (define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked) ; `C-M-b'
@@ -17501,7 +17559,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (when (fboundp 'dired-do-async-shell-command) ; Emacs 23+
   (define-key diredp-recursive-map "&"         'diredp-do-async-shell-command-recursive)) ; `&'
 (define-key diredp-recursive-map "!"           'diredp-do-shell-command-recursive)      ; `!'
-(define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
+(define-key diredp-recursive-map (kbd "M-*")   'diredp-marked-recursive-other-window)   ; `M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
 (define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
 (when diredp-bind-problematic-terminal-keys
