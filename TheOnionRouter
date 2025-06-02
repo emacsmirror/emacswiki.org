@@ -11,4 +11,4 @@ If you wish to route all vc (VersionControl) through tor, set vc-tor to t.
 <code>(setopt url-proxy-services '(("https" . "localhost:9999") ("http" . "localhost:9999") ("no_proxy" . "^\\(.*\\.\\)?example\\.com$")))</code>
 == Gnus ==
 [[Gnus]] e.g.\\
-<code>(setq gnus-secondary-select-methods '((nnimap "Example" (nnimap-address "imap.example.com") (nnimap-server-port 993) (nnimap-shell-program "torsocks ssh %s imapd") (nnimap-stream ssl))))</code>
+<code>(setq gnus-secondary-select-methods '((nnimap "Example" (nnimap-address "imap.example.com") (nnimap-server-port 993) (nnimap-shell-program "torsocks openssl s_client -connect %s:%p -quiet") (nnimap-stream shell))))</code          >
