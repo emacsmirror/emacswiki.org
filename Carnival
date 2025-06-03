@@ -1,0 +1,49 @@
+== What ==
+A blog carnival is a form of independent, personally curated content aggregation, often hosted by different people in rotation, in which the host would write a post linking to any posts submitted on the chosen topic. (cf. [https://indieweb.org/blog_carnival Blog Carnival on IndieWeb Wiki])
+
+Inspiration: [https://indieweb.org/IndieWeb_Carnival IndieWeb Carnival], still ongoing as of 2025-06-03.
+
+
+== Why == 
+An Emacs carnival will help motivate people to post more on their personal websites, and provide inspiration for writing on a common topic. In our diverse ecosystem of Emacs, there sure will be surprises!
+
+
+== How ==
+Each month, the carnival has a different host, and the host comes up with the topic. 
+
+They post it both on their website and here. Then, other people post their submissions and alert the host about them. At the end of the month, the host collects all the received submissions and posts an overview of it.
+
+== Upcoming ==
+
+=== 2025 === 
+
+|| Month     || Host || Theme ||
+|| June      || ? || ? ||
+|| July      || ? || ? ||
+|| August    || ? || ? ||
+|| September || ? || ? ||
+|| October   || ? || ? ||
+|| November  || ? || ? ||
+|| December  || ? || ? ||
+
+
+== “I want to host!” ==
+
+Great! Add yourself to the list to be pinged:
+
+=== List of wannabe hosts ===
+
+- [[ctietze]] (2025-06-03)
+
+== Topic Inspirations ==
+
+[[Sacha_Chua]] via [https://mastodon.social/@sacha@social.sachachua.com/114619284099807492 Mastodon]:
+
+- How I came across Emacs
+- a brief description of how your Emacs configuration might be different from others
+- an obscure package you want to highlight
+- an unexpected use of Emacs; keyboard macros; …
+- Gathering knowledge
+- Cycles and fluctuations
+- 2030
+- Meaning of life
