@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2025.06.02
+;; Version: 2025.06.03
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun  2 10:30:32 2025 (-0700)
+;; Last-Updated: Tue Jun  3 11:50:10 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13913
+;;     Update #: 13937
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -42,6 +42,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+ 
 ;;; Commentary:
 ;;
 ;;    Extensions to Dired.
@@ -766,6 +767,7 @@
 ;;    `diredp-sort-arbitrary-command', `diredp-symlink-this-file',
 ;;    `diredp-tag-this-file', `diredp-toggle-find-file-reuse-dir',
 ;;    `diredp-toggle-marks-in-region', `diredp-touch-this-file',
+;;    `diredp-unmark-all-*-in-all-buffers',
 ;;    `diredp-unmark-all-files-recursive' (Emacs 22+),
 ;;    `diredp-unmark-all-marks-recursive' (Emacs 22+),
 ;;    `diredp-unmark-autofiles', `diredp-unmark-files-tagged-all',
@@ -814,7 +816,8 @@
 ;;    `diredp--add-default-dir-to-recentf',
 ;;    `diredp--add-dired-to-invisibility-hook', `diredp-all-files',
 ;;    `diredp-ancestor-dirs', `diredp-apply-to-this-file',
-;;    `diredp-bookmark', `diredp-copy-as-kill-from-clipboard',
+;;    `diredp-bookmark', `diredp-common-ancestor-dir',
+;;    `diredp-copy-as-kill-from-clipboard',
 ;;    `diredp-create-files-non-directory-recursive',
 ;;    `diredp-define-snapshot-dired-commands-1', `diredp-delete-dups',
 ;;    `diredp-delete-if', `diredp-delete-if-not',
@@ -828,7 +831,7 @@
 ;;    `diredp-ensure-bookmark+', `diredp-ensure-fn-nonzero-arity',
 ;;    `diredp-ensure-fn-zero-arity', `diredp-ensure-mode',
 ;;    `diredp-eval-in-this-file', `diredp-existing-dired-buffer-p',
-;;    `diredp-fewer-than-2-files-p',
+;;    `diredp-explicit', `diredp-fewer-than-2-files-p',
 ;;    `diredp-fewer-than-echo-limit-files-p',
 ;;    `diredp-fewer-than-N-files-p', `diredp-fileset-1',
 ;;    `diredp-find-a-file-read-args',
@@ -852,8 +855,8 @@
 ;;    `diredp-last-file-name-part',
 ;;    `diredp-last-file-name-part-less-p',
 ;;    `diredp-last-file-name-part-more-p', `diredp-list-file',
-;;    `diredp-list-files', `diredp-looking-at-p',
-;;    `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-list-files', `diredp-live-dired-buffers',
+;;    `diredp-looking-at-p', `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
 ;;    `diredp-make-obsolete', `diredp-make-obsolete-variable',
 ;;    `diredp-maplist', `diredp-map-over-marks-and-report',
@@ -1061,8 +1064,14 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+ 
 ;;; Change Log:
 ;;
+;; 2025/06/03 dadams
+;;     Added: diredp-unmark-all-*-in-all-buffers, diredp-common-ancestor-dir, diredp-live-dired-buffers,
+;;            diredp-explicit.
+;;     diredp-get-marked-files-in-all-buffers: Use diredp-live-dired-buffers.  Corrected for singleton unmarked.
+;;     diredp-marked-in-any-buffers: Use diredp-explicit.  Added FILES arg.  Gather files before reading buffer name.
 ;; 2025/06/02 dadams
 ;;     Added: diredp-get-marked-files-in-all-buffers, diredp-marked-in-any-buffers(-other-window).
 ;;     diredp-multiple-dired-menu: Added diredp-marked-in-any-buffers(-other-window).
@@ -3782,6 +3791,14 @@ ignored if not in a Dired mode.
     (or (and (eq system-type 'windows-nt)  (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'"
                                                                   (file-name-as-directory file)))
         (string= "/" file))))
+
+(defun diredp-common-ancestor-dir (files)
+  "Return the common ancestor directory of FILES, or nil if none."
+  (let ((common  (try-completion "" files)))
+    (if (stringp common)
+        (unless (directory-name-p common) (setq common  (diredp-parent-dir common)))
+      (when (eq t common) (setq common  "")))
+    common))
 
 (defun diredp-parent-dir (file &optional relativep)
   "Return the parent directory of FILE, or nil if none.
@@ -9439,55 +9456,68 @@ defuns in your init file, for persistent access."
   "Return names of files and directories marked in any Dired buffers.
 Like `dired-get-marked-files', but for all Dired buffers."
   (diredp-delete-dups
-   (let ((dired-bufs  (delq nil (mapcar (lambda (d.b)
-                                          (and (buffer-live-p (cdr d.b))
-                                               (cdr d.b)))
-                                        dired-buffers))))
+   (let ((dired-bufs  (diredp-live-dired-buffers)))
      (apply #'nconc
             (mapcar (lambda (buf)
                       (with-current-buffer buf
                         (let ((files  (dired-get-marked-files nil nil nil t)))
                           (setq files  (and (cdr files)  (if (eq (car files) t)
-                                                             (cadr files)
+                                                             (list (cadr files))
                                                            files))))))
                     dired-bufs)))))
+
+(defun diredp-live-dired-buffers ()
+  "Return a list of the live Dired buffers."
+  (delq nil (mapcar (lambda (d.b) (and (buffer-live-p (cdr d.b))  (cdr d.b)))
+                    dired-buffers)))
+
+;;;###autoload
+(defun diredp-unmark-all-*-in-all-buffers ()
+  "Unmark all lines marked `*', in all Dired buffers."
+  (interactive)
+  (unless (y-or-n-p "Unmark all lines marked `*', in all Dired buffers? ")
+    (error "OK, canceled"))
+  (dolist (buf  (diredp-live-dired-buffers))
+    (with-current-buffer buf (dired-unmark-all-files ?*))))
 
 ;; Inspired by enhancement request (bug) #78658, proposed by Phil Sainty (psainty@orcon.net.nz).
 ;;
 ;;;###autoload
-(defun diredp-marked-in-any-buffers (&optional buffer-name)
+(defun diredp-marked-in-any-buffers (&optional files buffer-name)
   "Dired the files and directories marked in any Dired buffers.
 Like `diredp-marked-files', but for all Dired buffers.
 With a prefix argument you're prompted for the name of the resulting
-Dired buffer.  Otherwise, the name is `MARKED-ANYWHERE'."
-  (interactive (list (if current-prefix-arg
-                         (read-string "Resulting Dired buffer name: ")
-                       "MARKED-ANYWHERE")))
-  (let ((files  (diredp-get-marked-files-in-all-buffers)))
-    (unless files (user-error "No marked files in any Dired buffer"))
-    (let ((common  (try-completion "" files)))
-      (unless (directory-name-p common) (setq common  (diredp-parent-dir common)))
-      (let ((default-directory  (or common  default-directory)))
-        (dired (cons buffer-name (if common
-                                     (mapcar (lambda (file) (file-relative-name file common)) files)
-                                   files)))))))
+Dired buffer.  Otherwise, the name is `MARKED-ANYWHERE'.
+This command is only for interactive use."
+  (interactive (let ((fils  (diredp-get-marked-files-in-all-buffers)))
+                 (unless files (user-error "No marked files in any Dired buffer"))
+                 (list fils (if current-prefix-arg
+                                (read-string "Resulting Dired buffer name: ")
+                              "MARKED-ANYWHERE"))))
+  (diredp-explicit files buffer-name))
 
 ;;;###autoload
-(defun diredp-marked-in-any-buffers-other-window (&optional buffer-name)
+(defun diredp-marked-in-any-buffers-other-window (&optional files buffer-name)
   ;; Bound to `C-M-*', menu `Multiple' > `Dired' > `Dired Marked Anywhere, in Other Window'
   "Same as `diredp-marked-in-all-buffers', but uses another window."
-  (interactive (list (if current-prefix-arg
-                         (read-string "Resulting Dired buffer name: ")
-                       "MARKED-ANYWHERE")))
-  (let ((files  (diredp-get-marked-files-in-all-buffers)))
-    (unless files (user-error "No marked files in any Dired buffer"))
-    (let ((common  (try-completion "" files)))
-      (unless (directory-name-p common) (setq common  (diredp-parent-dir common)))
-      (let ((default-directory  (or common  default-directory)))
-        (dired-other-window
-         (cons buffer-name (if common
-                               (mapcar (lambda (file) (file-relative-name file common)) files)
-                             files)))))))
+  (interactive (let ((fils  (diredp-get-marked-files-in-all-buffers)))
+                 (unless fils (user-error "No marked files in any Dired buffer"))
+                 (list fils (if current-prefix-arg
+                                (read-string "Resulting Dired buffer name: ")
+                              "MARKED-ANYWHERE"))))
+  (diredp-explicit files buffer-name 'OTHER-WINDOW))
+
+(defun diredp-explicit (files buffer-name &optional other-window-p)
+  "Dired FILES (a list of absolute file names) in buffer BUFFER-NAME.
+The names are listed relative to their common-ancestor directory or,
+if none, relative to the current value of `default-directory'.
+Non-nil OTHER-WINDOW-P means use `dired-other-window', not `dired'."
+  (let ((common  (diredp-common-ancestor-dir files)))
+    (let ((default-directory  (or common  default-directory)))
+      (funcall (if other-window-p #'dired-other-window #'dired)
+               (cons buffer-name (if common
+                                     (mapcar (lambda (file) (file-relative-name file common)) files)
+                                   files))))))
 
 ;; Similar to `dired-mark-extension' in `dired-x.el'.
 ;; The difference is that this uses prefix arg to unmark, not to determine the mark character.
