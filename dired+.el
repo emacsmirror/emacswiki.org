@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.06.04
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  4 11:25:00 2025 (-0700)
+;; Last-Updated: Wed Jun  4 12:54:42 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13942
+;;     Update #: 13946
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1069,6 +1069,7 @@
 ;;
 ;; 2025/06/04 dadams
 ;;     diredp-live-dired-buffers: Handle also find*-dired buffers.
+;;     dired-mark-sexp, diredp-mark-sexp-recursive: Just test whether lexical-binding is bound, not its value.
 ;; 2025/06/03 dadams
 ;;     Added: diredp-unmark-all-*-in-all-buffers, diredp-common-ancestor-dir, diredp-live-dired-buffers,
 ;;            diredp-explicit.
@@ -8249,7 +8250,7 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
   (defun diredp-mark-sexp-recursive (predicate &optional arg details)
                                         ; Bound to `M-+ M-(', `M-+ * (', menu `Marks' > `Here and Below' > `If...'
     "Mark files here and below for which PREDICATE returns non-nil.
-Like `diredp-mark-sexp', but act recursively on subdirs.
+Like `dired-mark-sexp', but act recursively on subdirs.
 
 A non-negative prefix arg means to unmark those files instead.
 
@@ -8419,8 +8420,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                                (buffer-substring (progn (forward-char 4) (point))
                                                                  (line-end-position))
                                              "")))))
-                      (if (or (not (boundp 'lexical-binding)) ; Emacs <  24.something
-                              (not lexical-binding))          ; Emacs >= 24.something
+                      (if (not (boundp 'lexical-binding)) ; Emacs <  24.something
                           (eval predicate)
                         (eval predicate
                               `((inode . ,inode)
@@ -14307,8 +14307,7 @@ refer at all to the underlying file system.  Contrast this with
                        sym   (if (diredp-looking-at-p " -> ")
                                  (buffer-substring (progn (forward-char 4) (point)) (line-end-position))
                                "")))))
-        (if (or (not (boundp 'lexical-binding)) ; Emacs <  24.something
-                (not lexical-binding))          ; Emacs >= 24.something
+        (if (not (boundp 'lexical-binding)) ; Emacs <  24.something
             (eval predicate)
           (eval predicate
                 `((inode . ,inode)
