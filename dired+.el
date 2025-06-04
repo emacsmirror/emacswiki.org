@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2025.06.03
+;; Version: 2025.06.04
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun  3 11:50:10 2025 (-0700)
+;; Last-Updated: Wed Jun  4 11:25:00 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13937
+;;     Update #: 13942
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1067,6 +1067,8 @@
  
 ;;; Change Log:
 ;;
+;; 2025/06/04 dadams
+;;     diredp-live-dired-buffers: Handle also find*-dired buffers.
 ;; 2025/06/03 dadams
 ;;     Added: diredp-unmark-all-*-in-all-buffers, diredp-common-ancestor-dir, diredp-live-dired-buffers,
 ;;            diredp-explicit.
@@ -9466,10 +9468,19 @@ Like `dired-get-marked-files', but for all Dired buffers."
                                                            files))))))
                     dired-bufs)))))
 
-(defun diredp-live-dired-buffers ()
-  "Return a list of the live Dired buffers."
-  (delq nil (mapcar (lambda (d.b) (and (buffer-live-p (cdr d.b))  (cdr d.b)))
-                    dired-buffers)))
+(defun diredp-live-dired-buffers (&optional exclude-find-bufs-p)
+  "Return a list of the live Dired buffers.
+Non-nil EXCLUDE-FIND-BUFS-P means exclude Dired buffers that aren't
+listed in variable `dired-buffers'.  Examples are the Dired buffers
+from commands `find*-dired' and `find-lisp-find-dired*'."
+  (delq nil
+        (if exclude-find-bufs-p
+            (mapcar (lambda (d.b) (and (buffer-live-p (cdr d.b))  (cdr d.b)))
+                    dired-buffers)
+          (mapcar (lambda (buf)
+                    (and (buffer-live-p buf)
+                         (with-current-buffer buf (and (derived-mode-p 'dired-mode)  buf))))
+                  (buffer-list)))))
 
 ;;;###autoload
 (defun diredp-unmark-all-*-in-all-buffers ()
