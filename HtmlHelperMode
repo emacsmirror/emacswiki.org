@@ -1,46 +1,14 @@
 == Overview ==
 
-html-helper-mode is maintained by GianUbertoLauri.  It requires tempo.el (which comes with recent Emacs versions, see TempoMode).
+`html-helper-mode' was created by Nelson Minar in 1994 and has been improved and maintained by Arni Magnusson since 2023 (version >= 4.0.0).
 
-It supports JSP (with PaulKinnucan's JDE, see JavaDesktopEnvironment), PHP, and ASP (with VisualBasicMode installed).  Some people like the way this mode handles indentation by default better than PSGML and the built-in HtmlMode (although any of them can be customized to support your kind of indentation; this <em>is</em> Emacs, after all).
+A relatively simple mode without special dependencies, it provides syntax highlighting, indentation, and a few handy functions documented in the mode help page.
 
-* Download: http://www.nongnu.org/baol-hth
-* Homepage: http://savannah.nongnu.org/projects/baol-hth
+The indentation seems to be more useful than what some of the alternative HTML modes offer.
 
-== Install ==
+* Repository: https://github.com/arni-magnusson/html-helper
 
-Installation -- add this line in your .emacs:
-
- (autoload 'html-helper-mode "html-helper-mode" "Yay HTML" t)
-
-To invoke html-helper-mode automatically on .html files, do this:
-
- (setq auto-mode-alist (cons '("\\.html$" . html-helper-mode)       auto-mode-alist))
-
-To invoke html-helper-mode automatically on .asp files, do this:
-
- (setq auto-mode-alist (cons '("\\.asp$" . html-helper-mode)        auto-mode-alist))
-
-To invoke html-helper-mode automatically on .phtml files, do this:
-
- (setq auto-mode-alist (cons '("\\.phtml$" . html-helper-mode)      auto-mode-alist))
-
-== Notes ==
-
-Note : with Emacs 22, auto-mode-alist is useless and you will need to modify similarly magic-mode-alist. Try C-h v auto-mode-alist to learn more.
-
-... or you can disable magic-mode-alist with (setq magic-mode-alist ()) before the autoload line, then auto-mode-alist works -- SewerynKokot.
-
-[mike@theoretic.com] If you get an error about html-tag-face in XEmacs, alter the line (1710) that says
-
-  (set-face-foreground html-tag-face "dodger blue")))
-
-to
-
-  (set-face-foreground 'html-tag-face "dodger blue")))
-
-[new]
-Is anything done with this mode to meet html5?
+The header comment includes instructions for installation and configuration.
 
 ----
 CategoryHypermedia CategoryModes
