@@ -13,6 +13,8 @@ F-Droid also provides prebuilts, but they are at times outdated, and do not work
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
+Instructions for how to use Spacemacs on this port: SpacemacsOnAndroid
+
 ==Download and Android-specific quirks==
 
 Remember to Read https://ftp.gnu.org/gnu/emacs/android/README
