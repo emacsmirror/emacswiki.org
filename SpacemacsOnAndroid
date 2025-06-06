@@ -36,6 +36,15 @@ We will install the Doom Emacs files under <tt>$HOME/.emacs.d/</tt>, and our per
 
 It's very convenient to have an external keyboard during the setup and configuration.
 
+* Start emacs.
+* In emacs start a shell (<tt>M-x shell</tt>) or eshell (<tt>M-x eshell</tt>).
+* Applications may look for fonts in directories <tt>$HOME/fonts</tt> and <tt>$HOME/.local/share/fonts</tt>. Make a symbolic link from one to another, to have a unique font directory:
+[code]
+M-x shell
+$ mkdir -p $HOME/.local/share/fonts
+$ ln -s $HOME/.local/share/fonts $HOME/fonts
+[/code]
+
 Before installing spacemacs, backup (move) ~/.emacs.d to, say, old.emacs.d, then create an empty ~/.emacs.d. 
 
 CategoryPorts
