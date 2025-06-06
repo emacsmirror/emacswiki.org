@@ -45,6 +45,26 @@ $ mkdir -p $HOME/.local/share/fonts
 $ ln -s $HOME/.local/share/fonts $HOME/fonts
 [/code]
 
-Before installing spacemacs, backup (move) ~/.emacs.d to, say, old.emacs.d, then create an empty ~/.emacs.d. 
+* Download fonts "Source Code Pro" and "Nanum Gothic" from Google Fonts. Unpack them and copy the <tt>.ttf</tt> files to <tt>~/fonts/</tt>
 
+* Install spacemacs:
+[code]
+$ cd $HOME
+$ mv .emacs.d .old.emacs.d; mkdir .emacs.d; git clone https://github.com/syl20bnr/spacemacs $HOME/.emacs.d
+[/code]
+
+* Before restarting emacs, edit <tt>$HOME/.emacs.d/early-init.el</tt> to add the following lines, before any significant executable code in that file:
+[code]
+(when (string-equal system-type "android")
+  ;; Add Termux binaries to PATH environment
+  ;; It is important that termuxpath is prepended, not appended.
+  ;; Otherwise we will get Androids incompatible diff executable, instead of the one in Termux.
+  (let ((termuxpath "/data/data/com.termux/files/usr/bin"))
+    (setenv "PATH" (format "%s:%s" termuxpath
+		       (getenv "PATH")))
+    (push termuxpath exec-path)
+    (setenv "LANG" "en_US.UTF-8")))  ;; Set LANG to what is configured in Termux.
+[/code]
+
+* The LANG environment variable above, should be set to what is convenient for you. Ensure that Termux has the same setting for this environment variable, otherwise there may be problems for some corner cases.
 CategoryPorts
