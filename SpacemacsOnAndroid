@@ -67,4 +67,15 @@ $ mv .emacs.d .old.emacs.d; mkdir .emacs.d; git clone https://github.com/syl20bn
 [/code]
 
 * The LANG environment variable above, should be set to what is convenient for you. Ensure that Termux has the same setting for this environment variable, otherwise there may be problems for some corner cases.
+* Restart emacs. Spacemacs should now start, and complete the installation.
+* When downloading packages from GNU ELPA, Spacemacs by default relies on a signature key. You may get an error message  similar to the following:
+[code]
+Failed to verify signature archive-contents.sig:
+No public key for 066DAFCB81E42C40 created at 2019-10-02T10:10:02+0100 using RSA
+Command output:
+gpg: Signature made Wed 02 Oct 2019 10:10:02 AM BST
+gpg:                using RSA key C433554766D3DDC64221BFAA066DAFCB81E42C40
+gpg: Can't check signature: No public key
+[/code]
+
 CategoryPorts
