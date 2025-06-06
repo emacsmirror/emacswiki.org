@@ -1,0 +1,7 @@
+Spacemacs On Android
+
+This page is about how to install, and update, the Spacemacs starter kit in Android Emacs. For an overview of the different alternatives for running emacs on Android, see EmacsOnAndroid.
+
+Android Emacs can be used with various StarterKits, for example Spacemacs and Doom Emacs.
+
+As compared to Doom Emacs on Android, Spacemacs on Android has the advantage, that installation and updates of packages is done completely inside the running emacs, without the need for starting a new emacs process in the running emacs. This is both faster, and does not rely on the capability to start a new emacs process. Android currently does not have official support for letting an application start a new process of itself. So even if emacs may currently be able to start a new version of itself, on your device, this capability may disappear when you upgrade Android to a new version.
