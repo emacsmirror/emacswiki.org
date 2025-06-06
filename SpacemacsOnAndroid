@@ -89,4 +89,16 @@ dotspacemacs-additional-packages '(gnu-elpa-keyring-update)
 * Restart emacs. Spacemacs should now fetch and install the <tt>gnu-elpa-keyring-update</tt> package. Check that the files under <tt>$HOME/.emacs.d/elpa/gnupg</tt> have been updated.
 * You should now be able to comment out the line <tt>(setq package-check-signature nil)</tt> in <tt>$HOME/.emacs.d/early-init.el</tt>.
 
+* In <tt>$HOME/.spacemacs</tt> function <tt>dotspacemacs/user-config()</tt> add:
+[code]
+(remove-hook 'window-setup-hook 'spacemacs/removes-gui-elements)
+(remove-hook 'tty-setup-hook 'spacemacs/removes-gui-elements)
+(menu-bar-mode 1)
+(tool-bar-mode 1)
+(tooltip-mode 1)
+(setq overriding-text-conversion-style nil)
+[/code]
+
+* The last setting should only be used if you are using vim style key bindings, and are sometimes going to use a virtual keyboard. If you do not set it for this case, then you will not be able to enter vim-normal-mode, i.e. all characters will be inserted in the buffer...
+
 CategoryPorts
