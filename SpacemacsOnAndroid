@@ -4,4 +4,38 @@ Android Emacs can be used with various StarterKits, for example Spacemacs and Do
 
 As compared to Doom Emacs on Android, Spacemacs on Android has the advantage, that installation and updates of packages is done completely inside the running emacs, without the need for starting a new emacs process in the running emacs. This is both faster, and does not rely on the capability to start a new emacs process. Android currently does not have official support for letting an application start a new process of itself. So even if emacs may currently be able to start a new version of itself, on your device, this capability may disappear when you upgrade Android to a new version.
 
+=Installation=
+To get started install the Termux APK and the Android Emacs APK in [https://sourceforge.net/projects/android-ports-for-gnu-emacs/files/termux/ Sourceforge]. Follow the instructions in the README under the same URL. Do not forget to run:
+[code]
+$ pkg update && pkg upgrade
+[/code]
+
+You may need to install additional packages in Termux, such as <tt>git</tt> and <tt>ssh</tt> (<tt>scp</tt>). To check if they are already available:
+[code]
+$ which git
+$ which scp
+[/code]
+
+You will need access to Androids internal storage in Termux:
+* Make sure permission 'Files and media' is enabled in Permissions for Termux (Android Settings -> Apps -> Termux -> Permissions).
+* In termux run <tt>termux-setup-storage</tt>
+* You will be prompted to "Allow Termux access photos, media and files on your device", which you should allow.
+* Symbolic links to various folders in Android storage, should now be available in directory <tt>~/storage</tt>.
+* The user files (Documents, Download, etc) are also available under <tt>/sdcard</tt>. On my Oneplus, the user files are read only under <tt>storage/shared</tt>, but read/write under <tt>/sdcard</tt>
+
+Now run Android emacs. Start a shell in emacs:
+[code]
+ M-x shell
+[/code]
+
+One can normally use both tilde <tt>'~'</tt> and <tt>$HOME</tt> to refer to emacs home directory, but tilde might not work in certain situations during the Doom Emacs installation or update process, especially when something has failed. But <tt>$HOME</tt> always seems to work.
+
+The default emacs configuration directory is <tt>$HOME/.emacs.d/</tt>
+
+We will install the Doom Emacs files under <tt>$HOME/.emacs.d/</tt>, and our personal config files will be <tt>$HOME/.spacemacs/</tt> and <tt>$HOME/.spacemacs.env/</tt>. These two last files will be created automatically during the installation, if you do not already have them.
+
+It's very convenient to have an external keyboard during the setup and configuration.
+
+Before installing spacemacs, backup (move) ~/.emacs.d to, say, old.emacs.d, then create an empty ~/.emacs.d. 
+
 CategoryPorts
