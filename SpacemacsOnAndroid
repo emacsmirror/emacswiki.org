@@ -64,6 +64,7 @@ $ mv .emacs.d .old.emacs.d; mkdir .emacs.d; git clone https://github.com/syl20bn
 		       (getenv "PATH")))
     (push termuxpath exec-path)
     (setenv "LANG" "en_US.UTF-8")))  ;; Set LANG to what is configured in Termux.
+;; (setq package-check-signature nil)
 [/code]
 
 * The LANG environment variable above, should be set to what is convenient for you. Ensure that Termux has the same setting for this environment variable, otherwise there may be problems for some corner cases.
@@ -77,5 +78,15 @@ gpg: Signature made Wed 02 Oct 2019 10:10:02 AM BST
 gpg:                using RSA key C433554766D3DDC64221BFAA066DAFCB81E42C40
 gpg: Can't check signature: No public key
 [/code]
+
+* You the need to update the signature key:
+* Uncomment the line <tt>(setq package-check-signature nil)</tt> in <tt>$HOME/.emacs.d/early-init.el</tt>.
+* In <tt>$HOME/.spacemacs</tt> add package <tt>gnu-elpa-keyring-update</tt> to <tt>dotspacemacs-additional-packages</tt>:
+[code]
+dotspacemacs-additional-packages '(gnu-elpa-keyring-update)
+[/code]
+
+* Restart emacs. Spacemacs should now fetch and install the <tt>gnu-elpa-keyring-update</tt> package. Check that the files under <tt>$HOME/.emacs.d/elpa/gnupg</tt> have been updated.
+* You should now be able to comment out the line <tt>(setq package-check-signature nil)</tt> in <tt>$HOME/.emacs.d/early-init.el</tt>.
 
 CategoryPorts
