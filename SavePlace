@@ -50,5 +50,8 @@ done
 gnome-session-quit --logout --no-prompt
 [/code]
 
+[h2]saveplace for pdf-view and docView[/h2]
+https://github.com/nicolaisingh/saveplace-pdf-view adds saveplace support for pdf-view (pdf-tools) and docView. This support is already included in Doom Emacs, when module <tt>pdf</tt> is enabled in <tt>init.el</tt>.
+
 ----
 SessionManagement CategoryPersistence
