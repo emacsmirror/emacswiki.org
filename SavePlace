@@ -36,5 +36,19 @@ If emacs is slow to exit after enabling saveplace, you may be running afoul of <
 }}}
 will restores emacs exit to nearly instantaneous.
 
+[h2]emacs server (daemon)[/h2]
+saveplace may not work as expected when you are using emacs server. The problem is that desktop logout commands often terminate emacs with a signal that emacs does not handle.
+
+This can be worked around under Linux, by using a shell script to logout from the session. This script will have to be executed by the user. The script first terminates emacs, including the server, with a signal that emacs handles. It then waits for all emacs processes to exit, then calls the command to logout from the session. Below is a script that can be used with the Ubuntu desktop:
+[code]
+#!/bin/bash
+pkill "emacs"
+while pgrep --count "emacs"; do
+    # echo $?
+    sleep 1
+done
+gnome-session-quit --logout --no-prompt
+[/code]
+
 ----
 SessionManagement CategoryPersistence
