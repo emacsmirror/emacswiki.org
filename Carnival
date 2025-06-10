@@ -1,28 +1,15 @@
 == What ==
-
 A blog carnival is a form of independent, personally curated content aggregation, often hosted by different people in rotation, in which the host would write a post linking to any posts submitted on the chosen topic. (cf. [https://indieweb.org/blog_carnival Blog Carnival on IndieWeb Wiki])
-
 Inspiration: [https://indieweb.org/IndieWeb_Carnival IndieWeb Carnival], still ongoing as of 2025-06-03.
-
-
-== Why == 
-
+== Why ==
 An Emacs Carnival helps motivate community members to post on their personal blogs. The Carnival topics provide inspiration for writing on a shared theme, like a writing prompt in writing workshops. This in turn may inspire readers (and participants), and help them appreciate all the different takes on seemingly the same thing.
-
 In the ecosystem of Emacs, there sure will be surprises! Submissions to the Carnival will show how diverse our community is.
-
 Above all, it's to have some fun -- on the web, with each other, with Emacs.
-
 == How ==
-
-Each month, the carnival has a different host, and the host comes up with the topic. 
-
+Each month, the carnival has a different host, and the host comes up with the topic.
 They post it both on their website and here. Then, other people post their submissions and alert the host about them. At the end of the month, the host collects all the received submissions and posts an overview of it.
-
 == List of Carnivals ==
-
-=== 2025 (Upcoming) === 
-
+=== 2025 (Upcoming) ===
 || Month     || Host || Topic ||
 || June      || [[ctietze]] || [https://christiantietze.de/posts/2025/06/emacs-carnival-2025-06-take-two/ "Take Two"] ||
 || July      || ? || ? ||
@@ -31,31 +18,20 @@ They post it both on their website and here. Then, other people post their submi
 || October   || ? || ? ||
 || November  || ? || ? ||
 || December  || ? || ? ||
-
-
 == “I want to host!” ==
-
-Great, thank you! 
-
+Great, thank you!
 Add yourself to the list below, make sure to add contact details right there or on your user page, to be pinged.
-
-It works like this: 
-
-* We'll rotate through the list of hosts to keep things fresh. 
-* Hosts are associated with a month in the table of upcoming Carnivals (above) first, 
-* and then they eventually pick a topic for their respective month. 
-
+It works like this:
+* We'll rotate through the list of hosts to keep things fresh.
+* Hosts are associated with a month in the table of upcoming Carnivals (above) first,
+* and then they eventually pick a topic for their respective month.
 So when you see this page, don't be surprised that the "Host" column is already populated, but the "Topic" column isn't. That's by design :)
-
-
-
 === List of wannabe hosts ===
-
 * [[ctietze]] (2025-06-03)
 * [[gnewman]] (2025-06-04)
+* [[takeonrules]] (2025-06-09)
 
 == Topic Ideas ==
-
 * "How I came across Emacs"
 * how's your Emacs configuration different?
 * obscure packages
