@@ -1,4 +1,4 @@
-C-x C-f, find-file, the most basic of ways to open a file in Emacs (see Manual:find-file), has many hidden features.
+C-x C-f, find-file, the most basic of ways to open a file in Emacs (see [[Manual:find-file]]), has many hidden features.
 
 = Overriding the Default Directory Without Erasing It =
 
