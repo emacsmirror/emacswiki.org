@@ -183,4 +183,50 @@ See [[number-mark.el]], ReplaceRegexp, ReplaceCount, RenumberList and MacroMath 
 Calc's [[https://www.gnu.org/savannah-checkouts/gnu/emacs/manual/html_node/calc/Embedded-Mode-Overview.html embedded mode]] can also be used for arbitrary in-place operations on buffers.
 
 ----
+
+Here is another version that uses the built-in 'thing-at-point' functions. It preserves leading zeroes, and the upper or lower case for hex numbers.
+
+{{{
+(defun increment-integer-at-point (&optional inc)
+  "Increment the number at point by INC.
+Preserves leading zeros.  Understands the number formats implemented by
+`thing-at-point' when that is called with the symbol `number' as the
+THING value."
+  (interactive "*p")
+  (let ((bnds (bounds-of-thing-at-point 'number))
+        (num (thing-at-point 'number))
+        beg end numstr fmtstr)
+    (if (or (not num)
+            (not (integerp num)))
+        (progn (message "No integer number at point")
+               nil)
+      (setq beg (car bnds)
+            end (cdr bnds)
+            numstr (buffer-substring-no-properties beg end)
+            num (+ num inc)
+            fmtstr (let ((case-fold-search nil))
+                     (pcase numstr
+                       ((rx bos (1+ digit) eos)
+                        (concat "%" (when (string= "0" (substring numstr 0 1))
+                                      (format "0%d" (length numstr)))
+                                "d"))
+                       ((rx bos (or ?0 ?#) ?x (1+ (any "ABCDEF" digit)) eos)
+                        (concat (substring numstr 0 1) "x%"
+                                (when (string= "0" (substring numstr 2 3))
+                                  (format "0%d" (- (length numstr) 2)))
+                                "X"))
+                       ((rx bos (or ?0 ?#) ?x (1+ (any "abcdef" digit)) eos)
+                        (concat (substring numstr 0 1) "x%"
+                                (when (string= "0" (substring numstr 2 3))
+                                  (format "0%d" (- (length numstr) 2)))
+                                "x"))
+                       (_ (message "Unknown number format %s" numstr)
+                          nil))))
+      (when fmtstr
+        (save-excursion
+          (delete-region beg end)
+          (insert (format fmtstr num)))))))
+}}}
+
+----
 CategoryEditing
