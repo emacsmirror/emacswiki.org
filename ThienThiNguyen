@@ -3,6 +3,16 @@ Also known as [::ttn].
 Some EmacsLisp is under dir:
 * http://www.gnuvola.org/software/
 
+(ed note): 
+
+Thien-Thi's software page is archived here: 
+
+https://web.archive.org/web/20171014001225/http://www.gnuvola.org/software/
+
+and by the [[https://www.emacswiki.org/emacs/Emacsmirror Emacs Mirror]].
+
+----
+
 I use Emacs due to the kindness of David Asher of DEC HLO2 (Hudson, MA, USA)
 in thwarting my innocent/imminent investment in EDT with the simple and direct
 advice: "Don't do that! Here, use Emacs!".  Thanks David.
@@ -24,11 +34,6 @@ topics, but that cannot be blamed on Emacs.  Poetry is mostly harmless, while
 codified, lest the energy spent forging the cage kills the bird, silencing its
 song.
 
-[new]
-Your Emacs packages gnugo, hideshow and qa can not be downloaded
-from http://www.gnuvola.org/software anymore - do they have a new home?
-
-(I mirror your packages on the [[Emacsmirror]].
 
 [new]
 
