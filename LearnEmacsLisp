@@ -20,41 +20,68 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 
 == Resources ==
 
-* Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i' (`info'), then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html on the Web]] or as a portable [[http://epub-manuals.ourproject.org/blog/an-introduction-to-programming-in-emacs-lisp/ epub book]].
-* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i' (`info'), then choose `Elisp'. You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]] or as a portable [[http://epub-manuals.ourproject.org/blog/gnu-emacs-lisp-reference-manual/ epub book]].
-* [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Elisp]: Good for people with programming backgrounds - by SteveYegge
-* [https://bzg.fr/en/learn-emacs-lisp-in-15-minutes Learn Emacs Lisp in 15 Minutes] - by BastienGuerry, Org mode Maintainer.
- [http://orgmode.org/][https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS#n449]
-* [https://github.com/chrisdone/elisp-guide A quick guide to Emacs Lisp programming] - by ChrisDone, author of [https://github.com/chrisdone/structured-haskell-mode structured-haskell-mode], [https://github.com/chrisdone/god-mode God Mode], and [https://github.com/chrisdone?utf8=%E2%9C%93&tab=repositories&q=&type=source&language=emacs%20lisp etc].
-* [https://sachachua.com/blog/2014/06/read-lisp-tweak-emacs-beginner-14-try-emacs-lisp/ Read Lisp, Tweak Emacs: How to read Emacs Lisp so that you can customize Emacs] - by SachaChua, ex-maintainer of PlannerMode, EmacsWikiMode, RememberMode and author of ErcCompletion [https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/AUTHORS#n4231].
-* [http://ergoemacs.org/emacs/elisp.html Practical Emacs Lisp] - by [https://www.emacswiki.org/emacs/Xah_Lee Xah Lee].
-* Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
+=== Core === 
+* Read  ''An Introduction to Programming in Emacs Lisp'': EmacsLispIntro. In Emacs, use `C-h i' (`info'), then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/eintr.html on the Web]] or as a portable [[http://epub-manuals.ourproject.org/blog/an-introduction-to-programming-in-emacs-lisp/ epub book]].
+* Read the ''GNU Emacs Lisp Reference Manual'' manual: EmacsLispReference. In Emacs, use `C-h i' (`info'), then choose `Elisp'. You can also read the manual [[https://www.gnu.org/software/emacs/manual/elisp.html on the Web]] or as a portable [[http://epub-manuals.ourproject.org/blog/gnu-emacs-lisp-reference-manual/ epub book]].
+
+=== Books / Tutorials ===
+
+* [[https://protesilaos.com/emacs/emacs-lisp-elements Emacs Lisp Elements]], by Protesilaos Stavrou (prot).
+* [[https://caiorss.github.io/Emacs-Elisp-Programming/Elisp_Programming.html Elisp Programming]], by Caio Rordrigues (caiorss).
+* [[https://github.com/hypernumbers/learn_elisp_the_hard_way Learn Elisp the Hard Way]], by Gordon Guthrie. Built with Sphinx, but readable without it.
+* [[https://github.com/chrisdone-archive/elisp-guide Elisp Guide]], by [[https://www.emacswiki.org/emacs/ChrisDone Chris Done]].
+* An unfinished [[https://web.archive.org/web/20171006041002/http://www.gnuvola.org/software/elisp-tutorial/index.html#ov Elisp tutorial]] by [[https://www.emacswiki.org/emacs/ThienThiNguyen Thien-Thi Nguyen]] (ttn).
+
+=== Video Series ===
+
+* [[https://www.youtube.com/playlist?app=desktop&list=PL9KxKa8NpFxKGctwh4-BqjQvdSRhh4NV- Learning Elisp]] by Mike Zamansky.
+* [[https://www.youtube.com/watch?v=RQK_DaaX34Q&list=PLEoMzSkcN8oPQtn7FQEF3D7sroZbXuPZ7 Learning Emacs Lisp]], by System Crafters.
+* [[https://tv.dyne.org/w/p/2A6UVt21hayJ3dVj5cU4yA?playlistPosition=1 Emacs Package Development: Emacs Reader]], by Divya Ranjan Pattanaik.
+
+=== Cookbooks / Tips ===
 * Check out examples in ElispCookbook
-* Check out existing ExampleConfigurations
-* check out [https://github.com/p3r7/awesome-elisp Awesome elisp] on GitHub. 
+* [[https://isamert.net/2023/08/14/elisp-editing-development-tips.html Elisp editing/development Tips ]] by Isa Mert Gurbuz (isamert).
+* [[https://caiorss.github.io/Emacs-Elisp-Programming/Elisp_Snippets.html Elisp Snippets]] by Caio Rordrigues (caiorss).
+* [[https://www.thethingsengine.org/elisp.html the "elisp" practice]], by Dr. YF Yin.
+* [[http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Elisp]], by [[https://www.emacswiki.org/emacs/SteveYegge Steve Yegge]]. Good for people with programming backgrounds.
+* [[https://bzg.fr/en/learn-emacs-lisp-in-15-minutes Learn Emacs Lisp in 15 Minutes]]- by [[https://www.emacswiki.org/emacs/BastienGuerry Bastien Guerry]], Org mode Maintainer.
+* [[https://sachachua.com/blog/2014/06/read-lisp-tweak-emacs-beginner-14-try-emacs-lisp/ Read Lisp, Tweak Emacs: How to read Emacs Lisp so that you can customize Emacs]] - by [[https://www.emacswiki.org/emacs/SachaChua Sacha Chua]].
+* [[http://ergoemacs.org/emacs/elisp.html Practical Emacs Lisp]] - by [[https://www.emacswiki.org/emacs/Xah_Lee Xah Lee]].
+* Mitch Fincher's [[http://www.fincher.org/tips/Languages/Emacs.shtml 50-point summary]] of the language.
+
+=== Other Elisp Resources ===
+
+* Check out existing ExampleConfigurations.
+* [[https://github.com/p3r7/awesome-elisp Awesome Elisp]] on GitHub. 
 
 == General Lisp Resources ==
 
-Emacs Lisp belong to the Lisp family (WikiPedia:Lisp_programming_language), and learning it will teach you Lisp concepts, as well as learning Lisp concepts will help you with Emacs Lisp.
+Emacs Lisp belongs to the [[https://en.wikipedia.org/wiki/List_of_Lisp-family_programming_languages Lisp family]] of programming languages, and learning it will teach you general Lisp concepts.  Learning Lisp concepts will help you learn Emacs Lisp.  The following resources are primarily about the Common Lisp and Scheme languages.
 
-* Harold Abelson & Gerald Jay Sussman: MIT lectures introducing Lisp (videos):
-[https://www.youtube.com/watch?v=-J_xL4IGhJA] is the first one, ''Lecture 1A: Overview and Introduction to Lisp''...  Excellent, from soup to nuts, step by step. It doesn't get any better than this.
-* Harold Abelson, Gerald Jay Sussman with Julie Sussman's book ''Structure and Interpretation of Computer Programs'' (Scheme, not Emacs Lisp): [https://sarabander.github.io/sicp/] (The book for the course shown in the videos.)
-* Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
-[http://p-cos.net/lisp/guide.html]
-* Paul Graham's overview of Lisp (in general, not Emacs Lisp):
-[http://www.paulgraham.com/rootsoflisp.html]
-* Paul Graham's book ''ANSI Common Lisp'', chapter 2 (Common Lisp, not Emacs Lisp):
-[http://lib.store.yahoo.net/lib/paulgraham/acl2.txt]
-* Peter Norvig's ''Tutorial on Good Lisp Programming Style'' [https://www.cs.umd.edu/%7Enau/cmsc421/norvig-lisp-style.pdf]
-* Peter Seibel's book ''Practical Common Lisp'' (Common Lisp, not Emacs Lisp):
-[http://www.gigamonkeys.com/book/]
-* Steve Losh's article ''A Road to Common Lisp'' (Common Lisp, not Emacs Lisp): [http://stevelosh.com/blog/2018/08/a-road-to-common-lisp/]
-* David B. Lamkin's book ''Successful Lisp'' (Common Lisp, not Emacs Lisp):
-[https://successful-lisp.blogspot.com/] (The book is downloadable from his webpage.)
+* Harold Abelson & Gerald Jay Sussman: MIT lectures (videos).  Start with [[https://www.youtube.com/watch?v=-J_xL4IGhJA Lecture 1A: Overview and Introduction to Lisp]].
 
-* Jos ́e Antonio Ortega Ruiz's article ''A Scheme bookshelf'' (Scheme, not Emacs Lisp): [http://programming-musings.org/2007/01/31/a_scheme_bookshelf/index.html]
+** their book, [[https://web.mit.edu/6.001/6.037/sicp.pdf Structure and Interpretation of Computer Programs, 2nd ed.]] (pdf)
+
+** there is also an [[https://sarabander.github.io/sicp/ online/HTML version]].
+
+** the [[https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/ complete CS 6.001 course]] from Spring 2005 can be downloaded from MIT.
+
+
+See also:
+
+* David Touretsky's [[https://www.cs.cmu.edu/~dst/LispBook/book.pdf Common Lisp: A Gentle Introduction to Symbolic Computation]] (pdf).
+* David B. Lamkin's [[https://dept-info.labri.fr/~strandh/Teaching/MTP/Common/David-Lamkins/ Successful Lisp]].
+* Peter Seibel's : [[https://gigamonkeys.com/book/ Practical Common Lisp]].\\
+\\
+* Pascal Costanza'a intro to Lisp: [[http://p-cos.net/lisp/guide.html Introduction to Lisp]]
+* Paul Graham's [[https://paulgraham.com/rootsoflisp.html Roots of Lisp]]
+* Peter Norvig's [[https://www.cs.umd.edu/%7Enau/cmsc421/norvig-lisp-style.pdf Tutorial on Good Lisp Programming Style]] (pdf).
+* Steve Losh's [[https://stevelosh.com/blog/2018/08/a-road-to-common-lisp/ A Road to Common Lisp]]\\
+\\
+* Lisp-lang.org's [[https://lisp-lang.org/books/ List of Lisp books]]
+* Jos ́e Antonio Ortega Ruiz's article [[http://programming-musings.org/2007/01/31/a_scheme_bookshelf/index.html A Scheme Bookshelf]].
 
 ----
 CategoryCode
+
 CategoryHelp
