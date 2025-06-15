@@ -51,6 +51,8 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 
 === Other Elisp Resources ===
 
+
+* [[https://codeberg.org/pavodive/spiral Spiral]]: Spiral is an Emacs package designed to be an an interactive trainer for learning elisp, inspired by the R package Swirl.
 * Check out existing ExampleConfigurations.
 * [[https://github.com/p3r7/awesome-elisp Awesome Elisp]] on GitHub. 
 
