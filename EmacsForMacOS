@@ -53,11 +53,15 @@ There are many options for building emacs (such as whether to build for the X11 
 To build Emacs under Mac OS X:
 
 <pre>
-  ./configure
+  ./configure [-FLAGS]
   make install
 </pre>
 
+NOTE: ./configure --help will display all available compilation flags.
+
 When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
+
+Alternately, you can run `open -R nextstep/Emacs.app` from the command line to move the Emacs.app to Applications.
 
 For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.
 
@@ -113,7 +117,7 @@ Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes variou
 
 === Homebrew ===
 
-[http://brew.sh/ Homebrew] has Emacs 28.2 as of Sep 2022.
+[http://brew.sh/ Homebrew] has Emacs 30.1 as of June 2025.
 
 ==== Cask homebrew installation ====
 
