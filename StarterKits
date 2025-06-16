@@ -1,30 +1,60 @@
-There are several so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  They are all quite different from the default GnuEmacs default configuration. These are useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://git.sr.ht/~pkal/ecg Emacs Configuration Generator]
+There are many so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  You may also see them referred to as 'distros'. They are all quite different from the default GnuEmacs default configuration. They can be useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://git.sr.ht/~pkal/ecg Emacs Configuration Generator].
 
-[https://github.com/alphapapa/with-emacs.sh with-emacs.sh] by alphapapa could be one approach to try different configurations, including starter kits. The repo includes brief comparisons of alternatives. 
+[https://github.com/alphapapa/with-emacs.sh with-emacs.sh] by alphapapa could be one approach to trying different configurations, including starter kits. The repo includes brief comparisons of alternatives. 
 
-Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (mostly updated 2022-08; some size numbers from 2016-01-16):
+Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online/in Github.). 
 
-|| Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
-|| Spacemacs            || 23.6k ||         1194 ||   12973 ||              9700 || https://github.com/syl20bnr/spacemacs ||
-|| Doom Emacs           || 19.2k ||          751 ||   19502 ||              1200 || https://github.com/doomemacs/doomemacs ||
-|| purcell emacs.d      ||  6.3k ||           21 ||    3092 ||                67 || https://github.com/purcell/emacs.d ||
-|| Prelude              ||  4.8k ||          166 ||    1360 ||               661 || https://github.com/bbatsov/prelude ||
-|| Centaur Emacs        ||  1.6k ||           22 ||    3447 ||                67 || https://github.com/seagle0128/.emacs.d ||
-|| Emacs Live           ||  1.5k ||           39 ||     715 ||                   || https://github.com/overtone/emacs-live ||
-|| magnars emacs.d      ||  1.4k ||            9 ||    1490 ||               526 || https://github.com/magnars/.emacs.d ||
-|| scimax               ||   821 ||           21 ||    2150 ||                   || https://github.com/jkitchin/scimax ||
-|| Emacs Starter Kit    ||   796 ||           21 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit/ || 
-|| Crafted Emacs        ||   793 ||           50 ||     726 ||               636 || https://github.com/SystemCrafters/crafted-emacs ||
-|| oh-my-emacs          ||   700 ||           10 ||     333 ||               110 || https://github.com/xiaohanyu/oh-my-emacs ||  
-|| M-EMACS              ||   543 ||            2 ||     862 ||              1600 || https://github.com/MatthewZMD/.emacs.d || 
-|| ohai-emacs           ||   379 ||            9 ||     124 ||               170 || https://github.com/bodil/ohai-emacs || 
-|| Graphene             ||   289 ||            4 ||     347 ||                40 || https://github.com/rdallasgray/graphene || 
-|| ergoemacs-mode       ||   237 ||           21 ||    2799 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode ||
-|| minimal-emacs.d      ||   231 ||            2 ||    305 ||                    || https://github.com/jamescherti/minimal-emacs.d ||
-|| kickstart.emacs      ||   150 ||            1 ||     120 ||                36 || https://github.com/MiniApollo/kickstart.emacs ||
-|| ocodo .emacs.d       ||   100 ||            4 ||    9352 ||             46000 || https://github.com/ocodo/.emacs.d ||
-|| Wakib Emacs          ||    23 ||            1 ||      93 ||                 8 || https://github.com/darkstego/wakib-emacs  ||
-|| Rho Emacs            ||    22 ||            1 ||      37 ||                 ~ || https://github.com/GChristensen/rho-emacs ||
-|| Onboard              ||    16 ||            1 ||     212 ||                 8 || https://github.com/monkeyjunglejuice/emacs.onboard ||
+The kits are ranked in very rough terms of popularity, as measured by the number of stars on their !GitHub repository (updated June 2025).  
+
+'Active' indicates that there have been contributions to the repo within the last 12 months.
+
+'Keybindings' indicates whether it ships with standard Emacs bindings or Evil-mode (Vim) modal bindings.
+
+'Description' is taken from the description of the project in Github.
+
+This should not be viewed as a comprehensive list.
+
+== Active ==
+
+|| Name                 || Stars || Emacs version || Keybindings || Description                   ||
+|| [[https://github.com/syl20bnr/spacemacs Spacemacs]]            || 24.1k ||         28.2+ ||   Evil || "...a sophisticated and polished set-up, focused on ergonomics, mnemonics and consistency." ||
+|| [[https://github.com/doomemacs/doomemacs Doom Emacs]]           || 20.6k || 27.1–30.1 ||   Evil ||   "... a configuration framework for GNU Emacs tailored for Emacs bankruptcy veterans.." ||
+|| [[https://github.com/purcell/emacs.d Purcell's emacs.d]]      ||    7k ||           27.1+ ||    Standard || "...continually used and tweaked since 2000, and it may be a good starting point for other Emacs users, especially web developers." ||
+|| [[https://github.com/bbatsov/prelude Prelude]]              ||  5.2k ||          25.1+ ||   Standard ||  "...aims to enhance the default Emacs experience. " ||
+|| [[https://github.com/rougier/nano-emacs Nano Emacs]]        ||  2.7k ||           ?? ||      Standard   || "... based on design principles I described in the article "On the design of text Editors""||                  
+|| [[https://github.com/seagle0128/.emacs.d Centaur Emacs]]        ||  2.1k ||           28.1+ ||    Standard || "..fancy and fast..." ||
+|| [[https://github.com/jkitchin/scimax Scimax]]               ||   821 ||            28.1+ ||    Standard ||  "...a comprehensive configuration of Emacs for scientific programming and publishing." ||
+|| [[https://github.com/SystemCrafters/crafted-emacs Crafted Emacs]]  ||   795 ||  ?? ||   Standard|| "...nice baseline for users who want to create their own Emacs configuration." ||
+|| [[https://github.com/MatthewZMD/.emacs.d M-EMACS]]              ||   707 ||            26.1+ ||     Standard ||"...designed to enhance your experience while providing an easily navigable resource."|| 
+|| [[https://github.com/jamescherti/minimal-emacs.d Minimal Emacs]]      ||   436 ||       29+      ||    Standard ||"...better defaults, an optimized startup, and a clean foundation for building your own vanilla Emacs setup."||
+|| [[https://github.com/rdallasgray/graphene Graphene]]             ||   322 ||     ??        ||     Standard ||  "...intended to help users of GUI editors such as Textmate or Sublime Text find their feet quickly". || 
+|| [[https://github.com/LionyxML/emacs-kick Emacs Kick]]            ||   200 ||   30.1+     ||   Evil      || "...starting point for building your own Emacs configuration. " ||
+|| [[https://github.com/abougouffa/minemacs MinEmacs]]              ||   179 ||   29+ ||    Standard     || "...a complete and fast Emacs configuration framework."  ||
+|| [[https://github.com/MiniApollo/kickstart.emacs kickstart.emacs]]  ||   150 ||  30.1+     ||     Standard|| "...a template for your own configuration."||
+|| [[https://github.com/jcs-emacs/jcs-emacs JCS-Emacs]]             ||   101   ||  ??   ||  Standard       || "...polished and goes toward to the modern text editor, or even better, it goes beyond modern IDE"||                  
+|| [[https://github.com/GChristensen/rho-emacs Rho Emacs]]            ||    54||            29.4+ || Standard|| "...preconfigured distribution of Emacs for Windows."||
+|| [[https://github.com/monkeyjunglejuice/emacs.onboard Emacs.Onboard]]    ||    24 ||            28.2+ ||     Standard || "... a comprehensive, portable starter-kit for Emacs."||
+
+== Archived / Not active ==
+
+[[https://github.com/overtone/emacs-live Emacs Live]]\\
+[[https://github.com/magnars/.emacs.d Magnar's emacs.d]]\\
+[[https://github.com/eschulte/emacs24-starter-kit/ Emacs24 Starter Kit]]\\
+[[https://github.com/xiaohanyu/oh-my-emacs oh-my-emacs]]\\
+[[https://github.com/bodil/ohai-emacs ohai-emacs]]\\
+[[https://github.com/ocodo/.emacs.d  ocodo .emacs.d]]\\
+[[https://github.com/darkstego/wakib-emacs  Wakib Emacs]]\\
+
+
+== Not-a-config ==
+
+[[https://github.com/ergoemacs/ergoemacs-mode Ergo Emacs]]  -  A comprehensive set of keybindings. 
+
+== Personal configs ==
+
+There are a large number of personal configurations collected [[https://github.com/caisah/emacs.dz here]].
+
 ----
-CategoryDotEmacs LearningEmacs
+CategoryDotEmacs 
+
+LearningEmacs
