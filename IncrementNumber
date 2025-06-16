@@ -189,43 +189,36 @@ Here is another version that uses the built-in 'thing-at-point' functions. It pr
 {{{
 (defun increment-integer-at-point (&optional inc)
   "Increment the number at point by INC.
-Preserves leading zeros.  Understands the number formats implemented by
-`thing-at-point' when that is called with the symbol `number' as the
-THING value."
+Negative INC decrement by the given amount.  Preserves leading zeros.
+Hexadecimal numbers default to upper case.  Supports the number formats
+recognised by `number-at-point'."
   (interactive "*p")
-  (let ((bnds (bounds-of-thing-at-point 'number))
-        (num (thing-at-point 'number))
-        beg end numstr fmtstr)
-    (if (or (not num)
-            (not (integerp num)))
-        (progn (message "No integer number at point")
-               nil)
-      (setq beg (car bnds)
-            end (cdr bnds)
-            numstr (buffer-substring-no-properties beg end)
-            num (+ num inc)
-            fmtstr (let ((case-fold-search nil))
-                     (pcase numstr
-                       ((rx bos (1+ digit) eos)
-                        (concat "%" (when (string= "0" (substring numstr 0 1))
-                                      (format "0%d" (length numstr)))
-                                "d"))
-                       ((rx bos (or ?0 ?#) ?x (1+ (any "ABCDEF" digit)) eos)
-                        (concat (substring numstr 0 1) "x%"
-                                (when (string= "0" (substring numstr 2 3))
-                                  (format "0%d" (- (length numstr) 2)))
-                                "X"))
-                       ((rx bos (or ?0 ?#) ?x (1+ (any "abcdef" digit)) eos)
-                        (concat (substring numstr 0 1) "x%"
-                                (when (string= "0" (substring numstr 2 3))
-                                  (format "0%d" (- (length numstr) 2)))
-                                "x"))
-                       (_ (message "Unknown number format %s" numstr)
-                          nil))))
-      (when fmtstr
-        (save-excursion
-          (delete-region beg end)
-          (insert (format fmtstr num)))))))
+  (if-let* ((num (thing-at-point 'number))
+            (i (integerp num))
+            (bnds (bounds-of-thing-at-point 'number))
+            (beg (car bnds))
+            (end (cdr bnds))
+            (numstr (buffer-substring-no-properties beg end))
+            (fmtstr (let ((case-fold-search nil))
+                      (pcase numstr
+                        ((rx bos (regex thing-at-point-decimal-regexp) eos)
+                         (concat "%" (when (string-match-p
+                                            (rx bos (opt (or ?+ ?-)) 0)
+                                            numstr)
+                                       (format "0%d" (length numstr)))
+                                 "d"))
+                        ((rx bos (regex thing-at-point-hexadecimal-regexp) eos)
+                         (concat (substring numstr 0 1) "x%"
+                                 (when (string= "0" (substring numstr 2 3))
+                                   (format "0%d" (- (length numstr) 2)))
+                                 (if (string-match-p (rx (any "abcdef")) numstr)
+                                     "x" "X")))
+                        (_ (message "Unknown number format: \"%s\"" numstr)
+                           nil)))))
+      (save-excursion
+        (delete-region beg end)
+        (insert-before-markers-and-inherit (format fmtstr (+ num inc))))
+    (message "No integer number at point")))
 }}}
 
 ----
