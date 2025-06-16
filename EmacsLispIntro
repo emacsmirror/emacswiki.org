@@ -1,6 +1,6 @@
 [[uk:EmacsLispIntroUk]]
 [[es:EmacsLispIntroEs]]
-: ''The programmable editor is an outstanding opportunity to learn to program!'' -- TheEmacsPaper
+: ''The programmable editor is an outstanding opportunity to learn to program!'' -- [https://www.emacswiki.org/emacs/EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor TheEmacsPaper]
 
 Learn [[Lisp]] the easy way: Read the ''Introduction to Programming in Emacs Lisp'', written by Robert J. Chassell.  Highly
 recommended for those without prior Lisp programming experience.
