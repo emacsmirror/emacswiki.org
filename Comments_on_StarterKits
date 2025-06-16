@@ -1,0 +1,9 @@
+[new]
+I did a fair amount of restructuring on this page, including removing most of the previous table information (stars, committers, no of commits, size of zip archive in kb, etc.).
+
+Rationale: the previous table info was difficult to update (I started out doing so) and difficult to maintain,  and I would argue, not that useful at a casual glance. For instance, do people care about the number of committers/commits?  Maybe some do, but I suggest the average user of a starter kit is likely not in that number.
+
+That said, if there is disagreement on these edits, just holler and I will be happy to discuss and/or roll back.
+
+-- Cena 2025-06-16 00:09 UTC
+
