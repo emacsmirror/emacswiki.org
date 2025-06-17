@@ -2,7 +2,7 @@ This is a really simple mode to edit pages on Oddmuse wikis (such as EmacsWiki) 
 
 == Source ==
 
-* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] project page, on Savannah
+* [http://savannah.nongnu.org/projects/oddmuse-el oddmuse-el] project page, on Savannah [note: doesn't seem available as of June 2025]
 
 * Lisp:oddmuse.el is an older, abandoned copy hosted on this wiki
 
