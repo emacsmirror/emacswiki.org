@@ -8,7 +8,7 @@ Emacs has its own terminology and keys for these concepts:
 || Cut           || <kbd>C-x</kbd>                                   || Kill                             || <kbd>C-w</kbd>     ||
 || Copy          || <kbd>C-c</kbd>                                   || ##kill-ring-save##               || <kbd>M-</kbd>  ||
 || Paste         || <kbd>C-v</kbd>                                   || Yank                             || <kbd>C-y</kbd>     ||
-|| —             || —                                                || ##yank-pop##>                    || <kbd>M-y</kbd>     ||
+|| —             || —                                                || ##yank-pop##                     || <kbd>M-y</kbd>     ||
 
 == Changing the defaults ==
 
