@@ -6,9 +6,9 @@ Emacs has its own terminology and keys for these concepts:
 || Selection     || —                                                || Region                           || —                  || 
 || Clipboard     || <kbd>s-v</kbd> (<kbd>s</kbd> is the Windows key) || Kill ring                        || —                  || 
 || Cut           || <kbd>C-x</kbd>                                   || Kill                             || <kbd>C-w</kbd>     ||
-|| Copy          || <kbd>C-c</kbd>                                   || <kbd>kill-ring-save</kbd>        || <kbd>M-</kbd>  ||
+|| Copy          || <kbd>C-c</kbd>                                   || ##kill-ring-save##               || <kbd>M-</kbd>  ||
 || Paste         || <kbd>C-v</kbd>                                   || Yank                             || <kbd>C-y</kbd>     ||
-|| —             || —                                                || <kbd>yank-pop</kbd>              || <kbd>M-y</kbd>     ||
+|| —             || —                                                || ##yank-pop##>                    || <kbd>M-y</kbd>     ||
 
 == Changing the defaults ==
 
