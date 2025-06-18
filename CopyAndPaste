@@ -2,23 +2,23 @@
 
 Emacs has its own terminology and keys for these concepts:
 
-|| *Common Name* || *Common Key*                       || *Emacs Name*       || *Emacs Key* ||
-|| Selection     || —                                  || Region             || —           || 
-|| Clipboard     || ##s-v## (##s## is the Windows key) || Kill ring          || —           || 
-|| Cut           || ##C-x##                            || Kill               || ##C-w##     ||
-|| Copy          || ##C-c##                            || ##kill-ring-save## || ##M-w##     ||
-|| Paste         || ##C-v##                            || Yank               || ##C-y##     ||
-|| —             || —                                  || ##yank-pop##       || ##M-y##     ||
+|| *Common Name* || *Common Key*                                     || *Emacs Name*                     || *Emacs Key*        ||
+|| Selection     || —                                                || Region                           || —                  || 
+|| Clipboard     || <kbd>s-v</kbd> (<kbd>s</kbd> is the Windows key) || Kill ring                        || —                  || 
+|| Cut           || <kbd>C-x</kbd>                                   || Kill                             || <kbd>C-w</kbd>     ||
+|| Copy          || <kbd>C-c</kbd>                                   || <kbd>kill-ring-save</kbd>        || <kbd>M-</kbd>  ||
+|| Paste         || <kbd>C-v</kbd>                                   || Yank                             || <kbd>C-y</kbd>     ||
+|| —             || —                                                || <kbd>yank-pop</kbd>              || <kbd>M-y</kbd>     ||
 
 == Changing the defaults ==
 
 If you do not care for the DefaultKillingAndYanking [[key binding]]s, then consider these alternatives:
 
-* PcSelectionMode -- the Windows and Motif flavour with ##C-<ins>##, ##C-<del>##, and ##S-<ins>##.
-* CuaMode -- use ##C-x##, ##C-c## and ##C-v## to copy and paste
+* PcSelectionMode -- the Windows and Motif flavour with <kbd>C-<ins></kbd>, <kbd>C-<del></kbd>, and <kbd>S-<ins></kbd>.
+* CuaMode -- use <kbd>C-x</kbd>, <kbd>C-c</kbd> and <kbd>C-v</kbd> to copy and paste
 * CuaLightMode -- something between PcSelectionMode and CuaMode
-* DeleteSelectionMode -- ##DEL## deletes the region; just typing replaces it.
-* WholeLineOrRegion -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
+* DeleteSelectionMode -- <kbd>DEL</kbd> deletes the region; just typing replaces it.
+* WholeLineOrRegion -- <kbd>C-w</kbd> and <kbd>M-w</kbd> act on the current line when TransientMarkMode is not active
 
 == X Window System ==
 
@@ -28,8 +28,8 @@ Important for this discussion is the understanding that X generally distinguishe
 
 With this out of the way, starting with Emacs 24.1, GNU Emacs should already do the right thing here. If you dislike this behavior, there are two options you can customize:
 
-* ##select-enable-primary## - default ##nil##; set this to ##t## if you want the Emacs commands ##C-w## and ##C-y## to use the primary selection.
-* ##select-enable-clipboard## - default ##t##; set this to ##t## if you want the Emacs commands ##C-w## and ##C-y## to use the clipboard selection.
+* ##select-enable-primary## - default ##nil##; set this to ##t## if you want the Emacs commands <kbd>C-w</kbd> and <kbd>C-y</kbd> to use the primary selection.
+* ##select-enable-clipboard## - default ##t##; set this to ##t## if you want the Emacs commands <kbd>C-w</kbd> and <kbd>C-y</kbd> to use the clipboard selection.
 
 Yes, you can have Emacs use both at the same time.
 
