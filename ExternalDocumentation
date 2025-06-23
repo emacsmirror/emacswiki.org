@@ -131,6 +131,17 @@ Download and install:
 
 For more installation suggestions and configuration options of the standalone GNU Info visit the home page of the book
 
+=== Book "The Rust Programming Language" ===
+
+Home page of the book: https://hangar118.sdf.org/p/docs-texinfo/
+
+Download and install:
+
+  $ mkdir -p ~/.local/share/info
+  $ cd ~/.local/share/info
+  $ wget https://hangar118.sdf.org/p/docs-texinfo/rust-programming-language-1.82.info
+  $ install-info --section="Software development" --name="Rust" rust-programming-language-1.82.info dir
+
 === Common Lisp Spec ===
 
   $ mkdir /tmp/cl-info
