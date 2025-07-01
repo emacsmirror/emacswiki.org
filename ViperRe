@@ -9,16 +9,17 @@ Viperre (Viper REmap) is a remapping of the Viper keyboard layout (Viper is a Vi
 
 
 == Code so far ==
-The code consists of two files which may be downloaded from http://bitbucket.org/bshanks/viperre/src/
+The code consists of two files which may be downloaded from https://github.com/bshanks/viperre
 
 To use it, put the following in your .emacs (not .viper) after loading viper:
 
 <pre>
 (load "viperre")
-(viper-remap-qwerty)
+(viper-remap-qwerty) 
+(define-key viper-vi-global-user-map (kbd "") 'viper-insert)
 </pre>
 
-If you are using the Colemak keyboard layout, replace (viperre-qwerty) with (viperre-colemak).
+If you are using the Colemak keyboard layout, replace (viper-remap-qwerty) with (viper-remap-colemak).
 
 
 == The map ==
@@ -71,4 +72,4 @@ List of functions which have been removed:
  |
 
 
-"Project" home page: http://bayleshanks.com/tips-computer-viperRemap
+"Project" home page: https://www.bayleshanks.com/tips-computer-viperRemap
