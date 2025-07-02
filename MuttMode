@@ -1,6 +1,14 @@
-Download: http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/~rreid/software/mutt/mutt.el
+[http://www.mutt.org/ Mutt] is an email client.
 
-Installation:
+The [http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/~rreid/software/mutt/mutt.el original download] is no longer active (2025). 
+
+There is a more up-to-date (2019) Mutt Mode by Felix Weilbach hosted here: https://gitlab.com/flexw/mutt-mode
+
+The 1.4 version of mutt.el by Eric Kidd (1998) can be found here on the wiki: Lisp:mutt.el. (ed note: this appears to be what was linked to in the original download; see [https://web.archive.org/web/20040816073016/http://www.drao-ofr.hia-iha.nrc-cnrc.gc.ca/~rreid/software/mutt/mutt.el Wayback Machine link ]).
+
+An earlier version of Eric Kidd's mutt.el (1.1) can be found here: http://www.lemis.com/grog/programs/emacs/emacs/mutt.el
+
+== Installation:==
 
 Put mutt.el in your load-path and add the following line to the .emacs file:
 
@@ -8,22 +16,7 @@ Put mutt.el in your load-path and add the following line to the .emacs file:
 
 See Also MuttInEmacs.
 
-[new]
-I'm using Emacs as the editor for Mutt, and I'd like to use Supercite while doing so; however, I have not been able to get Supercite to work in this context. I have this feeling that it shouldn't be too hard... Has anybody succeeded? --DirkJanBinnema
 
-[new]
-: I'm not sure what exactly Supercite is, but if you want mutt to have emacs execute arbitrary lisp code, set editor="emacs %s --eval '(lisp-goes-here)'"; a good lisp-goes-here might be (supercite-mode t)? -- ErikBourget
-
-[new]
-:: Supercite flexibly cites portions of an email.  It's probably the best email citation package that exists.  It's from the days when an email chain was not a single email containing the text of every finagling email in the chain, when sigs and responses went at the bottom of the email, when concise, dense content was something to be striven for -- in short, when men where Real Men, women were Real Women, and small furry creatures from Alpha Centauri were Real Small Furry Creatures from Alpha Centauri. -- KevinKinnell
-
-[new]
-Download link is dead. Anybody has an alternative location of mutt.el?
-
-[new]
-: Maybe http://www.lemis.com/grog/programs/emacs/emacs/mutt.el ? Not sure it's the same file.
-[new]
-Yes, it is, but il looks like an older revision. I've retrieved a more recent copy via archive.org, and saved it here: Lisp:mutt.el
 
 ----
 CategoryMailAddons | CategoryModes
