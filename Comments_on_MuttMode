@@ -1,0 +1,19 @@
+[new]
+I'm using Emacs as the editor for Mutt, and I'd like to use Supercite while doing so; however, I have not been able to get Supercite to work in this context. I have this feeling that it shouldn't be too hard... Has anybody succeeded? --DirkJanBinnema
+
+[new]
+: I'm not sure what exactly Supercite is, but if you want mutt to have emacs execute arbitrary lisp code, set editor="emacs %s --eval '(lisp-goes-here)'"; a good lisp-goes-here might be (supercite-mode t)? -- ErikBourget
+
+[new]
+:: Supercite flexibly cites portions of an email.  It's probably the best email citation package that exists.  It's from the days when an email chain was not a single email containing the text of every finagling email in the chain, when sigs and responses went at the bottom of the email, when concise, dense content was something to be striven for -- in short, when men where Real Men, women were Real Women, and small furry creatures from Alpha Centauri were Real Small Furry Creatures from Alpha Centauri. -- KevinKinnell
+
+[new]
+Download link is dead. Anybody has an alternative location of mutt.el?
+
+[new]
+: Maybe http://www.lemis.com/grog/programs/emacs/emacs/mutt.el ? Not sure it's the same file.
+[new]
+Yes, it is, but il looks like an older revision. I've retrieved a more recent copy via archive.org, and saved it here: Lisp:mutt.el
+
+-- Cena 2025-07-02 21:36 UTC
+
