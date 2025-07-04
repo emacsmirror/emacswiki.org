@@ -1,0 +1,23 @@
+[new]
+I'm experimenting with getting Emacs Wiki off of DuckDuckGo and back to its own search. Personally, I guess I rely mostly on matching pages (much faster, nearly always what I want within one or two clicks). The reason for all that is that I would like to block all bots from the site (there is a whitelist of user-agents). Once all bots are blocked, I assume that an external search engine will no longer work. The reason I don't mind that much is that I haven't been able to find the things I'm looking for via regular search engines, anyway. So the system was bearing some of the cost (serving all the useless SEO bots, serving the crawlers that go through the entire page history, that go through recent changes all the way to the beginning, for all the filters, and so on. At the same time, I wasn't seeing a benefit.
+
+Technically, I'm mostly using a setup like the following for Apache in addition to regular [https://www.emacswiki.org/robots.txt robots.txt]:
+
+{{{
+# SEO bots, borked feed services and other shit
+RewriteCond "%{HTTP_USER_AGENT}" "academicbotrtu|ahrefsbot|amazonbot|awariobot|bitsightbot|blexbot|bytespider|dataforseobot|discordbot|domainstatsbot|dotbot|elisabot|eyemonit|facebot|linkfluence|magpie-crawler|megaindex|mediatoolkitbot|mj12bot|newslitbot|paperlibot|pcore|petalbot|pinterestbot|seekportbot|semanticscholarbot|semrushbot|semanticbot|seokicks-robot|siteauditbot|startmebot|summalybot|synapse|trendictionbot|twitterbot|wiederfrei|yandexbot|zoominfobot|velenpublicwebcrawler|gpt|\bads|feedburner|brandwatch|openai|facebookexternalhit|yisou|docspider|googleother|meta-externalagent" [nocase]
+RewriteRule ^ https://alexschroeder.ch/nobots [redirect=410,last]
+
+# Block all bots and crawlers.
+RewriteCond "%{HTTP_USER_AGENT}" "!archivebot|^gwene|wibybot" [nocase]
+RewriteCond "%{HTTP_USER_AGENT}" "bot|crawler|spider|ggpht|gpt" [nocase]
+RewriteRule ^ https://alexschroeder.ch/nobots [redirect=410,last]
+}}}
+
+In other words, there's an exception list (Internet Archive, Gwene, Wiby). And I'm willing to add more to that list. Let me know if you have strong feelings either way.
+
+The full-text search is also not-great, to be honest. It's a Perl regular expression used to search all the data files, in order. There is no ranking of the results. Again, let me know if you have strong feelings about this.
+
+Feel free to [https://alexschroeder.ch/view/Contact contact me directly], too.
+
+-- Alex Schroeder
