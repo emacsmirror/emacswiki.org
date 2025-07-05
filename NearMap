@@ -1,7 +1,7 @@
 Near links are green instead of blue, and a popup-help will list the name of the wiki they will redirect to. This wiki is near-linked to Community Wiki.
 
  Community http://www.communitywiki.org/cw?action=index;raw=1 http://www.communitywiki.org/cw?search=%s;raw=1;near=0
- MeatBall http://www.emacswiki.org/cgi-bin/strip?url=http://www.usemod.com/cgi-bin/mb.pl?action=index http://www.emacswiki.org/cgi-bin/usemod-search?url=http://www.usemod.com/cgi-bin/mb.pl?search=%s
+ MeatBall http://www.emacswiki.org/cgi-bin/strip?url=http://www.usemod.org/cgi-bin/mb.pl?action=index http://www.emacswiki.org/cgi-bin/usemod-search?url=http://www.usemod.org/cgi-bin/mb.pl?search=%s
 
 [new]
 I recently got a question from a user by email regarding these green links and the creating of local copies of these remote pages.
