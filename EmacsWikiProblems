@@ -9,19 +9,15 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== Re: MeatBall links == 
-
-Hi STyx - it looks like the correct page for usermod should be https://www.usemod.org/cgi-bin/wiki.pl (.org, not .com), but
-the Meatball:StyleGuide is here: http://meatballwiki.org/wiki/StyleGuide
-
-Would you let me know the page(s) where you found the usermod.com link?  Happy to update it.
-
 == MeatBall: links ==
 [new]
-MeatBall links (e.g. MeatBall:StyleGuide) uses [http://www.usemod.com http://www.usemod.com]; 
-but this url is corrupted and redirects to [https://k9nhacai.me/ https://k9nhacai.me/].
+MeatBall links (e.g. MeatBall:StyleGuide) uses www.usemod.com; 
+but this URL is corrupted and redirects to k9nhacai.me.
 
 -STyx
+
+[new]
+Thanks! I updated the InterMap so all these links should be fixed, now. -- Alex
 
 == RSS for ElispArea == 
 
