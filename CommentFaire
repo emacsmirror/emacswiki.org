@@ -162,7 +162,7 @@ Voici un exemple illustrant comment le faire:
 
 Si vous maintenez un MeatBall:OnlineDiary (en anglais) sur un autre wiki, et que cet autre wiki peut vous afficher le contenu non formaté, et que les règles de mise en page sont similaires à ce wiki, alors vous pouvez tout simplement inclure cette page:
 <pre>
-    <include "http://www.usemod.com/cgi-bin/mb.pl?action=browse&id=AlexSchroeder&raw=1">
+    <include "http://www.usemod.org/cgi-bin/mb.pl?action=browse&id=AlexSchroeder&raw=1">
 </pre>
 
 This page is also available in english : English:HowTo
