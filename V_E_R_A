@@ -7,9 +7,13 @@ The current Texinfo edition of V.E.R.A is v1.19 of September 2008.
 Started in the spring of 1993 V.E.R.A. contains of 11,000+ acronyms. It is currently maintained by Oliver Heidelbach. V.E.R.A is released under the GFDL v1.1 of March 2000. 
 This edition of the V.E.R.A. dictionary has nothing to do with Systems Science Inc. or its products.
 
-The most current version of V.E.R.A is made available at http://home.snafu.de/ohei
+The most current version of V.E.R.A (updated 2023) are available here:
 
-A local version is here: [[vera-1.19.tar.gz]]
+* [https://www.ohei2.de/cgi-bin/veramain-e.cgi English version]
+
+* [https://www.ohei2.de/cgi-bin/veramain.cgi German version]
+
+A local version is here: [[vera-1.19.tar.gz]] (2013)
 
 ----
 CategoryReferenceSheet CategoryDocumentation CategoryHelp
