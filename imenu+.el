@@ -1,4 +1,4 @@
-;;; imenu+.el --- Extensions to `imenu.el'.
+;;; imenu+.el --- Extensions to `imenu.el'.   -*- lexical-binding:t -*-
 ;;
 ;; Filename: imenu+.el
 ;; Description: Extensions to `imenu.el'.
@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 31 11:15:26 2025 (-0800)
+;; Last-Updated: Mon Jul 14 13:26:53 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 1145
+;;     Update #: 1181
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode#ImenuPlus
 ;; Keywords: tools, menus
@@ -64,7 +64,7 @@
 ;;
 ;;
 ;;  ***** NOTE: The following functions and macro defined in `imenu.el'
-;;              have been REDEFINED HERE:
+;;              might have been REDEFINED HERE, depending on release:
 ;;
 ;;    `imenu--generic-function', `imenu--make-index-alist',
 ;;    `imenu--mouse-menu', `imenu--sort-by-name',
@@ -86,6 +86,17 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/06/27 dadams
+;;     Added lexical-binding cookie.
+;;     Added imenu-allow-duplicate-menu-items for Emacs 29 and 30 (Emacs bug #78935).
+;;     Redefine imenu--create-keymap to use imenu-allow-duplicate-menu-items (Emacs 29,30 - Emacs bug #78935).
+;;     Added imenu--menubar-keymap for Emacs < 25.
+;;     imenup-find-where-1, imenu--generic-function: Removed unused lexical var (thing, prev-pos).
+;;     imenu--generic-function: Per Emacs 30.1+, set-syntax-table to old-table outside protected.
+;;     imenu--split-submenus: Redefine only for Emacs < 24.
+;;     imenu-update-menubar: Use imenu--menubar-keymap. Remove Emacs 24-specific code at end.
+;;                           Remove any null trailing menu item - suggested by Pierre Rouleau.
+;;                           Per Emacs 27+, added test for nonnested single entry.
 ;; 2024/03/09 dadams
 ;;     Renamed (corrected) find-where* to imenup-find-where*.
 ;; 2023/09/27 dadams
@@ -248,10 +259,16 @@
 (require 'find-where nil t) ;; (no error if not found) fw-to-previous-thing
 
 ;; Quiet the byte-compiler
+(defvar imenu-allow-duplicate-menu-items)
 (defvar imenu-menubar-modified-tick)
 (defvar imenu-generic-skip-comments-and-strings)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(unless (boundp 'imenu--menubar-keymap)
+  ;; Emacs < 25
+  (defvar imenu--menubar-keymap nil)
+  (make-variable-buffer-local 'imenu--menubar-keymap))
 
 ;;;###autoload
 (defgroup Imenu-Plus nil
@@ -267,6 +284,18 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/imenu+.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ImenuMode#ImenuPlus")
   :link '(emacs-commentary-link :tag "Commentary" "imenu+"))
+
+(unless (boundp 'imenu-allow-duplicate-menu-items) ; Emacs 31.1, bug #78935
+  (defcustom imenu-allow-duplicate-menu-items t
+    "Non-nil means that Imenu can include duplicate menu items.
+For example, if the buffer contains multiple definitions of function
+`foo' then a menu item is included for each of them.
+Otherwise, only the first such definition is accessible from the menu.
+
+This option applies only to an Imenu menu, not also to the use of
+command `imenu', which uses `completing-read' to read a menu item.
+The use of that command doesn't allow duplicate items."
+    :type 'boolean :group 'imenu :version "31.1"))
 
 ;; Emacs 22+.  The value assigned here is ignored in Emacs 24.4+, since there is a vanilla defcustom.
 (when (fboundp 'syntax-ppss)
@@ -521,15 +550,46 @@ See `imenu' for more information."
 ;;
 ;; Correctly handle special menu items (distinguish from submenus).  Fixes Emacs bug #12717.
 ;;
-(defun imenu--split-submenus (alist)
-  "Split up each long alist that are nested within ALIST into nested alists.
+(when (< emacs-major-version 24)
+  (defun imenu--split-submenus (alist)
+    "Split up each long alist that are nested within ALIST into nested alists.
 Return a split and sorted copy of ALIST.  The returned alist DOES
 NOT share structure with ALIST."
-  (mapcar (lambda (elt)
-            (if (imenu--subalist-p elt)
-                (imenu--split-menu (cdr elt) (car elt))
-              elt))
-	  alist))
+    (mapcar (lambda (elt)
+              (if (imenu--subalist-p elt)
+                  (imenu--split-menu (cdr elt) (car elt))
+                elt))
+	    alist)))
+
+
+;; REPLACE ORIGINAL in `imenu.el', for Emacs 29-30.
+;;
+;; Make Emacs 29-30 removal of duplicate menu items optional, per option `imenu-allow-duplicate-menu-items'.
+;; Same as bug #78935 fix.
+;;
+(defun imenu--create-keymap (title alist &optional cmd)
+  `(keymap ,title
+           ,@(mapcar
+              (if imenu-allow-duplicate-menu-items
+                  (lambda (item)
+                    `(,(car item)
+                      ,(car item)
+                      ,@(cond
+                         ((imenu--subalist-p item)
+                          (imenu--create-keymap (car item) (cdr item) cmd))
+                         (t
+                          (lambda () (interactive)
+                            (if cmd (funcall cmd item) item))))))
+                (lambda (item)
+                  `(,(intern (car item))
+                    ,(car item)
+                    ,@(cond
+                       ((imenu--subalist-p item)
+                        (imenu--create-keymap (car item) (cdr item) cmd))
+                       (t
+                        (lambda () (interactive)
+                          (if cmd (funcall cmd item) item)))))))
+              (remq nil alist))))
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
@@ -539,7 +599,7 @@ NOT share structure with ALIST."
 (defun imenu-update-menubar ()
   "Update the Imenu menu.  Use as `menu-bar-update-hook'."
   (when (and (current-local-map)
-             (keymapp (lookup-key (current-local-map) [menu-bar index]))
+             imenu--menubar-keymap
              (or (not (boundp 'imenu-menubar-modified-tick))
                  (/= (buffer-chars-modified-tick) imenu-menubar-modified-tick))) ; Emacs 22+
     (when (boundp 'imenu-menubar-modified-tick) ; Emacs 22+
@@ -548,7 +608,7 @@ NOT share structure with ALIST."
       ;; Don't bother updating if the index-alist has not changed
       ;; since the last time we did it.
       (unless (equal index-alist imenu--last-menubar-index-alist)
-        (let (menu menu1 old)
+        (let (menu menu1)
           (setq imenu--last-menubar-index-alist  index-alist
                 index-alist                      (imenu--split-submenus
                                                   (if imenu-sort-function
@@ -557,26 +617,23 @@ NOT share structure with ALIST."
                                                                  sm imenu-sort-function))
                                                               index-alist)
                                                     index-alist))
-                menu                             (imenu--split-menu index-alist (buffer-name))
-                menu1                            (if (>= emacs-major-version 22)
-                                                     (imenu--create-keymap
-                                                      (car menu)
-                                                      (cdr (if (< 1 (length (cdr menu)))
-                                                               menu
-                                                             (car (cdr menu))))
-                                                      'imenu--menubar-select)
-                                                   (imenu--create-keymap-1
-                                                    (car menu)
-                                                    (if (< 1 (length (cdr menu)))
-                                                        (cdr menu)
-                                                      (cdr (car (cdr menu))))
-                                                    t))
-                old                              (lookup-key (current-local-map) [menu-bar index]))
-	  ;; Next line was added in vanilla Emacs 24, with the comment.
-          ;; This should never happen, but in some odd cases, potentially,
-	  ;; lookup-key may return a dynamically composed keymap.
-	  (when (keymapp (cadr old)) (setq old  (cadr old)))
-          (setcdr old (cdr menu1)))))))
+                menu                             (imenu--split-menu index-alist (buffer-name)))
+          (unless (caar (last menu)) (setq menu  (nbutlast menu)))
+          (setq menu1  (if (>= emacs-major-version 22)
+                           (imenu--create-keymap (car menu)
+                                                 (cdr (if (or (< 1 (length (cdr menu)))
+                                                              ;; Nonnested single entry
+                                                              (atom (cdadr menu))
+                                                              (atom (cadadr menu)))
+                                                          menu
+                                                        (cadr menu)))
+                                                 'imenu--menubar-select)
+                         (imenu--create-keymap-1 (car menu)
+                                                 (if (< 1 (length (cdr menu)))
+                                                     (cdr menu)
+                                                   (cdr (car (cdr menu))))
+                                                 t)))
+          (setcdr imenu--menubar-keymap (cdr menu1)))))))
 
 
 (eval-and-compile
@@ -610,10 +667,9 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
       (progn (setq imenu--index-alist
                    (save-excursion (save-restriction (widen) (funcall imenu-create-index-function))))
              (imenu--truncate-items imenu--index-alist)))
-  (or imenu--index-alist  noerror
-      (if (fboundp 'user-error)
-          (user-error "No items suitable for an index found in this buffer")
-        (error "No items suitable for an index found in this buffer")))
+  (or imenu--index-alist  noerror  (if (fboundp 'user-error)
+                                       (user-error "No items suitable for an index found in this buffer")
+                                     (error "No items suitable for an index found in this buffer")))
   (or imenu--index-alist  (setq imenu--index-alist  (list nil)))
   (let ((bookmarks-available-here-p  (and (fboundp 'bmkp-exists-bookmark-satisfying-p)
                                           (bmkp-exists-bookmark-satisfying-p
@@ -678,7 +734,6 @@ example of such a function is `imenup-find-where-list'."
     (let* ((res    (fw-to-previous-thing thing))
            (beg    (car res))
            (beg    (if imenu-use-markers (copy-marker beg) beg))
-           (thing  (cadr res))
            (end    (and (consp res)  (cddr res)))
            (end    (if imenu-use-markers (copy-marker end) end)))
       (when res (set-match-data (list beg end)))
@@ -829,64 +884,60 @@ PATTERNS."
                              (nth 2 font-lock-defaults)))
         (old-table         (syntax-table))
         (table             (copy-syntax-table (syntax-table)))
-        (slist             imenu-syntax-alist)
-        prev-pos)
-    (dolist (syn  slist)                ; Modify the syntax table used while matching regexps.
-      (if (numberp (car syn))           ; The char(s) to modify may be a single char or a string.
+        (slist             imenu-syntax-alist))
+    (dolist (syn  slist) ; Modify the syntax table used while matching regexps.
+      (if (numberp (car syn)) ; The char(s) to modify may be a single char or a string.
           (modify-syntax-entry (car syn) (cdr syn) table)
         (mapc (lambda (c) (modify-syntax-entry c (cdr syn) table)) (car syn))))
     (goto-char (point-max))
-    ;; (imenu-progress-message prev-pos 0 t)
     (unwind-protect			; for syntax table
-         (save-match-data
-           (set-syntax-table table)
-           (dolist (pat  patterns)      ; Map over the elements of `imenu-generic-expression'.
-             (let ((menu-title  (car pat))
-                   (regexp      (nth 1 pat))
-                   (index       (nth 2 pat))
-                   (function    (nth 3 pat))
-                   (rest        (nthcdr 4 pat))
-                   start beg)
-               (goto-char (point-max))  ; Go backwards for convenience of adding items in order.
-               (while (and (if (functionp regexp)
-                               (funcall regexp)
-                             (and (re-search-backward regexp nil t)
-                                  ;; Do not count invisible definitions.
-                                  (let ((invis  (imenup-invisible-p (point))))
-                                    (or (not invis)
-                                        (progn
-                                          (while (and invis  (not (bobp)))
-                                            (setq invis  (not (re-search-backward regexp nil 'MOVE))))
-                                          (not invis))))))
-                           ;; Exit loop if empty match -it means a bad regexp was specified.
-                           (not (= (match-beginning 0) (match-end 0))))
-                 (setq start  (point))
-                 ;; Record the start of the line in which the match starts.
-                 ;; That's the official position of this definition.
-                 (goto-char (match-beginning index))
-                 (beginning-of-line)
-                 (setq beg  (point))
-                 ;; (imenu-progress-message prev-pos nil t)
-                 ;; Add this sort of submenu only when find an item for it, to avoid empty menus.
-                 (unless (assoc menu-title index-alist) (push (list menu-title) index-alist))
-                 (when imenu-use-markers (setq beg  (copy-marker beg)))
-                 (let ((item  (if function
-                                  (nconc (list (match-string-no-properties index) beg function)
-                                         rest)
-                                (cons (match-string-no-properties index) beg)))
-                       ;; This is the desired submenu, starting with its title (or nil).
-                       (menu (assoc menu-title index-alist)))
-                   ;; Insert item unless already present or in a comment or string being ignored.
-                   (unless (or (member item (cdr menu))
-                               (and (fboundp 'syntax-ppss)
-                                    imenu-generic-skip-comments-and-strings
-                                    ;; Go to START before checking.  Fixes Emacs bug #32024
-                                    (save-excursion (goto-char start) (nth 8 (syntax-ppss)))))
-                     (setcdr menu (cons item (cdr menu)))))
-                 ;; Go to the start of the match, to make sure we keep making progress backwards.
-                 (goto-char start))))
-           (set-syntax-table old-table)))
-    ;; (imenu-progress-message prev-pos 100 t)
+        (save-match-data
+          (set-syntax-table table)
+          (dolist (pat  patterns) ; Map over the elements of `imenu-generic-expression'.
+            (let ((menu-title  (car pat))
+                  (regexp      (nth 1 pat))
+                  (index       (nth 2 pat))
+                  (function    (nth 3 pat))
+                  (rest        (nthcdr 4 pat))
+                  start beg)
+              (goto-char (point-max)) ; Go backwards for convenience of adding items in order.
+              (while (and (if (functionp regexp)
+                              (funcall regexp)
+                            (and (re-search-backward regexp nil t)
+                                 ;; Do not count invisible definitions.
+                                 (let ((invis  (imenup-invisible-p (point))))
+                                   (or (not invis)
+                                       (progn
+                                         (while (and invis  (not (bobp)))
+                                           (setq invis  (not (re-search-backward regexp nil 'MOVE))))
+                                         (not invis))))))
+                          ;; Exit loop if empty match -it means a bad regexp was specified.
+                          (not (= (match-beginning 0) (match-end 0))))
+                (setq start  (point))
+                ;; Record the start of the line in which the match starts.
+                ;; That's the official position of this definition.
+                (goto-char (match-beginning index))
+                (beginning-of-line)
+                (setq beg  (point))
+                ;; Add this sort of submenu only when find an item for it, to avoid empty menus.
+                (unless (assoc menu-title index-alist) (push (list menu-title) index-alist))
+                (when imenu-use-markers (setq beg  (copy-marker beg)))
+                (let ((item  (if function
+                                 (nconc (list (match-string-no-properties index) beg function)
+                                        rest)
+                               (cons (match-string-no-properties index) beg)))
+                      ;; This is the desired submenu, starting with its title (or nil).
+                      (menu (assoc menu-title index-alist)))
+                  ;; Insert item unless already present or in a comment or string being ignored.
+                  (unless (or (member item (cdr menu))
+                              (and (fboundp 'syntax-ppss)
+                                   imenu-generic-skip-comments-and-strings
+                                   ;; Go to START before checking.  Fixes Emacs bug #32024
+                                   (save-excursion (goto-char start) (nth 8 (syntax-ppss)))))
+                    (setcdr menu (cons item (cdr menu)))))
+                ;; Go to the start of the match, to make sure we keep making progress backwards.
+                (goto-char start)))))
+      (set-syntax-table old-table))
     ;; Sort each submenu by position.
     ;; This is in case one submenu gets items from two different regexps.
     (dolist (item  index-alist)
