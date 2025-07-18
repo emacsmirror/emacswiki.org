@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.06.04
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun  4 12:54:42 2025 (-0700)
+;; Last-Updated: Fri Jul 18 10:25:37 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13946
+;;     Update #: 13977
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -704,7 +704,8 @@
 ;;    `diredp-image-dired-tag-file',
 ;;    `diredp-image-dired-tag-files-recursive',
 ;;    `diredp-image-show-this-file', `diredp-insert-as-subdir',
-;;    `diredp-insert-subdirs', `diredp-insert-subdirs-recursive',
+;;    `diredp-insert-marked-subdirs',
+;;    `diredp-insert-marked-subdirs-recursive',
 ;;    `diredp-kill-this-tree', `diredp-list-marked-recursive',
 ;;    `diredp-load-this-file', `diredp-mark', `diredp-mark-autofiles',
 ;;    `diredp-marked', `diredp-marked-in-any-buffers',
@@ -1067,6 +1068,12 @@
  
 ;;; Change Log:
 ;;
+;; 2025/07/18 dadams
+;;     dired-map-over-marks: Updated for ARG = symbol marked, introduced in Emacs 29.
+;;     diredp-mark-sexp-recursive: Added RQ to dired-re-inode-size regexp, per Emacs 30+.
+;; 2025/06/05 dadams
+;;     Renamed diredp-insert-subdirs(-recursive) to diredp-insert-marked-subdirs(-recursive), and menu items
+;;      Insert Subdirs to Insert Marked Subdirs.
 ;; 2025/06/04 dadams
 ;;     diredp-live-dired-buffers: Handle also find*-dired buffers.
 ;;     dired-mark-sexp, diredp-mark-sexp-recursive: Just test whether lexical-binding is bound, not its value.
@@ -3592,16 +3599,18 @@ Return value depends on the number of plain `C-u' used:
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Treat multiple `C-u' specially.
+;; 1. Treat multiple `C-u' specially.
+;; 2. Updated for ARG = `marked', introduced in Emacs 29.
 ;;
-(defmacro dired-map-over-marks (body arg &optional show-progress
-                                     distinguish-one-marked)
+(defmacro dired-map-over-marks (body arg &optional show-progress distinguish-one-marked)
   "Eval BODY with point on each marked line.  Return a list of BODY's results.
 If no marked file could be found, execute BODY on the current line.
 ARG, if non-nil, specifies the files to use instead of the marked files.
  If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
    Point is advanced accordingly.  This is so that commands for the
    next ARG (instead of the marked) files can be easily chained.
+ If ARG is the symbol `marked', then don't return the current line's
+   file if no other lines are marked.
  If ARG is a cons with element 16, 64, or 256, corresponding to
    `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
    in the Dired buffer, where:
@@ -3628,17 +3637,17 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   `(prog1
        (let ((inhibit-read-only  t)
              (multi-C-u          (diredp-prefix-arg-all-files ,arg))
-             case-fold-search
+             case-fold-search 
              found
              results)
-         (if (and ,arg  (not multi-C-u))
+         (if (and ,arg  (not multi-C-u)  (not (eq ,arg 'marked)))
              (if (integerp ,arg)
-                 (progn     ; No `save-excursion', want to move point.
+                 (progn ; No `save-excursion' - we want to move point.
                    (dired-repeat-over-lines ,arg #'(lambda ()
-                                                    (when ,show-progress (sit-for 0))
-                                                    (setq results  (cons ,body results))))
-                   (if (< ,arg 0) (nreverse results) results))
-               ;; Non-nil, non-integer ARG means use current file:
+                                                     (when ,show-progress (sit-for 0))
+                                                     (setq results  (cons ,body results))))
+                   (when (< ,arg 0) (setq results  (nreverse results))) results)
+               ;; Non-nil, non-integer, non-marked ARG means use current file:
                (list ,body))
            (let ((regexp  (dired-marker-regexp))
                  next-position)
@@ -3665,7 +3674,7 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
                                            (point-marker)))))
              (when (and ,distinguish-one-marked  (= (length results) 1))
                (setq results  (cons t results)))
-             (if found results (list ,body)))))
+             (if found results (if (eq ,arg 'marked) nil (list ,body))))))
      ;; `save-excursion' loses, again
      (dired-move-to-filename)))
 
@@ -7124,7 +7133,8 @@ Raise an error first if not in Dired mode."
   )
 
 ;;;###autoload
-(defun diredp-insert-subdirs (&optional switches interactivep) ; Bound to `M-i', menu `Multiple' > `Insert Subdirs'
+(defun diredp-insert-marked-subdirs (&optional switches interactivep)
+  ;; Bound to `M-i', menu `Multiple' > `Insert Marked Subdirs'
   "Insert the marked subdirectories.
 Like using \\<dired-mode-map>`\\[dired-maybe-insert-subdir]' at each marked directory line."
   (interactive (list (and current-prefix-arg
@@ -7141,10 +7151,10 @@ Like using \\<dired-mode-map>`\\[dired-maybe-insert-subdir]' at each marked dire
     (dired-maybe-insert-subdir subdir switches)))
 
 ;;;###autoload
-(defun diredp-insert-subdirs-recursive (&optional ignore-marks-p details)
-  ;; Bound to `M-+ M-i', menu `Multiple' > `Marked Here and Below' > `Insert Subdirs'
+(defun diredp-insert-marked-subdirs-recursive (&optional ignore-marks-p details)
+  ;; Bound to `M-+ M-i', menu `Multiple' > `Marked Here and Below' > `Insert Marked Subdirs'
   "Insert the marked subdirs, including those in marked subdirs.
-Like `diredp-insert-subdirs', but act recursively on subdirs.
+Like `diredp-insert-marked-subdirs', but act recursively on subdirs.
 The subdirs inserted are those that are marked in the current Dired
 buffer, or ALL subdirs in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way (their marked
@@ -8335,7 +8345,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                             ;; $$$$$$ (dired-re-inode-size  "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?")
                             (dired-re-inode-size  (if (> emacs-major-version 24)
                                                       "\\=\\s *\\([0-9]+\\s +\\)?\
-\\(?:\\([0-9]+\\(?:\\.[0-9]*\\)?[BkKMGTPEZY]?\\)? ?\\)"
+\\(?:\\([0-9]+\\(?:\\.[0-9]*\\)?[BkKMGTPEZYRQ]?\\)? ?\\)" ; RQ was added in Emacs 30.1.
                                                     "\\s *\\([0-9]*\\)\\s *\\([0-9]*\\) ?"))
                             pos)
                         (beginning-of-line)
@@ -9501,7 +9511,7 @@ With a prefix argument you're prompted for the name of the resulting
 Dired buffer.  Otherwise, the name is `MARKED-ANYWHERE'.
 This command is only for interactive use."
   (interactive (let ((fils  (diredp-get-marked-files-in-all-buffers)))
-                 (unless files (user-error "No marked files in any Dired buffer"))
+                 (unless fils (user-error "No marked files in any Dired buffer"))
                  (list fils (if current-prefix-arg
                                 (read-string "Resulting Dired buffer name: ")
                               "MARKED-ANYWHERE"))))
@@ -12524,7 +12534,7 @@ the height of the current window and the value of variable
 ;;    and if `diredp-image-preview-in-tooltip'.
 ;;
 (defun dired-insert-set-properties (beg end)
-  "Add various text properties to the lines in the region.
+  "Add various text properties to the lines in the region from BEG to END.
 Highlight entire line upon mouseover.
 Add text property `dired-filename' to the file name.
 Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
@@ -15392,7 +15402,7 @@ Marked (or next prefix arg) files & subdirs here
 
     "  \\[diredp-marked-other-window]\t\t- Dired marked files and directories
   \\[diredp-list-marked]\t\t- List marked files and directories
-  \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
+  \\[diredp-insert-marked-subdirs]\t\t- Insert marked subdirectories
 
   \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
   M-0 \\[dired-copy-filename-as-kill]\t\t- Copy absolute names for pasting
@@ -15488,7 +15498,7 @@ Here and below (in marked subdirs)
 
     "  \\[diredp-marked-recursive-other-window]\t\t- Dired
   \\[diredp-list-marked-recursive]\t\t- List marked files and directories
-  \\[diredp-insert-subdirs-recursive]\t\t- Insert marked subdirectories
+  \\[diredp-insert-marked-subdirs-recursive]\t\t- Insert marked subdirectories
 
   \\[diredp-copy-filename-as-kill-recursive]\t\t- Copy names for pasting
   \\[diredp-do-find-marked-files-recursive]\t\t\t- Visit
@@ -16261,8 +16271,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-multiple-menu [diredp-list-marked]
     '(menu-item "List Marked Files" diredp-list-marked
       :help "List the files marked here (C-u C-u: all, C-u C-u C-u: all + dirs)"))
-(define-key diredp-menu-bar-multiple-menu [diredp-insert-subdirs]
-  '(menu-item "Insert Subdirs" diredp-insert-subdirs
+(define-key diredp-menu-bar-multiple-menu [diredp-insert-marked-subdirs]
+  '(menu-item "Insert Marked Subdirs" diredp-insert-marked-subdirs
     :help "Insert the marked subdirectories - like using `i' at each marked dir"))
 ;; On Windows, bind more.
 (eval-after-load "w32-browser"
@@ -16662,8 +16672,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-multiple-recursive-menu [diredp-copy-filename-as-kill-recursive]
     '(menu-item "Copy File Names (to Paste)" diredp-copy-filename-as-kill-recursive
       :help "Copy names of files marked here and in marked subdirs, to `kill-ring'"))
-(define-key diredp-multiple-recursive-menu [diredp-insert-subdirs-recursive]
-  '(menu-item "Insert Subdirs" diredp-insert-subdirs-recursive
+(define-key diredp-multiple-recursive-menu [diredp-insert-marked-subdirs-recursive]
+  '(menu-item "Insert Marked Subdirs" diredp-insert-marked-subdirs-recursive
     :help "Insert the marked subdirectories, gathered recursively"))
 (define-key diredp-multiple-recursive-menu [separator-dirs] '("--")) ; ------------------
 
@@ -17536,7 +17546,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-c"    'diredp-capitalize-this-file)          ; `M-c'
 (when (and (fboundp 'diredp-chgrp-this-file)  diredp-bind-problematic-terminal-keys)
   (define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file)) ; `C-M-G' (aka `C-M-S-g')
-(define-key dired-mode-map "\M-i"    'diredp-insert-subdirs)                ; `M-i'
+(define-key dired-mode-map "\M-i"    'diredp-insert-marked-subdirs)         ; `M-i'
 (define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)            ; `M-l'
 (define-key dired-mode-map "\C-\M-l" 'diredp-list-marked)                   ; `C-M-l'
 (define-key dired-mode-map [(control meta shift ?l)] 'diredp-sort-arbitrary-command) ; `C-M-L' (aka `C-M-S-l')
@@ -17617,7 +17627,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-recursive-map "G"         'diredp-do-chgrp-recursive))             ; `G'
 (define-key diredp-recursive-map "\C-\M-g"     'diredp-do-grep-recursive)               ; `C-M-g'
 (define-key diredp-recursive-map "H"           'diredp-do-hardlink-recursive)           ; `H'
-(define-key diredp-recursive-map "\M-i"        'diredp-insert-subdirs-recursive)        ; `M-i'
+(define-key diredp-recursive-map "\M-i"        'diredp-insert-marked-subdirs-recursive) ; `M-i'
 (define-key diredp-recursive-map "\C-\M-l"     'diredp-list-marked-recursive)           ; `C-M-l'
 (define-key diredp-recursive-map "M"           'diredp-do-chmod-recursive)              ; `M'
 (when (fboundp 'diredp-do-chown-recursive)
