@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2025.06.04
+;; Version: 2025.07.18
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 18 10:25:37 2025 (-0700)
+;; Last-Updated: Fri Jul 18 14:12:22 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 13977
+;;     Update #: 13997
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1069,7 +1069,8 @@
 ;;; Change Log:
 ;;
 ;; 2025/07/18 dadams
-;;     dired-map-over-marks: Updated for ARG = symbol marked, introduced in Emacs 29.
+;;     dired-map-over-marks: Updated for ARG = the symbol marked, introduced in Emacs 29.
+;;      Updated doc of functions that use dired-map-over-marks to reflect this change.
 ;;     diredp-mark-sexp-recursive: Added RQ to dired-re-inode-size regexp, per Emacs 30+.
 ;; 2025/06/05 dadams
 ;;     Renamed diredp-insert-subdirs(-recursive) to diredp-insert-marked-subdirs(-recursive), and menu items
@@ -4008,6 +4009,8 @@ Optional second argument ARG specifies files to use instead of marked.
  Usually ARG comes from the command's prefix arg.
  If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
   (1 means file on current line.  -1 means file on previous line.)
+ If ARG is the symbol `marked', then don't include the current line's
+   file name if no other lines are marked.
  If ARG is a cons with element 16, 64, or 256, corresponding to
   `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
   in the Dired buffer, where:
@@ -4246,6 +4249,8 @@ Report in the echo area and display a log buffer."
 If on a subdir line, redisplay that subdirectory.  In that case,
 a prefix arg lets you edit the `ls' switches used for the new listing.
 
+ARG is as the second argument of `dired-map-over-marks'.
+
 Dired remembers switches specified with a prefix arg, so reverting the
 buffer does not reset them.  However, you might sometimes need to
 reset some subdirectory switches after using \\<dired-mode-map>`\\[dired-undo]'.  You can reset all
@@ -4281,7 +4286,8 @@ See Info node `(emacs) Subdir switches' for more details."
   (defun dired-do-redisplay (&optional arg test-for-subdir) ; Bound to `l'
     "Redisplay all marked (or next ARG) files.
 If on a subdir line, redisplay that subdirectory.  In that case,
-a prefix arg lets you edit the `ls' switches used for the new listing."
+a prefix arg lets you edit the `ls' switches used for the new listing.
+ARG is as the second argument of `dired-map-over-marks'."
     ;; Moves point if the next ARG files are redisplayed.
     (interactive "P\np")
     (if (and test-for-subdir  (dired-get-subdir))
@@ -4811,7 +4817,8 @@ Return the name of the thumbnail image file, or nil if none."
   "Toggle thumbnails in front of file names in Dired.
 If no files are marked, insert or hide thumbnails on the current line.
 With a numeric prefix arg N, ignore marked files and act on the next N
-files (previous -N files, if N < 0)."
+ files (previous -N files, if N < 0).
+ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-image-dired-required-msg) (list current-prefix-arg)))
   (dired-map-over-marks
    (let* ((image-pos   (dired-move-to-filename))
@@ -4952,7 +4959,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  An integer means use the next ARG files (previous -ARG, if < 0).
  `C-u': Use the current file (whether or not any files are marked).
  More than one `C-u' means use all files in the Dired buffer, as if
- they were all marked."
+ they were all marked.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (unless (require 'image-file nil t)
                         (error "This command requires library `image-file.el'"))
                       (diredp-ensure-mode)
@@ -5795,12 +5803,13 @@ ARG is as for `diredp-dired-recent-dirs'."
 That is, add them from variable `recentf-list'.
 
 \(This does not refresh any Dired buffer listing the recently visited
-files.  You can refresh it manually using `\\[revert-buffer]'."
+files.  You can refresh it manually using `\\[revert-buffer]'.
+
+Optional ARG is as the second argument of `dired-map-over-marks'."
   (interactive "P")
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (diredp-ensure-mode)
-  (dired-map-over-marks-check #'diredp-add-file-to-recentf arg 'add\ to\ recentf
-                              (diredp-fewer-than-2-files-p arg))
+  (dired-map-over-marks-check #'diredp-add-file-to-recentf arg 'add\ to\ recentf (diredp-fewer-than-2-files-p arg))
   (diredp-revert-displayed-recentf-buffers))
 
 ;;;###autoload
@@ -5809,7 +5818,9 @@ files.  You can refresh it manually using `\\[revert-buffer]'."
 That is, remove them from variable `recentf-list'.
 
 \(This does not refresh any Dired buffer listing the recently visited
-files.  You can refresh it manually using `\\[revert-buffer]'."
+files.  You can refresh it manually using `\\[revert-buffer]'.
+
+Optional ARG is as the second argument of `dired-map-over-marks'."
   (interactive "P")
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
   (diredp-ensure-mode)
@@ -9808,7 +9819,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (bmkp-read-tags-completing)
@@ -9868,7 +9880,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (bmkp-read-tags-completing)
@@ -9927,7 +9940,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
@@ -9983,7 +9997,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
@@ -10043,7 +10058,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
@@ -10105,7 +10121,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-bookmark+)
                       (diredp-ensure-mode)
                       (list (bmkp-read-tag-completing)
@@ -10284,7 +10301,8 @@ A prefix argument ARG specifies files to use instead of those marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (progn (diredp-ensure-mode)
                       (list (and diredp-prompt-for-bookmark-prefix-flag
                                  (read-string "Prefix for bookmark name: "))
@@ -10428,6 +10446,7 @@ instead of those marked.
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
  `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'.
 
 See also command `diredp-set-bookmark-file-bookmark-for-marked'.
 
@@ -11118,7 +11137,7 @@ Any prefix arg other than a single `C-u' behaves according to the ARG
 argument of `dired-get-marked-files'.  In particular:
  * `C-u C-u' operates on all files in the Dired buffer.
  * To apply a function to just the file of the current line, ignoring
-   ally marks, use a numeric prefix arg of 1 (e.g. `M-1`).
+   all marks, use a numeric prefix arg of 1 (e.g. `M-1`).
 
 If you use multiple `C-u' as prefix arg then many files might be acted
 on, and some of them might already be visited in modified buffers.  If
@@ -11313,7 +11332,8 @@ A prefix argument ARG specifies files to use instead of marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive "P")
   (dired-map-over-marks-check #'dired-compress arg 'compress (diredp-fewer-than-2-files-p arg)))
 
@@ -11331,7 +11351,8 @@ A prefix argument ARG specifies files to use instead of marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (let* ((arg  current-prefix-arg)
                       (C-u  (and (consp arg)  arg)))
                  (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
@@ -11352,7 +11373,8 @@ A prefix argument ARG specifies files to use instead of marked.
  `C-u': Use the current file (whether or not any are marked).
  `C-u C-u': Use all files in Dired, except directories.
  `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
+ `C-u C-u C-u C-u': Use all files and all directories.
+More generally, ARG is as the second argument of `dired-map-over-marks'."
   (interactive (let* ((arg  current-prefix-arg)
                       (C-u  (and (consp arg)  arg)))
                  (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
@@ -13305,7 +13327,8 @@ NOTE: This deletes the marked (`*'), not the flagged (`D'), files.
 User option `dired-recursive-deletes' controls whether deletion of
 non-empty directories is allowed.
 
-ARG is the prefix argument.
+ARG is the prefix argument.  It is handled as the second argument of
+`dired-map-over-marks'.
 
 As an exception, if ARG is zero then delete the marked files, but with
 the behavior specified by option `delete-by-moving-to-trash' flipped."
