@@ -23,25 +23,25 @@ I know, using autonomous systems makes this a very broad ban hammer. It catches 
 
 The first job bans "active" autonomous systems:
 
-- If load exceeds 10, the number of hits in a 2 hour period may not exceed 300 per ASN.
-- If load exceeds 5, the number of hits in a 2 hour period may not exceed 400 per ASN.
-- Under regular load, the number of hits in a 2 hour period may not exceed 500 per ASN.
+* If load exceeds 10, the number of hits in a 2 hour period may not exceed 300 per ASN.
+* If load exceeds 5, the number of hits in a 2 hour period may not exceed 400 per ASN.
+* Under regular load, the number of hits in a 2 hour period may not exceed 500 per ASN.
 
 This includes everything showing up in the web server access log including hits for embedded things such as CSS files and images.
 
 The second job bans autonomous systems hitting expensive end-points:
 
-- If load exceeds 10, the number of expensive hits in a 2 hour period may not exceed 10 per ASN.
-- If load exceeds 5, the number of expensive hits in a 2 hour period may not exceed 20 per ASN.
-- Under regular load, the number of expensive hits in a 2 hour period may not exceed 30 per ASN.
+* If load exceeds 10, the number of expensive hits in a 2 hour period may not exceed 10 per ASN.
+* If load exceeds 5, the number of expensive hits in a 2 hour period may not exceed 20 per ASN.
+* Under regular load, the number of expensive hits in a 2 hour period may not exceed 30 per ASN.
 
 Expensive end-points are filtered RSS feed, Recent Changes and full-text searches.
 
 The third job bans autonomous systems hosting bots:
 
-- If load exceeds 10, the number of bot hits in a 2 hour period may not exceed 10 per ASN.
-- If load exceeds 5, the number of bot hits in a 2 hour period may not exceed 20 per ASN.
-- Under regular load, the number of bot hits in a 2 hour period may not exceed 30 per ASN.
+* If load exceeds 10, the number of bot hits in a 2 hour period may not exceed 10 per ASN.
+* If load exceeds 5, the number of bot hits in a 2 hour period may not exceed 20 per ASN.
+* Under regular load, the number of bot hits in a 2 hour period may not exceed 30 per ASN.
 
 A bot hit is counted when the web server returned a HTTP status 410 as mentioned above. In other words, these are all the user agents containing the words "bot", "crawler", "spider", "ggpht" or "gpt".
  
@@ -52,6 +52,8 @@ If such a ban was made more than 5 times in a day, the ban is extended to 1 week
 Banning an ASN means that all the networks it manages are banned.
 
 If the system works, the AI scraper stampede starts, load starts to climb up to 10, everything slows down to a crawl, the number of threads goes up from 350 to 450, the number of TCP connection goes up from 150 to 550, the number of wiki processes goes up from 1 or 2 to 20, and after a few minutes my jobs kick in and start banning IP addresses left and right until things have calmed down.
+
+I'm still learning. The programmers working on AI scrapers are still learning. The arms race isn't over until their funding dries up. Until we all decided that the costs of AI aren't worth it. So this post is just a snapshot. I'll continue tweaking the setup.
 
 I'm sorry if this ban hammer is hitting you. It's still better than taking my sites offline. I've had to do that in the past because I did not know what else to do.
 
