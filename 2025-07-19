@@ -1,0 +1,66 @@
+[new]
+If you see other people on the net wondering whether Emacs Wiki is down, feel free to repost this message or parts of it. Sadly, you won't be able to link to it, because the people wondering are probably banned by the firewall.
+
+Why am I having visitors banned by the firewall? The web has been under attack by AI scrapers since around 2022. That's when big companies decided they needed to train AI and one of the sources of training material was the web. (Another source was a huge collection of pirated books, but that's a different story.) And if your task is to scrape as much of the web as possible, you can't be picky. The result is devastating. Let me quote Drew DeVault:
+
+//"If you think these crawlers respect robots.txt then you are several assumptions of good faith removed from reality. These bots crawl everything they can find, robots.txt be damned, including expensive endpoints like git blame, every page of every git log, and every commit in every repo, and they do so using random User-Agents that overlap with end-users and come from tens of thousands of IP addresses – mostly residential, in unrelated subnets, each one making no more than one HTTP request over any time period we tried to measure – actively and maliciously adapting and blending in with end-user traffic and avoiding attempts to characterize their behavior or block their traffic."// -- [Please stop externalizing your costs directly into my face](https://drewdevault.com/2025/03/17/2025-03-17-Stop-externalizing-your-costs-on-me.html), by Drew DeVault, for SourceHut
+
+So people have been scrambling to defend their sites against the AI scraper stampede. There are no good tools.
+
+One of the first measures was to block self-identified scrapers and bots. Any user agent containing the words "bot", "crawler", "spider", "ggpht" or "gpt" are automatically redirected to a "No Bots" page with an HTTP status of 410, which means the resource is gone and the user agent should remove it from their database. And then I have another list of user agents that keep hitting the site: bots to help search engine optimisers (SEO), bots to "audit" the site, bots to check uptime, get page previews, and on and on. Whenever I checked the top hitters on my sites, I'd find another user agent or two to add to the list.
+
+But as you saw in Drew DeVault's blog post, AI scrapers have been working around this by faking regular user agents, making them indistinguishable from humans. The solution, therefore, is not to listen what they say but the watch what they do.
+
+One tool I stumbled upon pretty early was using ##fail2ban##. The traditional way of using it is to have it check a log file such as the ##sshd## log for failed login attempts. If an IP address was causing too many failed login attempts, they would get banned for 10 minutes. A nice trick is that you could also have it check its own log files and if an IP address was getting banned multiple times, then they would get banned for 1 week.
+
+I started applying this to the web server log files. I figured a human clicking a bunch of links might show a burst of activity, so I defined a rate limit of 30 hits in 60 seconds. That is: the average rate must not exceed one hit every 2 seconds but activity bursts of up to 30 hits are OK. I also exclude a lot of URLs matching images and other resources.
+
+The main limitation is that this rule is limited to single IP addresses. And as you saw in Drew DeVault's blog post, AI scrapers have been working around this by using services that distribute requests over whole networks. The solution, therefore, is to defend against entire organisations.
+
+Multiple times per hour, I have jobs scheduled that go through the last two hours of the web server access log, extracting all the IP addresses and determining their autonomous system number (ASN). That number identifies whole internet service providers (ISP) or similar companies.
+
+I know, using autonomous systems makes this a very broad ban hammer. It catches innocent people that use an ISP that hires out computing power and bandwidth to AI scrapers. But I don't know any other way to fight back bots "using random User-Agents that overlap with end-users and come from tens of thousands of IP addresses". So this is what it is. On the positive side, the bans are temporary. They expire after a while. If the AI scrapers are done ingesting the world-wide web, the ban is over. If they're still at it, the ban is reinstated.
+
+The first job bans "active" autonomous systems:
+
+- If load exceeds 10, the number of hits in a 2 hour period may not exceed 300 per ASN.
+- If load exceeds 5, the number of hits in a 2 hour period may not exceed 400 per ASN.
+- Under regular load, the number of hits in a 2 hour period may not exceed 500 per ASN.
+
+This includes everything showing up in the web server access log including hits for embedded things such as CSS files and images.
+
+The second job bans autonomous systems hitting expensive end-points:
+
+- If load exceeds 10, the number of expensive hits in a 2 hour period may not exceed 10 per ASN.
+- If load exceeds 5, the number of expensive hits in a 2 hour period may not exceed 20 per ASN.
+- Under regular load, the number of expensive hits in a 2 hour period may not exceed 30 per ASN.
+
+Expensive end-points are filtered RSS feed, Recent Changes and full-text searches.
+
+The third job bans autonomous systems hosting bots:
+
+- If load exceeds 10, the number of bot hits in a 2 hour period may not exceed 10 per ASN.
+- If load exceeds 5, the number of bot hits in a 2 hour period may not exceed 20 per ASN.
+- Under regular load, the number of bot hits in a 2 hour period may not exceed 30 per ASN.
+
+A bot hit is counted when the web server returned a HTTP status 410 as mentioned above. In other words, these are all the user agents containing the words "bot", "crawler", "spider", "ggpht" or "gpt".
+ 
+The bans from the three jobs mentioned just now last for 1 hour.
+
+If such a ban was made more than 5 times in a day, the ban is extended to 1 week.
+
+Banning an ASN means that all the networks it manages are banned.
+
+If the system works, the AI scraper stampede starts, load starts to climb up to 10, everything slows down to a crawl, the number of threads goes up from 350 to 450, the number of TCP connection goes up from 150 to 550, the number of wiki processes goes up from 1 or 2 to 20, and after a few minutes my jobs kick in and start banning IP addresses left and right until things have calmed down.
+
+I'm sorry if this ban hammer is hitting you. It's still better than taking my sites offline. I've had to do that in the past because I did not know what else to do.
+
+The easy solution is to switch networks. You might still be able to access the site from a mobile phone using mobile data, for example. (Using a phone in a wifi network won't work.)
+
+A harder solution is to use a VPN or to switch ISP.
+
+An alternative for those of you with a static IP address within a network that is often banned is to [https://alexschroeder.ch/view/Contact contact me] and I can add your specific IP address to an allow-list. Use [https://ip.small-web.org/ Your IP address] if you don't know your IP number. In that case, however, I suspect that it is not static.
+
+I can't wait for the next AI winter. 🥶
+
+– Alex
