@@ -51,7 +51,7 @@ If such a ban was made more than 5 times in a day, the ban is extended to 1 week
 
 Banning an ASN means that all the networks it manages are banned.
 
-If the system works, the AI scraper stampede starts, load starts to climb up to 10, everything slows down to a crawl, the number of threads goes up from 350 to 450, the number of TCP connection goes up from 150 to 550, the number of wiki processes goes up from 1 or 2 to 20, and after a few minutes my jobs kick in and start banning IP addresses left and right until things have calmed down.
+If the system works, the AI scraper stampede starts, load starts to climb up to 10, everything slows down to a crawl, the number of threads goes up from 350 to 450, the number of TCP connection goes up from 150 to 550, the number of wiki processes goes up from 1 or 2 to 20, and after a few minutes my jobs kick in and start banning IP addresses left and right [https://alexschroeder.ch/view/2025-07-18-my-hope until things have calmed down].
 
 I'm still learning. The programmers working on AI scrapers are still learning. The arms race isn't over until their funding dries up. Until we all decided that the costs of AI aren't worth it. So this post is just a snapshot. I'll continue tweaking the setup.
 
