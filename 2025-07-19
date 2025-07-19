@@ -9,7 +9,7 @@ So people have been scrambling to defend their sites against the AI scraper stam
 
 One of the first measures was to block self-identified scrapers and bots. Any user agent containing the words "bot", "crawler", "spider", "ggpht" or "gpt" are automatically redirected to a "No Bots" page with an HTTP status of 410, which means the resource is gone and the user agent should remove it from their database. And then I have another list of user agents that keep hitting the site: bots to help search engine optimisers (SEO), bots to "audit" the site, bots to check uptime, get page previews, and on and on. Whenever I checked the top hitters on my sites, I'd find another user agent or two to add to the list.
 
-But as you saw in Drew !DeVault's blog post, AI scrapers have been working around this by faking regular user agents, making them indistinguishable from humans. The solution, therefore, is not to listen what they say but the watch what they do.
+But as you saw in Drew !DeVault's blog post, AI scrapers have been working around this by faking regular user agents, making them indistinguishable from humans. The solution, therefore, is not to listen to what they say but watch what they do.
 
 One tool I stumbled upon pretty early was using ##fail2ban##. The traditional way of using it is to have it check a log file such as the ##sshd## log for failed login attempts. If an IP address was causing too many failed login attempts, they would get banned for 10 minutes. A nice trick is that you could also have it check its own log files and if an IP address was getting banned multiple times, then they would get banned for 1 week.
 
