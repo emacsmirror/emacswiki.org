@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2023.06.11
+;; Version: 2025.07.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep  2 15:56:39 2024 (-0700)
+;; Last-Updated: Mon Jul 21 20:07:30 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 3365
+;;     Update #: 3375
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -460,8 +460,8 @@
 ;;  C-x n D   `isearchp-remove-dimming' - Remove text dimming
 ;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n f   `zz-set-zones-from-face' - Set zone set to face areas
-;;  C-x n h   `hlt-highlight-regions' - Ad hoc zone highlighting
-;;  C-x n H   `hlt-highlight-regions-in-buffers' - in multiple buffers
+;;  C-x n h   `hlt-highlight-zones' - Ad hoc zone highlighting
+;;  C-x n H   `hlt-highlight-zones-in-buffers' - in multiple buffers
 ;;  C-x n l   `zz-add-zones-from-highlighting' - Add from highlighted
 ;;  C-x n L   `zz-set-zones-from-highlighting' - Set to highlighted
 ;;  C-x n n   `narrow-to-region'
@@ -558,9 +558,9 @@
 ;;  `zz-map-izones' can help with this.
 ;;
 ;;  As examples of such commands, if you use library `highlight.el'
-;;  then you can use `C-x n h' (command `hlt-highlight-regions') to
+;;  then you can use `C-x n h' (command `hlt-highlight-zones') to
 ;;  highlight the izones recorded for the current buffer.  You can use
-;;  `C-x n H' (command `hlt-highlight-regions-in-buffers') to do the
+;;  `C-x n H' (command `hlt-highlight-zones-in-buffers') to do the
 ;;  same across a set of buffers that you specify (or across all
 ;;  visible buffers).  If option `hlt-auto-faces-flag' is non-nil then
 ;;  each zone gets a different face.  Otherwise, all of the zones are
@@ -571,17 +571,19 @@
 ;;  Defining your own command can be simple or somewhat complex,
 ;;  depending on how the region is used in the code for the
 ;;  corresponding region-action Emacs command.  The definition of
-;;  `hlt-highlight-regions' just calls existing function
-;;  `hlt-highlight-region' once for each recorded zone:
+;;  `hlt-highlight-zones' just calls existing function
+;;  `hlt-highlight-region' once for each recorded zone.  Here it is,
+;;  (slightly simplified, as the actual command lets you also
+;;  UNhighlight highlighted zones):
 ;;
-;; (defun hlt-highlight-regions (&optional regions face msgp mousep
-;;                                         buffers)
-;;   "Apply `hlt-highlight-region' to regions in `zz-izones'."
+;; (defun hlt-highlight-zones (&optional zones face msgp mousep
+;;                                       buffers)
+;;   "Apply `hlt-highlight-region' to each zone in `zz-izones'."
 ;;   (interactive (list (zz-basic-zones zz-izones)
 ;;                      nil
 ;;                      t
 ;;                      current-prefix-arg))
-;;   (dolist (start+end  regions)
+;;   (dolist (start+end  zones)
 ;;     (hlt-highlight-region (nth 0 start+end) (nth 1 start+end)
 ;;                           face msgp mousep buffers)))
 ;;
@@ -603,6 +605,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2025/07/21 dadams
+;;     Adjust to the highlight.el renaming of hlt-highlight-regions(-in-bufs) to hlt-highlight-zones(-in-bufs).
 ;; 2024/09/02 dadams
 ;;     zz-do-izones: Bug fix/typo.
 ;; 2023/10/18 dadams
@@ -2961,7 +2965,6 @@ associated with the basic zones."
   (let ((ii  0))
     (nreverse (mapcar (lambda (zz) (cons (- (setq ii  (1+ ii))) zz)) (reverse basic-zones)))))
  
-
 ;;(@* "Key Bindings)"
 
 ;;; Key Bindings -----------------------------------------------------
@@ -2996,8 +2999,13 @@ associated with the basic zones."
                                      ))
 
 (eval-after-load "highlight"
-  '(zz-add-key-bindings-to-narrow-map '(("h" . hlt-highlight-regions)                          ; C-x n h
-                                        ("H" . hlt-highlight-regions-in-buffers)               ; C-x n H
+  ;; Compatibility with older versions of `highlight.el'.
+  (unless (fboundp 'hlt-highlight-zones)
+    (defalias 'hlt-highlight-zones         #'hlt-highlight-regions)
+    (defalias 'hlt-highlight-zones-in-bufs #'hlt-highlight-regions-in-bufs))
+
+  '(zz-add-key-bindings-to-narrow-map '(("h" . hlt-highlight-zones)                            ; C-x n h
+                                        ("H" . hlt-highlight-zones-in-buffers)                 ; C-x n H
                                         ("l" . zz-add-zones-from-highlighting)                 ; C-x n l
                                         ("L" . zz-set-zones-from-highlighting)                 ; C-x n L
                                         )))
