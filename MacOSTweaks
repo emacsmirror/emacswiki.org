@@ -49,7 +49,7 @@ a back-end to EUDC that can query <nowiki>AddressBook.app</nowiki>.
 
 Anyone know of a way to make Mac OS X regard gnus, as part of CarbonEmacsPackage, as the Mac OS X mail application?  In other words, it would be great if when following "mailto" links in web pages with, say, Firefox.app, a Message buffer is configured and sending or aborting the message with C-c C-c or C-c C-k brings the focus back to the browser.  It would also be fantastic if there were a Spotlight interface for gnus.  In other words, if there were a way to search for messages with spotlight and then select the found messages with, for example, gnus.
 
-*UPDATE* There ''is'' a gnus spotlight interface!  Check out http://www.yoshidam.net/diary/Spotlight.
+*UPDATE* There ''is'' a gnus spotlight interface!  Check out https://web.archive.org/web/20170422083428/http://www.yoshidam.net/diary/Spotlight.
 
 I've already selected Emacs.app as my defaul mail client (I did this within the Mail.app preferences).  Following mailto links with Firefox raises my emacs window, but apparently nothing happens.  Also the messages I've downloaded to my laptop with the gnus agent are entirely disregarded by spotlight. 
 
