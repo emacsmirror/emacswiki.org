@@ -51,6 +51,8 @@ Anyone know of a way to make Mac OS X regard gnus, as part of CarbonEmacsPackage
 
 *UPDATE* There ''is'' a gnus spotlight interface!  Check out https://web.archive.org/web/20170422083428/http://www.yoshidam.net/diary/Spotlight.
 
+Gnus Spotlight can be found here: Lisp:gnus-spotlight.el
+
 I've already selected Emacs.app as my defaul mail client (I did this within the Mail.app preferences).  Following mailto links with Firefox raises my emacs window, but apparently nothing happens.  Also the messages I've downloaded to my laptop with the gnus agent are entirely disregarded by spotlight. 
 
 Try this:
