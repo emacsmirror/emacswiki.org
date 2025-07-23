@@ -20,7 +20,7 @@ often. Every time you type Ctrl-G, to stop searching, or stop what you were typi
 Some people find all the beeping annoying. To get a visual signal
 instead, put the following in your [[InitFile|init file]]:
 
- (setq visible-bell 1)
+ (setq visible-bell t)
 
 
 
