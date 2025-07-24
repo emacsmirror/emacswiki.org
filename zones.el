@@ -7,11 +7,11 @@
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams <drew.adams@oracle.com>
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2025.07.21
+;; Version: 2025.07.24
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 21 20:07:30 2025 (-0700)
+;; Last-Updated: Thu Jul 24 12:50:12 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 3375
+;;     Update #: 3378
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -605,6 +605,8 @@
 ;;
 ;;(@* "Change Log")
 ;;
+;; 2025/07/24 dadams
+;;     Typo: Added missing progn for eval-after-load of highlight.el.
 ;; 2025/07/21 dadams
 ;;     Adjust to the highlight.el renaming of hlt-highlight-regions(-in-bufs) to hlt-highlight-zones(-in-bufs).
 ;; 2024/09/02 dadams
@@ -3000,15 +3002,16 @@ associated with the basic zones."
 
 (eval-after-load "highlight"
   ;; Compatibility with older versions of `highlight.el'.
-  (unless (fboundp 'hlt-highlight-zones)
-    (defalias 'hlt-highlight-zones         #'hlt-highlight-regions)
-    (defalias 'hlt-highlight-zones-in-bufs #'hlt-highlight-regions-in-bufs))
+  '(progn
+     (unless (fboundp 'hlt-highlight-zones)
+       (defalias 'hlt-highlight-zones         #'hlt-highlight-regions)
+       (defalias 'hlt-highlight-zones-in-bufs #'hlt-highlight-regions-in-bufs))
 
-  '(zz-add-key-bindings-to-narrow-map '(("h" . hlt-highlight-zones)                            ; C-x n h
-                                        ("H" . hlt-highlight-zones-in-buffers)                 ; C-x n H
-                                        ("l" . zz-add-zones-from-highlighting)                 ; C-x n l
-                                        ("L" . zz-set-zones-from-highlighting)                 ; C-x n L
-                                        )))
+     (zz-add-key-bindings-to-narrow-map '(("h" . hlt-highlight-zones) ; C-x n h
+                                          ("H" . hlt-highlight-zones-in-buffers) ; C-x n H
+                                          ("l" . zz-add-zones-from-highlighting) ; C-x n l
+                                          ("L" . zz-set-zones-from-highlighting) ; C-x n L
+                                          ))))
 
 (eval-after-load "isearch-prop"
   '(progn
