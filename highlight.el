@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 21 21:11:47 2025 (-0700)
+;; Last-Updated: Thu Jul 24 12:52:56 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 4428
+;;     Update #: 4440
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -787,6 +787,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2025/07/24 dadams
+;;     Wrap zones highlighting with (when (> emacs-major-version 21)...).
+;;     Don't use define-obsolete-function-alias, for compatibility with Emacs 20 byte-compiler.
 ;; 2025/07/21 dadams
 ;;     Renamed hlt-highlight-regions(-in-buffers) to hlt-highlight-zones(-in-buffers).  Replaced obsolete
 ;;      name zz-izone-limits(-in-bufs) with new name zz-basic-zones(in-bufs).
@@ -2628,19 +2631,29 @@ If the current value is nil, it is set to the last non-nil value."
 
 ;;; Functions for Highlighting Zones - Emacs 22+ ----------
 
-(define-obsolete-function-alias 'zz-izone-limits         #'zz-basic-zones         "2020.08.21")
-(define-obsolete-function-alias 'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs "2020.08.21")
+(when (> emacs-major-version 21)
 
-(define-obsolete-function-alias 'hlt-highlight-regions         #'hlt-highlight-zones         "2020.08.21")
-(define-obsolete-function-alias 'hlt-highlight-regions-in-bufs #'hlt-highlight-zones-in-bufs "2020.08.21")
+  ;; Avoid using `define-obsolete-function-alias', for compatibility with Emacs 20 byte-compiler.
+  ;;
+  (defalias      'zz-izone-limits         #'zz-basic-zones)
+  (make-obsolete 'zz-izone-limits         #'zz-basic-zones)
+  (defalias      'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs)
+  (make-obsolete 'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs)
 
-(define-obsolete-function-alias 'hlt-unhighlight-regions         #'hlt-unhighlight-zones         "2020.08.21")
-(define-obsolete-function-alias 'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs "2020.08.21")
+  (defalias      'hlt-highlight-regions        #'hlt-highlight-zones)
+  (make-obsolete 'hlt-highlight-regions        #'hlt-highlight-zones)
+  (defalias      'hlt-highlight-regions-in-buf #'hlt-highlight-zones-in-bufs)
+  (make-obsolete 'hlt-highlight-regions-in-buf #'hlt-highlight-zones-in-bufs)
 
-;; No need to use (zz-basic-zones zz-izones nil 'ONLY-THIS-BUFFer), since `hlt-highlight-region' DTRT.
+  (defalias      'hlt-unhighlight-regions         #'hlt-unhighlight-zones)
+  (make-obsolete 'hlt-unhighlight-regions         #'hlt-unhighlight-zones)
+  (defalias      'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs)
+  (make-obsolete 'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs)
+
+  ;; No need to use (zz-basic-zones zz-izones nil 'ONLY-THIS-BUFFer), since `hlt-highlight-region' DTRT.
 ;;;###autoload
-(defun hlt-highlight-zones (&optional zones face msgp mousep buffers)
-  "Apply `hlt-highlight-region' to each zone in `zz-izones'.
+  (defun hlt-highlight-zones (&optional zones face msgp mousep buffers)
+    "Apply `hlt-highlight-region' to each zone in `zz-izones'.
 No prefix arg means highlight the zones.
 A non-positive prefix arg means UNhighlight the zones instead.
 A non-negative prefix arg means highlight with property `mouse-face',
@@ -2654,24 +2667,24 @@ You need library `zones.el' to use this command interactively.
 
 When called from Lisp, ZONES is a list of (START END) zone limits, and
 the other args are passed to `hlt-highlight-region'."
-  (interactive (list (if (require 'zones nil t)
-                         (zz-basic-zones zz-izones)
-                       (hlt-user-error "You need library `zones.el' to use this command interactively"))
-                     nil
-                     t
-                     (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))))
-  (let ((fn  (if (and (interactive-p)
-                      current-prefix-arg
-                      (not (> (prefix-numeric-value current-prefix-arg) 0)))
-                 #'hlt-unhighlight-region
-               #'hlt-highlight-region)))
-    (dolist (start+end  zones)
-      (funcall fn (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers))))
+    (interactive (list (if (require 'zones nil t)
+                           (zz-basic-zones zz-izones)
+			 (hlt-user-error "You need library `zones.el' to use this command interactively"))
+                       nil
+                       t
+                       (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))))
+    (let ((fn  (if (and (interactive-p)
+			current-prefix-arg
+			(not (> (prefix-numeric-value current-prefix-arg) 0)))
+                   #'hlt-unhighlight-region
+		 #'hlt-highlight-region)))
+      (dolist (start+end  zones)
+	(funcall fn (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers))))
 
-;; No need to use (zz-basic-zones zz-izones nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
+  ;; No need to use (zz-basic-zones zz-izones nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
 ;;;###autoload
-(defun hlt-unhighlight-zones (&optional zones face msgp mousep buffers)
-  "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
+  (defun hlt-unhighlight-zones (&optional zones face msgp mousep buffers)
+    "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
 With a prefix arg, remove property `mouse-face' from the zones.
 Interactively, the face unhighlighted is the last face that was used
 for highlighting.  (You can use `\\[hlt-choose-default-face]' to choose a different face.)
@@ -2680,17 +2693,17 @@ You need library `zones.el' to use this command interactively.
 
 When called from Lisp, ZONES is a list of (START END) zone limits, and
 the other args are passed to `hlt-unhighlight-region'."
-  (interactive (list (if (require 'zones nil t)
-                         (zz-basic-zones zz-izones)
-                       (hlt-user-error "You need library `zones.el' to use this command interactively"))
-                     nil
-                     t
-                     current-prefix-arg))
-  (dolist (start+end  zones)
-    (hlt-unhighlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
+    (interactive (list (if (require 'zones nil t)
+                           (zz-basic-zones zz-izones)
+			 (hlt-user-error "You need library `zones.el' to use this command interactively"))
+                       nil
+                       t
+                       current-prefix-arg))
+    (dolist (start+end  zones)
+      (hlt-unhighlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
 
-(defun hlt-highlight-zones-in-buffers (buffers &optional msgp)
-  "Use `hlt-highlight-zones' in each buffer of list BUFFERS.
+  (defun hlt-highlight-zones-in-buffers (buffers &optional msgp)
+    "Use `hlt-highlight-zones' in each buffer of list BUFFERS.
 A prefix arg >= 0 means highlight with `mouse-face', not `face'.
 A prefix arg <= 0 means highlight all visible or iconified buffers.
 Otherwise, you are prompted for the BUFFERS to highlight, one at a
@@ -2700,17 +2713,17 @@ If you specify no BUFFERS then the current buffer is highlighted.
 You need library `zones.el' for this command.
 
 Non-nil optional arg MSGP means show status messages."
-  (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
-                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                       (hlt-+/--read-bufs))
-                     nil
-                     'MSGP))
-  (hlt-highlight-zones (zz-basic-zones-in-bufs buffers) nil msgp
-                       (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                       buffers))
+    (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+			 (hlt-+/--read-bufs))
+                       nil
+                       'MSGP))
+    (hlt-highlight-zones (zz-basic-zones-in-bufs buffers) nil msgp
+			 (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+			 buffers))
 
-(defun hlt-unhighlight-zones-in-buffers (buffers &optional msgp)
-  "Use `hlt-unhighlight-zones' in each buffer of list BUFFERS.
+  (defun hlt-unhighlight-zones-in-buffers (buffers &optional msgp)
+    "Use `hlt-unhighlight-zones' in each buffer of list BUFFERS.
 A prefix arg >= 0 means unhighlight `mouse-face', not `face'.
 A prefix arg <= 0 means unhighlight all visible or iconified buffers.
 Otherwise, you are prompted for the BUFFERS to unhighlight, one at a
@@ -2720,12 +2733,14 @@ If you specify no BUFFERS then the current buffer is unhighlighted.
 You need library `zones.el' for this command.
 
 Non-nil optional arg MSGP means show status messages."
-  (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
-                         (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                       (hlt-+/--read-bufs))))
-  (hlt-unhighlight-zones (zz-basic-zones-in-bufs buffers) nil msgp
-                         (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                         buffers))
+    (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+			 (hlt-+/--read-bufs))))
+    (hlt-unhighlight-zones (zz-basic-zones-in-bufs buffers) nil msgp
+                           (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                           buffers))
+
+  )
  
 ;;(@* "Copying and Yanking Text Properties")
 
