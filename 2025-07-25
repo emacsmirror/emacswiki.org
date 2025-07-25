@@ -1,0 +1,13 @@
+[new]
+In light of all the distributed web scraping going on (see [[2025-07-19]]), I've made some changes to the wiki code that has been serving me so well for over twenty years:
+The plan is to change the expensive end-points from [https://www.rfc-editor.org/rfc/rfc2616#section-9.3 GET] to [https://www.rfc-editor.org/rfc/rfc2616#section-9.5 POST], even if no web resources is being changed. The result is that what used to be a link to "recent changes in the last 7 days" is now a form where there's a 7-day radio-button that one can choose. The regular link is to the default list of recent changes.
+
+Right now the old links still work but I'm planning to stop supporting them. The web server already classifies them as "expensive end-points" and blocks networks sending too many of these requests. Hopefully this will result in less innocent people getting blocked and in less bots requesting expensive end-points.
+
+If you notice any problems, please let me know.
+
+The most obvious changes should be the following:
+
+- RecentChanges now has a form at the end and no more links to filter it
+- Full-text search now uses POST
+- Finding matching pages now uses POST
