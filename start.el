@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 20 16:48:19 2025 (-0800)
+;; Last-Updated: Fri Jul 25 11:02:36 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 3120
+;;     Update #: 3125
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2025/07/25 dadams
+;;     Removed use of library hier-imenu.el.
 ;; 2025/02/20 dadams
 ;;     compile+ doesn't work with Emacs 28+.
 ;; 2024/10/11 dadams
@@ -560,12 +562,12 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (when (fboundp 'clone-indirect-buffer) (require 'narrow-indirect nil t)) ; Emacs 22+
 
 (require 'imenu+ nil t)                 ; Extensions to `imenu.el'.
-(autoload 'imenu-create-hierarchical-index "hier-imenu" ; Hierarchical imenu for HTML, Tex
-  "Generate an alist for imenu from a buffer with hierarchical structure.")
-(add-hook 'tex-mode-hook 'imenu-add-menubar-index)
-(autoload 'hier-imenu-dtd-setup "hier-imenu"
-  "Scan buffer for a DTD and set `hier-imenu' parameters accordingly.")
-(add-hook 'sgml-mode-hook 'hier-imenu-dtd-setup)
+;; (autoload 'imenu-create-hierarchical-index "hier-imenu" ; Hierarchical imenu for HTML, Tex
+;;   "Generate an alist for imenu from a buffer with hierarchical structure.")
+;; (add-hook 'tex-mode-hook 'imenu-add-menubar-index)
+;; (autoload 'hier-imenu-dtd-setup "hier-imenu"
+;;   "Scan buffer for a DTD and set `hier-imenu' parameters accordingly.")
+;; (add-hook 'sgml-mode-hook 'hier-imenu-dtd-setup)
 
 ;; Moccur - like occur, but for multiple buffers.
 (setq moccur-use-ee nil)
