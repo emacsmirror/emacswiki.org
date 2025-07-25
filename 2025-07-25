@@ -8,6 +8,6 @@ If you notice any problems, please let me know.
 
 The most obvious changes should be the following:
 
-- RecentChanges now has a form at the end and no more links to filter it
-- Full-text search now uses POST
-- Finding matching pages now uses POST
+* RecentChanges now has a form at the end and no more links to filter it
+* Full-text search now uses POST
+* Finding matching pages now uses POST
