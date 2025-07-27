@@ -4,5 +4,9 @@ Recfiles are text-based databases which are easy to read and write manually usin
 
 The mode provides a navigation mode to browse the rec data and also several edition modes.  Font-lock, field folding, data integrity, and more...  The mode is documented in a [http://www.gnu.org/software/recutils/rec-mode-manual texinfo manual].
 
+=== for org-babel ===
+
+For org-babel functions, there is Lisp:ob-rec.el.
+
 ----
 CategoryDatabase
