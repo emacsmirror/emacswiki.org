@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul 27 17:58:29 2025 (-0700)
+;; Last-Updated: Sun Jul 27 18:31:16 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 17048
+;;     Update #: 17057
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1598,6 +1598,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2025/07/27 dadams
+;;     Removed defmacro with-buffer-modified-unmodified - it's in bookmark+-mac.el now.
+;; 2025/05/07 dadams
+;;     bmkp-bmenu-copy-marked-to-bookmark-file: Guard bookmark-insert-file-format-version-stamp with
+;;      (> emacs-major-version 25), not (boundp 'bookmark-file-coding-system).
+;;     bmkp-bmenu-query-replace-marked-bookmarks-regexp: Use fileloop-initialize-replace for Emacs 27+
 ;; 2024/02/10 dadams
 ;;     bookmark-bmenu-mode: Reformatted to put keys within `...'.
 ;;     bmkp-bmenu-move-marked-to-bookmark-file: Mention confirmation prompt if FILE doesn't exist.
