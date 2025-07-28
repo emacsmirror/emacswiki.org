@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Apr 27 18:38:44 2025 (-0700)
-;;           By: Drew Adams
-;;     Update #: 9703
+;; Last-Updated: Sun Jul 27 17:46:46 2025 (-0700)
+;;           By: dradams
+;;     Update #: 9721
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -531,8 +531,8 @@
 ;;    `bmkp-desktop-bookmark-p',
 ;;    `bmkp-desktop-file-p',`bmkp-desktop-kill', `bmkp-desktop-save',
 ;;    `bmkp-desktop-save-as-last', `bmkp-dired-alist-only',
-;;    `bmkp-dired-bookmark-p', `bmkp-dired-remember-*-marks',
-;;    `bmkp-dired-subdirs', `bmkp-dired-this-dir-alist-only',
+;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
+;;    `bmkp-dired-this-dir-alist-only',
 ;;    `bmkp-dired-wildcards-alist-only',
 ;;    `bmkp-dired-this-dir-bookmark-p',
 ;;    `bmkp-dired-wildcards-bookmark-p',
@@ -3528,19 +3528,20 @@ operations such as `find-coding-systems-region'."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use `write-file', not `write-region', so backup files are made.
-;; 2. Do not save temporary bookmarks (`bmkp-temporary-bookmark-p').
-;; 3. Added optional arguments ADD and ALT-MSG.
-;;    Do not delete region if ADD.  Position point depending on ADD.
-;; 4. Delete contents only if file does not exist (just in case).  Else `bookmark-maybe-upgrade-file-format'.
-;; 5. Insert code piecewise, to improve performance when saving `bookmark-alist'.
-;;    (Do not let `pp' parse all of `bookmark-alist' at once.)
-;; 6. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
-;;    Remove them also from bookmark names in a sequence bookmark `sequence' entry.
-;; 7. Bind `print-circle' and `print-gensym' around `pp', to record bNAME with `bmkp-full-record' prop, when
-;;    appropriate.
-;; 8. Use `case', not `cond'.
-;; 9. Run `bmkp-write-bookmark-file-hook' functions after writing the bookmark file.
+;;  1. Use `write-file', not `write-region', so backup files are made.
+;;  2. Do not save temporary bookmarks (`bmkp-temporary-bookmark-p').
+;;  3. Added optional arguments ADD and ALT-MSG.
+;;     Do not delete region if ADD.  Position point depending on ADD.
+;;  4. Delete contents only if file does not exist (just in case).  Else `bookmark-maybe-upgrade-file-format'.
+;;  5. Insert code piecewise, to improve performance when saving `bookmark-alist'.
+;;     (Do not let `pp' parse all of `bookmark-alist' at once.)
+;;  6. Unless `bmkp-propertize-bookmark-names-flag', remove text properties from bookmark name and file name.
+;;     Remove them also from bookmark names in a sequence bookmark `sequence' entry.
+;;  7. Bind `print-circle' and `print-gensym' around `pp', to record bNAME with `bmkp-full-record' prop, when
+;;     appropriate.
+;;  8. Use `cl-case', not `cond'.
+;;  9. Run `bmkp-write-bookmark-file-hook' functions after writing the bookmark file.
+;; 10. Don't kill buffer of written file at end, if buffer visiting the file existed at the outset.
 ;;
 (defun bookmark-write-file (file &optional add alt-msg)
   "Write `bookmark-alist' to FILE.
@@ -3585,7 +3586,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                                             nil t))
                             (error "Invalid bookmark-file")))
             end    (and start
-                        (or (save-excursion (goto-char start) (and (looking-at ")") start)) ; Bmk list = ().
+                        (or (save-excursion (goto-char start) (and (looking-at ")")  start)) ; Bmk list = ().
                             (save-excursion (goto-char (point-max)) (re-search-backward "^)" nil t))
                             (error "Invalid bookmark-file"))))
       (if (not start)                   ; New file, no header yet.
@@ -3617,8 +3618,9 @@ contain a `%s' construct, so that it can be passed along with FILE to
                      (put-text-property 0 (length bname) (car (cadr entry)) nil bname)))))
           (setcar bmk bname)
           (when (setq last-fname  (assq 'filename bmk)) (setcdr last-fname fname))
-          (let ((print-circle  bmkp-propertize-bookmark-names-flag)
-                (print-gensym  bmkp-propertize-bookmark-names-flag))
+          (let ((print-circle         bmkp-propertize-bookmark-names-flag)
+                (print-gensym         bmkp-propertize-bookmark-names-flag)
+                (pp-default-function  #'pp-28)) ; Emacs 30.1 redefined `pp' and added var `pp-default-function'.
             (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
                 (pp bmk (current-buffer))
               ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
@@ -11074,35 +11076,26 @@ BOOKMARK is a bookmark name or a bookmark record."
       (while (get-process "man") (sit-for 0.2)))
     (bookmark-default-handler (bmkp-get-bookmark bookmark))))
 
-(defun bmkp-dired-remember-*-marks (beg end)
-  "Return a list of the files and subdirs marked `*' in Dired."
-  (if (fboundp 'dired--unhide)          ; Emacs 27+ uses invisible text, not `selective-display'.
-      (with-silent-modifications (dired--unhide (point-min) (point-max)))
-    (when selective-display (let ((inhibit-read-only  t)) (subst-char-in-region beg end ?\r ?\n))))
-  (let ((mfiles  ())
-        fil)
-    (save-excursion (goto-char beg)
-                    (while (re-search-forward "^\\*" end t) ; Not `dired-re-mark' - match only `*' marks.
-                      (when (setq fil  (dired-get-filename nil t)) (push fil mfiles))))
-    (nreverse mfiles)))
-
 (defun bmkp-make-dired-record ()
   "Create and return a Dired bookmark record."
   (let ((hidden-dirs  (save-excursion (dired-remember-hidden))))
     (unwind-protect
-        (let ((dir      (expand-file-name (if (consp dired-directory)
-                                              (file-name-directory (car dired-directory))
-                                            dired-directory)))
-              (subdirs  (bmkp-dired-subdirs))
-              (mfiles   (bmkp-dired-remember-*-marks (point-min) (point-max))))
+        (let ((dir         (expand-file-name (if (consp dired-directory)
+                                                 (file-name-directory (car dired-directory))
+                                               dired-directory)))
+              (subdirs     (bmkp-dired-subdirs))
+              (mark-alist  (dired-remember-marks (point-min) (point-max))))
           `(,dir
             ,@(bookmark-make-record-default 'NO-FILE)
             (filename . ,dir) (dired-directory . ,dired-directory)
-            (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
+            (dired-marked . ,mark-alist) (dired-switches . ,dired-actual-switches)
             (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
             (handler . bmkp-jump-dired)))
       (save-excursion                 ; Hide subdirs that were hidden.
         (dolist (dir  hidden-dirs)  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
+
+(add-hook 'dired-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
+                                           'bmkp-make-dired-record)))
 
 ;;;###autoload (autoload 'bmkp-dired-subdirs "bookmark+")
 (defun bmkp-dired-subdirs ()
@@ -11115,15 +11108,13 @@ without subdir positions (markers)."
     (dolist (sub  subdir-alist)  (push (list (car sub)) subdirs-wo-posns))
     subdirs-wo-posns))
 
-(add-hook 'dired-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
-                                           'bmkp-make-dired-record)))
-
 (defun bmkp-jump-dired (bookmark)
   "Jump to Dired bookmark BOOKMARK.
 Handler function for record returned by `bmkp-make-dired-record'.
+\(That's the value of `bmkp-make-dired-record' in a Dired buffer.)
 BOOKMARK is a bookmark name or a bookmark record."
   (let ((dir          (bookmark-prop-get bookmark 'dired-directory))
-        (mfiles       (bookmark-prop-get bookmark 'dired-marked))
+        (mark-alist   (bookmark-prop-get bookmark 'dired-marked))
         (switches     (bookmark-prop-get bookmark 'dired-switches))
         (subdirs      (bookmark-prop-get bookmark 'dired-subdirs))
         (hidden-dirs  (bookmark-prop-get bookmark 'dired-hidden-dirs)))
@@ -11135,10 +11126,14 @@ BOOKMARK is a bookmark name or a bookmark record."
       (t (dired dir switches)))
     (let ((inhibit-read-only  t))
       (dired-insert-old-subdirs subdirs)
-      (dired-mark-remembered (mapcar (bmkp-lexlet ((dd  dir))
-                                       (lambda (mf) (cons (expand-file-name mf dd) 42)))
-                                     mfiles))
-      (save-excursion (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
+      ;; Handle old Bookmark+ format, which just recorded `*' marks.  Property `dired-marked'
+      ;; was then just a list of files, not an alist of (FILE . MARK-CHAR) entries.
+      (if (and mark-alist  (not (listp (car mark-alist))))
+          (dired-mark-remembered        ; Old format
+           (mapcar `(lambda (mf) (cons (expand-file-name mf ,dir) 42)) mark-alist))
+        (dired-mark-remembered mark-alist)) ; New format
+      (save-excursion
+        (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos)))))
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action prompt)
