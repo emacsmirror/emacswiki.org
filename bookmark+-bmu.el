@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Oct 23 19:24:44 2024 (-0700)
+;; Last-Updated: Sun Jul 27 18:03:06 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 4305
+;;     Update #: 4313
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -341,8 +341,7 @@
 ;;    `bookmark-bmenu-ensure-position' (Emacs 23.2+),
 ;;    `bookmark-bmenu-hide-filenames', `bookmark-bmenu-mode',
 ;;    `bookmark-bmenu-show-filenames',
-;;    `bookmark-bmenu-surreptitiously-rebuild-list',
-;;    `with-buffer-modified-unmodified' (Emacs < 23.2).
+;;    `bookmark-bmenu-surreptitiously-rebuild-list'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -959,14 +958,6 @@ This includes possibly omitted bookmarks, that is, bookmarks listed in
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
-
-(when (or (< emacs-major-version 23)  (and (= emacs-major-version 23)  (= emacs-minor-version 1)))
-  (defmacro with-buffer-modified-unmodified (&rest body)
-    "Save and restore `buffer-modified-p' state around BODY."
-    (let ((was-modified  (make-symbol "was-modified")))
-      `(let ((,was-modified  (buffer-modified-p)))
-        (unwind-protect (progn ,@body)
-          (set-buffer-modified-p ,was-modified))))))
 
 (when (< emacs-major-version 22)
   (defun bookmark-bmenu-relocate ()
@@ -3296,8 +3287,8 @@ Non-interactively:
         (if (file-exists-p file)
             (bookmark-maybe-upgrade-file-format)
           (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
-          (if (boundp 'bookmark-file-coding-system) ; Insert timestamp and an empty bookmark list.
-              (bookmark-insert-file-format-version-stamp bookmark-file-coding-system) ; Emacs 25.2+
+          (if (> emacs-major-version 25) ; Insert timestamp and an empty bookmark list.
+              (bookmark-insert-file-format-version-stamp coding-system-for-write)
             (bookmark-insert-file-format-version-stamp))
           (insert "(\n)"))
         (let ((blist  (bookmark-alist-from-buffer)))
@@ -3685,7 +3676,7 @@ arg, any that are marked are included."
 
 ;;;###autoload (autoload 'bmkp-bmenu-query-replace-marked-bookmarks-regexp "bookmark+")
 (defun bmkp-bmenu-query-replace-marked-bookmarks-regexp (from to ; Bound to `M-q' in bookmark list
-                                                         &optional delimited include-omitted-p)
+                                                              &optional delimited include-omitted-p)
   "`query-replace-regexp' FROM with TO, for all marked file bookmarks.
 If you exit (`\\[keyboard-quit]', `RET' or `q'), you can use `\\[tags-loop-continue]' to resume where
 you left off.
@@ -3695,26 +3686,42 @@ If no bookmark is marked, act on the bookmark of the current line.
 A non-negative prefix arg means replace only word-delimited matches.
 
 Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included."
+prefix arg, include any that are marked."
   (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
                  (list (nth 0 common)
                        (nth 1 common)
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0)))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (tags-query-replace from to delimited
-		      `(let ((files  ())
-                             file)
-                        (dolist (bmk  (bmkp-sort-omit
-                                       (bmkp-bmenu-marked-or-this-or-all nil ',include-omitted-p)))
-                          (setq file  (bookmark-get-filename bmk))
-                          (let ((buffer  (get-file-buffer file)))
-                            (when (and buffer  (with-current-buffer buffer buffer-read-only))
-                              (error "File `%s' is visited read-only" file)))
-                          (when (and (not (equal bmkp-non-file-filename file))
-                                     (not (file-directory-p file)))
-                            (push file files)))
-                        (setq files  (nreverse files)))))
+  (if (fboundp 'fileloop-initialize-replace) ; Emacs 27+
+      (fileloop-initialize-replace from to
+                                   (let ((files  ())
+                                         file)
+                                     (dolist (bmk  (bmkp-sort-omit
+                                                    (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
+                                       (setq file  (bookmark-get-filename bmk))
+                                       (let ((buffer  (get-file-buffer file)))
+                                         (when (and buffer  (with-current-buffer buffer buffer-read-only))
+                                           (error "File `%s' is visited read-only" file)))
+                                       (when (and (not (equal bmkp-non-file-filename file))
+                                                  (not (file-directory-p file)))
+                                         (push file files)))
+                                     (setq files  (nreverse files)))
+                                   'default
+                                   delimited)
+    (tags-query-replace from to delimited
+		        `(let ((files  ())
+                               file)
+                           (dolist (bmk  (bmkp-sort-omit
+                                          (bmkp-bmenu-marked-or-this-or-all nil ',include-omitted-p)))
+                             (setq file  (bookmark-get-filename bmk))
+                             (let ((buffer  (get-file-buffer file)))
+                               (when (and buffer  (with-current-buffer buffer buffer-read-only))
+                                 (error "File `%s' is visited read-only" file)))
+                             (when (and (not (equal bmkp-non-file-filename file))
+                                        (not (file-directory-p file)))
+                               (push file files)))
+                           (setq files  (nreverse files))))))
 
 
 ;;(@* "Tags")
