@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Apr 27 18:50:27 2025 (-0700)
-;;           By: Drew Adams
-;;     Update #: 17037
+;; Last-Updated: Sun Jul 27 17:58:29 2025 (-0700)
+;;           By: dradams
+;;     Update #: 17048
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2025/07/27 dadams
+;;     Removed: bmkp-dired-remember-*-marks (use vanilla dired-remember-marks instead).
+;;     bmkp-make-dired-record: New record format for Dired bmks, so record all mark chars.
+;;                             Use dired-remember-marks, not bmkp-dired-remember-*-marks.
+;;     bmkp-jump-dired: Handle new format as well as old (Dired bookmarks created prior to today).
+;; 2025/06/16 dadams
+;;     bookmark-write-file:
+;;      Bind pp-default-function to pp-28 around call to pp (as vanilla Emacs did), to accommodate
+;;       Emacs 30.1 incompatible change to pp (see bug #78810).
 ;; 2025/04/27 dadams
 ;;     Rename loop to cl-loop everywhere, and defalias cl-loop to loop.
 ;;     bookmark-write-file, bmkp-write-alist-bookmarks-to-file, bmkp-temporary-bookmarking-mode:
@@ -2672,6 +2681,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2025/05/07 dadams
+;;     Added macro with-buffer-modified-unmodified, from vanilla bookmark.el.
 ;; 2024/09/16 dadams
 ;;     Added bmkp-define-type-from-hander.
 ;; 2024/02/01 dadams
