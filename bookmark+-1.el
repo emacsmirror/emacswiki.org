@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jul 29 13:51:22 2025 (-0700)
+;; Last-Updated: Tue Jul 29 15:15:35 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 9730
+;;     Update #: 9733
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -11137,23 +11137,33 @@ BOOKMARK is a bookmark name or a bookmark record."
     (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos)))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-all-dired-buffers "bookmark+")
-(defun bmkp-bookmark-all-dired-buffers (&optional msgp)
-  "Create a Dired bookmark for each Dired buffer.
-Each bookmark is named with the `default-directory' value except that
-if there's a preexisting bookmark of that name then the new bookmark's
-name has suffix \"<2>\" to distinguish it."
-  (interactive "p")
-  (let ((dbufs  (if (require 'dired+ nil t) (diredp-live-dired-buffers 'EXCLUDE-DERIVED) dired-buffers))
-        (count  0)
+(defun bmkp-bookmark-all-dired-buffers (sequence &optional msgp)
+  "Create bookmarks for the Dired buffers and a bookmark for all of them.
+You are prompted for the name of the SEQUENCE bookmark that jumps to
+the Dired bookmarks.  If that bookmark already exists then replace its
+Dired bookmarks with the new ones.  (No preexisting bookmarks are
+deleted.)
+
+Each Dired bookmark name is the Dired buffer's `default-directory'.
+
+With a prefix argument, just create the Dired bookmarks; Don't also
+create or replace a sequence bookmark."
+  (interactive (list (and (not current-prefix-arg)  (bmkp-completing-read-lax "Sequence bookmark"
+                                                                              (bmkp-new-bookmark-default-names)))
+                     t))
+  (let ((dbufs   (if (require 'dired+ nil t) (diredp-live-dired-buffers 'EXCLUDE-DERIVED) dired-buffers))
+        (bnames  ())
+        (count   0)
         bname)
     (when msgp (message "Bookmarking each Dired buffer..."))
     (dolist (dbuf  dbufs)
       (with-current-buffer dbuf
         (setq bname  (abbreviate-file-name default-directory))
-        (while (member bname (bookmark-all-names)) (setq bname  (concat bname "<2>")))
         (bookmark-set bname)
+        (when sequence (setq bnames  (cons bname bnames)))
         (setq count  (1+ count))))
-    (when msgp (message "%d Dired bookmarks created" count))))
+    (when msgp (message "%d Dired bookmarks created" count))
+    (when sequence (bmkp-set-sequence-bookmark sequence bnames -1 msgp))))
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action prompt)
   "Read name of a bookmark of type TYPE in ALIST, and return the bookmark.
