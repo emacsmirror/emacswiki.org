@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul 27 17:46:46 2025 (-0700)
+;; Last-Updated: Tue Jul 29 13:51:22 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 9721
+;;     Update #: 9730
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -117,8 +117,8 @@
 ;;    `bmkp-autonamed-jump-other-window',
 ;;    `bmkp-autonamed-this-buffer-jump',
 ;;    `bmkp-autonamed-this-buffer-jump-other-window',
-;;    `bmkp-bookmark-a-file' `bmkp-bookmark-file-jump',
-;;    `bmkp-bookmark-file-load-jump',
+;;    `bmkp-bookmark-a-file' `bmkp-bookmark-all-dired-buffers',
+;;    `bmkp-bookmark-file-jump', `bmkp-bookmark-file-load-jump',
 ;;    `bmkp-bookmark-file-switch-jump', `bmkp-bookmark-linked-at'
 ;;    (Emacs 22+), `bmkp-bookmark-linked-at-mouse' (Emacs 22+),
 ;;    `bmkp-bookmark-list-jump',
@@ -11135,6 +11135,25 @@ BOOKMARK is a bookmark name or a bookmark record."
       (save-excursion
         (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos)))))
+
+;;;###autoload (autoload 'bmkp-bookmark-all-dired-buffers "bookmark+")
+(defun bmkp-bookmark-all-dired-buffers (&optional msgp)
+  "Create a Dired bookmark for each Dired buffer.
+Each bookmark is named with the `default-directory' value except that
+if there's a preexisting bookmark of that name then the new bookmark's
+name has suffix \"<2>\" to distinguish it."
+  (interactive "p")
+  (let ((dbufs  (if (require 'dired+ nil t) (diredp-live-dired-buffers 'EXCLUDE-DERIVED) dired-buffers))
+        (count  0)
+        bname)
+    (when msgp (message "Bookmarking each Dired buffer..."))
+    (dolist (dbuf  dbufs)
+      (with-current-buffer dbuf
+        (setq bname  (abbreviate-file-name default-directory))
+        (while (member bname (bookmark-all-names)) (setq bname  (concat bname "<2>")))
+        (bookmark-set bname)
+        (setq count  (1+ count))))
+    (when msgp (message "%d Dired bookmarks created" count))))
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action prompt)
   "Read name of a bookmark of type TYPE in ALIST, and return the bookmark.
