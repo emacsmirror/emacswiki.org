@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 19 12:31:28 2024 (-0800)
+;; Last-Updated: Tue Jul 29 15:38:57 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 15425
+;;     Update #: 15433
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -348,9 +348,9 @@
 ;;       same name but in different directories.
 ;;
 ;;     - Dired bookmarks.  You can bookmark a Dired buffer, recording
-;;       and restoring its `ls' switches, which files are marked,
-;;       which subdirectories are inserted, and which (sub)directories
-;;       are hidden.
+;;       and restoring its `ls' switches, which files are marked (all
+;;       mark chars, not just `*'), which subdirectories are inserted,
+;;       and which (sub)directories are hidden.
 ;;
 ;;     - Dired-tree bookmarks.  A set of Dired bookmarks that
 ;;       represent a directory hierarchy and are opened together.
@@ -422,7 +422,13 @@
 ;;     In particular, note that you can use the following kinds of
 ;;     bookmarks to quickly switch among different projects (sets of
 ;;     bookmarks): Dired, Dired tree, bookmark-list, bookmark-file,
-;;     and desktop bookmarks.
+;;     desktop, and sequence bookmarks.
+;;
+;;     For example, command `bmkp-bookmark-all-dired-buffers' creates
+;;     (1) a bookmark for each existing Dired buffer and (2) a
+;;     sequence bookmark that opens all of them when invoked.  This
+;;     lets you record and later jump to a set of Dired buffers,
+;;     restoring their recorded states (marks, etc.).
 ;;
 ;;  * Type-specific jump commands.
 ;;
