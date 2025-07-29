@@ -387,7 +387,8 @@ such bookmarks with the same name, to bookmark files with the
 same name but in different directories.
 
 [:DiredBookmarks]
-* '''Dired bookmarks.''' You can bookmark a ''[[DiredMode|Dired]]'' buffer, recording and restoring its `ls' switches, which files are marked, which subdirectories are inserted, and which (sub)directories are hidden.
+* '''Dired bookmarks.''' You can bookmark a ''[[DiredMode|Dired]]'' buffer, recording and restoring its `ls' switches, which files are marked (all
+mark chars, not just `*'), which subdirectories are inserted, and which (sub)directories are hidden.
 
 [:DiredTreeBookmarks]
 * '''Dired-tree bookmarks.''' A set of [[DiredMode|Dired]] bookmarks that represent a directory hierarchy and are opened together.
@@ -470,8 +471,10 @@ bookmark.  See also [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHi
 
 In particular, note that you can use the following kinds of bookmarks
 to quickly switch among different ''projects'' (sets of bookmarks):
-Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
+Dired, Dired tree, bookmark-list, bookmark-file, desktop, and sequence bookmarks.
 
+
+For example, command `bmkp-bookmark-all-dired-buffers' creates (1) a bookmark for each existing Dired buffer and (2) a sequence bookmark that opens all of them when invoked.  This lets you record and later jump to a set of Dired buffers, restoring their recorded states (marks, etc.).
 
 
 
