@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul 27 18:35:01 2025 (-0700)
+;; Last-Updated: Tue Jul 29 14:01:10 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 17058
+;;     Update #: 17060
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2025/07/29 dadams
+;;     Added bmkp-bookmark-all-dired-buffers.
 ;; 2025/07/27 dadams
 ;;     Removed: bmkp-dired-remember-*-marks (use vanilla dired-remember-marks instead).
 ;;     bmkp-make-dired-record: New record format for Dired bmks, so record all mark chars.
@@ -2750,6 +2752,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2025/07/29 dadams
+;;     Version 2025.07.29
 ;; 2025/07/27 dadams
 ;;     Version 2025.07.27
 ;; 2025/04/27 dadams
