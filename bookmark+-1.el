@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jul 29 15:15:35 2025 (-0700)
+;; Last-Updated: Tue Jul 29 15:31:01 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 9733
+;;     Update #: 9735
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -11139,6 +11139,9 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;;;###autoload (autoload 'bmkp-bookmark-all-dired-buffers "bookmark+")
 (defun bmkp-bookmark-all-dired-buffers (sequence &optional msgp)
   "Create bookmarks for the Dired buffers and a bookmark for all of them.
+This lets you record and later jump to a set of Dired buffers,
+restoring their recorded states (marks, etc.).
+
 You are prompted for the name of the SEQUENCE bookmark that jumps to
 the Dired bookmarks.  If that bookmark already exists then replace its
 Dired bookmarks with the new ones.  (No preexisting bookmarks are
