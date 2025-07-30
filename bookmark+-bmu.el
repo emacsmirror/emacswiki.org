@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jul 27 18:03:06 2025 (-0700)
+;; Last-Updated: Wed Jul 30 09:39:26 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 4313
+;;     Update #: 4316
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1685,7 +1685,7 @@ Modify, Delete Bookmarks
 
 \(See also `Tags', next.)
 
-`\\[bmkp-bmenu-edit-bookmark-name-and-location]'\t- Rename or relocate bookmark
+`\\[bmkp-bmenu-edit-bookmark-name-and-location]'\t- Rename and/or relocate bookmark
 `\\[bookmark-bmenu-relocate]'\t- Relocate bookmark
 `\\[bmkp-bmenu-relocate-marked]'\t- Relocate marked bookmarks
 `\\[bmkp-bmenu-edit-tags]'\t- Edit bookmark's tags
@@ -4957,7 +4957,7 @@ With a prefix arg you are instead prompted for the clone name."
 
 ;;;###autoload (autoload 'bmkp-bmenu-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-bmenu-edit-bookmark-name-and-location (&optional internalp) ; Bound to `r' in bookmark list
-  "Edit the bookmark under the cursor: its name and location.
+  "Edit the bookmark under the cursor: its name and/or location.
 With a prefix argument, edit the complete bookmark record (the
 internal, Lisp form)."
   (interactive "P")
@@ -6442,6 +6442,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-edit-menu [bmkp-bmenu-edit-bookmark-record]
   '(menu-item "Edit Full Record (Lisp)" bmkp-bmenu-edit-bookmark-record
     :help "Edit full record (Lisp sexp) for this bookmark, in another window"))
+(define-key bmkp-bmenu-edit-menu [bmkp-bmenu-edit-bookmark-name-and-location]
+  '(menu-item "Rename, Relocate..." bmkp-bmenu-edit-bookmark-name-and-location
+    :help "Edit name and/or location for this bookmark, in another window"))
 (define-key bmkp-bmenu-edit-menu [bmkp-bmenu-edit-annotations-for-marked]
   '(menu-item "Edit Annotations of Marked" bmkp-bmenu-edit-annotations-for-marked
     :help "Edit annotations (created if missing) for the marked bookmarks"))
@@ -6859,7 +6862,7 @@ are marked or ALLP is non-nil."
                                     ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
                                     ,@(and (fboundp 'org-add-link-type)
                                            '(["Store Org Link" org-store-link]))
-                                    ["Rename or Relocate..." bmkp-bmenu-edit-bookmark-name-and-location]
+                                    ["Rename, Relocate..." bmkp-bmenu-edit-bookmark-name-and-location]
                                     ["Clone (Duplicate)" bmkp-bmenu-clone-bookmark]
                                     ["Edit Internal Record (Lisp)..." bmkp-bmenu-edit-bookmark-record]
                                     ["Show Annotation" bookmark-bmenu-show-annotation
