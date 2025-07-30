@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul 29 14:01:10 2025 (-0700)
+;; Last-Updated: Wed Jul 30 10:13:58 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 17060
+;;     Update #: 17066
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1600,6 +1600,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2025/07/30 dadams
+;;     bmkp-bmenu-edit-menu: Added bmkp-bmenu-edit-bookmark-name-and-location.
 ;; 2025/07/27 dadams
 ;;     Removed defmacro with-buffer-modified-unmodified - it's in bookmark+-mac.el now.
 ;; 2025/05/07 dadams
@@ -2355,6 +2357,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2025/07/30 dadams
+;;     menu-bar-bookmark-map: Added bookmark-edit-annotation.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
 ;;     bmkp-exists-this-file/buffer-bookmarks-p: Pass arg ALIST to bmkp-exists-bookmark-satisfying-p.
@@ -2380,7 +2384,7 @@
 ;;       Added bmkp-edit-bookmark-record-file/buffer, bmkp-set-lighting-for-this-buffer,
 ;;             bmkp-unlight-this-buffer, bmkp-(un)light-(non-)autonamed-this-buffer
 ;;       Use bmkp-light-this-buffer, not bmkp-light-bookmarks.
-;;       menu-bar-bookmark-map > bmkp-here-menu: Rename; use bmkp-exists-this-file/buffer-bookmarks-p.
+;;       menu-bar-bookmark-map  > bmkp-here-menu: Rename; use bmkp-exists-this-file/buffer-bookmarks-p.
 ;; 2020/01/24 dadams
 ;;     Added: bmkp-annotate-map, bmkp-annotate-menu.
 ;;     bmkp-bookmarks-here-menu-command-entries, bmkp-highlight-menu:
@@ -2399,11 +2403,11 @@
 ;;       Added bmkp-(switch-to-bookmark-file|save-bookmarks)-this-file/buffer.
 ;; 2019/08/13 dadams
 ;;     Bind bmkp-clone-bookmark to C-x p 2.
-;;     menu-bar-bookmark-map: Add bmkp-clone-bookmark.
+;;     menu-bar-bookmark-map : Add bmkp-clone-bookmark.
 ;; 2019/05/16 dadams
 ;;     Added: bmkp-add-bookmarks-here-menu-flag, bmkp-here-menu, bmkp-exists-bookmark-satisfying-p,
 ;;            bmkp-exists-this-file/buffer-bookmarks-p, bmkp-bookmarks-here-menu-command-entries,
-;;     Add bmkp-here-menu to menu-bar-bookmark-map, Buffer-menu-mode-map, Info-mode-menu,
+;;     Add bmkp-here-menu to menu-bar-bookmark-map , Buffer-menu-mode-map, Info-mode-menu,
 ;;         diredp-bookmark-menu or dired-mode-map.
 ;;     Add bmkp-dired-this-dir-jump to diredp-bookmark-menu or dired-mode-map.
 ;; 2019/05/01 dadams
@@ -2417,7 +2421,7 @@
 ;; 2017/01/10 dadams
 ;;     Applied renaming: bmkp-replace-eww-keys-flag to bmkp-eww-replace-keys-flag.
 ;; 2017/01/02 dadams
-;;     menu-bar-bookmark-map: Added menu item Store Org Link To....
+;;     menu-bar-bookmark-map : Added menu item Store Org Link To....
 ;;     Typo: bmkp-replace-EWW-keys-flag -> bmkp-replace-eww-keys-flag.
 ;; 2016/12/11 dadams
 ;;     Remap EWW keys to bmkp- keys.
@@ -2445,8 +2449,8 @@
 ;;     bmkp-highlight-menu: Added item Toggle Autofile Highlighting in Dired.
 ;; 2014/07/06 dadams
 ;;     Removed: bmkp-options-menu.  Use bmkp-bmenu-toggle-menu, and rename Toggle, not Toggle Option.
-;;     Removed individual toggle commands from menu-bar-bookmark-map (Bookmarks).
-;;     Reuse bmkp-bmenu-toggle-menu for menu-bar-bookmark-map [options].
+;;     Removed individual toggle commands from menu-bar-bookmark-map  (Bookmarks).
+;;     Reuse bmkp-bmenu-toggle-menu for menu-bar-bookmark-map  [options].
 ;; 2014/07/05 dadams
 ;;     Moved submenu bmkp-jump-tags-menu before individual menu items.
 ;; 2014/03/23 dadams
@@ -2499,7 +2503,7 @@
 ;;     Bind E to bmkp-edit-bookmark-record, not bmkp-edit-bookmark.
 ;;     Bind r to bmkp-edit-bookmark-name-and-file, not bookmark-rename.  Ditto in menu.
 ;;     Use bmkp-get-bookmark-in-alist, not bookmark-get-bookmark in :visible conditions.
-;;     menu-bar-bookmark-map: Added bmkp-edit-bookmark-record.
+;;     menu-bar-bookmark-map : Added bmkp-edit-bookmark-record.
 ;;     bmkp-tags-menu: Added bmkp-edit-tags.
 ;; 2011/12/14 dadams
 ;;     Removed conditions :enable bookmark-alist.
@@ -2507,10 +2511,10 @@
 ;;     Commented out menu items with complex :enable conditions, replacing them with simple ones.
 ;;       Reason: too slow, especially in Emacs 20.
 ;; 2011/12/05 dadams
-;;     menu-bar-bookmark-map: Reordered items regarding bookmark files.
+;;     menu-bar-bookmark-map : Reordered items regarding bookmark files.
 ;; 2011/12/03 dadams
 ;;     Bind C-x p L to bmkp-switch-bookmark-file-create, not bmkp-switch-bookmark-file.
-;;     Reordered bookmark-file items in menu-bar-bookmark-map.
+;;     Reordered bookmark-file items in menu-bar-bookmark-map .
 ;; 2011/11/18 dadams
 ;;     Bind bmkp-image-jump(-other-window) to C-x (4) j M-i.
 ;;     bmkp-jump-menu: Add bmkp-image-jump-other-window.
@@ -2522,9 +2526,9 @@
 ;;     bmkp-jump-menu: Bind bmkp-(autofile|temporary)-jump-other-window.
 ;; 2011/10/31 dadams
 ;;     Bind bmkp-toggle-autotemp-on-set to C-x p x.  Move bmkp-set-bookmark-file-bookmark to C-x p y.
-;;     menu-bar-bookmark-map: Added: bmkp-toggle-autotemp-on-set.
+;;     menu-bar-bookmark-map : Added: bmkp-toggle-autotemp-on-set.
 ;; 2011/10/28 dadams
-;;     menu-bar-bookmark-map:
+;;     menu-bar-bookmark-map :
 ;;       Added: bmkp-delete-all-temporary-bookmarks, bmkp-temporary-bookmarking-mode.  Reordered.
 ;;     bmkp-options-menu: Added: bmkp-toggle-saving-menu-list-state, bmkp-toggle-saving-bookmark-file.
 ;; 2011/04/24 dadams
@@ -2537,7 +2541,7 @@
 ;; 2011/04/16 dadams
 ;;     Added: bmkp-tags-map.  Bound tag commands to prefix C-x p t.
 ;; 2011/04/14 dadams
-;;     Renamed menu Jump To Bookmark to just Jump To, in menu-bar-bookmark-map.
+;;     Renamed menu Jump To Bookmark to just Jump To, in menu-bar-bookmark-map .
 ;; 2011/04/13 dadams
 ;;     Added:
 ;;       bmkp-find-file-menu (bmkp-find-file(-(all|some)-tags(-regexp)(-other-window)),
@@ -2752,6 +2756,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2025/07/30 dadams
+;;     Version 2025.07.30
 ;; 2025/07/29 dadams
 ;;     Version 2025.07.29
 ;; 2025/07/27 dadams
@@ -3001,7 +3007,7 @@
 ;;     *-show-annotation: Bind buffer-read-only to nil for updating.
 ;; 2010/05/19 dadams
 ;;     Added: bookmarkp-this-buffer-bmenu-list.  Bound to `C-x p .'.
-;;     menu-bar-bookmark-map:
+;;     menu-bar-bookmark-map :
 ;;       Added bookmarkp-this-buffer-bmenu-list.  Added separators.
 ;;       Added vanilla items edit, write, load, to impose order.  Renamed item edit.
 ;; 2010/05/16 dadams
@@ -3237,13 +3243,13 @@
 ;;     Added: bookmarkp-menu-popup-max-length.
 ;;     bookmark-completing-read: Use bookmarkp-menu-popup-max-length.
 ;;     bookmarkp-bmenu-state-file: Added missing default value for const.
-;;     Don't add jump-other entry to menu-bar-bookmark-map (just use Jump To submenu).
+;;     Don't add jump-other entry to menu-bar-bookmark-map  (just use Jump To submenu).
 ;; 2010/01/28 dadams
 ;;     bookmarkp-(all|some)-tags(-regexp)-jump(-other-window): Error if no bookmarks with the tags.
 ;;     bookmarkp-(all|some)-tags-jump(-other-window): Handle case where user enters no tags.
 ;;     Use :advertised-binding property for bookmark-jump(-other-window).
 ;;     Added: bookmarkp-bmenu-jump-menu.
-;;     Added bookmarkp-bmenu-jump-menu to menu-bar-bookmark-map and bookmarkp-bmenu-menubar-menu.
+;;     Added bookmarkp-bmenu-jump-menu to menu-bar-bookmark-map  and bookmarkp-bmenu-menubar-menu.
 ;; 2010/01/27 dadams
 ;;     Added: bookmarkp-every, bookmarkp-(all|some)-tags(-regexp)-jump(-other-window).
 ;; 2010/01/26 dadams
