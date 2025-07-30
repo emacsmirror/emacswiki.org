@@ -304,6 +304,14 @@ The trap here is that ##sudo::## /does/ actually appear to work -- /however/ whe
 
 In short, don't use ##::## when you multi-hop!
 
+==== Emacs 27+ ====
+
+Starting from Emacs 27.1 (or Tramp 2.4.2, if using the GNU ELPA package) the ##::## case works intuitively, such that ##/ssh:you@remotehost|sudo::## will re-use ##remotehost## rather than your own local host, and so you won't end up with a bad proxy entry.
+
+In addition, the likes of ##/ssh:you@remotehost|sudo:localhost:## are detected and flagged as user errors.
+
+If you are liable to use a mixture of Emacs versions including versions earlier than 27 (or you are advising someone else who may be using an older version), then it would be safest to continue to treat ##::## as unsafe when multi-hopping, to avoid potential mishap. (I.e. specifying the correct remote host explicitly will remain the safest approach if the Tramp version is unknown.)
+
 === Using Tramp to open files sudo'd to root ===
 
 One lazy afternoon, one "sudo vi foo" too many (or rather "udo vi foo", while my term was blocked because of the stupid ^S handling), I came up with this and was, subsequently, happy:
