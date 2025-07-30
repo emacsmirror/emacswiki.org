@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Oct 23 13:52:32 2023 (-0700)
+;; Last-Updated: Wed Jul 30 10:06:16 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 991
+;;     Update #: 999
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -858,16 +858,20 @@ Menu for bookmarks that target this file or buffer.")
 (define-key menu-bar-bookmark-map [rename] nil)
 
 (define-key-after menu-bar-bookmark-map [bmkp-clone-bookmark]
-  '(menu-item "Clone (Duplicate) a Bookmark" bmkp-clone-bookmark
-    :help "Clone this bookmark.  (`\\[bmkp-edit-bookmark-record]' to edit.)")
+  '(menu-item "Clone (Duplicate) Bookmark" bmkp-clone-bookmark
+    :help "Duplicate a bookmark.  (`\\[bmkp-edit-bookmark-record]' to edit definition.)")
   'separator-edit)
-(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-location]
-  '(menu-item "Rename or Relocate Bookmark..." bmkp-edit-bookmark-name-and-location
-    :help "Rename and/or relocate a bookmark")
+(define-key-after menu-bar-bookmark-map [bookmark-edit-annotation]
+  '(menu-item "Edit Bookmark Annotation" bookmark-edit-annotation
+    :help "Edit annotation for a bookmark (create if none)")
   'bmkp-clone-bookmark)
+(define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-name-and-location]
+  '(menu-item "Rename, Relocate Bookmark..." bmkp-edit-bookmark-name-and-location
+    :help "Rename and/or relocate a bookmark")
+  'bookmark-edit-annotation)
 (define-key-after menu-bar-bookmark-map [bmkp-edit-bookmark-record]
   '(menu-item "Edit Bookmark Record (Lisp)..." bmkp-edit-bookmark-record
-    :help "Edit the internal record of a bookmark,a Lisp sexp")
+    :help "Edit the full record (Lisp sexp) of a bookmark")
   'bmkp-edit-bookmark-name-and-location)
 
 (define-key-after menu-bar-bookmark-map [separator-show] '("--") ;-------------------------------------
