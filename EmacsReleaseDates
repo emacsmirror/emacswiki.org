@@ -280,3 +280,7 @@ accurate result than 5944), and I didn't have any trouble adding that with
 calendar (you just have to add days instead of years).  But if you think
 something is wrong with calendar, please make a bug report.  E.g., "Emacs's
 Calendar is unable to compute the date of its own final release".
+
+
+----
+CategoryHistory
