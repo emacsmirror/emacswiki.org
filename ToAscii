@@ -17,3 +17,18 @@ used, turning é into e, for example."
           (setq bytes (cons c bytes)))))
     (apply 'string (reverse bytes))))
 }}}
+
+Weird use-case: Completion using no accents for words with accents.
+
+{{{
+(let* ((completions '("épris" "épais"))
+       (mapping (mapcar
+                 (lambda (s)
+                   (cons (propertize (to-ascii s) 'display s) s))
+                 completions))
+       (key (completing-read "prompt: " mapping)))
+  (cdr (assoc key mapping)))
+}}}
+
+It looks like "épris" when completing, the result "épris" when completed, but you type "epris" for completion.
+Weird, but it works.
