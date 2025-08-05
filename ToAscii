@@ -1,0 +1,15 @@
+{{{
+(defun to-ascii (string)
+  "Convert STR to just ASCII characters.
+All non-ASCII characters are dropped. If the character is a character
+that can be split into an ASCII character and a combining diacritic
+via normal form D (NFD decomposition), then that ASCII character is
+used, turning é into e, for example."
+  (let ((normalized (ucs-normalize-NFD-string string))
+        (bytes))
+    (dotimes (i (length normalized))
+      (let ((c (aref normalized i)))
+        (when (< c 128)
+          (setq bytes (cons c bytes)))))
+    (apply 'string (reverse bytes))))
+}}}
