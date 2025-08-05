@@ -30,5 +30,5 @@ Weird use-case: Completion using no accents for words with accents.
   (cdr (assoc key mapping)))
 }}}
 
-It looks like "épris" when completing, the result "épris" when completed, but you type "epris" for completion.
+It looks like "épris" when completing, the result is "épris" when completed, but you type "epris" for completion.
 Weird, but it works.
