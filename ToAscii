@@ -1,3 +1,7 @@
+This is how you can turn a string like "Schröder" into "Schroder".
+But not to "Schroeder", as German would like you to.
+Nor "sœur" to "soeur". Too bad.
+
 {{{
 (defun to-ascii (string)
   "Convert STR to just ASCII characters.
