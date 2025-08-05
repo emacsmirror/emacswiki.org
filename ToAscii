@@ -33,5 +33,17 @@ Weird use-case: Completion using no accents for words with accents.
 It looks like "épris" when completing, the result is "épris" when completed, but you type "epris" for completion.
 Weird, but it works.
 
+An alternative:
+
+{{{
+(defun wordreference-unaccented (str)
+  "Return STR with accents removed."
+  (mapconcat
+    (lambda (c)
+      (char-to-string
+        (car (get-char-code-property c 'decomposition))))
+    str ""))
+}}}
+
 ----
 CategoryCompletion
