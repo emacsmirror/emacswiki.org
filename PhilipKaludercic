@@ -1,6 +1,6 @@
 Hi, I have been using Emacs since about 2014 or 2015.
 
-I have a personal website, where I sometimes post about Emacs: https://amodernist.com/.
+I have a personal website, where I sometimes post about Emacs: https://sdf.org/~pkal/.
 
 == Packages ==
 
@@ -11,13 +11,9 @@ Here are a few packages on mine which I have contributed to ELPA or MELPA:
 * [http://elpa.gnu.org/packages/vc-backup.html vc-backup]
 * [http://elpa.gnu.org/packages/compat.html compat]
 * [https://elpa.gnu.org/packages/autocrypt.html autocrypt]
-* [https://melpa.org/#/clang-capf clang-capf]
-* [https://elpa.gnu.org/packages/face-shift.html face-shift]
 * [https://melpa.org/#/insert-kaomoji insert-kaomoji]
 * [https://elpa.gnu.org/packages/xref-union.html xref-union]
 * [https://elpa.gnu.org/packages/site-lisp.html site-lisp]
-* [https://elpa.gnu.org/packages/openpgp.html openpgp]
-* [https://elpa.gnu.org/packages/auto-header.html auto-header]
 * [https://elpa.gnu.org/packages/do-at-point.html do-at-point]
 
 
