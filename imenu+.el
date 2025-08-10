@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 14 13:26:53 2025 (-0700)
+;; Last-Updated: Sun Aug 10 16:29:43 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 1181
+;;     Update #: 1194
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode#ImenuPlus
 ;; Keywords: tools, menus
@@ -68,7 +68,7 @@
 ;;
 ;;    `imenu--generic-function', `imenu--make-index-alist',
 ;;    `imenu--mouse-menu', `imenu--sort-by-name',
-;;    `imenu--split-submenus', `imenu-progress-message',
+;;    `imenu--split-submenus' (Emacs < 24), `imenu-progress-message',
 ;;    `imenu-update-menubar'.
 ;;
 ;;
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/08/10 dadams
+;;     imenu--make-index-alist: Use imenu-unavailable-error if available.
 ;; 2025/06/27 dadams
 ;;     Added lexical-binding cookie.
 ;;     Added imenu-allow-duplicate-menu-items for Emacs 29 and 30 (Emacs bug #78935).
@@ -260,8 +262,10 @@
 
 ;; Quiet the byte-compiler
 (defvar imenu-allow-duplicate-menu-items)
-(defvar imenu-menubar-modified-tick)
 (defvar imenu-generic-skip-comments-and-strings)
+(defvar imenu-level-separator)          ; Emacs 30+ (defined in 29.4, but not used until 30.1)
+(defvar imenu-menubar-modified-tick)
+(defvar imenu-use-markers)              ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -324,6 +328,7 @@ This option has no effect if you do not use library Bookmark+."
 
 ;; Apologies, but this is the easiest way to override the default value of nil.
 ;; If you need to override this, comment it out or set it after loading this file.
+;; You can ignore byte-compiler warnings about setting this "constant".
 (defconst imenu-sort-function 'imenu--sort-by-name)
 
 (defvar imenup-last-sort-function `imenu--sort-by-name
@@ -605,8 +610,7 @@ NOT share structure with ALIST."
     (when (boundp 'imenu-menubar-modified-tick) ; Emacs 22+
       (setq imenu-menubar-modified-tick  (buffer-chars-modified-tick)))
     (let ((index-alist  (imenu--make-index-alist t)))
-      ;; Don't bother updating if the index-alist has not changed
-      ;; since the last time we did it.
+      ;; Don't bother updating if the index-alist has not changed since the last time we did it.
       (unless (equal index-alist imenu--last-menubar-index-alist)
         (let (menu menu1)
           (setq imenu--last-menubar-index-alist  index-alist
@@ -667,9 +671,12 @@ non-nil.  See `imenu--index-alist' for the format of the index alist."
       (progn (setq imenu--index-alist
                    (save-excursion (save-restriction (widen) (funcall imenu-create-index-function))))
              (imenu--truncate-items imenu--index-alist)))
-  (or imenu--index-alist  noerror  (if (fboundp 'user-error)
-                                       (user-error "No items suitable for an index found in this buffer")
-                                     (error "No items suitable for an index found in this buffer")))
+  (or imenu--index-alist  noerror  (funcall (if (fboundp 'imenu-unavailable-error) ; Emacs 25+
+                                                #'imenu-unavailable-error
+                                              (if (fboundp 'user-error) ; Emacs 24
+                                                  #'user-error
+                                                #'error)) ; < Emacs 24
+                                            "No items suitable for an index found in this buffer"))
   (or imenu--index-alist  (setq imenu--index-alist  (list nil)))
   (let ((bookmarks-available-here-p  (and (fboundp 'bmkp-exists-bookmark-satisfying-p)
                                           (bmkp-exists-bookmark-satisfying-p
