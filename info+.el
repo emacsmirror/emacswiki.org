@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  7 20:29:39 2025 (-0800)
+;; Last-Updated: Thu Aug 14 10:21:48 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 7560
+;;     Update #: 7580
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -167,11 +167,14 @@
 ;;    `Info-fontify-indented-text', `info-fontifying-regexp',
 ;;    `Info-fontify-quotations', `Info-fontify-reference-items',
 ;;    `Info-get-glossary-hash-table-create',
-;;    `Info-goto-glossary-definition', `info-indented-text-regexp',
+;;    `Info-goto-glossary-definition',
+;;    `info--goto-node-maybe-invoke-bookmark',
+;;    `info--Info-history-prefix-arg-clears-hist',
+;;    `info-indented-text-regexp',
 ;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
 ;;    `Info-manual-string', `Info-manual-symbol',
-;;    `Info-node-name-at-point',
-;;    `Info-read-bookmarked-node-name', `Info-refontify-current-node',
+;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
+;;    `Info-refontify-current-node',
 ;;    `Info-remap-default-face-to-variable-pitch',
 ;;    `Info-restore-history-list' (Emacs 24.4+),
 ;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
@@ -188,7 +191,7 @@
 ;;    `info-isolated-quote-regexp',
 ;;    `info-last-non-nil-fontify-extra-function',
 ;;    `info-last-non-nil-fontify-glossary-words', `Info-link-faces',
-;;    `Info-merged-map', `Info-mode-syntax-table',
+;;    `Info-merged-map', `Info-mode-syntax-table', `info-node-name',
 ;;    `Info-no-glossary-manuals', `info-nomatch',
 ;;    `info-quotation-regexp', `info-quotation-same-line-regexp',
 ;;    `info-quoted+<>-regexp', `info-quoted+<>-same-line-regexp',
@@ -641,6 +644,12 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/08/12 dadams
+;;     Info-node-access-invokes-bookmark-flag: Use only loading of Bookmark+ as condition for defining.
+;;     Info-history, Info-goto-node: Use advice-add to advise, if Emacs 24.4+.  Thx to Durant Schoon.
+;;     Added: info--Info-history-prefix-arg-clears-hist, info--goto-node-maybe-invoke-bookmark.
+;;     Renamed infop-node-name to info-node-name, and made it a defvar.
+;;     Info-merge-subnodes: Set, instead of bind, info-node-name.
 ;; 2025/01/07 dadams
 ;;     info-display-manual: If manual not yet shown then use a new buffer name: *info*<N> (Emacs 30).
 ;; 2024/12/12
@@ -1386,7 +1395,6 @@
 (defvar info-tool-bar-map)
 (defvar Info-up-link-keymap)
 (defvar Info-use-header-line)
-(defvar infop-node-name)                 ; Here, in `Info-merge-subnodes'.
 (defvar isearch-adjusted)                ; In `isearch.el', Emacs 25+.
 (defvar isearch-filter-predicate)        ; In `isearch.el', Emacs 23+.
 (defvar isearch-lax-whitespace)          ; In `isearch.el'.
@@ -2062,8 +2070,7 @@ This option has no effect if `Info-fontify-glossary-words' is nil."
                        (const :tag "Use fallback for all manuals with no glossary" t)))
   :group 'Info-Plus)
 
-(when (and (require 'bookmark+ nil t)   ; Emacs 24.4+
-           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+(when (require 'bookmark+ nil t)
 
   (defcustom Info-node-access-invokes-bookmark-flag t
     "Non-nil means invoke the bookmark when you access an Info node.
@@ -2084,7 +2091,6 @@ bookmark data, such as the number of visits to the node."
   (defcustom Info-saved-history-file (locate-user-emacs-file "info-history" ".emacs.info-history")
     "File where `Info-persist-history-mode' saves `Info-history-list'."
     :type '(file :must-match t) :group 'Info-Plus)
-
   )
 
 ;;;###autoload
@@ -2385,7 +2391,7 @@ unvisited state."
 (when (fboundp 'advice-add)             ; Emacs 24.4+
 
   (define-minor-mode Info-persist-history-mode
-      "Automatically persist the Info history in `Info-saved-history-file'."
+    "Automatically persist the Info history in `Info-saved-history-file'."
     :init-value nil :global t :group 'Info-Plus
     (cond (Info-persist-history-mode
            (add-hook 'kill-emacs-hook 'Info-save-history-list)
@@ -2395,7 +2401,6 @@ unvisited state."
            (remove-hook 'kill-emacs-hook 'Info-save-history-list)
            (advice-remove 'Info-kill-buffer 'Info-save-history-list)
            (advice-remove 'Info-directory 'Info-restore-history-list))))
-
   )
 
 (when (> emacs-major-version 23) ; Emacs 23 `revert-buffer' invokes a poor `kill-buffer' etc.
@@ -2508,7 +2513,7 @@ line from non-nil `Info-use-header-line'."
 (make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header "2014/03/04")
 
 
-(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Emacs 24.4+
+(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Bookmark+ loaded.
 
   (defun Info-toggle-node-access-invokes-bookmark (&optional msgp)
     "Toggle option `Info-node-access-invokes-bookmark-flag'."
@@ -3379,8 +3384,9 @@ refontifies the buffer to hide link prefix `*Note'."
 
 
 
+(defvar info-node-name nil "")
 
-;; Note: This is not super-clean code (it's kind of a hack job).
+;; Note: This code is not so clean (it's kind of a hack job).
 ;;;###autoload (autoload 'Info-merge-subnodes "info+")
 (defun Info-merge-subnodes (&optional recursive-display-p recursive-call-p)
   "Integrate current node with nodes referred to in its Menu.
@@ -3452,123 +3458,123 @@ subnodes (outside Info)? ")
 `\\[describe-function] Info-merge-subnodes'.")))) ; Defined in `help.el'.
   (garbage-collect)
   (setq recursive-display-p  (and recursive-display-p  (prefix-numeric-value recursive-display-p)))
-  (let* ((buf                        (current-buffer)) ; Info buffer
-         (single-buf-p               (and recursive-display-p  (zerop recursive-display-p)))
-         (infop-node-name            (or (and single-buf-p  recursive-call-p)  Info-current-node))
-         (rep-buf                    (get-buffer-create (concat "*Info: " infop-node-name "*"))) ; Merge buffer.
-         (more                       t)
-         (inhibit-field-text-motion  t) ; Just to be sure, for `end-of-line'.
-         token oldpt strg menu-item-line ind)
+  (let ((buf           (current-buffer)) ; Info buffer
+        (single-buf-p  (and recursive-display-p  (zerop recursive-display-p))))
+    (setq info-node-name  (or (and single-buf-p  recursive-call-p)  Info-current-node))
+    (let ((inhibit-field-text-motion  t) ; Just to be sure, for `end-of-line'.
+          (more                       t)
+          (rep-buf                    (get-buffer-create (concat "*Info: " info-node-name "*"))) ; Merge buffer.
+          token oldpt strg menu-item-line ind)
 
-    (when (interactive-p)
-      (message "Processing node `%s' and %ssubnodes..." infop-node-name
-               (if recursive-display-p "all of its " "its immediate ")))
-    (save-window-excursion
-      (goto-char (point-min))
-      (forward-line 1)
-      (setq strg  (buffer-substring (point) (point-max))) ; Node contents.
-      (goto-char (point-min))
-      (setq more  (search-forward "* menu" nil t))
-      (forward-line 1)
+      (when (interactive-p)
+        (message "Processing node `%s' and %ssubnodes..." info-node-name
+                 (if recursive-display-p "all of its " "its immediate ")))
+      (save-window-excursion
+        (goto-char (point-min))
+        (forward-line 1)
+        (setq strg  (buffer-substring (point) (point-max))) ; Node contents.
+        (goto-char (point-min))
+        (setq more  (search-forward "* menu" nil t))
+        (forward-line 1)
 
-      ;; Merge buffer: Insert buffer header and main node's contents, if not recursive or
-      ;;                                                              do want redundancy.
-      ;;               Then insert each subnode (unless this is an Index).
-      (switch-to-buffer-other-window rep-buf)
-      (unless (and recursive-call-p  single-buf-p)
-        (erase-buffer)
-        (funcall Info-display-node-header-fn) ; Insert header.
-        (insert (concat "\n\n" (and (or (not recursive-call-p) ; Top-level call.
-                                        (and recursive-display-p ; Redundancy desired.
-                                             (> recursive-display-p 0)))
-                                    strg)))) ; Insert main node's contents.
+        ;; Merge buffer: Insert buffer header and main node's contents, if not recursive or
+        ;;                                                              do want redundancy.
+        ;;               Then insert each subnode (unless this is an Index).
+        (switch-to-buffer-other-window rep-buf)
+        (unless (and recursive-call-p  single-buf-p)
+          (erase-buffer)
+          (funcall Info-display-node-header-fn) ; Insert header.
+          (insert (concat "\n\n" (and (or (not recursive-call-p) ; Top-level call.
+                                          (and recursive-display-p ; Redundancy desired.
+                                               (> recursive-display-p 0)))
+                                      strg)))) ; Insert main node's contents.
 
-      (unless  (string-match "\\s-*Index$" infop-node-name) ; Don't recurse down Index menus.
+        (unless  (string-match "\\s-*Index$" info-node-name) ; Don't recurse down Index menus.
 
-        ;; Insert menu items and possibly their subnodes.
-        (save-excursion
-          (while more
+          ;; Insert menu items and possibly their subnodes.
+          (save-excursion
+            (while more
 
-            ;; Info buffer: Get menu item token.
-            (set-buffer buf)
-            (end-of-line)
-            (setq oldpt  (point)
-                  more   (search-forward "\n* " nil t)) ; Possible next menu item.
-            (unless more (goto-char (point-max)))
-            (while (and (not (eobp))    ; Search for a real menu item.
-                        (not (setq token  (Info-get-token ; File menu item.
-                                           (point) "\\* " "\\* \\([^:]*\\)::")))
-                        (not (setq token  (Info-get-token ; Nonfile menu item.
-                                           (point) "\\* "
-                                           "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]"))))
-              (setq more  (search-forward "\n* " nil t)))
-            (unless token (setq more  nil)) ; No menu item. Done.
-
-            ;; Treat subnode (menu item).
-            (when more
-
-              ;; Merge buffer: Insert separator line.
-              (set-buffer rep-buf)
-              (goto-char (point-max))
-              (insert Info-subtree-separator) ; Ready for next menu item.
-
-              ;; Info buffer: Go to subnode.
+              ;; Info buffer: Get menu item token.
               (set-buffer buf)
-              (Info-goto-node token)
-              (goto-char (point-min))
-              (forward-line 1)
-              (setq strg  (buffer-substring (point) (point-max))) ; Pick up subnode contents.
+              (end-of-line)
+              (setq oldpt  (point)
+                    more   (search-forward "\n* " nil t)) ; Possible next menu item.
+              (unless more (goto-char (point-max)))
+              (while (and (not (eobp))  ; Search for a real menu item.
+                          (not (setq token  (Info-get-token ; File menu item.
+                                             (point) "\\* " "\\* \\([^:]*\\)::")))
+                          (not (setq token  (Info-get-token ; Nonfile menu item.
+                                             (point) "\\* "
+                                             "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]"))))
+                (setq more  (search-forward "\n* " nil t)))
+              (unless token (setq more  nil)) ; No menu item. Done.
 
-              ;; Go back to parent node and get menu-item line.
-              (Info-history-back)
-              (let ((inhibit-read-only  t)) ; Get untabified menu-item line, so can count
-                (buffer-enable-undo) (undo-start) ; chars to underline.
-                (untabify (point) (save-excursion (forward-line 1) (point)))
-                (setq menu-item-line  (buffer-substring-no-properties
-                                       (save-excursion (beginning-of-line) (forward-char 2) (point))
-                                       (save-excursion (forward-line 1) (point))))
-                (when pending-undo-list (undo-more 1)) ; Only if did something.
-                (buffer-disable-undo))
-              ;; Merge buffer: Insert menu-item line, underline it, and insert subnode contents.
-              (set-buffer rep-buf)
-              (insert menu-item-line)
-              (setq ind  (1+ (length menu-item-line)))
-              (while (> ind 0) (insert "=") (setq ind  (1- ind))) ; Underline menu item.
-              (insert "\n")
-              (put-text-property (save-excursion (forward-line -2) (point))
-                                 (save-excursion (forward-line 1) (point))
-                                 'font-lock-face 'info-file)
-              (setq oldpt  (point))
-              (insert strg)             ; Insert subnode contents.
-              (indent-rigidly oldpt (point) 2)
-              ;; Recursive call: Insert subnode's subnodes, if there are any.
-              ;; Again, though, don't recurse down Index menus.
-              (when (and recursive-display-p  (not (string-match "\\s-*Index$" token)))
-                ;; Info buffer: Go back to subnode.
-                ;; If it has a menu, then treat its subnodes, recursively.
-                (with-current-buffer buf
-                  (Info-goto-node token)
-                  (when (search-forward "* menu" nil t)
-                    (forward-line 1) (end-of-line)
-                    (when (and (search-forward "\n* " nil t)
-                               (or (Info-get-token (point) "\\* " "\\* \\([^:]*\\)::") ; file menu item
-                                   (Info-get-token (point) "\\* " ; nonfile menu item
-                                                   "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]")))
-                      (Info-merge-subnodes recursive-display-p infop-node-name)))
-                  (set-buffer buf) ; Info buffer: Go back to parent node.
-                  (Info-history-back)))
-              (set-buffer buf))))))     ; Info buffer
-    ;; Merge buffer
-    (switch-to-buffer-other-window rep-buf)
-    (when (and (one-window-p t)  (not (window-minibuffer-p)) (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
-               Info-fit-frame-flag)
-      (fit-frame))
-    (goto-char (point-min))
-    (set-buffer-modified-p nil)
-    (use-local-map Info-merged-map)
-    (when (interactive-p)
-      (message "Processing node `%s' and %ssubnodes... done" infop-node-name
-               (if recursive-display-p "all of its " "its immediate ")))))
+              ;; Treat subnode (menu item).
+              (when more
+
+                ;; Merge buffer: Insert separator line.
+                (set-buffer rep-buf)
+                (goto-char (point-max))
+                (insert Info-subtree-separator) ; Ready for next menu item.
+
+                ;; Info buffer: Go to subnode.
+                (set-buffer buf)
+                (Info-goto-node token)
+                (goto-char (point-min))
+                (forward-line 1)
+                (setq strg  (buffer-substring (point) (point-max))) ; Pick up subnode contents.
+
+                ;; Go back to parent node and get menu-item line.
+                (Info-history-back)
+                (let ((inhibit-read-only  t)) ; Get untabified menu-item line, so can count
+                  (buffer-enable-undo) (undo-start) ; chars to underline.
+                  (untabify (point) (save-excursion (forward-line 1) (point)))
+                  (setq menu-item-line  (buffer-substring-no-properties
+                                         (save-excursion (beginning-of-line) (forward-char 2) (point))
+                                         (save-excursion (forward-line 1) (point))))
+                  (when pending-undo-list (undo-more 1)) ; Only if did something.
+                  (buffer-disable-undo))
+                ;; Merge buffer: Insert menu-item line, underline it, and insert subnode contents.
+                (set-buffer rep-buf)
+                (insert menu-item-line)
+                (setq ind  (1+ (length menu-item-line)))
+                (while (> ind 0) (insert "=") (setq ind  (1- ind))) ; Underline menu item.
+                (insert "\n")
+                (put-text-property (save-excursion (forward-line -2) (point))
+                                   (save-excursion (forward-line 1) (point))
+                                   'font-lock-face 'info-file)
+                (setq oldpt  (point))
+                (insert strg)           ; Insert subnode contents.
+                (indent-rigidly oldpt (point) 2)
+                ;; Recursive call: Insert subnode's subnodes, if there are any.
+                ;; Again, though, don't recurse down Index menus.
+                (when (and recursive-display-p  (not (string-match "\\s-*Index$" token)))
+                  ;; Info buffer: Go back to subnode.
+                  ;; If it has a menu, then treat its subnodes, recursively.
+                  (with-current-buffer buf
+                    (Info-goto-node token)
+                    (when (search-forward "* menu" nil t)
+                      (forward-line 1) (end-of-line)
+                      (when (and (search-forward "\n* " nil t)
+                                 (or (Info-get-token (point) "\\* " "\\* \\([^:]*\\)::") ; file menu item
+                                     (Info-get-token (point) "\\* " ; nonfile menu item
+                                                     "\\* [^:]*:[ \t]+\\([^\t,.\n]+\\)[\t,.\n]")))
+                        (Info-merge-subnodes recursive-display-p info-node-name)))
+                    (set-buffer buf) ; Info buffer: Go back to parent node.
+                    (Info-history-back)))
+                (set-buffer buf))))))   ; Info buffer
+      ;; Merge buffer
+      (switch-to-buffer-other-window rep-buf)
+      (when (and (one-window-p t)  (not (window-minibuffer-p)) (fboundp 'fit-frame) ; Defined in `fit-frame.el'.
+                 Info-fit-frame-flag)
+        (fit-frame))
+      (goto-char (point-min))
+      (set-buffer-modified-p nil)
+      (use-local-map Info-merged-map)
+      (when (interactive-p)
+        (message "Processing node `%s' and %ssubnodes... done" info-node-name
+                 (if recursive-display-p "all of its " "its immediate "))))))
 
 ;;;###autoload (autoload 'Info-virtual-book "info+")
 (defun Info-virtual-book (book nodes &optional include-bookmark-nodes-p)
@@ -3861,41 +3867,72 @@ candidates."
 ;;; Replacements for Existing Functions -------------------------------
 
 
-;; REPLACE ORIGINAL in `info.el':
+;; ADVISE ORIGINAL `Info-history' in `info.el':
 ;;
 ;; Added prefix arg.
 ;;
-(defadvice Info-history (around clear-info-hist-with-prefix-arg first (&optional clearp) activate)
-  "With a prefix arg, clear the history instead, upon confirmation."
-  (interactive "P")
-  (if (not (ad-get-arg 0))
-      ad-do-it
-    (when (equal "*History*" Info-current-file) (Info-up))
-    (call-interactively #'Info-history-clear)))
+
+(if (not (fboundp 'advice-add))         ; Emacs < 24.4
+
+    (defadvice Info-history (around info--Info-history-prefix-arg-clears-hist first (&optional clearp) activate)
+      "With a prefix arg, clear the history instead, upon confirmation."
+      (interactive "P")
+      (if (not (ad-get-arg 0))
+          ad-do-it
+        (when (equal "*History*" Info-current-file) (Info-up))
+        (call-interactively #'Info-history-clear)))
+
+  (defun info--Info-history-prefix-arg-clears-hist (orig-fun &optional clearp) ; Emacs 24.4+
+    "With a prefix arg, clear the history instead, upon confirmation."
+    (interactive "P")
+    (if (not clearp)
+        (funcall orig-fun clearp)
+      (when (equal "*History*" Info-current-file) (Info-up))
+      (call-interactively #'Info-history-clear)))
+  (advice-add 'Info-history :around #'info--Info-history-prefix-arg-clears-hist)
+
+  )
 
 
-;; REPLACE ORIGINAL in `info.el':
+;; ADVISE ORIGINAL `Info-goto-node' in `info.el':
 ;;
 ;; Respect option `Info-node-access-invokes-bookmark-flag'.
 ;;
-(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Emacs 24.4+
+(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Bookmark+ loaded.
 
-  (defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
-    "Respect option `Info-node-access-invokes-bookmark-flag'.
+  (if (not (fboundp 'advice-add))       ; Emacs < 24.4
+
+      (defadvice Info-goto-node (around info--goto-node-maybe-invoke-bookmark activate)
+        "Respect option `Info-node-access-invokes-bookmark-flag'.
 If the option is non-nil then a bookmark for the node is invoked when
 the node is visited, provided that the bookmark name has the default
 form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
-    (if Info-node-access-invokes-bookmark-flag
-        (let ((node  (ad-get-arg 0)))
+        (if Info-node-access-invokes-bookmark-flag
+            (let ((node (ad-get-arg 0)))
+              (if (member node (Info-index-nodes))
+                  ad-do-it
+                (let ((bmk (and Info-node-access-invokes-bookmark-flag (Info-bookmark-for-node node))))
+                  (if bmk
+                      (let ((Info-node-access-invokes-bookmark-flag nil)) (bookmark--jump-via bmk 'ignore))
+                    ad-do-it))))
+          ad-do-it))
+
+    (defun info--goto-node-maybe-invoke-bookmark (orig-fun node &rest args) ; Emacs 24.4+
+      "Respect option `Info-node-access-invokes-bookmark-flag'.
+ If the option is non-nil then a bookmark for the node is invoked when
+ the node is visited, provided that the bookmark name has the default
+ form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
+      (if Info-node-access-invokes-bookmark-flag
           (if (member node (Info-index-nodes))
-              ad-do-it
+              (apply orig-fun node args)
             (let ((bmk  (and Info-node-access-invokes-bookmark-flag  (Info-bookmark-for-node node))))
               (if bmk
                   (let ((Info-node-access-invokes-bookmark-flag  nil)) (bookmark--jump-via bmk 'ignore))
-                ad-do-it))))
-      ad-do-it))
+                (apply orig-fun node args))))
+        (apply orig-fun node args)))
+    (advice-add 'Info-goto-node :around #'info--goto-node-maybe-invoke-bookmark)
 
-  )
+    ))
 
 
 ;; REPLACE ORIGINAL in `info.el':
@@ -7248,10 +7285,10 @@ Value for current manual, if non-nil, else global value."
 
 (defun Info-display-node-default-header ()
   "Insert node name as header."
-  ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
+  ;; `info-node-name' is free here - set in `Info-merge-subnodes'.
   (insert (if (fboundp 'concat-w-faces)
-              (concat-w-faces (list 'info-title-1 infop-node-name)) ; FREE: INFOP-NODE-NAME
-            infop-node-name)
+              (concat-w-faces (list 'info-title-1 info-node-name)) ; FREE: INFOP-NODE-NAME
+            info-node-name)
           "\n")
   (goto-char (point-min))
   (center-line 2))
@@ -7375,8 +7412,8 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
 ;;; ;; Not currently used.
 ;;; (defun Info-display-node-time-header ()
 ;;;   "Insert current time and node name as header."
-;;;   ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
-;;;   (insert (current-time-string) "    " infop-node-name) ; FREE here: INFOP-NODE-NAME
+;;;   ;; `info-node-name' is free here - set in `Info-merge-subnodes'.
+;;;   (insert (current-time-string) "    " info-node-name) ; FREE here: INFOP-NODE-NAME
 ;;;   (beginning-of-buffer)
 ;;;   (center-line))
 
