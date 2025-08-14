@@ -1,36 +1,49 @@
 [[es:EmacsParaMacOS]]
-== Binaries for OS X ==
-The official Emacs fully supports Mac OS X (along with GNU/Linux, Windows, DOS, and then some).  You can find precompiled versions of emacs and Emacs.app at http://emacsformacosx.com/.
 
-Versions of macOS prior to 10.15 Catalina include a copy of GNU Emacs 22 without GUI support compiled in and thus Emacs is automatically available on all but the most recent versions of macOS via the terminal. On macOS 10.15 Catalina and higher, [[mg]] (previously known as microGNUemacs) is still included. However, there are other Emacs distributions geared towards macOS that include GUI support as well as other features that may make it a more appropriate choice for some, if not most people.
+== macOS and Emacs versions ==
+The official Emacs fully supports Mac OS X (along with GNU/Linux, Windows, DOS, and then some).  
 
-Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (which was merged into the official Emacs as of Emacs-23) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
+Versions of macOS prior to 10.15 Catalina include a copy of GNU Emacs 22 without GUI support compiled in and thus Emacs is automatically available on all but the most recent versions of macOS via the terminal. 
 
-Carbon is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
+On macOS 10.15 Catalina and higher, [[mg]] (previously known as microGNUemacs) is still included. However, there are other Emacs distributions geared towards macOS that include GUI support as well as other features that may make it a more appropriate choice for some, if not most people.
 
-X11 Emacs is the "original" emacs running under X11. An X11 server available for Mac OS X is [[https://en.wikipedia.org/wiki/XQuartz XQuartz]]. (Mac OS has no X11 server included by default; this has been the case since Mac OS X 10.8 Mountain Lion in 2012.)
+=== A Note on Nomenclature === 
+**Cocoa** is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications, which has been included in Emacs since version 23.2.  Aquamacs and Emacs.app (which was merged into the official Emacs as of Emacs-23) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
 
-If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
-If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  
+**Carbon** is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
 
-As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files. When using the vanilla EmacsforOsx binary, a useful site for setting, at least, Emacs server and Emacs client applications is [https://korewanetadesu.com/emacs-on-os-x.html Configuring Emacs on Mac OS X]. Emacs shell environments behave differently from Terminal environments and in order to have correct environments like LANG=en_GB.utf-8 LC_ALL=en_GB.utf-8 or PATH= for sub-applications launched from Emacs like R, Octave, Gnuplot etc., set the environments not only in .bash_profile but in .bashrc and try (since Yosemite /etc/launchd.conf is no more consulted for security reasons).  
+**X11 Emacs** is the "original" Emacs running under X11. An X11 server available for Mac OS X is [[https://en.wikipedia.org/wiki/XQuartz XQuartz]]. (Mac OS has no X11 server included by default; this has been the case since Mac OS X 10.8 Mountain Lion in 2012.)
 
-If you are looking for more integration with OSX, Mitsuharu Yamamoto's Mac port might be the best option.
 
-=== OS X Binary Vanilla builds ===
-These builds are based on the development version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
+== Vanilla Emacs for macOS ==
 
-* http://emacsformacosx.com/ -- "Pure Emacs! No Extras! No Nonsense!" The site makes available [http://emacsformacosx.com/builds Releases, Pretests & Nightlies].
+* http://emacsformacosx.com/ -- "Pure Emacs! No Extras! No Nonsense!" The site makes available [http://emacsformacosx.com/builds Releases, Pretests & Nightlies] and is maintained by [[DavidCaldwell]]. 
 
-=== OS X Distributions with extras ===
+These builds are based on the 30.1 version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available such as //Command-O// for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). .
+
+When using the vanilla EmacsforOsx binary, a useful site for setting, at least, Emacs server and Emacs client applications is [https://korewanetadesu.com/emacs-on-os-x.html Configuring Emacs on Mac OS X]. 
+
+Emacs shell environments behave differently from Terminal environments and in order to have correct environments and paths set up correctly, please consider using StevePurcell's [https://github.com/purcell/exec-path-from-shell exec-path-from-shell]  library.
+
+
+=== macOS Distributions with extras ===
 
 Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
 
-* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (28.1 as of 2022-05) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
+* [https://github.com/d12frosted/homebrew-emacs-plus Emacs Plus for Homebrew] is installed via homebrew and allows you to download Emacs versions 29, 30, and development.  It includes an injected PATH value from the user shell (based on StevePurcell's exec-path-from-shell library) as well as: unconditional support for gnutls, librsvg, webp, libxml2, little-cms2 and dynamic modules, built with native compilation, and is based on Cocoa.
 
-* AquamacsEmacs (https://aquamacs.org/) is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.  Recommended for Mac users who want an Emacs that is tailored to the Mac.   [http://aquamacs.org/nightlies.shtml Experimental versions] based on GNU Emacs 25 are also available.
 
-* [https://emacs-modified.gitlab.io/macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS] and AUCTeX. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
+* [https://github.com/jimeh/emacs-builds jimeh's Emacs Builds] offers either build scripts or homebrew installation of stable and development versions of Emacs.  It incorporates many of Emacs Plus' macOS-specific patches, as well as options such as Xwidget-webkit support, native XML and JSON parsing, and dynamic module loading.
+
+
+* [https://emacs-modified.gitlab.io/macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS], AUCTeX, and the R programming language. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
+
+
+* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on GNU Emacs 29.4 (as of 2025-03) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
+
+
+* AquamacsEmacs (https://aquamacs.org/) is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and Asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.    Aquamacs was created by [DavidReitter] and is currently maintained by Win Treese.
+
 
 == Building Emacs From Source ==
 
@@ -38,51 +51,60 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 ==== GIT ====
 
-To download emacs using git, use this command:
+To download Emacs using git, use this command:
 
     git clone git://git.savannah.gnu.org/emacs.git
 
 ==== Tarball ====
 
-Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] page.  Click on "Download Area" under "Quick Overview".
+Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah Emacs] page.  Click on "Download Area" under "Quick Overview".
 
 === Building Emacs for OS X, using the normal GUI ===
 
-There are many options for building emacs (such as whether to build for the X11 GUI or the Cocoa GUI), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+There are many options for building Emacs (such as whether to build for the X11 GUI or the Cocoa GUI), which are discussed in the INSTALL file. There is also a script (Emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
-To build Emacs under Mac OS X:
+To build Emacs under macOS 15 Sequoia you'll first need to ensure you have several dependencies installed:
 
 <pre>
-  ./configure [-FLAGS]
-  make install
+brew install gnutls texinfo autoconf
 </pre>
 
-NOTE: ./configure --help will display all available compilation flags.
+Native compilation also requires 
+<pre>
+brew install zlib libgccjit
+</pre> 
 
-When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
 
-Alternately, you can run `open -R nextstep/Emacs.app` from the command line to move the Emacs.app to Applications.
+==== Building the source ====
+<pre>
+  ./autogen.sh
+  ./configure [-FLAGS]
+  gmake -j$(proc) ;$(proc) is the number of processes you want to use; -j8 is a common flag.
+  gmake install
+</pre>
+
+NOTE: <tt>./configure --help</tt> will display all available compilation flags.
+
+When the build is complete, you should see Emacs.app in the nextstep/ directory  Simply copy it to your applications folder and open it to run.
+
+Alternately, you can run 
+<pre>
+open -R nextstep/Emacs.app
+</pre>
+from the command line to move the Emacs.app to Applications.
 
 For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.
 
-[new:CarlGroner:2011-10-20 18:26 UTC] 
-As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in <tt>autogen/copy_autogen</tt> for more information.
 
 ==== Aquamacs ====
 
-AquamacsEmacs can be built via build script or manually. The source is available from a Git repository.  Then, do:
+AquamacsEmacs can be built via build script or manually if you don't want to use the pre-compiled binary. The source is available from the [https://github.com/aquamacs-emacs/aquamacs-emacs git repository].  Then, use at the command line:
 
 <pre>
-  ./configure
-  make
-  make install
+./build-aquamacs
 </pre>
 
-When the build is complete, find Aquamacs.app in ./nextstep/.
-
-Note: changes to any source files in src/ require a simple "make".  The binary will directly be installed into nextstep/Aquamacs.app.  Changes to source files in lisp/ require a "make install".  Changes to any lisp files directly in the .app bundle may or may not take effect (upon restarting Aquamacs): for many such files (list lisp/site-load.el), you must call "make".
-
-Detailed build instructions are available on BuildingAquamacs.
+Detailed build instructions are available in the <tt>aquamacs/build/BUILD-AQUAMACS.txt</tt> file or in BuildingAquamacs.
 
 ==== X11 Emacs ====
 
@@ -96,7 +118,7 @@ Directions to build and install may be found in the INSTALL or INSTALL.REPO file
 
 ==== Carbon Emacs (for Emacs<23) ====
 
-Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
+Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the Carbon Emacs application uses the commands:
 
 <pre>
     ./configure --enable-carbon-app
@@ -104,36 +126,40 @@ Directions to build and install may be found in the file newly downloaded to ema
     sudo make install
 </pre>
 
-Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x. This is why the option --enable-carbon-app is no longer recognised by configure.
+Note: Carbon Emacs has been replaced with Cocoa Emacs in Emacs 23.x. This is why the option --enable-carbon-app is no longer recognised by configure.
 
 
 == Installing Emacs with a Package Manager ==
 
 Package managers provide a convenient way to install and maintain/upgrade software.
 
-=== Fink ===
-
-Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes various versions of Emacs in packages such as `emacs23`, `emacs24`, emacs24-nox`.  It also includes packages for various Emacs extensions such as AUCTeX.
-
 === Homebrew ===
 
-[http://brew.sh/ Homebrew] has Emacs 30.1 as of June 2025.
+[http://brew.sh/ Homebrew] has Emacs 30.1 as of June 2025 and is installed via 
+
+<pre>
+brew install emacs
+</pre>
+
+Note: The above formula [https://emacs.stackexchange.com/questions/81202/brew-install-emacs-vs-brew-cask-install-emacs does NOT] include the GUI.  For the GUI package, use the --cask formula below.
 
 ==== Cask homebrew installation ====
 
-Homebrew now recommends to use the cask version with the following message: "Please try the Cask for a better-supported Cocoa version"
-
-To install the cask version:
+This can be installed via 
 
 <pre>
 brew install --cask emacs
 </pre>
 
-This installs a pre-built package from https://emacsformacosx.com/
+This installs a pre-built package from [https://emacsformacosx.com/ Emacs for MacOSX].
 
-==== Standard homebrew installation ====
 
-If you prefer not to run the cask version, you can still use the old homebrew recipe.
+==== Other homebrew notes ====
+
+* The current Homebrew path for Emacs is 
+<pre> 
+/opt/homebrew/bin/emacs 
+</pre>
 
 * A Cocoa-specific Emacs.app can be built using the <tt>--with-cocoa</tt> switch.
 * A version supporting X11 can be built using the <tt>--with-x</tt> switch. Note that this version will not have all of the features of the Cocoa version; use only if necessary.
@@ -161,52 +187,23 @@ ln -Fs $(find /usr/local -name "Emacs.app") /Applications/Emacs.app
 
 This creates a symlink and not an alias. So Spotlight may not find it (tested on macOS Sierra 10.12.2). Spotlight indexes symlinks to files that are treated as system files, but it doesn't show them in the GUI. It does show aliases though, so you could just command-option-drag <code>/usr/local/Cellar/emacs/*/Emacs.app</code> to <code>/Applications/</code> from Finder. Or:
 
+=== Call AppleScript from Emacs ===
+
 <pre>
 $ osascript -e "tell application \"Finder\" to make alias file to (POSIX file \"/usr/local/Cellar/emacs-plus/25.3/Emacs.app\") at POSIX file \"$HOME/Applications\""
 </pre>
 
 After installation, using the <tt>emacs</tt> command in the terminal defaults to opening Emacs.app in a new window, separate from the terminal. This represents a change in behaviour from the version of <tt>emacs</tt> pre-installed on macOS 10.14 and earlier. If you want to run <tt>emacs</tt> in the terminal then it must be invoked with the <tt>-nw</tt> "non-windowed" flag. You are required to configure environment variables (EDITOR and/or VISUAL), shell profiles (.bash_profile) and other configuration files (.git_config) to invoke <tt>emacs -nw</tt> if this is your desired default.
 
-==== Emacs-Plus version in tap ====
-
-To instead use the [https://github.com/d12frosted/homebrew-emacs-plus emacs-plus] version, which is like regular homebrew emacs but with some configuration options enabled, 
-
-<pre>
-brew tap d12frosted/emacs-plus
-brew install emacs-plus
-</pre>
-
-
-==== Mitsuharu version in tap ====
-
-To instead use the Yamamoto Mitsuharu version of Emacs (27.1 as of 2020-11) (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
-
-<pre>
-brew tap railwaycat/emacsmacport
-brew install emacs-mac
-</pre>
-
-and finally link it to your Applications folder (default Homebrew App location):
-<pre>
-ln -s /usr/local/opt/emacs-mac/Emacs.app /Applications
-</pre>
 
 === MacPorts ===
 
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on Mac OS X or macOS
 (and even other Unix-like systems for that matter which !MacPorts also supports).
 
-As of May 30, 2022 it provides the following packages:
-* emacs 28.1
-* emacs-app 28.1
-* emacs-mac-app 9.0
-* xemacs 21.4.22
-* and quite a few more...
+MacPorts provides a number of builds, ports, and variations of Emacs versions and OSX/Darwin versions for download.
 
-See [http://www.macports.org/ports.php?by=name&substr=emacs Available Ports] for the current list.
-
-The emacs executable installs to:
-<code>/opt/local/bin/emacs</code>
+See [https://ports.macports.org/port/emacs/details/ Available Builds], and [https://ports.macports.org/search/?q=emacs&name=on Available Ports] for the current list.
 
 The emacs-app executable installs to:
 <code>/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs</code>
@@ -249,15 +246,11 @@ sudo port install emacs-mac-app
 
 The application will appear in your Applications/MacPorts folder.
 
-=== pkgsrc ===
+=== Notes on earlier Mac verions ===
 
-pkgsrc [https://pkgsrc.org/ http://pkgsrc.org/] is yet another means of installing Emacs on Mac OS X or macOS.
 
-Prebuilt binaries are available from [https://pkgsrc.joyent.com/install-on-osx/ https://pkgsrc.joyent.com/install-on-osx/].
-
-<pre>
-pkgin in emacs
-</pre>
+[new:CarlGroner:2011-10-20 18:26 UTC] 
+As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in <tt>autogen/copy_autogen</tt> for more information.
 
 
 == Terminal Emulation ==
@@ -370,9 +363,7 @@ Alt-b and Alt-f for navigating by word also works for your shell now.
 
 === Call AppleScript from Emacs ===
 
-I use Andrew Choi's build of GNU Emacs at work every day on OS X. I keep some notes and some Lisp functions for calling AppleScript from Emacs in my advogato.org diary:
 
-http://advogato.org/person/wainstead/
 
 === Encoding for Terminal.app on OS X  ===
 
