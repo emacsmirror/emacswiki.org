@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 24 12:52:56 2025 (-0700)
+;; Last-Updated: Fri Aug 15 09:27:36 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 4440
+;;     Update #: 4442
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -787,6 +787,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2025/08/15 dadams
+;;     Added WHEN arg to make-obsolete, for 23+ compatibility.
 ;; 2025/07/24 dadams
 ;;     Wrap zones highlighting with (when (> emacs-major-version 21)...).
 ;;     Don't use define-obsolete-function-alias, for compatibility with Emacs 20 byte-compiler.
@@ -1151,6 +1153,7 @@
 (defvar hi-lock-mode)
 (defvar hlt-act-on-any-face-flag)
 (defvar icicle-mode)                    ; In `icicles-mode.el'
+(defvar menu-bar-edit-region-menu)      ; In `menu-bar+.el'
 (defvar multi-isearch-buffer-list)      ; In `misearch.el'
 (defvar search-map)                     ; In `bindings.el', Emacs 23+
 
@@ -2636,19 +2639,19 @@ If the current value is nil, it is set to the last non-nil value."
   ;; Avoid using `define-obsolete-function-alias', for compatibility with Emacs 20 byte-compiler.
   ;;
   (defalias      'zz-izone-limits         #'zz-basic-zones)
-  (make-obsolete 'zz-izone-limits         #'zz-basic-zones)
+  (make-obsolete 'zz-izone-limits         #'zz-basic-zones "2025-07")
   (defalias      'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs)
-  (make-obsolete 'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs)
+  (make-obsolete 'zz-izone-limits-in-bufs #'zz-basic-zones-in-bufs "2025-07")
 
   (defalias      'hlt-highlight-regions        #'hlt-highlight-zones)
-  (make-obsolete 'hlt-highlight-regions        #'hlt-highlight-zones)
+  (make-obsolete 'hlt-highlight-regions        #'hlt-highlight-zones "2025-07")
   (defalias      'hlt-highlight-regions-in-buf #'hlt-highlight-zones-in-bufs)
-  (make-obsolete 'hlt-highlight-regions-in-buf #'hlt-highlight-zones-in-bufs)
+  (make-obsolete 'hlt-highlight-regions-in-buf #'hlt-highlight-zones-in-bufs "2025-07")
 
   (defalias      'hlt-unhighlight-regions         #'hlt-unhighlight-zones)
-  (make-obsolete 'hlt-unhighlight-regions         #'hlt-unhighlight-zones)
+  (make-obsolete 'hlt-unhighlight-regions         #'hlt-unhighlight-zones "2025-07")
   (defalias      'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs)
-  (make-obsolete 'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs)
+  (make-obsolete 'hlt-unhighlight-regions-in-bufs #'hlt-unhighlight-zones-in-bufs "2025-07")
 
   ;; No need to use (zz-basic-zones zz-izones nil 'ONLY-THIS-BUFFer), since `hlt-highlight-region' DTRT.
 ;;;###autoload
