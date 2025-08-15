@@ -2,7 +2,7 @@ Back on [[2025-07-04]] I switched off DuckDuckGo integration. I've been wonderin
 Personally, I usually just use "matching pages" because it's super fast and almost always what I want.
 
 I've also been experimenting with writing a search engine for single sites like this one, or "for communities" (such as all the blogs on [https://planet.emacslife.com/ Planet Emacslife]).
-It's called [Xobaque](https://src.alexschroeder.ch/xobaque.git/) and I've fed it with the whole text of this site and of my homepage.
+It's called [https://src.alexschroeder.ch/xobaque.git/ Xobaque] and I've fed it with the whole text of this site and of my homepage.
 I wanted to see whether it would be possible to index multiple sites and then still limit search results to just one site.
 
 Here's an experimental setup (using HTTP, hosted on a different domain):
