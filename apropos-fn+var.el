@@ -1,4 +1,4 @@
-;;; apropos-fn+var.el --- Apropos for functions and variables
+;;; apropos-fn+var.el --- Apropos for functions and variables  -*- lexical-binding: t -*-
 ;;
 ;; Filename: apropos-fn.el
 ;; Description: Apropos for functions and variables
@@ -6,18 +6,18 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
-;; Version:
+;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 09:22:27 2018 (-0800)
+;; Last-Updated: Fri Aug 15 11:35:55 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 407
+;;     Update #: 462
 ;; URL: https://www.emacswiki.org/emacs/download/apropos-fn%2bvar.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `naked'.
+;;   `apropos', `button', `naked'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,6 +63,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/08/15 dadams
+;;     Added lexical-binding cookie.
+;;     apropos-print: Added version for Emacs 30+.
 ;; 2015/04/25 dadams
 ;;     Removed: apropos-print--1 (Emacs 24.4+ does not use with-help-window after all.)
 ;;     Renamed per Emacs 24.4+: face apropos-option to apropos-option-button,
@@ -123,21 +126,27 @@
 
 ;; Quiet byte compiler
 (defvar apropos-compact-layout)
+(eval-when-compile (defvar apropos-item)) ; Emacs 22+ (but really should be lexical in Emacs 30+)
+(defvar apropos-keybinding-face) ; Emacs < 22
+(defvar apropos-label-face) ; Emacs < 22
+(defvar apropos-symbol-face) ; Emacs < 22
 (defvar apropos-multi-type)
 (defvar apropos-pattern)
 (defvar apropos-sort-by-scores)
+(defvar help-window-select)             ; `help.el', Emacs 23+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (if (< emacs-major-version 22)
+
     (defun apropos-function (pattern)
       "Show functions that match PATTERN (a regular expression).
 This includes functions that are not commands."
       (interactive "i")                 ; Ignored when interactive
       (if (interactive-p)
-          (let ((apropos-do-all t))
-            (call-interactively 'apropos-command))
+          (let ((apropos-do-all  t)) (call-interactively 'apropos-command))
         (apropos-command pattern t)))
+
   (defun apropos-function (pattern)
     "Show functions that match PATTERN.
 This includes functions that are not commands.
@@ -150,27 +159,28 @@ When called from a Lisp program, a string PATTERN is used as a regexp,
 while a list of strings is used as a word list."
     (interactive "i")                   ; Ignored when interactive
     (if (interactive-p)
-        (let ((apropos-do-all t))
-          (call-interactively 'apropos-command))
-      (apropos-command pattern t))))
+        (let ((apropos-do-all  t)) (call-interactively 'apropos-command))
+      (apropos-command pattern t)))
+  )
 
 
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
 ;;; Allow for non user-option variables too.
 ;;; Rename original command as `apropos-option'.
 ;;;
-(or (fboundp 'apropos-option)
-(fset 'apropos-option (symbol-function 'apropos-variable)))
+(unless (fboundp 'apropos-option) (fset 'apropos-option (symbol-function 'apropos-variable)))
 
 (if (< emacs-major-version 22)
-    (defun apropos-variable (pattern &optional ignore)
+
+    (defun apropos-variable (pattern &optional _ignore)
       "Show variables that match PATTERN (a regular expression).
 This includes variables that are not user options."
       (interactive "i")                 ; Ignored when interactive
       (if (interactive-p)
-          (let ((apropos-do-all t)) (call-interactively 'apropos-option))
+          (let ((apropos-do-all  t)) (call-interactively 'apropos-option))
         (apropos-option pattern t)))
-  (defun apropos-variable (pattern &optional ignore)
+
+  (defun apropos-variable (pattern &optional _ignore)
     "Show variables that match PATTERN.
 This includes variables that are not user options.
 PATTERN can be a word, a list of words (separated by spaces),
@@ -179,8 +189,9 @@ search for matches for that word as a substring.  If it is a list of
 words, search for matches for any two (or more) of those words."
     (interactive "i")                   ; Ignored when interactive
     (if (interactive-p)
-        (let ((apropos-do-all t)) (call-interactively 'apropos-option))
-      (apropos-option pattern t))))
+        (let ((apropos-do-all  t)) (call-interactively 'apropos-option))
+      (apropos-option pattern t)))
+  )
 
 
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
@@ -204,8 +215,8 @@ alphabetically by symbol name; but this function also sets
                 (symbolp apropos-label-face)
                 (setq apropos-label-face  `(face ,apropos-label-face mouse-face highlight)))
            (with-output-to-temp-buffer "*Apropos*"
-             (let ((p           apropos-accumulator)
-                   (old-buffer  (current-buffer))
+             (let ((p            apropos-accumulator)
+                   (old-buffer   (current-buffer))
                    symbol  item  point1  point2)
                (set-buffer standard-output)
                (apropos-mode)
@@ -223,7 +234,7 @@ alphabetically by symbol name; but this function also sets
                        point1        (point))
                  (princ symbol)         ; print symbol name
                  (setq point2  (point))
-                 (and do-keys           ; Calculate key-bindings if we want them.
+                 (and do-keys ; Calculate key-bindings if we want them.
                       (commandp symbol)
                       (indent-to 30 1)
                       (if (let ((keys  (save-excursion (set-buffer old-buffer)
@@ -275,7 +286,7 @@ alphabetically by symbol name; but this function also sets
                                                                "Macro"
                                                              "Function"))
                                     t)
-                 ;; We used to use customize-variable-other-window instead for a customizable
+                 ;; We used to use `customize-variable-other-window' instead for a customizable
                  ;; variable, but that is slow.  It is better to show an ordinary help buffer
                  ;; and let the user click on the customization button in that buffer, if he
                  ;; wants to.  Likewise for `customize-face-other-window'.
@@ -288,7 +299,7 @@ alphabetically by symbol name; but this function also sets
                  (apropos-print-doc 'widget-browse-other-window 4 "Widget" t)
                  (apropos-print-doc 'apropos-describe-plist 3 "Plist" nil))
                (setq buffer-read-only  t))))
-         (prog1 apropos-accumulator (setq apropos-accumulator  ()))))
+         (prog1 apropos-accumulator (setq apropos-accumulator  ())))) ; Permit gc.
 
       ((< emacs-major-version 24)       ; Emacs 22 and 23.
        (defun apropos-print (do-keys spacing &optional text nosubst)
@@ -404,7 +415,7 @@ If non-nil TEXT is a string that will be printed as a heading."
                (setq buffer-read-only  t))))
          (prog1 apropos-accumulator (setq apropos-accumulator  ())))) ; Permit gc.
 
-      (t                                ; Emacs 24+.
+      ((< emacs-major-version 30)       ; Emacs 24-29.
        (defun apropos-print (do-keys spacing &optional text nosubst)
          "Output result of apropos searching into buffer `*Apropos*'.
 The value of `apropos-accumulator' is the list of items to output.
@@ -509,7 +520,124 @@ If non-nil, TEXT is a string that will be printed as a heading."
                  (apropos-print-doc 4 'apropos-plist nil))
                (set (make-local-variable 'truncate-partial-width-windows) t)
                (set (make-local-variable 'truncate-lines) t))))
-         (prog1 apropos-accumulator (setq apropos-accumulator  ()))))
+         (prog1 apropos-accumulator (setq apropos-accumulator  ())))) ; Permit gc.
+
+      (t                                ; Emacs 30+
+       (defun apropos-print (do-keys spacing &optional text nosubst)
+         "Output result of apropos searching into buffer `*Apropos*'.
+The value of `apropos-accumulator' is the list of items to output.
+Each element should have the format
+ (SYMBOL SCORE FN-DOC VAR-DOC [PLIST-DOC WIDGET-DOC FACE-DOC GROUP-DOC]).
+The return value is the list that was in `apropos-accumulator', sorted
+alphabetically by symbol name; but this function also sets
+`apropos-accumulator' to nil before returning.
+
+If SPACING is non-nil, it should be a string; separate items with that string.
+If non-nil, TEXT is a string that will be printed as a heading."
+         (if (null apropos-accumulator)
+             (message "No apropos matches for `%s'" apropos-pattern)
+           (setq apropos-accumulator  (sort apropos-accumulator
+                                            (lambda (a b)
+                                              (if apropos-sort-by-scores
+                                                  (or (> (cadr a) (cadr b))
+                                                      (and (= (cadr a) (cadr b))
+                                                           (string-lessp (car a) (car b))))
+                                                (string-lessp (car a) (car b))))))
+           (with-output-to-temp-buffer "*Apropos*"
+             (let ((p                  apropos-accumulator)
+                   (old-buffer         (current-buffer))
+                   (inhibit-read-only  t)
+                   (button-end         0)
+                   (first              t)
+                   symbol item)
+               (set-buffer standard-output)
+               (apropos-mode)
+               (apropos--preamble text)
+               (dolist (apropos-item p)
+                 (if (and spacing  (not first)) (princ spacing) (setq first  nil))
+                 (setq symbol  (car apropos-item))
+                 ;; Insert dummy score element for backwards compatibility with 21.x
+                 ;; `apropos-item' format.
+                 (unless (numberp (cadr apropos-item))
+                   (setq apropos-item  (cons (car apropos-item) (cons nil (cdr apropos-item)))))
+                 (when (= (point) button-end) (terpri))
+                 (insert-text-button (symbol-name symbol) 'type          'apropos-symbol
+                                     'skip          apropos-multi-type
+                                     'face          'apropos-symbol
+                                     'outline-level 1)
+                 (setq button-end  (point))
+                 (when (and (eq apropos-sort-by-scores 'verbose)  (cadr apropos-item))
+                   (insert " (" (number-to-string (cadr apropos-item)) ") "))
+                 ;; Calculate key-bindings if we want them.
+                 (unless apropos-compact-layout
+                   (and do-keys
+                        (commandp symbol)
+                        (not (eq symbol 'self-insert-command))
+                        (indent-to 30 1)
+                        (if (let ((keys  (with-current-buffer old-buffer (where-is-internal symbol)))
+                                  filtered)
+                              ;; Copy over the list of key sequences,
+                              ;; omitting any that contain a buffer or a frame.
+                              ;; FIXME: Why omit keys that contain buffers and
+                              ;; frames?  This looks like a bad workaround rather
+                              ;; than a proper fix.  Does anybody know what problem
+                              ;; this is trying to address?  --Stef
+                              (dolist (key keys)
+                                (let ((i  0)
+                                      loser)
+                                  (while (< i (length key))
+                                    (when (or (framep (aref key i))  (bufferp (aref key i)))
+                                      (setq loser  t))
+                                    (setq i  (1+ i)))
+                                  (unless loser (push key filtered))))
+                              (setq item  filtered))
+                            ;; Convert the remaining keys to a string and insert.
+                            (insert (mapconcat
+                                     (lambda (key)
+                                       (setq key  (condition-case ()
+                                                      (if (fboundp 'naked-key-description)
+                                                          (naked-key-description key)
+                                                        (key-description key))
+                                                    (error)))
+                                       (put-text-property 0 (length key) 'face 'apropos-keybinding key)
+                                       key)
+                                     item
+                                     ", "))
+                          (insert "M-x ... RET")
+                          (put-text-property (- (point) 11) (- (point) 8) 'face 'apropos-keybinding)
+                          (put-text-property (- (point) 3) (point) 'face 'apropos-keybinding)))
+                   (terpri))
+                 (apropos-print-doc apropos-item
+                                    2
+                                    (if (commandp symbol)
+                                        'apropos-command
+                                      (if (macrop symbol) 'apropos-macro 'apropos-function))
+                                    (not nosubst))
+                 (apropos-print-doc apropos-item
+                                    3
+                                    (if (custom-variable-p symbol)
+                                        'apropos-user-option
+                                      'apropos-variable)
+                                    (not nosubst))
+                 ;; Insert an excerpt of variable values.
+                 (when (boundp symbol)
+                   (insert "  Value: ")
+                   (let* ((print-escape-newlines  t)
+                          (value                  (prin1-to-string (symbol-value symbol)))
+                          (truncated              (truncate-string-to-width
+                                                   value (- (window-width) 20) nil nil t)))
+                     (insert truncated)
+                     (unless (equal value truncated)
+                       (buttonize-region (1- (point)) (point) (lambda (_) (message "Value: %s" value))))
+                     (insert "\n")))
+                 (apropos-print-doc apropos-item 7 'apropos-group t)
+                 (apropos-print-doc apropos-item 6 'apropos-face t)
+                 (apropos-print-doc apropos-item 5 'apropos-widget t)
+                 (apropos-print-doc apropos-item 4 'apropos-plist nil))
+               (set (make-local-variable 'truncate-partial-width-windows) t)
+               (set (make-local-variable 'truncate-lines) t)))
+           (when help-window-select (select-window (get-buffer-window "*Apropos*"))))
+         (prog1 apropos-accumulator (setq apropos-accumulator  ())))) ; Permit gc.
 
       )
 
