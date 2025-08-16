@@ -54,6 +54,9 @@ Here are some libraries written by others but maintained by me:
 Most of these can also be found on my github account: https://github.com/vapniks?tab=repositories
 which should contain the most up to date versions.
 
+==Security==
+Here is a prompt that can be used with LLMs (works best with [https://chatgpt.com GPT-5]) for checking elisp libraries for malicious code: [[SecurityPrompt4GPT5]]
+
 ==TODO==
 Here is a list of things that I would like to see at some point, but haven't got around to doing yet (and might never do so).
 If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
