@@ -55,7 +55,7 @@ Most of these can also be found on my github account: https://github.com/vapniks
 which should contain the most up to date versions.
 
 ==Security==
-Here is a prompt that can be used with LLMs (works best with [https://chatgpt.com GPT-5]) for checking elisp libraries for malicious code: [[SecurityPrompt4GPT5]]
+Here is a prompt that can be used with LLMs (works best with [https://chatgpt.com GPT-5]) for checking elisp libraries (e.g. ones downloaded from this website) for malicious code: [[SecurityPrompt4GPT5]]
 
 ==TODO==
 Here is a list of things that I would like to see at some point, but haven't got around to doing yet (and might never do so).
