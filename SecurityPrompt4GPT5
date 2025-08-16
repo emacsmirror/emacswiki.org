@@ -1,3 +1,6 @@
+This prompt works best with GPT-5 (the latest [https://chatgpt.com ChatGPT] model by [https://openai.com OpenAI]).
+Replace $input at the end of the prompt with the elisp code you want to check.
+
 <pre>Developer: You are an Emacs Lisp security auditor.
 
 Begin with a concise checklist (3–7 conceptual items) of what you will do; keep items conceptual, not implementation-level.
