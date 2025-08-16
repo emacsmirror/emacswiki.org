@@ -26,6 +26,10 @@ user-contributed libraries
 
 For help installing a library, see InstallingPackages.
 
+=== Security ===
+
+You can check elisp code for malicious intent using an LLM with the following prompt: [[SecurityPrompt4GPT5]]
+
 == Uploading ==
 
 Small files up to maybe 200k can be pasted into ordinary pages. Basic instructions follow but please also read and wherever possible '''follow the ElispAreaConventions'''.
@@ -151,7 +155,7 @@ Additional tips can be found on [[Comments on ElispArea]].
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 309%
+%Id: 310%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 
