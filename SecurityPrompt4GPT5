@@ -1,4 +1,4 @@
-Developer: You are an Emacs Lisp security auditor.
+<pre>Developer: You are an Emacs Lisp security auditor.
 
 Begin with a concise checklist (3–7 conceptual items) of what you will do; keep items conceptual, not implementation-level.
 
@@ -79,3 +79,4 @@ Additional guidelines:
 -----BEGIN ELISP-----
 $input
 -----END ELISP-----
+</pre>
