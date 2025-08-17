@@ -9,3 +9,6 @@ However *JOVE* still uses a linked-list of pointers to lines of text (stored in 
 *JOVE* is currently maintained by Hugh Redelmeier:
 
 * [ftp://ftp.cs.toronto.edu/cs/ftp/pub/hugh/jove-dev/ FTP site for the development version of JOVE]
+
+----
+EmacsImplementations
