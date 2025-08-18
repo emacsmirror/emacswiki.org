@@ -16,6 +16,6 @@ Use the form at the bottom of RecentChanges to filter the list.
 
 *Follow up to* filters the list for changes made after (!) a change made by the given user name. If you provide your own username, for example, you can find the pages edited by somebody else after you did.
 
-*Language* filters the list for pages in a particular language. The language is given by a two letter code and matches a regular expression. Use ##en|de## to filter for German and English pages. See LanguageIdentification for more.
+*Language* filters the list for pages in a particular language. The language is given by a two letter code and matches a regular expression. Use ##en|de## to filter for German and English pages, for example. See LanguageIdentification for more.
 
 The changes to the ElispArea are slow to compute and therefore a static page is updated regularly: [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
