@@ -1,31 +1,21 @@
 [[fr:AutresModifications]]
 
-Here are alternatives for the RecentChanges link which you might
-want to bookmark, if you are a
-RecentChangesJunkie.
+Here are filter suggestions for RecentChanges. Use the form at the bottom of RecentChanges to use them.
 
-* [EmacsWiki:action=rc;showedit=0 Show latest major changes] -- the default list of recent changes.
-* [EmacsWiki:action=rc;showedit=1 Show latest changes] -- including minor ones.
-* [EmacsWiki:action=rc;all=1;showedit=1;days=3 Show all changes for the last three days] -- including every single change.
-* [EmacsWiki:action=rc;all=1;showedit=1;days=1 Show all changes for today]
-* [EmacsWiki:action=rc;all=1;showedit=1;days=1;newtop=0 Show all changes for today, most recent last] -- ''Doesn't work''
-* [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
-* RecentChangesMinusIcicles for strategies to avoid recent changes entries related to [[Icicles]].
+*Include minor changes* also lists changes that the author marked as minor.
 
-Language specific -- languages are identified using an implementation similar to GuessBufferLanguage.
+*Include rollbacks* lists changes that were done by the system after somebody clicked on the rollback button. Such rollbacks are used to revert spam and vandalism and there don’t show.
 
-* [EmacsWiki:action=rc;lang=en Show latest major changes to English pages]
-* [EmacsWiki:action=rc;lang=es Show latest major changes to Spanish pages]
-* [EmacsWiki:action=rc;lang=de Show latest major changes to German pages]
-* [EmacsWiki:action=rc;lang=fr Show latest major changes to French pages]
-* [EmacsWiki:action=rc;lang=it Show latest major changes to Italian pages]
+*Title* filters the list using a regular expression matching the page titles.
 
-See LanguageIdentification for more.
+*Title and Body* filters the list using a regular expression matching the page title or body. This is slow.
 
-If you can integrate RSS feeds (see RichSiteSummary) into
-your browser (or if you use NewsTicker):
+*Username* filters the list using an exact match with the username provided by the author.
 
-* [EmacsWiki:action=rss RSS feed with major changes only, most recent first] -- see WikiRss for more.
-* [EmacsWiki:action=rss;rsslimit=all RSS feed with major changes only]
-* [EmacsWiki:action=rss;newtop=0;rsslimit=all RSS feed with major changes only, most recent last] -- ''Doesn't work''
-* [EmacsWiki:action=rss;all=1;days=3;showedit=1;rsslimit=all RSS feed for the last three days with all changes] -- including every single change.
+*Host* filters the list using an exact match with the IP address used. As these get removed after a while, this is only useful to find certain kinds of vandalism as it is happening.
+
+*Follow up to* filters the list for changes made after (!) a change made by the given user name. If you provide your own username, for example, you can find the pages edited by somebody else after you did.
+
+*Language* filters the list for pages in a particular language. The language is given by a two letter code and matches a regular expression. Use ##en|de## to filter for German and English pages. See LanguageIdentification for more.
+
+The changes to the ElispArea are slow to compute and therefore a static page is updated regularly: [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
