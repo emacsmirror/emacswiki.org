@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jul 29 15:31:01 2025 (-0700)
+;; Last-Updated: Wed Aug 20 14:29:19 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 9735
+;;     Update #: 9764
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -682,8 +682,9 @@
 ;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
 ;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
 ;;    `bmkp-variable-list-alist-only',
-;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-cp',
-;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
+;;    `bmkp-variable-list-bookmark-p', `bmkp-visited-more-often-cp',
+;;    `bmkp-visited-more-recently-cp', `bmkp-w3m-alist-only',
+;;    `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name',
 ;;    `bmkp-write-alist-bookmarks-to-file'.
 ;;
@@ -959,6 +960,7 @@
 (defvar Man-notify-method)              ; In `man.el'
 (defvar org-store-link-functions)       ; In `org.el'
 (defvar orig-buff)                      ; In `crosshairs.el'
+(defvar pp-default-function)            ; Emacs 30+
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+
 (defvar repeat-previous-repeated-command) ; In `repeat.el'
 (defvar repeat-message-function)        ; In `repeat.el'
@@ -1585,9 +1587,8 @@ is tried and
           (function :tag "Sorting Predicate")
           (list     :tag "Sorting Multi-Predicate"
                     (repeat (function :tag "Component Predicate"))
-                    (choice
-                     (const    :tag "None" nil)
-                     (function :tag "Final Predicate"))))
+                    (choice (const    :tag "None" nil)
+                            (function :tag "Final Predicate"))))
   :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-su-or-sudo-regexp "bookmark+")
@@ -1652,7 +1653,8 @@ use either \\[customize] or command `bmkp-temporary-bookmarking-mode'."
   "*`bmkp-sort-comparer' value for cycling this-file/buffer bookmarks.
 Use bookmarks for the currently visited file or (non-file) buffer.
 Some values you might want to use: ((bmkp-position-cp)),
- ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-cp)).
+ ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-often-cp)),
+ ((bmkp-visited-more-recently-cp)).
 See `bmkp-sort-comparer'."
   :type '(choice
           (const    :tag "None (do not sort)" nil)
@@ -1936,10 +1938,11 @@ except for the following differences.
  CREATION-TIME is an Emacs time representation, returned by function
  `current-time'.
 
-2. Visit information is recorded, using entries `visits' and `time':
+2. Visit information is recorded, using entries `visits' and
+   `last-visited':
 
  (visits . NUMBER-OF-VISITS)
- (time . TIME-LAST-VISITED)
+ (last-visited . TIME-LAST-VISITED)
 
  NUMBER-OF-VISITS is a whole-number counter.
 
@@ -2473,6 +2476,7 @@ Lines beginning with `#' are ignored."
         (annotation-buf  (current-buffer)))
     (when (string= annotation "") (setq annotation  nil))
     (bookmark-set-annotation bookmark annotation)
+    (when (fboundp 'bookmark-update-last-modified) (bookmark-update-last-modified bookmark)) ; Emacs 29+
     (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
     (bmkp-refresh/rebuild-menu-list bookmark) ; So display `a' and `*' markers (updated).
     (if (fboundp 'kill-buffer-and-its-windows)
@@ -2597,18 +2601,19 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
          (fcrs     (and (not no-context)  regionp  (bmkp-end-position-pre-context beg end)))
          (ecrs     (and (not no-context)  regionp  (bmkp-end-position-post-context end))))
     `(,@(unless no-file
-                `((filename . ,(cond ((buffer-file-name) (bookmark-buffer-file-name))
-                                     (dired-p            nil)
-                                     (t                  bmkp-non-file-filename)))))
+          `((filename . ,(cond ((buffer-file-name) (bookmark-buffer-file-name))
+                               (dired-p            nil)
+                               (t                  bmkp-non-file-filename)))))
       (buffer-name . ,buf)
       ,@(unless no-context `((front-context-string . ,fcs)))
       ,@(unless no-context `((rear-context-string . ,rcs)))
       ,@(unless no-context `((front-context-region-string . ,fcrs)))
       ,@(unless no-context `((rear-context-region-string  . ,ecrs)))
-      (visits       . ,(or visits  0))
-      (time         . ,ctime)
-      (created      . ,ctime)
-      (position     . ,beg)
+      (visits   . ,(or visits  0))
+      ,@(and visits  `((last-visited . ,ctime)))
+      (created  . ,ctime)
+      ,@(when (fboundp 'bookmark-update-last-modified) `((last-modified . ,ctime))) ; Emacs 29+
+      (position . ,beg)
       ,@(when (and regionp  (not no-region)) `((end-position . ,end))))))
 
 
@@ -3240,6 +3245,7 @@ candidate."
                                                          (format "Relocate %s to: " bookmark-name)
                                                          (file-name-directory bookmark-filename))))))
     (bookmark-set-filename bookmark-name new-filename)
+    (when (fboundp 'bookmark-update-last-modified) (bookmark-update-last-modified bookmark-name)) ; Emacs 29+
     ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
     (let ((dired-dir  (bookmark-prop-get bookmark-name 'dired-directory)))
       (when (and dired-dir  (equal dired-dir bookmark-filename))
@@ -3377,6 +3383,7 @@ candidate."
 ;;;           nil 'bookmark-history))))
     (when newname
       (bookmark-set-name old newname)   ; (This also puts `bmkp-full-record' on bookmark name.)
+      (when (fboundp 'bookmark-update-last-modified) (bookmark-update-last-modified newname)) ; Emacs 29+
       (bmkp-rename-for-marked-and-omitted-lists old newname) ; Rename in marked & omitted lists, if present.
       (setq bookmark-current-bookmark  newname)
       (unless batchp
@@ -5415,9 +5422,11 @@ DO NOT MODIFY the header comment lines, which begin with `;;'."
 (defun bmkp-record-visit (bookmark &optional batchp)
   "Update the data recording a visit to BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-This increments the `visits' entry and sets the `time' entry to the
-current time.  If either an entry is not present, it is added (with 0
-value for `visits').
+
+This increments the `visits' entry and sets the `last-visited' entry
+to the current time.  If either an entry is not present, it is
+added (with 0 value for `visits').
+
 With non-nil optional arg BATCHP, do not rebuild the menu list.
 
 Although this function modifies BOOKMARK, it does not increment
@@ -5427,7 +5436,7 @@ does not count toward needing to save or showing BOOKMARK as modified."
   (let ((vis                      (bookmark-prop-get bookmark 'visits))
         (bmkp-modified-bookmarks  bmkp-modified-bookmarks))
     (bookmark-prop-set bookmark 'visits (if vis (1+ vis) 0))
-    (bookmark-prop-set bookmark 'time   (current-time))
+    (bookmark-prop-set bookmark 'last-visited (current-time)) ; Old name for `last-visited' was `time'.
     (unless batchp (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P))
     (let ((bookmark-save-flag  nil))  (bmkp-maybe-save-bookmarks 'SAME-COUNT-P))))
 
@@ -5998,15 +6007,14 @@ Optional arg ALIST is an alternative alist of bookmarks to use."
           (bmkp-bmenu-filter-pattern        (or (cdr (assq 'last-bmenu-filter-pattern   state))  ""))
           (bmkp-bmenu-title                 (cdr (assq 'last-bmenu-title                state)))
           (bookmark-bmenu-toggle-filenames  (cdr (assq 'last-bmenu-toggle-filenames     state))))
-      (setq bmkp-nav-alist             (bmkp-sort-omit
-                                        (if bmkp-bmenu-filter-function
-                                            (funcall bmkp-bmenu-filter-function)
-                                          (if (string= "CURRENT *Bookmark List*" bname)
-                                              (or bmkp-latest-bookmark-alist  bookmark-alist)
-                                            bookmark-alist))
-                                        (and (not (eq bmkp-bmenu-filter-function
-                                                      'bmkp-omitted-alist-only))
-                                             bmkp-bmenu-omitted-bookmarks))
+      (setq bmkp-nav-alist             (bmkp-sort-omit (if bmkp-bmenu-filter-function
+                                                           (funcall bmkp-bmenu-filter-function)
+                                                         (if (string= "CURRENT *Bookmark List*" bname)
+                                                             (or bmkp-latest-bookmark-alist  bookmark-alist)
+                                                           bookmark-alist))
+                                                       (and (not (eq bmkp-bmenu-filter-function
+                                                                     'bmkp-omitted-alist-only))
+                                                            bmkp-bmenu-omitted-bookmarks))
             bmkp-current-nav-bookmark  (car bmkp-nav-alist))
       (message "Bookmark navigation list is now %s"
                (if (and (string= "CURRENT *Bookmark List*" bname)  (not (get-buffer bmkp-bmenu-buffer)))
@@ -7579,11 +7587,12 @@ BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'visits))
 
 (defun bmkp-get-visit-time (bookmark)
-  "Return the `time' value for BOOKMARK.
+  "Return the `last-visited' value for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
-  ;; Should just be a prop-get, but when first implemented, we used a float
-  ;; instead of a time cons, so we need to convert any such obsolete recorded times.
-  (let ((vt  (bookmark-prop-get bookmark 'time)))
+  ;; Support also old name, `time', for property `last-visited'.
+  (let ((vt  (or (bookmark-prop-get bookmark 'last-visited)  (bookmark-prop-get bookmark 'time))))
+    ;; Should just be a prop-get, but when first implemented, we used a float
+    ;; instead of a time cons, so we need to convert any such obsolete recorded times.
     (when (numberp vt)                  ; Convert mid-2009 time values (floats) to cons form.
       (setq vt  (if (boundp 'seconds-to-time)
                     (seconds-to-time vt)
@@ -7838,7 +7847,7 @@ If either is a record then it need not belong to `bookmark-alist'."
           (m2           '(nil))
           (t            nil))))
 
-(defun bmkp-visited-more-cp (b1 b2)
+(defun bmkp-visited-more-often-cp (b1 b2)
   "True if bookmark B1 was visited more often than B2.
 Return nil if incomparable as described.
 
@@ -7855,6 +7864,28 @@ If either is a record then it need not belong to `bookmark-alist'."
     (cond ((and v1 v2)
            (cond ((> v1 v2)  '(t))
                  ((> v2 v1)  '(nil))
+                 (t          nil)))
+          (v1                '(t))
+          (v2                '(nil))
+          (t                 nil))))
+
+(defun bmkp-visited-more-recently-cp (b1 b2)
+  "True if bookmark B1 was visited more recently than B2.
+Return nil if incomparable as described.
+
+True also if B1 was visited but B2 was not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bmkp-get-bookmark b1)
+        b2  (bmkp-get-bookmark b2))
+  (let ((v1  (bmkp-get-visit-time b1))
+        (v2  (bmkp-get-visit-time b2)))
+    (cond ((and v1 v2)
+           (cond ((time-less-p v2 v1)  '(t))
+                 ((time-less-p v1 v2)  '(nil))
                  (t          nil)))
           (v1                '(t))
           (v2                '(nil))
