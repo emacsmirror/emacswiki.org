@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul 30 10:13:58 2025 (-0700)
+;; Last-Updated: Wed Aug 20 14:33:18 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 17066
+;;     Update #: 17080
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,16 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2025/08/20 dadams
+;;     Include bookmark attribute last-modified, from Emacs 29+.
+;;     Renamed bookmark attribute time to last-visited.
+;;     bookmark-send-edited-annotation, bookmark-relocate, bookmark-rename:
+;;      Call bookmark-update-last-modified.
+;;     bookmark-make-record-default, bmkp-record-visit: Use last-visited (not time).
+;;     bookmark-make-record-default: Use last-modified.
+;;     bmkp-get-visit-time: Support both last-visited (new name) and time (old name).
+;;     Added: bmkp-visited-more-recently-cp.
+;;     Renamed bmkp-visited-more-cp to bmkp-visited-more-often-cp.
 ;; 2025/07/29 dadams
 ;;     Added bmkp-bookmark-all-dired-buffers.
 ;; 2025/07/27 dadams
@@ -2756,6 +2766,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2025/08/20 dadams
+;;     Version 2025.08.20
 ;; 2025/07/30 dadams
 ;;     Version 2025.07.30
 ;; 2025/07/29 dadams
