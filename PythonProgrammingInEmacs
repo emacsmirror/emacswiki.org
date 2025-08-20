@@ -52,6 +52,7 @@ There is some built-in support for virtual environments in python.el, but these 
 
 * [https://github.com/pwalsh/pipenv.el pipenv.el] - A [https://docs.pipenv.org/ Pipenv] porcelain inside Emacs, including automatic activation through [[Projectile]]. 
 * [https://github.com/mukuge/npy.el npy.el] - for a nicer integration of Pipenv virtualenvs and inferior python processes.
+* [https://github.com/z80dev/uv-mode uv mode for Emacs] - for uv and its project-specific virtual environments.
 
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
