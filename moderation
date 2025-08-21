@@ -1,0 +1,89 @@
+This page contains help for moderation of #emacs
+
+# ban methods
+
+## the fast way
+
+litharge is a bot provided by the https://Libera.Chat network. This method is preferred, for the auto-removal on expire and moderation log this method curates:
+{{{
+/msg litharge b #emacs  NICK  1y GROUP/COMMENT
+}}}
+
+# the slow way
+
+{{{
+/msg chanserv op #emacs
+/mode #emacs +b NICK
+/kick #emacs NICK
+/msg chanserv deop #emacs
+}}}
+
+
+# restricting the channel
+
+The channel is normally unrestricted (-rR).  In some extremes cases, such as a person spamming the channel and returning with a new name once moderated, we set the channel to a restricted mode.  We use this in combination with the +z flag which send messages from users who have not logged into an account with NICKSERV, the networks IRC server bot, to a special channel (@#emacs) where only people with channel operator status (+o) in #emacs can see then.  
+
+You must have the +o (or +O) chanserv flag on #emacs to do this (or you may be given operator status in #emacs by someone on a temporary in which case skip step #1).
+
+## Steps to restrict #emacs
+
+1. Gain operator status in #emacs
+{{{
+/msg chanserv op #emacs
+}}}
+2. Set the channel restrictions
+{{{
+/mode #emacs +Rz
+}}}
+3. (optionally) grant operator status to a bunch of people to help monitor @#emacs
+{{{
+/mode #emacs +ooo technomancy bpalmer wgreenhouse
+/mode #emacs +ooo bremner jbe bandali
+/mode #emacs +ooo grym corwin jreicher
+}}}
+4. Update the topic to let people know what's up (Note: save off the old topic somewhere!)
+{{{
+/topic #emacs The channel is current restricted due to abuse; please register or wait | pastebin: https://bpa.st/+emacs-lisp | No public logging, racism, sexism, xenophobia, botwanking, or other asshattery
+}}}
+
+When the channel is restricted we try to monitor @#emacs to help (other) unregistered users who may not realize their messages are trapped.  This guide may be helpful to people in this circumstance: https://libera.chat/guides/registration
+
+## Steps to unrestrict #emacs
+
+
+1. Remove the channel restrictions
+{{{
+/mode #emacs +Rz
+}}}
+2. (optionally) de-op a bunch of people (we don't usually "wear hats"
+{{{
+/mode #emacs -ooo technomancy bpalmer wgreenhouse
+/mode #emacs -ooo bremner jbe bandali
+/mode #emacs -ooo grym corwin jreicher
+}}}
+4. Restore the prior or some usual topic
+{{{
+/topic #emacs Emacs 30.2 is available | Emacs questions take priority over chit-chat | All questions/levels welcome | Quieter chat in #emacs-beginners | "daily" insights in #emacs-til | More chit-chat: #emacs-social | Favored pastebin: https://bpa.st/+emacs-lisp | No public logging, racism, sexism, xenophobia, botwanking, or other asshattery
+}}}
+
+## ozone
+
+Ozone is another network services bot which recognizes abuse in patterns of text and issues network K-LINE.  When the abuse involves repeated patterns of text ozone be fast enough to stop (e.g.) ascii graphics after a line or two.
+
+Add ozone to #emacs like this:
+{{{
+/msg chanserv op #emacs
+/invide #emacs ozone
+/msg chanserv dep #emacs
+}}}
+
+It can be a good to remove ozone when not needed.  To do that simply kick it:
+{{{
+/msg chanserv op #emacs
+/invite #emacs ozone
+}}}
+
+ozone can be over-zellus, particular it can K-LINE users for pasting large blocks of (harmless) text.  In such cases a moderator (+o in #emacs) can send ozone a private message to remove the K-LINE:
+{{{
+/msg ozone unkline NICK
+}}}
