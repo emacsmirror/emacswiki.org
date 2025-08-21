@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 10 16:29:43 2025 (-0700)
+;; Last-Updated: Thu Aug 21 10:34:39 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 1194
+;;     Update #: 1225
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ImenuMode#ImenuPlus
 ;; Keywords: tools, menus
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `find-where', `imenu', `thingatpt', `thingatpt+'.
+;;   `cl-lib', `find-where', `imenu', `macroexp', `thingatpt',
+;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,10 +67,11 @@
 ;;  ***** NOTE: The following functions and macro defined in `imenu.el'
 ;;              might have been REDEFINED HERE, depending on release:
 ;;
+;;    `imenu-add-to-menubar', `imenu--create-keymap',
 ;;    `imenu--generic-function', `imenu--make-index-alist',
 ;;    `imenu--mouse-menu', `imenu--sort-by-name',
-;;    `imenu--split-submenus' (Emacs < 24), `imenu-progress-message',
-;;    `imenu-update-menubar'.
+;;    `imenu--split-submenus' (Emacs < 24), `imenu-progress-message'
+;;    (Emacs < 22), `imenu-update-menubar'.
 ;;
 ;;
 ;;  ***** NOTE: The following variable defined in `imenu.el' has
@@ -86,6 +88,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2025/08/21 dadams
+;;     Added imenu-add-to-menubar for Emacs < 25.
+;;     imenu--create-keymap: Make usable also for Emacs < 24, with no lexical-binding.
 ;; 2025/08/10 dadams
 ;;     imenu--make-index-alist: Use imenu-unavailable-error if available.
 ;; 2025/06/27 dadams
@@ -264,15 +269,11 @@
 (defvar imenu-allow-duplicate-menu-items)
 (defvar imenu-generic-skip-comments-and-strings)
 (defvar imenu-level-separator)          ; Emacs 30+ (defined in 29.4, but not used until 30.1)
+(defvar imenu--menubar-keymap)          ; Emacs 25+
 (defvar imenu-menubar-modified-tick)
 (defvar imenu-use-markers)              ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(unless (boundp 'imenu--menubar-keymap)
-  ;; Emacs < 25
-  (defvar imenu--menubar-keymap nil)
-  (make-variable-buffer-local 'imenu--menubar-keymap))
 
 ;;;###autoload
 (defgroup Imenu-Plus nil
@@ -567,10 +568,11 @@ NOT share structure with ALIST."
 	    alist)))
 
 
-;; REPLACE ORIGINAL in `imenu.el', for Emacs 29-30.
+;; REPLACE ORIGINAL in `imenu.el'.
 ;;
-;; Make Emacs 29-30 removal of duplicate menu items optional, per option `imenu-allow-duplicate-menu-items'.
-;; Same as bug #78935 fix.
+;; 1. Make Emacs 29-30 removal of duplicate menu items optional, per option
+;;    `imenu-allow-duplicate-menu-items'.  Same as bug #78935 fix.
+;; 2. Make usable also for Emacs < 24, with no `lexical-binding'.
 ;;
 (defun imenu--create-keymap (title alist &optional cmd)
   `(keymap ,title
@@ -579,22 +581,53 @@ NOT share structure with ALIST."
                   (lambda (item)
                     `(,(car item)
                       ,(car item)
-                      ,@(cond
-                         ((imenu--subalist-p item)
-                          (imenu--create-keymap (car item) (cdr item) cmd))
-                         (t
-                          (lambda () (interactive)
-                            (if cmd (funcall cmd item) item))))))
+                      ,@(cond ((imenu--subalist-p item) (imenu--create-keymap (car item) (cdr item) cmd))
+                              (t (if (< emacs-major-version 24)
+                                     `(lambda () (interactive) ,(if cmd `(,cmd ',item) (list 'quote item)))
+                                   (lambda () (interactive) (if cmd (funcall cmd item) item)))))))
                 (lambda (item)
                   `(,(intern (car item))
                     ,(car item)
-                    ,@(cond
-                       ((imenu--subalist-p item)
-                        (imenu--create-keymap (car item) (cdr item) cmd))
-                       (t
-                        (lambda () (interactive)
-                          (if cmd (funcall cmd item) item)))))))
+                    ,@(cond ((imenu--subalist-p item) (imenu--create-keymap (car item) (cdr item) cmd))
+                            (t (if (< emacs-major-version 24)
+                                   `(lambda () (interactive) ,(if cmd `(,cmd ',item) (list 'quote item)))
+                                 (lambda () (interactive) (if cmd (funcall cmd item) item))))))))
               (remq nil alist))))
+
+(unless (boundp 'imenu--menubar-keymap) ; Emacs < 25
+
+  (defvar imenu--menubar-keymap nil)
+  (make-variable-buffer-local 'imenu--menubar-keymap)
+
+
+  ;; REPLACE ORIGINAL in `imenu.el', for Emacs < 25.
+  ;;
+  (defun imenu-add-to-menubar (name)
+    "Add an `imenu' entry to the menu bar for the current buffer.
+NAME is a string used to name the menu bar item.
+See the command `imenu' for more information."
+    (interactive "sImenu menu item name: ")
+    (if (or (and imenu-prev-index-position-function  imenu-extract-index-name-function)
+	    imenu-generic-expression
+	    (not (eq imenu-create-index-function 'imenu-default-create-index-function)))
+        (unless (and (current-local-map)  (keymapp (lookup-key (current-local-map) [menu-bar index])))
+	  (let ((newmap  (make-sparse-keymap)))
+	    (set-keymap-parent newmap (current-local-map))
+	    (setq imenu--last-menubar-index-alist  nil
+                  imenu--menubar-keymap            (make-sparse-keymap "Imenu"))
+	    (define-key newmap [menu-bar index] `(menu-item ,name ,imenu--menubar-keymap))
+	    (use-local-map newmap)
+	    (add-hook 'menu-bar-update-hook 'imenu-update-menubar)))
+      (imenu-unavailable-error "The mode `%s' does not support Imenu"
+                               (format-mode-line mode-name))
+
+      (funcall (if (fboundp 'imenu-unavailable-error) ; Emacs 25+
+                   #'imenu-unavailable-error
+                 (if (fboundp 'user-error)
+                     #'user-error       ; Emacs 24
+                   #'error))            ; < Emacs 24
+               "The mode `%s' does not support Imenu" (format-mode-line mode-name))))
+  )
 
 
 ;; REPLACE ORIGINAL in `imenu.el'.
