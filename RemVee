@@ -1,10 +1,10 @@
-Hi, my name is Remco van 't Veer.
+Hi, my name is Remco.
 
 My Emacs related stuff:
 
-* [http://github.com/remvee/android-mode/|Minor mode for Android software development]
-* [http://github.com/remvee/emacs-rails/|My fork of Rails minor mode on github]
-* [http://gist.github.com/12500|Adjusted version of twit.el]
-* [http://blog.remvee.net/category/emacs|Emacs related blog posts]
+* https://codeberg.org/rwv/spotify-el
+* https://codeberg.org/rwv/android-mode
+* https://codeberg.org/rwv/rfcview-browsing
+* https://codeberg.org/rwv/alsamixer-el
 ----
 CategoryHomepage
