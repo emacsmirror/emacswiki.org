@@ -87,3 +87,22 @@ ozone can be over-zellus, particular it can K-LINE users for pasting large block
 {{{
 /msg ozone unkline NICK
 }}}
+
+
+## ERC
+
+This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both blocks to scratch, edit hard-coded strings (REASON, in particular) to taste, and then evaluate the buffer.
+{{{
+(defun \#emacs-litharage-quickban (username)
+  ;; from `erc-nicks-customize-face' as of Emacs 30.2
+  (interactive (list (or (car (get-text-property (point) 'erc-data))
+                         (completing-read "nick: " (or erc-channel-users
+                                                       erc-server-users)))))
+  (erc-message "PRIVMSG"
+	       (format "literage b %s %s %s %s\n" 
+                       "#emacs"
+		       username
+                       "1y"
+                       "REASON")))
+(global-set-key (kbd "C-c <F1>") '\#emacs-litharage-quickban)
+}}}
