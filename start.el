@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 25 11:02:36 2025 (-0700)
+;; Last-Updated: Thu Aug 21 10:23:18 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 3125
+;;     Update #: 3128
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -47,6 +47,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2025/08/21 dadams
+;;     Don't require imenu+.el for Emacs 20, 21.
 ;; 2025/07/25 dadams
 ;;     Removed use of library hier-imenu.el.
 ;; 2025/02/20 dadams
@@ -561,7 +563,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'subr+ nil t)                  ; Extensions to `subr.el'.  String splitting.
 (when (fboundp 'clone-indirect-buffer) (require 'narrow-indirect nil t)) ; Emacs 22+
 
-(require 'imenu+ nil t)                 ; Extensions to `imenu.el'.
+(when (> emacs-major-version 21) (require 'imenu+ nil t)) ; Extensions to `imenu.el'.
+
 ;; (autoload 'imenu-create-hierarchical-index "hier-imenu" ; Hierarchical imenu for HTML, Tex
 ;;   "Generate an alist for imenu from a buffer with hierarchical structure.")
 ;; (add-hook 'tex-mode-hook 'imenu-add-menubar-index)
@@ -732,11 +735,11 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
   (eval-after-load "timer" '(require 'timer+ nil t))) ; Extensions to `timer.el'.
 ;(eval-after-load "c-mode" '(require 'cc-mode+)) ; Extensions to `cc-mode.el'.
 ;(eval-after-load "cc-mode" '(require 'cc-mode+))
-(when (< emacs-major-version 21)
-  (eval-after-load "cc-mode"
-    '(progn (require 'imenu+ nil t)
-      (add-hook 'c-mode-common-hook
-       (lambda () (condition-case nil (imenup-add-defs-to-menubar) (error nil)))))))
+;; (when (< emacs-major-version 21)
+;;   (eval-after-load "cc-mode"
+;;     '(progn (require 'imenu+ nil t)
+;;       (add-hook 'c-mode-common-hook
+;;        (lambda () (condition-case nil (imenup-add-defs-to-menubar) (error nil)))))))
 (when (and (> emacs-major-version 21)  (< emacs-major-version 26))
   (eval-after-load "find-func" '(require 'find-func+ nil t)))
 ;(eval-after-load "vc" '(require 'vc+)) ; Extensions to `vc.el'.
