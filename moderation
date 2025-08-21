@@ -99,7 +99,7 @@ This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both bl
                          (completing-read "nick: " (or erc-channel-users
                                                        erc-server-users)))))
   (erc-message "PRIVMSG"
-	       (format "literage b %s %s %s %s\n" 
+	       (format "litharge b %s %s %s %s\n" 
                        "#emacs"
 		       username
                        "1y"
