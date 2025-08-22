@@ -1,5 +1,5 @@
 [new]
-A week ago I mentioned an alternative search engine for Emacs Wiki. And then I started thinking: What I actually want to search is all the stuff that is about Emacs and not likely on this wiki. I reached out to [[Sacha Chua]] and we've set up yet another experiment: [https://search.emacslife.com/ Searching Planet Emacslife]!
+[[2025-08-15|A week ago]] I mentioned an alternative search engine for Emacs Wiki. And then I started thinking: What I actually want to search is all the stuff that is about Emacs and not likely on this wiki. I reached out to [[Sacha Chua]] and we've set up yet another experiment: [https://search.emacslife.com/ Searching Planet Emacslife]!
 
 This still uses [https://src.alexschroeder.ch/xobaque.git/ Xobaque]. In other words, it's a thin layer over the SQLite full text search engine ([https://sqlite.org/fts5.html FTS5]). Notably, this means that the operators ##AND##, ##OR## and ##NOT## (case sensitive) are back!
 
