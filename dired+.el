@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2025.07.25
+;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 25 18:58:01 2025 (-0700)
+;; Last-Updated: Thu Aug 21 17:12:58 2025 (-0700)
 ;;           By: dradams
-;;     Update #: 14055
+;;     Update #: 14075
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -871,10 +871,11 @@
 ;;    `diredp-read-bookmark-file-args', `diredp-read-command',
 ;;    `diredp-read-expression' (Emacs 22+),
 ;;    `diredp-read-include/exclude', `diredp-read-regexp',
-;;    `diredp-recent-dirs', `diredp-recent-files-buffer',
-;;    `diredp-refontify-buffer', `diredp-remove-if',
-;;    `diredp-remove-if-not', `diredp-replace-dir-sep-in-string',
-;;    `diredp-report-file-result', `diredp-report-summary',
+;;    `diredp--read-unique-displayable-chars.', `diredp-recent-dirs',
+;;    `diredp-recent-files-buffer', `diredp-refontify-buffer',
+;;    `diredp-remove-if', `diredp-remove-if-not',
+;;    `diredp-replace-dir-sep-in-string', `diredp-report-file-result',
+;;    `diredp-report-summary',
 ;;    `diredp-revert-displayed-recentf-buffers',
 ;;    `diredp--reuse-dir-buffer-helper', `diredp-root-directory-p',
 ;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
@@ -1071,6 +1072,9 @@
  
 ;;; Change Log:
 ;;
+;; 2025/08/21 dadams
+;;     Added: diredp--read-unique-displayable-chars.
+;;     diredp-change-marks(-recursive): Use diredp--read-unique-displayable-chars.
 ;; 2025/07/25 dadams
 ;;     Added: diredp-change-marks, diredp--mark-chars-ok, diredp--nodups-string.
 ;;     Bind diredp-change-marks to keys bound by default to vanilla dired-change-marks.
@@ -3648,7 +3652,7 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   `(prog1
        (let ((inhibit-read-only  t)
              (multi-C-u          (diredp-prefix-arg-all-files ,arg))
-             case-fold-search 
+             case-fold-search
              found
              results)
          (if (and ,arg  (not multi-C-u)  (not (eq ,arg 'marked)))
@@ -7889,25 +7893,24 @@ When called from Lisp, optional arg DETAILS is passed to
 
   (defun diredp-change-marks (&optional old new msgp)
     "Change all OLD marks to NEW marks (chars used to mark Dired lines).
-Prompt for the OLD marks as a string of characters.
-Then prompt for the NEW mark as a character.
-All chars must be displayable and not RET (`C-m').
+You are prompted for the OLD marks as a string of unique characters.
+Then you are prompted for the NEW mark as a character.
+All must be displayable chars other than `?\r' (aka `C-m', `RET').
+
+Each char in the string of OLD marks is taken as a mark to change, so
+don't include a space char unless you want to replace that by the new
+mark.
 
 This differs from vanilla Emacs `dired-change-marks' mainly in letting
 you replace multiple mark chars at the same time."
-    (interactive (let* ((cursor-in-echo-area  t)
-                        (o-s  (diredp--nodups-string (read-string "Change old mark chars (string): ")))
-                        (o-c  (string-to-list o-s))
-                        n-c)
-                   (unless (diredp--mark-chars-ok o-c)
-                     (diredp-user-error "Mark chars must be displayable and not `RET' (`C-m')"))
-                   (setq n-c  (read-char (format "Change marks `%s' to (new mark char): "
-                                                 (mapconcat #'string o-c ","))))
+    (interactive (let* ((o-c  (diredp--read-unique-displayable-chars "Change old mark chars (string): "))
+                        (n-c  (read-char (format "Change marks `%s' to (new mark char): "
+                                                 (mapconcat #'string o-c ",")))))
                    (unless (diredp--mark-chars-ok (string n-c))
-                     (diredp-user-error "Mark char must be displayable and not `RET' (`C-m')"))
-                   (list o-s n-c t)))
+                     (diredp-user-error "Mark char must be displayable and not `?\r' (aka `C-m', `RET')"))
+                   (list (apply #'string o-c) n-c t)))
     (unless (and (diredp--mark-chars-ok old)  (diredp--mark-chars-ok (string new)))
-      (diredp-user-error "Mark chars must be displayable and not `RET' (`C-m')"))
+      (diredp-user-error "Mark chars must be displayable and not `?\r' (aka `C-m', `RET')"))
     (let ((string             (format "^\\([%s]\\)" old))
           (inhibit-read-only  t)
           (count              0))
@@ -7938,8 +7941,35 @@ subdirectories are handled recursively in the same way.
 * A non-negative prefix arg means do not change marks on subdirs
   themselves.
 
-Note: If there is more than one Dired buffer for a given subdirectory
-then only the first such is used.
+If there is more than one Dired buffer for a given subdirectory then
+only the first such is used.
+
+NOTE: Recursive descent occurs for subdirs of the default directory of
+      the Dired buffer that are marked with each of the mark chars to
+      change, one at a time.  When recursing for a given mark, only
+      descendant directories marked with that char are considered for
+      further descent.
+
+      For example, when replacing char `H', descendant Dired buffers
+      are recursed into only if their directories are marked `H' in
+      their parent directory's Dired buffer.
+
+      Suppose you ask to change two mark chars, `H' and `*' to `X'.
+      If a subdir, say `SUBDIR-A', of the original listing is marked
+      with `H' or `*', then when recursing into `SUBDIR-A's Dired
+      buffer both `H' and `*' marks are changed to `X', as you would
+      expect.  This includes subdirs in `SUBDIR-A's buffer that are
+      marked `H' or `*'.  So if `SUBDIR-A's buffer has a subdir
+      `SUBSUB-B' marked `H' and a subdir `SUBSUB-C' marked `*', those
+      marks are changed to `X'.
+
+      However, only the particular char, `H' or `*', with which the
+      `SUBDIR-A' line is marked in the original listing (its parent
+      directory's buffer), is used when checking `SUBDIR-A's buffer
+      for marked subdirs to recurse into.  So if `SUBDIR-A's line in
+      the original listing is marked `H' then only a Dired buffer for
+      `SUBSUB-B' is recursed into; a buffer for `SUBSUB-C' is ignored
+      for recursion, because it's marked `*', not `H'.
 
 When called from Lisp:
  Non-nil arg PREDICATE is a file-name predicate.  Act on only the
@@ -7947,17 +7977,15 @@ When called from Lisp:
  DETAILS is passed to `diredp-get-subdirs'."
     (interactive
      (progn (diredp-get-confirmation-recursive)
-            (let* ((cursor-in-echo-area  t)
-                   (o-s  (diredp--nodups-string (read-string "Change old mark chars (string): ")))
-                   (o-c  (string-to-list o-s))
-                   n-c)
-              (unless (diredp--mark-chars-ok o-c)
-                (diredp-user-error "Mark chars must be displayable and not `RET' (`C-m')"))
-              (setq n-c  (read-char (format "Change marks `%s' to (new mark char): "
-                                            (mapconcat #'string o-c ","))))
+            (let* ((o-c  (diredp--read-unique-displayable-chars "Change old mark chars (string): "))
+                   (n-c  (read-char (format "Change marks `%s' to (new mark char): "
+                                            (mapconcat #'string o-c ",")))))
               (unless (diredp--mark-chars-ok (string n-c))
-                (diredp-user-error "Mark char must be displayable and not `RET' (`C-m')"))
-              (list o-s n-c current-prefix-arg nil diredp-list-file-attributes t))))
+                (diredp-user-error "Mark char must be displayable and not `RET' (aka `C-m', `RET')"))
+              (list (apply #'string o-c) n-c current-prefix-arg nil diredp-list-file-attributes t))))
+    (unless (and (diredp--mark-chars-ok old)  (diredp--mark-chars-ok (string new)))
+      (error "Mark chars must be displayable and not `RET' (aka `C-m', `RET')"))
+    (when msgp (message "Changing marks `%s' to `%c'..." old new))
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
@@ -7969,9 +7997,6 @@ When called from Lisp:
         (dolist (chr  o-c)
           (let ((dired-marker-char  chr))
             (setq sdirs  (nconc sdirs (diredp-get-subdirs ignore-marks predicate details))))))
-      (unless (and (diredp--mark-chars-ok old)  (diredp--mark-chars-ok (string new)))
-        (error "Mark chars must be displayable and not `RET' (`C-m')"))
-      (when msgp (message "Changing marks `%s' to `%c'..." old new))
       (dolist (dir  (cons default-directory sdirs))
         (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
           (with-current-buffer (car dbufs)
@@ -7992,6 +8017,16 @@ When called from Lisp:
                           count (dired-plural-s count)
                           (mapconcat #'string (string-to-list old) ",")
                           new))))
+
+  (defun diredp--read-unique-displayable-chars (&optional prompt)
+    "Read a string of displayable chars and return them as a list.
+None of the chars can be duplicated or `?\r' (aka `C-m', `RET')."
+    (let* ((cursor-in-echo-area  t)
+           (prmpt   (or prompt  "Chars (string): "))
+           (string  (diredp--nodups-string (read-string prmpt))))
+      (unless (diredp--mark-chars-ok string)
+        (diredp-user-error "Chars must be displayable and not `?\r' (aka `C-m', `RET')"))
+      (string-to-list string)))
 
   (defun diredp--mark-chars-ok (string)
     "Return t if all chars in STRING are displayable and not `RET'."
@@ -8745,17 +8780,17 @@ When called from Lisp, optional arg DETAILS is passed to
 ;;;   "Aggregate results of invoking a function in the marked files and dirs.
 ;;; This command prompts you for the aggregate function, AGGREGATE-FUN,
 ;;; and for the function to invoke in each marked file or dir, INVOKE-FUN.
-;;; 
+;;;
 ;;; Then it calls `diredp-do-invoke-in-marked-recursive', which calls
 ;;; INVOKE-FUN at the start of the file, with no args.
-;;; 
+;;;
 ;;; The files included are those that are marked in the current Dired
 ;;; buffer, or all files in the directory if none are marked.  Marked
 ;;; subdirectories are handled recursively in the same way.
-;;; 
+;;;
 ;;; With a prefix argument, ignore all marks - include all files in this
 ;;; Dired buffer and all subdirs, recursively.
-;;; 
+;;;
 ;;; When called from Lisp, optional arg DETAILS is passed to
 ;;; `diredp-get-files'."
 ;;;   (interactive
@@ -9481,7 +9516,7 @@ Possible default values (`M-n') are, in order:
 ;;; `diredp-marked(-other-window)' tries to treat SWITCHES, but SWITCHES seems to be ignored by `dired' when the
 ;;; DIRNAME arg is a cons, at least on MS Windows.  I filed Emacs bugs #952 (2008-09-10) and the duplicate, 20739
 ;;; (2015-06-05).  See also bug #16533.  The bugs remain unfixed.  I don't know if this will ever be fixed.  If it
-;;; is declared a non-bug and it doesn't work on any platforms, then I'll remove SWITCHES here, alas.  
+;;; is declared a non-bug and it doesn't work on any platforms, then I'll remove SWITCHES here, alas.
 
 ;;;###autoload
 (defun diredp-marked (dirname &optional arg switches) ; Menu `Multiple' > `Dired' > `Dired Marked'
@@ -10929,10 +10964,10 @@ In particular, `C-u C-u' operates on all files in the Dired buffer."
 ;;; (defun diredp-do-aggregate-invoke-in-marked (aggregate-fun &optional mark-arg msgp)
 ;;;   "Aggregate results of invoking a function in the marked files and dirs.
 ;;; This command prompts you for the aggregate function, AGGREGATE-FUN.
-;;; 
+;;;
 ;;; Then it calls `diredp-do-invoke-in-marked', which prompts you for a
 ;;; function to invoke in each marked file or dir.
-;;; 
+;;;
 ;;; A prefix arg acts like the ARG argument of `dired-get-marked-files'.
 ;;; In particular, `C-u C-u' operates on all files in the Dired buffer."
 ;;;   (interactive
@@ -13203,7 +13238,7 @@ Return buffer position on success, else nil."
   ;; 3. Respect option `diredp-case-fold-search'.  Prefix arg means respect its complement instead.
   ;; 4. If destination is in a hidden dir listing then open that listing.
   ;; 5. Instead of letting `push-mark' show its message, show a message (if interactive) saying you can use
-  ;;    `C-x C-x C-g' to go back.  Show "Not found" message if not found. 
+  ;;    `C-x C-x C-g' to go back.  Show "Not found" message if not found.
 
   ;; Vanilla Emacs comment:
   ;; Loses if FILE contains control chars like "\007" for which `ls' inserts "?" or "\\007" into the buffer,
@@ -13225,7 +13260,7 @@ When called from Lisp:
 
 Return buffer position on success, else nil."
     ;; Unlike vanilla Dired, expand input name in current subdir listing.
-    (interactive 
+    (interactive
      (prog1 (list (if (consp dired-directory)
                       (let ((files  (cdr dired-directory)))
                         (expand-file-name (completing-read "Goto file: " files nil t) (dired-current-directory)))
