@@ -55,7 +55,7 @@ When the channel is restricted we try to monitor @#emacs to help (other) unregis
 {{{
 /mode #emacs +Rz
 }}}
-2. (optionally) de-op a bunch of people (we don't usually "wear hats"
+2. (optionally) de-op a bunch of people (we don't usually "wear hats" in channel).
 {{{
 /mode #emacs -ooo technomancy bpalmer wgreenhouse
 /mode #emacs -ooo bremner jbe bandali
@@ -91,6 +91,8 @@ ozone can be over-zellus, particular it can K-LINE users for pasting large block
 
 ## ERC
 
+### quickban using litharge
+
 This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both blocks to scratch, edit hard-coded strings (REASON, in particular) to taste, and then evaluate the buffer.
 {{{
 (defun \#emacs-litharage-quickban (username)
@@ -105,4 +107,45 @@ This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both bl
                        "1y"
                        "REASON")))
 (global-set-key (kbd "C-c <F1>") '\#emacs-litharage-quickban)
+}}}
+
+### restrict #emacs
+
+This automates the restrictions described at the top of the page.
+The binding suggested here is ##C-c C-<f5>.
+{{{
+(defun \#emacs-restrict (channel)
+  ;; from `erc-join-channel' as of Emacs 30.2
+  (interactive (list (when (erc-server-buffer-live-p)
+                   (set-buffer (process-buffer erc-server-process))
+                   erc-channel-list)))
+  (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
+  (erc-message "MODE" "#emacs +Rz"))
+(global-set-key (kbd "C-c <f5>") '\#emacs-restrict)
+
+(defun \#emacs-unrestrict (channel)
+  ;; from `erc-join-channel' as of Emacs 30.2
+  (interactive (list (when (erc-server-buffer-live-p)
+                   (set-buffer (process-buffer erc-server-process))
+                   erc-channel-list)))
+  (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
+  (erc-message "MODE" "#emacs -Rz")
+  (erc-message "PRIVMSG" (format "CHANSERV deop %s\n" "#emacs")))
+(global-set-key (kbd "C-c C-<f5>") '\#emacs-restrict)
+}}}
+
+### restrict #emacs
+
+This reverses the channel restrictions enabling people who have not registered with network service to send messages to #emacs.
+The binding suggested here is ##C-c C-<f5>##.
+{{{
+(defun \#emacs-unrestrict (channel)
+  ;; from `erc-join-channel' as of Emacs 30.2
+  (interactive (list (when (erc-server-buffer-live-p)
+                   (set-buffer (process-buffer erc-server-process))
+                   erc-channel-list)))
+  (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
+  (erc-message "MODE" "#emacs -Rz")
+  (erc-message "PRIVMSG" (format "CHANSERV deop %s\n" "#emacs")))
+(global-set-key (kbd "C-c C-<f5>") '\#emacs-restrict)
 }}}
