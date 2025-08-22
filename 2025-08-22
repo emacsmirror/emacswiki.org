@@ -1,0 +1,23 @@
+[new]
+A week ago I mentioned an alternative search engine for Emacs Wiki. And then I started thinking: What I actually want to search is all the stuff that is about Emacs and not likely on this wiki. I reached out to [[Sacha Chua]] and we've set up yet another experiment: [https://search.emacslife.com/ Searching Planet Emacslife]!
+
+This still uses [https://src.alexschroeder.ch/xobaque.git/ Xobaque]. In other words, it's a thin layer over the SQLite full text search engine ([https://sqlite.org/fts5.html FTS5]). Notably, this means that the operators ##AND##, ##OR## and ##NOT## (case sensitive) are back!
+
+This search engine doesn't crawl the web. All it does is read the [https://planet.emacslife.com/opml.xml Planet Emacslife OPML file] and updates its index based on the entries in the feeds listed. It doesn't actually go and check the pages. All it does is check the feeds. If the feed contains the pages, then that is indexed. If the feed only contains an extract, then only that is indexed. Also, if the index contains spoofed pages, then those are indexed. 😬
+
+There is currently no way to delete indexed pages from the index, nor are old pages ever forgotten. Maybe there should be a run of link-checking once a year to check whether sites and pages are still online. Currently nothing like that is implemented.
+
+If anybody wants to opt out of the search index, I'll think of a way for your blog to still be listed on Planet Emacslife and not be indexed by the search engine. Right now you can use the [https://www.rfc-editor.org/rfc/rfc9309.html Robots Exclusion Protocol]. The following ##robots.txt## should lock out the search engine:
+
+{{{
+User-Agent: Xobaque
+Disallow: /
+}}}
+
+The search engine only lists the top 100 pages. I don't know about you but I never look very far into search results on the web.
+
+If you want to look at the template used, take a look at the source code of [https://search.emacslife.com/search.html the template file].
+
+There's no way to update the site with older entries. Does your blog support RFC 5005? If so, I might add support for backfilling older pages!
+
+Let me know if there's anything amiss. -- Alex Schroeder
