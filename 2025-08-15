@@ -7,10 +7,13 @@ I wanted to see whether it would be possible to index multiple sites and then st
 
 Here's an experimental setup (hosted on a different domain):
 
-[https://search.transjovian.org/search?base=https://www.emacswiki.org/emacs/ Search Emacs Wiki]
+##https://search.transjovian.org/search?base=https://www.emacswiki.org/emacs/## -- now defunct
 
 Note that currently there are no updates to the search index.
 I'm still thinking of how that would work, specially in a situation where more Emacs people would like their pages included.
 More about that [https://alexschroeder.ch/view/2025-08-15-xobaque on my blog].
 
-In any case, if you're unhappy with the current search, and you're not happy with what the big search engines are offering, and if you test this Xobaque project, let me know how it went.
+In any case, if you're unhappy with the current search, and you're not happy with what the big search engines are offering, and if you test this Xobaque project, let me know how it went. -- [[Alex Schroeder]]
+
+[new]
+See [[2025-08-22]] for the latest developments! -- Alex
