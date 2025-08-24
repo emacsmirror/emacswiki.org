@@ -1,4 +1,4 @@
-Emacs 30 is currently in pre-release.  You can build it locally, test it and if you find issues report these as EmacsBugs.
+Emacs 30 was released on 2025-02-23.  You can build it locally, test it and if you find issues report these as EmacsBugs.
 
 This page aims to motivate testing Emacs, by highlighting the upcoming features, instead of having a low-effort blog post circulate around the internet.  As such, please contribute comments (see HowToEdit if you are not familiar with Emacs Wiki).  Just remember: Add context, motivate and attribute!
 
@@ -6,7 +6,7 @@ Consult the NEWS file on the "emacs-30" branch for an authoritative and exhausti
 
 -----
 
-The following is a list of highlights from the upcoming Emacs 30 release.  As to the exact release date of Emacs 30, see this thread: https://mail.gnu.org/archive/html/emacs-devel/2024-08/msg00795.html.
+The following is a list of highlights from the Emacs 30 release.
 
 == Android Support ==
 
