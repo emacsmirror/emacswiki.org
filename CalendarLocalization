@@ -7,7 +7,7 @@ As of GnuEmacs 23 the following code will make CalendarMode use the European sty
     (add-hook 'calendar-load-hook
               (lambda ()
                 (calendar-set-date-style 'european)))
-
+This is a fork of the Norwegian Nynorsk calendar-norway.el by Kevin Brubeck Unhammer which was based on sv-kalender.el by Daniel Jensen.
 In previous versions of GnuEmacs of the following incantations were necessary:
 
     (european-calendar) 
@@ -194,7 +194,7 @@ names.
 See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
 
 === Norwegian Bokmål ===
-See [https://codeberg.org/einar/calendar-nb_NO].
+See [https://codeberg.org/einar/calendar-nb_NO calendar-nb_NO].
 
 === Polish ===
 
