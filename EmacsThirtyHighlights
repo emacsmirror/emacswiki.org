@@ -10,7 +10,7 @@ The following is a list of highlights from the Emacs 30 release.
 
 == Android Support ==
 
-Just as Emacs runs on different operating systems (GnuLinux, [[BSD]], [[DOS]], ...) so it now runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen specific events like swiping or pinching. 
+Just as Emacs runs on different operating systems (GnuLinux, [[BSD]], [[DOS]], ...), it now runs natively and graphically on Android systems as a standalone application.  The advantage is that you are not restricted by a terminal emulator, but also can bind commands to touch-screen-specific events like swiping or pinching. 
 
 See EmacsOnAndroid and https://lwn.net/Articles/936576/. Developed by PoLu, see https://lists.gnu.org/archive/html/emacs-devel/2022-12/msg01358.html.
 
@@ -37,7 +37,7 @@ It is possible to specify declarative requests to install packages using Package
 (use-package foo :vc t)
 }}}
 
-This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature!.
+This feature was contributed by TonyZorman, see https://tony-zorman.com/posts/use-package-vc.html.  Note that the related `vc-use-pacakge' package (https://github.com/slotThe/vc-use-package) is not compatible with this feature.
 
 *Reminder:* PackageVc is not a general purpose package manager.  It exists to make contributing to packages easier, as with commands like `package-vc-prepare-patch'.  Due to the inherent difficulties of upgrading packages from version control, it is not recommended for regular use.  Stable tarball packages from GnuElpa and NonGnuElpa are more reliable and stable, and use less disk space.
 
@@ -57,7 +57,7 @@ Using `treesit-install-language-grammar', you can install the necessary grammars
 
 === Support for EditorConfig ===
 
-Editor Config is a popular format for specifying general properties about how an Editor should format a file (indentation width, indentation style, encoding, ...).  See https://editorconfig.org/ for more details.
+EditorConfig is a popular format for specifying general properties about how an Editor should format a file (indentation width, indentation style, encoding, ...).  See https://editorconfig.org/ for more details.
 
 While an Emacs package has existed on NonGnuElpa, it has now been added to the core as well.  Note that is hasn't been enabled by default (that might happen in the future!).
 
