@@ -119,7 +119,7 @@ A command to work with keyboard macros similar to `list-buffers'.
 
 === New user option `grep-use-headings' ===
 
-When running a command like rgrep, the default behaviour is to list each match with the file name and line number at the beginning of each line (think of the [tt]-H[/tt] option for GnuGrep).  When this new option is enabled, the [tt]*Grep*[/tt] will be structured using headers that correspond to file names, thereby shortening each line.  This is useful when combined with the `rgrep' command.
+When running a command like rgrep, the default behaviour is to list each match with the file name and line number at the beginning of each line (think of the [tt]-H[/tt] option for GnuGrep).  When this new option is enabled, the [tt]*Grep*[/tt] will be structured using headers that correspond to file names, thereby shortening each line.  Outline-minor-mode works with this structure to enable "folding" of the results.  This is useful when combined with the `rgrep' command.
 
 This option was contributed by AugustoStoffel, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59888
 
