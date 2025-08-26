@@ -122,16 +122,6 @@ The binding suggested here is ##C-c C-<f5>.
   (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
   (erc-message "MODE" "#emacs +Rz"))
 (global-set-key (kbd "C-c <f5>") '\#emacs-restrict)
-
-(defun \#emacs-unrestrict (channel)
-  ;; from `erc-join-channel' as of Emacs 30.2
-  (interactive (list (when (erc-server-buffer-live-p)
-                   (set-buffer (process-buffer erc-server-process))
-                   erc-channel-list)))
-  (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
-  (erc-message "MODE" "#emacs -Rz")
-  (erc-message "PRIVMSG" (format "CHANSERV deop %s\n" "#emacs")))
-(global-set-key (kbd "C-c C-<f5>") '\#emacs-restrict)
 }}}
 
 ### restrict #emacs
@@ -147,7 +137,7 @@ The binding suggested here is ##C-c C-<f5>##.
   (erc-message "PRIVMSG" (format "CHANSERV op %s\n" "#emacs"))
   (erc-message "MODE" "#emacs -Rz")
   (erc-message "PRIVMSG" (format "CHANSERV deop %s\n" "#emacs")))
-(global-set-key (kbd "C-c C-<f5>") '\#emacs-restrict)
+(global-set-key (kbd "C-c C-<f5>") '\#emacs-unrestrict)
 }}}
 
 ----
