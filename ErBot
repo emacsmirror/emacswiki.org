@@ -254,6 +254,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 * flame, spook, doctor, yow, fortune, fact (rms), geek-code
 * A sandboxed octave evaluator, usually disabled in fsbot. It tries to make the input safe before executing it, but almost surely has some obscure security holes.
 * A plurality detector.
+* A tiny, live fslisp emulator, as already discussed. Not fully compatible with elisp.
 * Dvorak/colemak/qwerty battle
 * A dunnet player
 * An interface to wtf
