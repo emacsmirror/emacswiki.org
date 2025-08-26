@@ -149,3 +149,6 @@ The binding suggested here is ##C-c C-<f5>##.
   (erc-message "PRIVMSG" (format "CHANSERV deop %s\n" "#emacs")))
 (global-set-key (kbd "C-c C-<f5>") '\#emacs-restrict)
 }}}
+
+----
+EmacsChannel
