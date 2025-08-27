@@ -238,7 +238,7 @@ This page describes my EmacsLisp libraries: '''DrewsElispLibraries'''.
 === Some other EmacsWiki pages to look at: ===
 
 [new]
-* EmacsNewbie -- a gentle intro to Emacs, including Emacs-speak -- and pick up my <tt>[[emacs-init.el]]</tt> for info on using my libraries
+* EmacsNewbie -- a gentle intro to Emacs, including Emacs-speak
 * [[ToolBar#ToolBarPlus|ToolBarPlus]] -- a pop-up [[tool bar]], to save screen real estate
 * HelpPlus, HelpMenuBarPlus, and HelpModePlus -- extra help: help commands and menus
 * [[Dired+]] -- (<tt>[[dired+.el]]</tt>): new commands, menus, highlighting...
