@@ -140,18 +140,16 @@ There are a few features that I've become accustomed to that I've integrated int
 ** If the current directory is $HOME, show "~" instead
 * Indicate when logged in as root or a user
 
-Below is a snippit from my configuration that attempts to accomplish these tasks:
+Below is a snippet from my configuration that attempts to accomplish these tasks:
 
 <pre>
 (setq eshell-prompt-regexp "^[^#$\n]*[#$] "
       eshell-prompt-function
       (lambda nil
         (concat
-	 "[" (user-login-name) "@" (system-name) " "
-	 (if (string= (eshell/pwd) (getenv "HOME"))
-	     "~" (eshell/basename (eshell/pwd)))
-	 "]"
-	 (if (= (user-uid) 0) "# " "$ "))))
+         "[" (user-login-name) "@" (system-name) " "
+         (abbreviate-file-name (eshell/pwd)) "]"
+         (if (= (user-uid) 0) "# " "$ "))))
 </pre>
 
 ----
