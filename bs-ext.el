@@ -1,4 +1,4 @@
-;;; bs-ext.el --- Extensions too emacs buffer-selection library (bs.el)
+;;; bs-ext.el --- Extensions to emacs buffer-selection library (bs.el)
 
 ;; Filename: bs-ext.el
 ;; Description: Extensions to emacs buffer-selection library (bs.el)
