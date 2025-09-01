@@ -1,4 +1,4 @@
-;;; bs-ext.el --- Extensions to emacs buffer-selection library (bs.el)
+;;; bs-ext.el --- Extensions to emacs buffer-selection library (bs.el) TEST2
 
 ;; Filename: bs-ext.el
 ;; Description: Extensions to emacs buffer-selection library (bs.el)
@@ -44,15 +44,22 @@
 ;; This extension allows you to bind keys to buffer selection configurations (using `bs-ext-config-keys'),
 ;; and optionally displays the configuration names and associated keybindings in the header line of the
 ;; *buffer-selection* buffer.
-;; It also creates a new config called "regexp". When the "/" key is pressed the user is prompted for a regular
-;; expression and any buffers with matching names are added to the "regexp" config.
+;; It also creates a new config called "regexp". When the "/" key is pressed the user is prompted first for
+;; a field to filter on, and then for a regular expression or number to use as the filter. Any buffers in the
+;; currently displayed config that match the filter on the specified field will be placed in the "regexp" config
+;; which will then be displayed. If the user decides to filter on the "Size" field then a number must be entered,
+;; and all buffers with size greater than that number will be selected. If a prefix arg is used, all buffers with
+;; size smaller than the number will be selected. You can apply successive filters to narrow down the list.
 ;;
 ;; The following new keybindings are defined:
 ;;
-;; /        : prompt user for regular expression, place matching buffers in "regexp" config, and change to that config
+;; /        : prompt user for a field and regexp/value to filter buffers with, placing matching buffers in "regexp" config
 ;; <left>   : select previous config using `bs-ext-select-previous-configuration'
 ;; <right>  : select next config using `bs-ext-select-next-configuration'
-;; x        : kill buffer on current line using `bs-delete'
+;; x        : kill marked buffers or buffer on current line using `bs-delete'
+;; M        : mark all buffers 
+;; U        : unmark all buffers
+;; =        : toggle status of showing flag for buffer in current line
 ;;
 ;; Also if you have color-moccur installed you can use M-O to find regexp matches in marked buffers.
 
@@ -128,19 +135,19 @@ in the *buffer-selection* buffer."
   :set 'bs-ext-set-keys
   :group 'bs)
 
-(defun bs-ext-prev-config-aux (start-name list)
-  "Get the previous assoc before START-NAME in list LIST.
+(defun bs-ext-prev-config-aux (start-name lst)
+  "Get the previous assoc before START-NAME in list LST.
 Will return the last if START-NAME is at start."
-  (let ((assocs list)
-	(length (length list))
+  (let ((assocs lst)
+	(l (length lst))
 	pos)
     (while (and assocs (not pos))
-      (when (string= (car (car assocs)) start-name)
-	(setq pos (- length (length assocs))))
+      (when (string= (caar assocs) start-name)
+	(setq pos (- l (length assocs))))
       (setq assocs (cdr assocs)))
     (if (eq pos 0)
-	(nth (1- length) list)
-      (nth (1- pos) list))))
+	(nth (1- l) lst)
+      (nth (1- pos) lst))))
 
 (defun bs-ext-prev-config (name)
   "Return previous configuration with respect to configuration with name NAME."
@@ -176,16 +183,43 @@ will be used."
 (defvar bs-ext-regexp-history '()
   "History list for use in aleblanc/bs-set-regexp.")
 
-(defun bs-ext-set-regexp (regexp)
+(defvar bs-ext-regexp-field 'name
+  "What field `bs-ext-regexp' will be matched on.")
+
+(defun bs-ext-set-regexp (field regexp)
   "Set the value of bs-ext-regexp - a regexp to match buffer names for the regexp configuration."
-  (interactive (list (read-string "Regexp to match buffer names: " nil 'bs-ext-regexp-history)))
-  (setq bs-ext-regexp regexp)
+  (interactive (let* ((f (read-key "Press key to indicate filter type: b/n = buffer name, f = filename, s = size, m = mode, > = marked, % = readonly, * = modified"))
+		      (r (if (not (memq f '(?> ?% ?*))) 
+			     (read-string "Regexp/value: " nil 'bs-ext-regexp-history))))
+		 (list f r)))
+  (setq bs-ext-regexp-field field bs-ext-regexp regexp)
   (add-to-list 'bs-ext-regexp-history 'regexp))
 
+(defun bs-ext-regexp-filter (buf)
+  (let* ((func (case bs-ext-regexp-field
+                 (?m 'bs--get-mode-name)
+                 (?f 'bs--get-file-name)
+                 (?s 'bs--get-size-string)
+		 (?> (lambda (buf lst)
+		       (member buf bs--marked-buffers)))
+		 (?% (lambda (buf lst) buffer-read-only))
+		 (?* (lambda (buf lst) (buffer-modified-p)))
+                 (t 'bs--get-name)))
+         (value (with-current-buffer buf
+                  (and (member buf bs-current-list)
+                       (funcall func buf bs-current-list)))))
+    (if (stringp value)
+	(if (eql bs-ext-regexp-field 115)
+	    (funcall (if current-prefix-arg '< '>)
+		     (string-to-number value)
+		     (string-to-number bs-ext-regexp))
+	  (string-match bs-ext-regexp value))
+      value)))
+
 (defvar bs-ext-regexp-config '("regexp" nil
-                               (lambda (buf) (string-match bs-ext-regexp (buffer-name buf)))
+                               bs-ext-regexp-filter
                                nil
-                               (lambda (buf) (not (string-match bs-ext-regexp (buffer-name buf))))
+                               (lambda (buf) (not (bs-ext-regexp-filter buf)))
                                nil)
   "Buffer selection configuration for matching buffer names by regular expressions.")
 
@@ -217,39 +251,50 @@ will be used."
   (if (not (assoc "regexp" bs-configurations))
       (add-to-list 'bs-configurations bs-ext-regexp-config))
   (bs--show-with-configuration "regexp"))
-  
+
 ;; Set some new keys
 (define-key bs-mode-map (kbd "<left>") 'bs-ext-select-previous-configuration)
 (define-key bs-mode-map (kbd "<right>") 'bs-ext-select-next-configuration)
-(define-key bs-mode-map (kbd "x") 'bs-delete)
+(define-key bs-mode-map (kbd "x") 'bs-ext-delete)
 (define-key bs-mode-map (kbd "/") 'bs-ext-limit-by-regexp)
+(define-key bs-mode-map (kbd "R") 'bs-ext-rename)
+(define-key bs-mode-map (kbd "U") 'bs-ext-unmark-all)
+(define-key bs-mode-map (kbd "M") 'bs-ext-mark-all)
+(define-key bs-mode-map (kbd "+") 'bs-toggle-current-to-show)
+(define-key bs-mode-map (kbd "=") 'bs-toggle-current-to-show)
+(define-key bs-mode-map (kbd "W") 'bs-ext-write)
+(define-key bs-mode-map (kbd ":") 'bs-ext-apply-function)
 (define-key bs-mode-map (kbd "?") 'bs-ext-help)
+(define-key bs-mode-map (kbd "<") 'beginning-of-buffer)
+(define-key bs-mode-map (kbd ">") 'end-of-buffer)
+(define-key bs-mode-map (kbd "C-x C-s") 'bs-ext-save)
 (if (featurep 'color-moccur)
     (define-key bs-mode-map (kbd "M-O") 'bs-ext-moccur-marked-buffers))
 ;; Set the config keys
 (bs-ext-set-keys 'bs-ext-config-keys bs-ext-config-keys)
-
 
 (defcustom bs-ext-show-configs-header t
   "Whether or not to show the configs header line."
   :type 'boolean
   :group 'bs)
 
+(defun bs-ext-mode-line nil
+  "Set the `mode-line-format' for `bs-mode'."
+  (setq mode-line-format bs-ext-mode-line-format
+	header-line-format (if bs-ext-show-configs-header
+			       (mapconcat (lambda (conf)
+					    (let* ((name (car conf))
+						   (key (car (rassoc name bs-ext-config-keys)))
+						   (item (if key (concat name "(" key ")")
+							   (if (equal name "regexp") "regexp(/)"
+							     name))))
+					      (if (equal name bs-current-configuration)
+						  (propertize item 'face font-lock-comment-face)
+						item)))
+					  bs-configurations " "))))
+
 ;; Set the mode-line
-(add-hook 'bs-mode-hook
-          (lambda nil
-            (setq mode-line-format bs-ext-mode-line-format
-                  header-line-format (if bs-ext-show-configs-header
-                                         (mapconcat (lambda (conf)
-                                                      (let* ((name (car conf))
-                                                             (key (car (rassoc name bs-ext-config-keys)))
-                                                             (item (if key (concat name "(" key ")")
-                                                                     (if (equal name "regexp") "regexp(/)"
-                                                                       name))))
-                                                        (if (equal name bs-current-configuration)
-                                                            (propertize item 'face font-lock-comment-face) 
-                                                          item)))
-                                                    bs-configurations " ")))))
+(add-hook 'bs-mode-hook 'bs-ext-mode-line)
 
 ;; This variable is used purely for the documentation string.
 (defvar bs-ext-help nil
@@ -310,6 +355,90 @@ to show always.
     (multi-occur buffers regexp)
     (bs-kill)
     (switch-to-buffer "*Occur*")))
+
+(defun bs-ext-unmark-all nil
+  "Unmark all marked buffers."
+  (interactive)
+  (setq bs--marked-buffers nil)
+  (bs--redisplay t))
+
+(defun bs-ext-mark-all nil
+  "Mark all unmarked buffers."
+  (interactive)
+  (setq bs--marked-buffers bs-current-list)
+  (bs--redisplay t))
+
+(defun bs-ext-apply-function (fn)
+  "Apply function FN to marked buffers or buffer on current line.
+The function FN will be called with `funcall' within each buffer.
+This can be used for changing the `major-mode' of buffers for example."
+  (interactive (list (read-minibuffer "Function: ")))
+  (let ((current (bs--current-buffer))
+	(inhibit-read-only t))
+    (if (y-or-n-p (format "Apply \"%S\" to the marked buffers? " fn))
+	(if bs--marked-buffers
+	    (dolist (buf bs--marked-buffers)
+	      (with-current-buffer buf (funcall fn)))
+	  (with-current-buffer current (funcall fn))))
+    (bs--redisplay t)))
+
+(defun bs-ext-rename (regexp newname &optional literal)
+  "Rename marked buffers or buffer on current line.
+Name of buffer is matched with REGEXP and renamed to NEWNAME which
+may refer to parenthesised subexpressions in REGEXP (see `replace-match').
+If REGEXP is left as an empty string then it will match the whole buffer
+name with no subexpressions.
+If a prefix argument is used or LITERAL is non-nil and there is only 1 buffer
+to be renamed, then NEWNAME will be treated literally and no substitution of
+subexpressions will take place."
+  (interactive (list (read-regexp "regexp matching old name (default .*)")
+		     (read-regexp (if (and current-prefix-arg
+					   (< (length bs--marked-buffers) 2)) "New name"
+				    "New name (\\& = whole match, \\N = Nth subexpression)"))
+		     current-prefix-arg))
+  (bs-ext-apply-function
+   (lambda nil
+     (let ((bufname (buffer-name)))
+       (string-match regexp bufname)
+       (rename-buffer
+	(match-substitute-replacement newname nil
+				      (and literal (< (length bs--marked-buffers) 2))
+				      bufname))))))
+
+(defun bs-ext-write (regexp filename)
+  "Write buffer on current line or marked buffers to files.
+Name of buffer is matched with REGEXP and written to FILENAME which
+may refer to parenthesised subexpressions in REGEXP (see `replace-match').
+If REGEXP is left as an empty string then it will match the whole buffer
+name with no subexpressions."
+  (interactive (list (read-regexp "regexp matching old name (default .*)")
+		     (read-regexp (if (and current-prefix-arg
+					   (< (length bs--marked-buffers) 2)) "Filename"
+				    "Filename (\\& = whole match, \\N = Nth subexpression)"))))
+  (bs-ext-apply-function
+   (lambda nil
+     (let ((bufname (buffer-name)))
+       (string-match regexp bufname)
+       (write-file
+	(match-substitute-replacement filename nil nil bufname))))))
+
+(defun bs-ext-delete ()
+  "Kill marked buffers or buffer on current line."
+  (interactive)
+  (if (not bs--marked-buffers)
+      (bs-delete)
+    (unless (not (y-or-n-p
+		  (format "Delete %d marked buffers? "
+			  (length bs--marked-buffers))))
+      (goto-char (point-min))
+      (while (re-search-forward "^>" nil t)
+	(bs-delete))
+      (setq bs--marked-buffers nil))))
+
+(defun bs-ext-save ()
+  "Save marked buffers or buffer on current line."
+  (interactive)
+  (bs-ext-apply-function 'save-buffer))
 
 (provide 'bs-ext)
 
