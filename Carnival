@@ -2,10 +2,13 @@
 A blog carnival is a form of independent, personally curated content aggregation, often hosted by different people in rotation, in which the host would write a post linking to any posts submitted on the chosen topic. (cf. [https://indieweb.org/blog_carnival Blog Carnival on IndieWeb Wiki])
 Inspiration: [https://indieweb.org/IndieWeb_Carnival IndieWeb Carnival], still ongoing as of 2025-06-03.
 == Why ==
-An Emacs Carnival helps motivate community members to post on their personal blogs. The Carnival topics provide inspiration for writing on a shared theme, like a writing prompt in writing workshops. This in turn may inspire readers (and participants), and help them appreciate all the different takes on seemingly the same thing.
+An Emacs Carnival helps motivate community members to post on their personal blogs. The Carnival topics provide inspiration for writing on a shared theme, like a writing prompt in writing workshops. This in turn may inspire readers (and participants), and help them appreciate all the different takes on seemingly the same thing. This way, we all get out of the editor to talk about the editor.
+
 In the ecosystem of Emacs, there sure will be surprises! Submissions to the Carnival will show how diverse our community is.
+
 Above all, it's to have some fun -- on the web, with each other, with Emacs.
 == How ==
+
 Each month, the carnival has a different host, and the host comes up with the topic.
 They post it both on their website and here. Then, other people post their submissions and alert the host about them. At the end of the month, the host collects all the received submissions and posts an overview of it.
 == List of Carnivals ==
@@ -20,12 +23,11 @@ They post it both on their website and here. Then, other people post their submi
 || December  || ? || ? ||
 == “I want to host!” ==
 Great, thank you!
-Add yourself to the table above to reserve a slot that suits you. Don't know a topic yet? Leave it open until it's your turn. Don't know when you can make it, but you want to be in the roster?Add yourself to the list below and make sure to add contact details right there or on your user page, to be pinged.
-It works like this:
-* We'll rotate through the list of hosts to keep things fresh. ("We" is not centrally organized, it's whoever picks up the baton, has the baton)
-* Hosts are associated with a month in the table of upcoming Carnivals (above) first,
-* and then they eventually pick a topic for their respective month.
-So when you see this page, don't be surprised that the "Host" column is already populated, but the "Topic" column isn't. That's by design :)
+
+Do you know when you want to host? Then add yourself to the table above to reserve a slot that suits you. Don't know a topic yet? Leave it open until it's your turn. So when you see this page, don't be surprised that the "Host" column is already populated, but the "Topic" column isn't. That lazy topic evaluation is by design :)
+
+Don't know when you want to host but you want to be in the rotation? Add yourself to the list below and make sure to add contact details right there or on your user page. If a scheduled host has to back out, or if there is a month without a host, we will try to find someone from the list.
+
 === List of wannabe hosts ===
 * [[ctietze]] (2025-06-03)
 * [[gnewman]] (2025-06-04)
