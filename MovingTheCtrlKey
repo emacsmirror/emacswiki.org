@@ -210,7 +210,7 @@ wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
 [https://github.com/rvaiya/keyd keyd] is a Linux daemon which remaps keys system-wide using kernel-level input primitives (evdev, uinput).  It runs in all environments and so can remap keys in X11 or Wayland GUI environments and the virtual console all at once.
 
-According to the project's [https://github.com/rvaiya/keyd?tab=readme-ov-file#quickstart quickstart guide] it is enough to enable the keyd daemon and add the following to <code>/etc/keyd/default.conf</code> to remap caps to control when held and escape when tapped, and the escape key to function as a caps lock:
+According to the project's [https://github.com/rvaiya/keyd?tab=readme-ov-file#quickstart quickstart guide] it is enough to enable the keyd daemon and add the following to ##/etc/keyd/default.conf## to remap caps to control when held and escape when tapped, and the escape key to function as a caps lock:
 
 <pre>
 [ids]
