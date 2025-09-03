@@ -206,6 +206,26 @@ then create the file /usr/share/wscons/keymaps/pckbd.c2c with the single line:
 This can also be tested immediately (doesn't require reboot) and temporarily (won't survive a reboot) with:
 wsconsctl -w map+="keysym Caps_Lock = Control_L"
 
+=== System-wide (using keyd) ===
+
+[https://github.com/rvaiya/keyd keyd] is a Linux daemon which remaps keys system-wide using kernel-level input primitives (evdev, uinput).  It runs in all environments and so can remap keys in X11 or Wayland GUI environments and the virtual console all at once.
+
+According to the project's [https://github.com/rvaiya/keyd?tab=readme-ov-file#quickstart quickstart guide] it is enough to enable the keyd daemon and add the following to <code>/etc/keyd/default.conf</code> to remap caps to control when held and escape when tapped, and the escape key to function as a caps lock:
+
+<pre>
+[ids]
+
+*
+
+[main]
+
+# Maps capslock to escape when pressed and control when held.
+capslock = overload(control, esc)
+
+# Remaps the escape key to capslock
+esc = capslock
+</pre>
+
 == OS X ==
 
 Open System Preferences → Keyboard and choose Modifier Keys:
