@@ -99,7 +99,7 @@ This command was contributed by SpencerBaugh, see https://debbugs.gnu.org/cgi/bu
 
 === `prog-fill-reindent-defun' ===
 
-This command merges `fill-paragraph' and `indent-region' for programming modes.  Bound to <kbd>M-q</kbd> it will reindent the defun at point (or any other top-level language construct), except if the point is in a string.  In that case it will refill (see CategoryFilling) the contents of the string, breaking lines where necessary.  If possible, the command will make use of information make avaliable by TreeSitter.
+This command merges `fill-paragraph' and `indent-region' for programming modes.  Bound to <kbd>M-q</kbd> it will reindent the defun at point (or any other top-level language construct), except if the point is in a string.  In that case it will refill (see CategoryFilling) the contents of the string, breaking lines where necessary.  If possible, the command will make use of information make available by TreeSitter.
 
 This command was contributed by TheodorThornhill, see https://debbugs.gnu.org/cgi/bugreport.cgi?bug=59664
 
