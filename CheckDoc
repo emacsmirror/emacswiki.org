@@ -8,7 +8,14 @@ http://cedet.sourceforge.net/checkdoc.jpg
 
 checkdoc.el is part of GNU Emacs since version 21. 
 
-Here are some things extending checkdoc,
+Here are some things extending checkdoc.  You can either download the files manually, or add [[https://www.emacswiki.org/emacs/KevinRyde user42]]'s (Kevin Ryde) ELPA:
+
+<code>
+(add-to-list 'package-archives
+
+
+ '("user42" . "https://download.tuxfamily.org/user42/elpa/packages/"))
+</code>
 
 * [http://user42.tuxfamily.org/checkdoc-autoload/index.html checkdoc-autoload.el] -- <code>;;;###autoload</code> on at least one entrypoint command
 * [http://user42.tuxfamily.org/checkdoc-batch/index.html checkdoc-batch.el] -- batch summary of problems instead of interactive
