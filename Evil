@@ -66,7 +66,7 @@ Evil requires [UndoTree undo-tree.el] in the ##load-path## for linear undo and u
 
 == Documentation ==
 
-A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] is available in the ##/doc## subdirectory.
+The documentation can be found [https://evil.readthedocs.io/en/latest/index.html online], and in [https://evil.readthedocs.io/_/downloads/en/stable/pdf/ PDF] and [https://evil.readthedocs.io/_/downloads/en/stable/epub/ EPUB] formats.
 
 There is also a guide on Github made by Noctuid [https://github.com/noctuid/evil-guide evil-guide].
 
