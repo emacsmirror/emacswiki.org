@@ -130,11 +130,11 @@ Again, fsbot sees this as simply ##,(describe "init")##, and follows msp's reply
 
 * In such channels, any sentence ending in ##??## again invokes fsbot, and is parsed as ##,(m8b)##, which invokes magic 8-ball. 
 
-Now, as an example, let's briefly visit the term ##emacs## - a term we created above, and whose notes we'd wanted to spit out. We noticed that ##,emacs## was parsed as something equivalent to ##,describe emacs##
-What if another irc user separately defined a function - ##, (defun emacs () "42")
-In that case, the defun would have taken precedence, and ##,emacs## would have parsed as ##,(fs-emacs)##, returning ##42##.
-In that case, how do you spit out the notes of the term ##emacs##? You use  ##,describe emacs##. And, while you are at it, maybe, do a ##(fmakunbound 'emacs)##.
+Now, as an example, let's briefly visit the term ##emacs## - a term we created above, and whose notes we'd wanted to spit out. We stated that ##,emacs## was parsed as (a minor variant of) ##,describe emacs##
+What if another irc user had separately defined a function - ##, (defun emacs () "42")##
+In that case, the defun would have taken precedence, and ##,emacs## would have parsed as ##,(fs-emacs)##, returning ##42##, instead of the 12 notes you had created. In that case, how do you spit out the notes of the term ##emacs##? In such cases, you use more verbose input to disambiguate - you type  ##,describe emacs##. And, while you are at it, maybe, do a ##(fmakunbound 'emacs)##.
 And, of course, the reason ##,describe emacs## works is that a defun (fs-describe) exists. So, this input is parsed as ##,(fs-describe 'emacs)##. That function normally expects a string, so it parses  'emacs to "emacs", and eventually spits out the notes.
+Dwimmy shortcuts often work, but are unreliable. A single invocation may, behind the scenes, easily go through 6 different shortcuts and fallbacks (such as 'emacs getting promoted to "emacs", describe getting promoted to search), before silently returning something useful.
 
 
 === `fs-' namespace ===
