@@ -136,7 +136,7 @@ In that case, the defun would have taken precedence, and ##,emacs## would have p
 Note that ##,describe emacs## works because of the very same parsing route. Namely, the parser, noticing that a function ##'fs-describe##  exists, decides to parse the input as ##,(fs-describe 'emacs)##. Now, that function normally expects a string, so it promotes 'emacs to "emacs", and eventually spits out the notes.
 Dwimmy shortcuts often work, but are unreliable. A single invocation may, behind the scenes, easily go through 6 different shortcuts and fallbacks (such as 'emacs getting promoted to "emacs", describe getting promoted to a search and then to a search-wide), etc., before silently returning something useful. If this is annoying and you desire precise routing, use the lisp-form directly - ##,(describe "emacs")##.
 
-In the example above, the use of defun to spit out a note - 42 - was not the best use of defun. You should use defun when you are trying to add functionality! For data and notes, use terms! 
+In the example above, the use of defun to store data - 42 - was not the best use of defun. You should use defun when you are trying to add functionality! For data, itemize it into notes, and store it in a term! 
 
 
 === `fs-' namespace ===
