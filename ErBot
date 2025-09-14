@@ -48,6 +48,9 @@ Let's assume we added 11 more notes for the term "emacs." Now, how do we read th
   <fsbot> [2] frustratingly inadequate, but often better than any extant alternative (see ,salespitch)
   <fsbot> [3] heavily optimised to navigate its own code ;;[ ,more / ,dump]
 
+
+When you just say ##,emacs##, as above, the bot considers various interpretations, as will be described later. Here, it eventually decided to describe the term emacs for you. Here are the various alternatives you could have used, in order of increasing reliability and decreasing brevity: (1) ##,emacs## (2) ##,describe emacs## (3) ##,(describe "emacs")##
+
 There's a bunch of other functionality available to manipulate terms, notes, their order, merge/cp/rm terms, etc., but let's move on to the next topic.
 
 
