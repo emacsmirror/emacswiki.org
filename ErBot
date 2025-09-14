@@ -136,6 +136,9 @@ In that case, the defun would have taken precedence, and ##,emacs## would have p
 Note that ##,describe emacs## works because of the very same parsing route. Namely, a defun (fs-describe) exists. So, this input is parsed as ##,(fs-describe 'emacs)##. That function normally expects a string, so it promotes 'emacs to "emacs", and eventually spits out the notes.
 Dwimmy shortcuts often work, but are unreliable. A single invocation may, behind the scenes, easily go through 6 different shortcuts and fallbacks (such as 'emacs getting promoted to "emacs", describe getting promoted to a search and then to a search-wide), etc., before silently returning something useful. If this is annoying and you desire precise routing, use lisp directly!
 
+In the example above, the use of defun to spit out a note - 42 - was not the best use of defun. You should use defun when you are trying to add functionality! For data and notes, use terms! 
+
+
 === `fs-' namespace ===
 
 Here’s another reminder that everything you do is actually happening in the ‘fs-’ space. When you ##,(defun increment (myvar) (+ 1 (apply 'myfun myvar)))##, it first internally gets parsed as ##,(fs-defun fs-increment (fs-myvar) (fs-+ 1 (fs-apply 'fs-myfun fs-myvar)))##. That works because ‘fs-defun’, ‘fs-apply’, and `fs-+' are functions/macros that are provided to you in the core functionality, and because you hopefully already ‘defun’d a ‘fs-myfun’ prior to this. Notice how the parser figures out that it needs to prefix the quoted expression as well. It converts ‘myfun’ to ‘fs-myfun’. If it didn’t, users would be able to do things like (fs-apply 'shell-command "rm -rf..").
