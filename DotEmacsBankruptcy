@@ -9,5 +9,16 @@ The term was coined by RyanMcGeary on 2007-10-07[http://www.emacsblog.org/2007/1
 
 :: For configuration code related to rarely or no longer used modes, you can move the code into eval-after-load forms to reduce emacs startup time. -- [[JisangYoo]]
 
+[new]
+There are several ways to cope with DotEmacsBankruptcy.
+
+You may delete only those parts of your InitFile that you do not need any longer, e.g., because you do not use a mode any more that got configured in your .emacs file.
+
+You also may rewrite your existing InitFile in OrgMode and add some comments and outline so as to make it a literate programming file. Make sure you will not end up with excessive commenting alone, but provide a consistent prose that consists of both, the comments and your code as one. You may then tangle the code to your InitFile from time to time for active use.
+
+The most radical way to get rid of DotEmacsBankruptcy is, of course, deleting your InitFile altogether and re-start your configuration from scratch.
+
+Anyway you will end up with an InitFile that is considerably shorter and cleaner than it used to be, enhancing startup time and handling of your .emacs file in the future.
+
 ----
 CategoryDotEmacs
