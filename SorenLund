@@ -2,13 +2,23 @@
 
 Allow me to introduce myself. My name is Søren Lund, and I've been an Emacs user since the early nineties (around version 18 dot something).
 
-I've always used the GnuEmacs version, never [[XEmacs]] or other variants (besides NTEmacs back in the day when not official build existed for Windows and I had to use Windows for whatever reason).
+I've always used the GnuEmacs version—never [[XEmacs]] or other variants (besides NTEmacs back in the day, when an official build did not exist for Windows and I had to use Windows for whatever reason).
 
+==How I Install and Configure Emacs==
 
-==My Dot Emacs File==
+On Linux, I prefer to build Emacs myself, as I want the latest release and the packaged versions are usually behind. To automate building, I've written a Bash script:
 
-You can find my Emacs configuration here: https://codeberg.org/slu/dot-emacs
+* https://codeberg.org/slu/my-dev-utils/src/branch/main/bin/slu-install-emacs.sh
 
+The script should work equally well on Debian and Ubuntu.
+
+On Windows, I download the zipped binaries, e.g., [tt]emacs-30.2.zip[/tt], from https://www.gnu.org/software/emacs/download.html—and then I
+
+# unzip that into [tt]C:\Users\<username>\opt\emacs-30.2[/tt]
+# create a junction (from a Command Prompt): [tt]mklink /j C:\Users\<username>\opt\emacs C:\Users\<username>\opt\emacs-30.2[/tt]
+# run [tt]C:\Users\<username>\opt\emacs\bin\addpm.exe[/tt]
+
+In either case, I keep my Emacs configuration in Git. You can find it here: https://codeberg.org/slu/dot-emacs
 
 ==My Emacs Contributions==
 
@@ -16,7 +26,7 @@ I've contributed with a Danish CalendarLocalization, that also adds Danish holid
 
 I've written about integrating CfnLint into Emacs.
 
-I've written [https://github.com/soren/App-TimeClock timeclock.pl] - a TimeClock reporting utility
+I've written [https://github.com/soren/App-TimeClock timeclock.pl]—a TimeClock reporting utility
 
 ==Comments==
 [new:AndyStewart:2009-08-20 22:07 UTC]
