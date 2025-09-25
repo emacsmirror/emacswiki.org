@@ -55,6 +55,8 @@ There's a bunch of other functionality available to manipulate terms, notes, the
 
 
 
+deego> ,,sbcfoo is also short for single board computer (ie. a raspberry pi)                                                                                                           [23:37]
+<fsbot> D'oh!  [set-also] But there’s no such term: sbcfoo
 
 As we saw above, the bot understands and executes a limited and modified subset of lisp we refer to as **fslisp**, meant to help you control some of the bot's behavior. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
@@ -275,7 +277,7 @@ erbot has many other features developed over 20+ years of irc usage. New ones co
 
 
 
-== Sensible Fallback Design ==
+== Sensible Fallback Design. Read- vs Write- interactions  ==
 A very large percentage of time, fsbot is invoked "incorrectly," but still manages to dtrt because of this sensible fallback design philosophy that we have emphasized throughout this document. And, fsbot, programmed in 2000s, manages to do this with pre-llm tech! Here are a few examples -
 
 * <deego> you might want to see if ,,envrc helps you.
@@ -306,6 +308,24 @@ There's no term " EmaCs". Notice the extraneous leading space, and the funny cas
 
 
 There are numerous other cases, and at some point, I will populate some more examples above. In each case, the user doesn't notice, but fsbot tried various approaches, till it found something sensible.
+
+
+=== Less forgiving during write-interactions ===
+
+While read interactions are very forgiving, as above,  write interactions are more conservative, by design. Here's a (partially made-up) example where it tried to return something useful:
+
+    cluck> ,sbc
+
+    <+fsbot> SBCL is [0] Steel Bank Common Lisp
+
+Now, the user may not immediately notice that the bot returned notes for SBCL rather than for sbc.  No harm, no foul so far. On the other hand, if you continue and try to add a term to the non-existent term "sbc", it could (a) create a new term or (b) flag an error that would help you catch your oversight. I believe the latter is the right thing to do here.
+
+    deego> ,,sbc is also short for single board computer (i.e., a Raspberry Pi)
+
+    <fsbot> D'oh! [set-also] But there’s no such term: sbc
+
+There's a bit of Postel's law going on here - I believe that during write-interactions, being conservative is the right thing and helps catch a lot of user-errors before they happen. Much harder for users to fix the db after they mess it up.
+
 
 
 == Practical Hints for best results == 
