@@ -314,13 +314,13 @@ There are numerous other cases, and at some point, I will populate some more exa
 
 While read interactions are very forgiving, as above,  write interactions are more conservative, by design. Here's a (partially made-up) example where it tried to return something useful:
 
-    cluck> ,sbc
+    <cluck> ,sbc
 
     <+fsbot> SBCL is [0] Steel Bank Common Lisp
 
 Now, the user may not immediately notice that the bot returned notes for SBCL rather than for sbc.  No harm, no foul. so far. On the other hand, if you continue and try to add a term to the non-existent term "sbc", it could (a) create a new term or (b) flag an error that would help you catch your oversight. I believe the latter is the right thing to do here.
 
-    deego> ,,sbc is also short for single board computer (i.e., a Raspberry Pi)
+    <deego> ,,sbc is also short for single board computer (i.e., a Raspberry Pi)
 
     <fsbot> D'oh! [set-also] But there’s no such term: sbc
 
