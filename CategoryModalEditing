@@ -11,6 +11,14 @@ Emacs in its default configuration is generally considered to be a modeless edit
 * [[Hydra]]
 * [[Transient]]
 
+==Discussions==
+
+* [https://stackoverflow.com/questions/14410/why-are-there-so-few-modal-editors-that-arent-vi Why are there so few modal editors that aren't Vi/Vim?] on StackExchange.
+
+* [https://www.reddit.com/r/emacs/comments/1ckm3yu/would_emacs_be_have_been_more_popular_compared_to/ Would Emacs have been more popular (compared to Vim) if it had native modal editing from the start?] on /r/Emacs.
+
 ==Research studies==
+
+* Ganty, Pierre (2024).  [https://spin-web.github.io/SPIN2024/assets/preproceedings/SPIN2024-paper9.pdf Learning the State Machine Behind a Modal Text Editor: the (Neo) Vim Case Study]. (pdf) Lecture Notes in Computer Science 
 * Poller, M. F., & Garter, S. K. (1984). The Effects of Modes on Text Editing by Experienced Editor Users. Human Factors, 26(4), 449-462. https://doi.org/10.1177/001872088402600408
 
