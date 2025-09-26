@@ -318,13 +318,13 @@ While read interactions are very forgiving, as above,  write interactions are mo
 
     <+fsbot> SBCL is [0] Steel Bank Common Lisp
 
-Now, the user may not immediately notice that the bot returned notes for SBCL rather than for sbc.  Often very useful this way. And, anyway, No harm, no foul, since this was a read interaction. Now, if you continue and try to add more notes the (non-existent) term "sbc", it could (a) create a new term, OR (b) flag an error that would help you catch your oversight. I believe the latter is the right thing to do here.
+Now, the user may not immediately notice that the bot returned notes for SBCL rather than for sbc.  Often very useful this way. And, anyway, No harm, no foul, since this was a read interaction. Now, if you continue and try to add more notes to the (non-existent) term "sbc", it could (a) create a new term, OR (b) flag an error that would help you catch your oversight. I believe the latter is the right thing to do here.
 
-    <deego> ,,sbc is also short for single board computer (i.e., a Raspberry Pi)
+    <deego> ,sbc is also short for single board computer (i.e., a Raspberry Pi)
 
     <fsbot> D'oh! [set-also] But there’s no such term: sbc
 
-There's a bit of Postel's law going on here - I believe that during write-interactions, being conservative is the right thing. This helps users flag user errors before they happen. IME, much harder for users to fix the DB after they mess it up.
+There's a bit of Postel's law going on here - I believe that during write-interactions, being conservative is the right thing. This helps flag user errors before they happen. IME, much harder for users to fix the DB after they mess it up.
 
 
 
