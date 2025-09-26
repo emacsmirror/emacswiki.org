@@ -7,8 +7,7 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 == Getting Started ==
 
-* ViewMailQuickStart
-* ViewMailSevenQuickStart -- old quick-start for version 7.19
+* ViewMailQuickStar
 
 
 == VM Customization ==
@@ -38,18 +37,9 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 == Documentation ==
 
-* [[http://www.wonderworks.com/vm/user-manual| Info manual on VM version 7]], Kyle Jones at Wonderworks, May 2003.  Even though it is out of date, this continues to be good reference for the basics.  See the info manual in your VM distribution for up to date documentation.
-
-* [[http://www.wonderworks.com/vm/FAQ.html| VM FAQ]], Brian Gorka, Samuel Mikes and Gregory Neil Shapiro at Wonderworks, February 2001.
-
-* [[http://www.wonderworks.com/vm/vm-procmail.html| FAQ: Using VM with Procmail]], Samuel Mikes at Wonderworks,  April 1998.  Explanation of integrating VM with external mail filtering.
-
 == External Links ==
 
 * [http://www.nongnu.org/viewmail/ Official ViewMail Website]
-* [http://download.savannah.gnu.org/releases/viewmail/ ViewMail on Savannah]
-* [https://launchpad.net/vm ViewMail on Launchpad]
-* [http://www.wonderworks.com/vm/ Old ViewMail website]
 * V. L. Simpson, [[http://linuxgazette.net/109/simpson.html| Emacs and Email: The VM Mail Package]], Linux Gazette, December 2004.  A very nice tutorial, which is still valuable despite its age.
 
 * Phil Sung, [[http://web.psung.name/emacstips/vm.html|VM configuration and workflow]], September 13, 2008.  Nice article on setting up VM.
