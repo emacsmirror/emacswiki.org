@@ -1,0 +1,4 @@
+The following button filters Recent Changes so that it shows changes to elisp libraries only:
+
+* [EmacsWiki:RecentChanges?match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1 Chronological list of all Elisp libraries on this Wiki]
+([EmacsWiki:RecentChanges?match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=7;showedit=1 last seven days])
