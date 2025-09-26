@@ -60,6 +60,9 @@ Yes, there is no recursive parsing of the link text.
 
 It looks like usemod dot com domain has expired. Some of the MeatBall links now end up on spam sites eg: AppropriateMedia
 
+[new]
+I think this got fixed a while ago. -- MeatBall:AlexSchroeder
+
 === Many pages missing from Google search results ===
 
 At least until fairly recently, most pages used to show up in Google search results in a reasonable way, often in a general search, certainly if using "site:www.emacswiki.org".  For me today (2025-03-02), that no longer happens; it seems like some pages are searchable but most are not.
@@ -68,6 +71,9 @@ At least until fairly recently, most pages used to show up in Google search resu
 * https://www.bing.com/search?q=site%3Aemacswiki.org+Orgmode returns reasonable results
 
 Google have some useful-looking advice on diagnostics for site admins [https://support.google.com/webmasters/answer/9012289?hl=en here].
+
+[new]
+Yeah, the traffic from search engines is hard to differentiate from web scraping bots and so these days I just block them all. I don't have a good answer for you, unfortunately. I have written a lot of blog pages about my [https://alexschroeder.ch/view/Butlerian_Jihad Butlerian Jihad] these last one or two years, however. Let me know if you have some good ideas. -- [[Alex Schroeder]]
 
 ----
 CategoryEmacsWikiSite
