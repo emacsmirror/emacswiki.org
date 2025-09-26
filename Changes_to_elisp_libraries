@@ -1,6 +1,6 @@
 The following button filters Recent Changes so that it shows changes in the last seven days to elisp libraries only:
 
-<form method="POST" action="/emacs">
+<form method="POST" action="https://www.emacswiki.org/emacs">
 <input type="hidden" name="match" value="\.(el|tar)(\.gz)?$">
 <input type="hidden" name="showedit" value="on">
 <input type="hidden" name="days" value="7">
@@ -10,10 +10,13 @@ The following button filters Recent Changes so that it shows changes in the last
 
 All of them, chronologically, slow:
 
-<form method="POST" action="/emacs">
+<form method="POST" action="https://www.emacswiki.org/emacs">
 <input type="hidden" name="match" value="\.(el|tar)(\.gz)?$">
 <input type="hidden" name="showedit" value="on">
 <input type="hidden" name="from" value="1">
 <input type="hidden" name="action" value="rc">
 <input type="submit">
 </form>
+
+Forms are only enabled on locked pages. Since the buttons above are forms, only EmacsWikiAdministrators can edit this page.
+If you want to save these forms in a local HTML file, you can do that. See the [Self:action=browse;raw=1;id=Changes_to_elisp_libraries source code of this page].
