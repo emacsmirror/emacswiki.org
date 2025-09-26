@@ -1,8 +1,19 @@
-The following button filters Recent Changes so that it shows changes to elisp libraries only:
+The following button filters Recent Changes so that it shows changes in the last seven days to elisp libraries only:
 
 <form>
-<input type="submit"/>
+<input type="text" name="match" value="%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24">
+<input type="checkbox" name="showedit" value="Include minor changes">
+<input type="text" name="days" value="7">
+<input type="hidden" name="action" value="rc">
+<input type="submit">
 </form>
 
-* [https://www.emacswiki.org/emacs/RecentChanges?match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1;action=rc Chronological list of all Elisp libraries on this Wiki]
-([https://www.emacswiki.org/emacs/RecentChanges?match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=7;showedit=1;action=rc last seven days])
+All of them, chronologically, slow:
+
+<form>
+<input type="text" name="match" value="%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24">
+<input type="checkbox" name="showedit" value="Include minor changes">
+<input type="hidden" name="from" value="1">
+<input type="hidden" name="action" value="rc">
+<input type="submit">
+</form>
