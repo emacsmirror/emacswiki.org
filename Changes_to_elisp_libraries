@@ -8,7 +8,7 @@ The following button filters Recent Changes so that it shows changes in the last
 <input type="submit">
 </form>
 
-All of them, chronologically, slow:
+All of them, chronologically, and slow:
 
 <form method="POST" action="https://www.emacswiki.org/emacs">
 <input type="hidden" name="match" value="\.(el|tar)(\.gz)?$">
