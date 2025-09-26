@@ -9,17 +9,6 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== MeatBall: links ==
-[new]
-MeatBall links (e.g. MeatBall:StyleGuide) uses www.usemod.com; 
-but this URL is corrupted and redirects to k9nhacai.me.
-
--STyx
-
-[new]
-Thanks! I updated the InterMap so all these links should be fixed, now.
-I'm also doing a global search and replace for those places where the domain name was used without the InterMap. -- Alex
-
 == RSS for ElispArea == 
 
 [new]
@@ -28,78 +17,14 @@ Ran across this page https://www.emacswiki.org/emacs/2005-04-27 , which is showi
 
 *Does* the ElispArea have a feed?  
 
-I did try to use `?action=rss&rcidonly=EmacsLisp&all=1&days=28` (from https://oddmuse.org/wiki/Including_RSS_Feeds) but the response says per page feeds aren't available. 
-
-
-== Comments on Pages ==
+I did try to use ##?action=rss&rcidonly=EmacsLisp&all=1&days=28## (from https://oddmuse.org/wiki/Including_RSS_Feeds) but the response says per page feeds aren't available. 
 
 [new]
-I was trying to make a quick update to the OrgMode page (adding commands for building from source) and ran afoul of the dreaded 'http' error.  I ran through the page updating links to https (did not actually check the links - a project for another day).
+Yeah, I stopped doing the feed integration part because I think these days people all keep their own feed readers or they don't care about feeds. Either way, there's no need to use the wiki as a "portal" to the web.
 
-Then I ran into an error with a page referring me to the BannedContent page.  I checked the link in question and it's 404, so deleted.
+The GET method for the RSS action (##?action=rss&rcidonly=EmacsLisp&all=1&days=28##) is not supported because of all the web and feed scraping that's going on. It would still work using a POST request but feed readers don't support it, so it's /de facto/ unusable. However, if you have a HTML page with a form, then you can /submit/ a query that produces the desired result.
 
-On my third try at preview/save, I got the same error for brool.com :
-
-`Rule "/index\.php" matched "XXX" on this page. Reason: Comments on StyleGuide. See BannedContent for more information.`
-
-This page IS up, and I actually don't see it listed in the BannedContent, so I'm not sure what this is about.
-
-Anyway, the http thing in particular has come up often enough that I'm wondering if there's any easy fix?  It's often an easy fix on my end(updating links, say), but on a page like OrgMode 's it becomes a whole project by itself, and is the sort of thing that can easily derail quick updates/fixes to pages. (Like, I had to give up on my actual update to write this here, and then I have to go do something else.  Maybe tomorrow! :))
-
-edit: I can't even save this because the error above is triggering the BannedContent error on save. Replaced with 'XXX'.
-
--- [[Cena]]
-
-[new]
-Yeah, the BannedContent page lists a lot of regular expressions that get applied to all the URLs on a page when saving. If there's a match, saving is not permitted. I agree that this is a problem for large pages with many URLs and very generic regular expressions. I will delete most of the BannedContent (it comes with timestamps) and then we can see whether spam resumes. Surely most of these spam campaigns have ended by now. -- Alex Schroeder
-
-== Comments on the page itself ==
- 
-[new]
-I recently came across a page, last updated in 2008, with comments on the page itself ( SaveAsHtml ) .  I moved the comments to the Talk page, but then saw the same thing on the Htmlize page, and that made me wonder if comments on the page is a feature rather than a bug. 
-
-The Htmlize page is somewhat different in that the comments are primarily of the 'tips and hints' variety, so maybe useful in their own right.
-
-Just checking before I move more!
-
---[[Cena]]
-
-[new]
-Yeah, in the beginning, Emacs Wiki didn't have comment pages. People just left comments on the page itself. If you come upon such pages, it's perfectly OK to move the comments to the comment page. -- Alex Schroeder
-
-== Can't cancel Admin comment ==
-[new]
-I rather confusedly ended up on the Administration page for the NearMap page after trying unsuccessfully to submit a comment on that page.  
-While on the Admin page, I cannot cancel the comment textfield/save button; eg, "Comments on NearMap needs attention".
-
-[new]
-I'm not sure what you mean. Perhaps I don't see the problem because I'm an admin. What exactly is the problem? From any page X on the wiki, you can click the "Administration" Link, where it will say "X needs attention: ##______## [Save]" where you can provide an explanation of why the page needs attention, and then you can click the save button. There's no need to cancel this? Or is there some complication I'm not seeing. -- [[Alex Schroeder]]
-
-[new]
-Ah, okay - I misunderstood the purpose of it.  I ended up on the Admin page because I'd tried submitting a regular edit on that page but got an error because there's an http link.  On a different page I'd edited, I was able to get around that same error by updating the offending link to the https version.  That didn't work on NearMap and I ended up on the Admin page as I tried to ferret out why.  Anyway, long story long, I understand better what the Admin comment is for.  Thanks for your patience with all the confusion above. :)
-
---[[Cena]]
-
-== Error on Administration->Nice Index ==
-[new]
-The [https://www.emacswiki.org/emacs?action=printable-index Nice Index of All Pages] leads to a `Invalid action parameter printable-index` error.
-
-[new]
-Fixed by removing it. -- [[Alex Schroeder]]
-
-== Revisioning Problems ==
-
-[:EditingGetsOldPageText]
-=== editing does not get most recent version ===
-
-I tried yet again to get emacs-w3m to work as described above.  I edited.  It didn't work.  I edited the page with Safari.  It worked.  Then I followed the instructions again in emacs-w3m.  The Safari edit did not show up in the compose edit box, even though the page did show it.  Therefore, the text that the user edits is not the same as the text that is shown.  Is this a cache issue?  Thanks.
-
-[new]
-I don't think I've ever run into this. Anybody else? -- AlexSchroeder
-
-=== RecentChanges doesn't reflect recent changes ===
-
-I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
+I worked something up on [[Changes to elisp libraries]]. -- [[Alex Schroeder]]
 
 == Markup/Generation Issues==
 
