@@ -1,7 +1,7 @@
 The following button filters Recent Changes so that it shows changes in the last seven days to elisp libraries only:
 
 <form method="POST" action="/emacs">
-<input type="hidden" name="match" value="%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24">
+<input type="hidden" name="match" value="\.(el|tar)(\.gz)?$">
 <input type="hidden" name="showedit" value="on">
 <input type="hidden" name="days" value="7">
 <input type="hidden" name="action" value="rc">
@@ -11,7 +11,7 @@ The following button filters Recent Changes so that it shows changes in the last
 All of them, chronologically, slow:
 
 <form method="POST" action="/emacs">
-<input type="hidden" name="match" value="%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24">
+<input type="hidden" name="match" value="\.(el|tar)(\.gz)?$">
 <input type="hidden" name="showedit" value="on">
 <input type="hidden" name="from" value="1">
 <input type="hidden" name="action" value="rc">
