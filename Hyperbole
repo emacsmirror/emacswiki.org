@@ -93,12 +93,21 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 
 ----
 
+[new]
 Q: I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
 
+[new]
+A: …
+
+[new]
 Q: Am I right if I assume that the major components of Hyperbole are something similar to outline minor mode + the ability to create links to different places (a position in a file for example)?
 In that case I think that OrgMode can do the same things very good. And that already comes with Emacs 22.  New control of windowing, if as described, may be very exciting.  Exact position of windows and such.  As of the libraries of text files, I think I've used files of Org links for that, but never got them to "search and retrieve" as described.  I doubt the new incarnation of Hyperbole would replace Org, but if they merge as the above kind of predicts, this could be very useful.
 
 A merger of Org, Hyperbole/Koutline, Muse, and Info modes would be perfect, sort of a „unified documentation project mode”, or a replacement for the very aged and limited Info system.
 * afterthought: not necessarily a replacement of info, merely an additional, modern implementation which can directly interlink any relevant documentation (and completely casually can serve as a demonstration of the concepts and power of the system as a whole, showing off Org/Hyperbole in real action, with options to „Muse” docu into web-form or PDFs).
+
+[new]
+A: Hyperbole is a global minor mode with the most important keybinding being M-RET. It figures out what to do from context. It feels similar to having clickable URLs everywhere, except it works on any kind of text. Hyperbole recognises filenames, for example, so M-RET visits those files if you hit M-RET. There's no need to add special markup to filenames for this to work. Hyperbole also recognises special markup, however.
+
 ----
 CategoryPersonalInformationManager CategoryHypermedia
