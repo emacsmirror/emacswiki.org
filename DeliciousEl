@@ -39,11 +39,7 @@ don't actually contain spaces you should be fine. -- Štěpán
 
 == Get it ==
 
-A Git repository can be found at http://gitorious.org/delicious-el.
-
-For those who prefer tarballs, a
-[http://gitorious.org/delicious-el/delicious-el/archive-tarball/dev snapshot]
-can be had.
+A Git repository can be found at https://github.com/GitoriousLispBackup/delicious-el .
 
 John's original home page is still at http://wjsullivan.net/delicious-el.html.
 
