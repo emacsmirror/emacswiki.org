@@ -1,5 +1,5 @@
-;; -*- lexical-binding: t; -*-
 ;;; logr.el Simple logging tool
+;; -*- lexical-binding: t; -*-
 
 ;;
 ;; logr.el
