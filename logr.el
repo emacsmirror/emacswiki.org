@@ -5,8 +5,8 @@
 ;;
 ;; logr.el
 ;; Author: Jason Meade <jemeade@gmail.com>
-;; Last Edited: 5/27/2024
-;; Version: 1.0.0
+;; Last Edited: 10/05/2025
+;; Version: 1.0.1
 ;;
 ;; Allow users to log tasks
 ;;
