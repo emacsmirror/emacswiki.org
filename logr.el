@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;; logr.el Simple logging tool
 
 ;;
@@ -21,13 +22,10 @@
 ;;    Add the following to your .emacs file:
 ;;    (require 'logr)
 ;;
-;;    Optionally set the logfile name (default is "~/.logfile")
-;;    (setq logr-file "~/Work/logfile")
-;;
 ;; Usage:
 ;;    M-x logr<ret> Enter your one-line log message<ret>
 ;;
-;; The logr feature is intended for users to write simple
+;; The logr feature is intended to for users to write simple
 ;; one-line log entries. For example, this could be useful
 ;; as a timesheet app or for jotting down quick notes while
 ;; working.
@@ -49,8 +47,6 @@
 ;;    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 
-;;; Code:
-
 (defvar logr-file "~/.logfile"
   "Save log entries to file")
 
@@ -60,13 +56,13 @@
    (let* ((log-message (read-from-minibuffer "Log: "))
           (log-entry (format "%s :: %s\n" (logr-time) log-message))
           (log-buffer (find-file-noselect logr-file)))
-     (progn
+     (run-at-time 0 nil (lambda ()
        (set-buffer log-buffer)
        (goto-char (point-max))
        (insert log-entry)
        (save-buffer 0)
-       (kill-buffer)
-       nil))))
+       (kill-buffer)))
+     nil)))
 
 (defun logr-time ()
   "Returns current time in MM/DD/YYYY MM:HH format"
