@@ -249,3 +249,44 @@ diredp-do-bookmark
 
 -- Kepa 2024-10-20 17:39 UTC
 
+----
+Here's a couple of functions you might want to consider adding to DiredPlus:
+
+    (defun dired-native-compile ()
+      ;; Return nil for success, offending file name else.
+      (let* ((filename (dired-get-filename))
+    	 native-file buffer-read-only failure)
+        (condition-case err
+    	(save-excursion (native-compile filename))
+          (error
+           (setq failure err)))
+        (setq native-file (concat (file-name-sans-extension
+    			       (file-name-nondirectory filename))
+    			      ".eln"))
+        (or (cl-find-if (lambda (dir)
+    		      (file-exists-p (concat dir comp-native-version-dir "/" native-file)))
+    		    native-comp-eln-load-path)
+    	(setq failure t))
+        (when failure
+    	(progn
+    	  (dired-log "Native compile error for %s:\n%s\n" filename failure)
+    	  (dired-make-relative filename)))))
+    
+    (defun dired-do-native-compile (&optional arg) ; Bound to `B', menu `Multiple' > `Byte Compile'
+      "Native compile marked Emacs Lisp files.
+    A prefix argument ARG specifies files to use instead of marked.
+     An integer means use the next ARG files (previous -ARG, if < 0).
+     `C-u': Use the current file (whether or not any are marked).
+     `C-u C-u': Use all files in Dired, except directories.
+     `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+     `C-u C-u C-u C-u': Use all files and all directories.
+    More generally, ARG is as the second argument of `dired-map-over-marks'."
+      (interactive (let* ((arg  current-prefix-arg)
+                          (C-u  (and (consp arg)  arg)))
+                     (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                     (list arg)))
+      (dired-map-over-marks-check #'dired-native-compile arg 'native-compile (diredp-fewer-than-2-files-p arg)))
+
+
+-- JoeBloggs 2025-10-05 18:23
+
