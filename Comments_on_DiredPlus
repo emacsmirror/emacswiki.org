@@ -268,7 +268,7 @@ Here's a couple of functions you might want to consider adding to DiredPlus:
     	  (dired-log "Native compile error for %s:\n%s\n" filename failure)
     	  (dired-make-relative filename)))))
     
-    (defun dired-do-native-compile (&optional arg) ; Bound to `B', menu `Multiple' > `Byte Compile'
+    (defun dired-do-native-compile (&optional arg)
       "Native compile marked Emacs Lisp files.
     A prefix argument ARG specifies files to use instead of marked.
      An integer means use the next ARG files (previous -ARG, if < 0).
