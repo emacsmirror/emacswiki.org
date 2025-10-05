@@ -1,6 +1,7 @@
 ;;; logr.el Simple logging tool
 ;; -*- lexical-binding: t; -*-
-
+;; PLEASE NOTE: lexical-binding **MUST** be the first line in this file in order to work correctly.
+;; I placed it as the second line **ONLY** to make EmacsWiki happy in its formatting of this page.
 ;;
 ;; logr.el
 ;; Author: Jason Meade <jemeade@gmail.com>
