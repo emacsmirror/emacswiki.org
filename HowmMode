@@ -153,7 +153,7 @@ Answer from [[khi]]:
 = More Tips =
 
 * [https://github.com/kaorahi/howm/issues/7 different major modes for each note]
-* [https://github.com/protesilaos/modus-themes/issues/117 accessible color scheme using Modus themes]
+* accessible color scheme: [https://protesilaos.com/emacs/modus-themes Modus themes]
 * [https://github.com/kaorahi/howm/issues/9 repeated TODOs]
 * [https://github.com/kaorahi/howm/pull/10#issuecomment-2347294087 drag and drop] via [[smart-dnd.el]]
 * [https://emacs.stackexchange.com/questions/82586/howm-is-there-a-way-to-create-a-new-note-without-the-link-to-the-original-file modifying default contents of new notes]
@@ -171,6 +171,11 @@ Answer from [[khi]]:
 * [https://github.com/kaorahi/howm/issues/83#issuecomment-3181303383 search only within *.howm files]
 * [https://github.com/kaorahi/howm/issues/86#issuecomment-3279862767 paste image]
 * [https://github.com/kaorahi/howm/issues/86#issuecomment-3282017534 create svg, add link, open inkscape]
+* [https://github.com/kaorahi/howm/issues/85#issuecomment-3318232500 word match]
+* [https://github.com/kaorahi/howm/issues/87 hints for Evil]
+* [https://github.com/kaorahi/howm/issues/89#issuecomment-3346154777 RET on markdown links]
+* [https://github.com/kaorahi/howm/issues/91#issuecomment-3368386004 record task completion time & show elapsed time]
+* [https://github.com/SenkiReign/howm-graph visualize network structure of notes and keywords]
 
 = Mentions =
 
