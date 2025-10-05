@@ -8,7 +8,7 @@ New archive types can be added to <code>archive-mode</code> without too much tro
 
 * [[http://user42.tuxfamily.org/arc-lzh-exe/index.html arc-lzh-exe.el]] -- adds support for lzh self-extracting executables (viewing only)
 
-But note that in general, arc-mode.el is not supposed to be extensible to support additional types of archives on the user level
+But note that in general, arc-mode.el is not supposed to be extensible to support additional types of archives on the user level (s.a. [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=79574]])
 
 [new]
 Note about file extraction to the file system:
