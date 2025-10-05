@@ -255,18 +255,14 @@ Here's a couple of functions you might want to consider adding to DiredPlus:
     (defun dired-native-compile ()
       ;; Return nil for success, offending file name else.
       (let* ((filename (dired-get-filename))
-    	 native-file buffer-read-only failure)
+    	     (native-file (comp-el-to-eln-filename filename))
+             buffer-read-only failure)
         (condition-case err
     	(save-excursion (native-compile filename))
           (error
            (setq failure err)))
-        (setq native-file (concat (file-name-sans-extension
-    			       (file-name-nondirectory filename))
-    			      ".eln"))
-        (or (cl-find-if (lambda (dir)
-    		      (file-exists-p (concat dir comp-native-version-dir "/" native-file)))
-    		    native-comp-eln-load-path)
-    	(setq failure t))
+        (or (file-exists-p native-file)
+    	    (setq failure t))
         (when failure
     	(progn
     	  (dired-log "Native compile error for %s:\n%s\n" filename failure)
