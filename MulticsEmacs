@@ -1,9 +1,54 @@
 [[ja:マルティックス_イーマックス]]
 Multics Emacs was the first to have Lisp as an extension language.  It was written in MacLisp.
 
-Sources here: http://web.mit.edu/afs/net/dev/reference/multics/ldd/unb/source/
+Sources here: https://web.mit.edu/multics-history/source/Multics_Internet_Server/Multics_sources.html
 
-Looks like BarryMargolin made lots of changes to Multics Emacs.
+Of possible interest of Emacsers:
+
+===Lisp examples===
+
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/e-define-command.incl.lisp e-define-command.incl.lisp], "Include File to Load Emacs Command Definition Macro", 8/20/1986.
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/emacs-internal-macros.incl.lisp emacs-internal-macros.incl.lisp], "Loads in e_internal_macros_", 8/20/1986.
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/e-macros.incl.lisp e-macros.incl.lisp], "Declares for use by Emacs programs and extensions", 8/12/1986.
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/emacs-rdis-dcls.incl.lisp emacs-rdis-dcls.incl.lisp], "Include file for Emacs redisplay modules", 6/8/1988.
+* [https://web.mit.edu/multics-history/source/ldd_listings/unb_1/emacs_rmail_.list emacs_rmail_.list], "Here begins Emacs send mail (SMAIL?)", 4/24/1989.
+
+===ALM & PL1 examples===
+
+Alm was an [https://web.mit.edu/multics-history/source/Multics/doc/info_segments/alm.info assembly language] format used by Multics.
+
+[https://multicians.org/pl1.html Pl1] was the Multics systems language.
+
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/emacs_data.incl.alm emacs_data.incl.alm], "Structure emacs data" (for 8-bit I/0), 12/27/1987.
+* [https://web.mit.edu/multics-history/source/Multics/ldd/include/emacs_data.incl.pl1 emacs_data.incl.pl1], "Add extended_ascii flag and extend breaktable for 8bit I/O", 8/1/1988.
+
+===Command examples===
+
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/make_emacs.ec make_emacs.ec], "Exec Com to dump the Emacs Lisp environments", 9/29/1984.
+
+===Archives===
+
+There are several files that are archived in a format peculiar to Multics.  In order to read the contents of the archived files, you'll need a way to [https://multicians.org/mxload.html read Multics backup tapes]. 
+
+Just kidding, Jeff Johnson and Eric Swenson have created an [https://gitlab.com/dps8m/mxload updated version] which should work on any POSIX machine.
+
+I can confirm that it works on MacOS Sequoia (15.6.1) as of October 2025.
+
+Files of possible interest:
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_ctls_.archive bound_emacs_ctls_.archive]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_ctls_.archive.9 bound_emacs_ctls_.archive.9]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_full_.archive bound_emacs_full_.archive]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_full_.archive.9 bound_emacs_full_.archive.9]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_macros_.archive bound_emacs_macros_.archive]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_macros_.archive.9 bound_emacs_macros_.archive.9]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_packages_.archive bound_emacs_packages_.archive]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_packages_.archive.9 bound_emacs_packages_.archive.9] 
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_rmail_.archive bound_emacs_rmail_.archive]
+* [https://web.mit.edu/multics-history/source/Multics/ldd/system_library_unbundled/object/binaries/bound_emacs_rmail_.archive.9 bound_emacs_rmail_.archive.9]
+
+----
+
+Looks like BarryMargolin made lots of changes to Multics Emacs.  You can also find a listing of his work on Multics Emacs on the [https://multicians.org/multicians.html Multicians.org] site.
 
 For more information, see Greenberg's paper, [http://www.multicians.org/mepap.html "Multics Emacs: The History, Design and Implementation"].
 
