@@ -1,9 +1,15 @@
 [[ja:マルティックス_イーマックス]]
 Multics Emacs was the first to have Lisp as an extension language.  It was written in MacLisp.
 
-Sources here: https://web.mit.edu/multics-history/source/Multics_Internet_Server/Multics_sources.html
+Multics sources here: https://web.mit.edu/multics-history/source/Multics_Internet_Server/Multics_sources.html
 
-Of possible interest of Emacsers:
+===Emacs===
+
+* [https://web.mit.edu/multics-history/source/ldd_listings/unb_2/e_basic_.list e_basic_.list], "EMACS's most basic functions - The sine qua non of Emacs' functionality..", last edit 8/1/1988.
+
+* [https://web.mit.edu/multics-history/source/ldd_listings/unb_2/e_interact_.list e_interact_.list], "All that of the basic editor which deals with being interactive commands, prefixes, etc., as opposed to being an editor", last edit 8/1/1988.
+
+
 
 ===Lisp examples===
 
