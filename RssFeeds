@@ -1,6 +1,4 @@
-You might want to include a RSS feed into your homepage.  Here is an
-example of how to add it:
+RSS feeds are no longer available on EmacsWiki.
 
-    <rss http://www.emacswiki.org/cgi-bin/alex?action=rss>
+However, a potential workaround can be found [https://www.emacswiki.org/emacs/EmacsWikiProblems#Problems here] under "RSS for Elisp Area"; see Alex's reply to the comment.
 
-For an example of it in use, see SachaChua.
