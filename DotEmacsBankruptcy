@@ -20,5 +20,11 @@ The most radical way to get rid of DotEmacsBankruptcy is, of course, deleting yo
 
 Anyway you will end up with an InitFile that is considerably shorter and cleaner than it used to be, enhancing startup time and handling of your .emacs file in the future.
 
+[new]
+
+You can use [https://github.com/vapniks/org-dotemacs|org-dotemacs] to keep your init file organised in an org-mode file. -- JoeBloggs
+
+[new]
+
 ----
 CategoryDotEmacs
