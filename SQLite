@@ -1,9 +1,22 @@
 [[es:SQLite-es]]
+
+Emacs comes with [https://www.gnu.org/software/emacs/manual/html_node/elisp/Database.html built-in support] for working with SQLite as of [https://www.gnu.org/software/emacs/manual/html_node/efaq/New-in-Emacs-29.html version 29].
+
 The SQLite library creates and maintains a database in a single file with basic SQL commands to add data and query.  A front-end "sqlite3" program can be used interactively and for scripting.  Read more at 
 
 : http://www.sqlite.org/
 
-Here are some things for working with SQLite in Emacs,
+
+===Related packages==
+
+* [https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sqlite.html ob-doc-sqlite], SQLite source code blocks for OrgMode.
+
+* [https://github.com/magit/emacsql EmacSQL], a frontend for SQLite.
+
+* [https://github.com/xenodium/sqlite-mode-extras SQLite-Mode Extras], additional functionality for sqlite-mode.
+
+
+===Related pages===
 
 * SqlMode -- run sqlite interaction, and more
 * SqliteDump -- view and edit an sqlite database file in ".dump" form
