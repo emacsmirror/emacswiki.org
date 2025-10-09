@@ -7,3 +7,10 @@ that it is a thing in this wiki? I think emacs has evolved past that.
 
 -- freenodeanderson 2016-06-01 14:15 UTC
 
+
+----
+
+It's still a problem when upgrading to a new version of emacs and finding out that a lot of your customization code no longer works.
+
+-- JoeBloggs 2025-10-09 19:25 UTC
+
