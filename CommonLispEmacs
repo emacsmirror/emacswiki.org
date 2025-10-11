@@ -4,6 +4,8 @@ It is often talked about on news:comp.lang.lisp. The [http://www.mikemac.com/mik
 
 The usable editor built in Common Lisp, while not an Emacs port, is [https://lem-project.github.io/ Lem].
 
+It is also worth mentioning [https://lisperator.net/ymacs/ Ymacs], an Emacsen editor, very close to Emacs in spirit and features, built in JavaScript to run in the browser. The [https://lisperator.net/slip/ SLip] Lisp language, built-in JavaScript too, is close to Common Lisp (but it doesn't pass the ANSI test suite at the time of writing).
+
 There's also a page over on the Common Lisp Wiki on the subject.
 CLiki:CL-Emacs
 
