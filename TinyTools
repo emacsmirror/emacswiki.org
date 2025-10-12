@@ -4,7 +4,6 @@ The "Tiny Tools" is JariAalto's large collection of
 small Emacs customizations implemented as one
 monolithic package:
 
-* http://freecode.com/projects/emacs-tiny-tools (The project HUB; never changes. Bookmark this)
 * https://github.com/jaalto/project--emacs-tiny-tools (devel site; PRIMARY)
 * http://savannah.nongnu.org/projects/emacs-tiny-tools (devel site; secondary)
 * http://www.nongnu.org/emacs-tiny-tools (documentation)
