@@ -12,45 +12,19 @@ My current methodology for editing EmacsWiki:
 I've made it an org-habit to make at least one edit to the wiki every day! (And I also just noticed there's no page for habits; that can't be right, can it?)
 
 
-== Notes to self re: wiki ==
+== Pages needing something as I come across them ==
 
-==== Pages which need creating: =====
+=== create: ===
 
 # org-habit (search again just in case)
 # docTex (double-check)
 
-== Emacs Effusions ==
+=== update: ===
 
-==== Running list of possibly irrational Emacsoid peeves from a newbie: ====
-
-# packages which change the appearance of something and don't include screenshots.
-# packages whose documentation consists primarily of a list of keybindings.
-# instructions for beginners that focus on lists of default keybindings.
-# I'm starting to suspect that many frequently referenced tutorials and/or inits/configs have some ur-source from 1993 or so.
-
-
-==== Current Mysteries: ====
-
-# what exactly is 'completing-read'
-# 'M-x' reappears in minibuffer after issuing command; seems somewhat intermittent.
-# how to stop messing with my init, which probably isn't helping with tracking down the above.
-
-==== Grandiose Goals: (a haiku) ====
-
-# create a package
-# with great documentation 
-# no lists of keybinds
-
-==== Grandiose Goals: (a neverending list) ====
-
-# online code documentation xref'ed between appropriate manuals (Emacs, Emacs Lisp, Org, etc.)
-# figure out what the deal is re: Hyperbole (why choose it over Org, etc.). The button thing is interesting, but how different from Org links?
-# mess around with Icicles. Currently using the Vertico/Corfu/Marginalia/etc stack, which is great, but these big old packages fascinate me (cf. Hyperbole).  Find others?  Maybe BBDB, but seems mostly used with Gnus(?)
-# write an in-depth analysis of Hyperbole vs Org, (a)symmetries, etc.
-# same with Icicles vs. current stacks, or in conjunction with them.
-# (ask DrewAdams if he minds if I put the Icicles files on github or other forge.)
-# secret Emacs project. <not the aforementioned haiku-package>
-# I suppose I better learn Emacs better than I currently do so I can get on with gettin' grandiose!
+# [MulticsEmacs]
+# [DotEmacsChallenge]
+# [PlainLispForMath]
+# [WikiTodo]
 
 
 ----
