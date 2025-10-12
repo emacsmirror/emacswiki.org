@@ -14,17 +14,18 @@ I've made it an org-habit to make at least one edit to the wiki every day! (And 
 
 == Pages needing something as I come across them ==
 
-=== create: ===
+=== create pages ===
 
 # org-habit (search again just in case)
 # docTex (double-check)
 
-=== update: ===
+=== update pages ===
 
 # [MulticsEmacs]
 # [DotEmacsChallenge]
 # [PlainLispForMath]
 # [WikiTodo]
+# [AutoDownload]
 
 
 ----
