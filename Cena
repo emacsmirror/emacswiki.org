@@ -36,7 +36,7 @@ Other: non-traditional (eg, old) undergrad in computer science, ham radio, banjo
 [new:DrewAdams:2025-06-04 18:22 UTC] Thanks for your maintenance work on the wiki. Please review page EmacsWikiAdministrators, and consider asking AlexSchroeder to give you admin rights. -- DrewAdams
 
 [new]
-When undoing Spam, it's best to click on the history link (old versions, directly from Recent Changes) and use the ｢Rollback｣ button on the last good revision. This also ensures that the spam revisions no longer show up on Recent Changes. -- AlexSchroeder
+When undoing Spam, please click on the history link (old versions, directly from Recent Changes) and use the ｢Rollback｣ button on the last good revision. This ensures that the spam revisions no longer show up on Recent Changes. If you revert spam with a minor edit, regular visitors looking at Recent Changes can’t tell that the spam has been reverted. It’s better to think of a “minor change” as “does not need to be seen on Recent Changes by regular visitors” and I think it’s better to hide spam from Recent Changes so the undoing of the spam cannot be a minor change. It’s just an aesthetic decision, for sure, but still. 😅 -- AlexSchroeder
 
 ----
 
