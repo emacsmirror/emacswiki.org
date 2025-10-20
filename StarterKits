@@ -1,4 +1,4 @@
-There are many so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  You may also see them referred to as 'distros'. They are all quite different from the default GnuEmacs default configuration. They can be useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://git.sr.ht/~pkal/ecg Emacs Configuration Generator].
+There are many so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  You may also see them referred to as 'distros'. They are all quite different from the default GnuEmacs default configuration. They can be useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://codeberg.org/pkal/ecg Emacs Configuration Generator].
 
 [https://github.com/alphapapa/with-emacs.sh with-emacs.sh] by alphapapa could be one approach to trying different configurations, including starter kits. The repo includes brief comparisons of alternatives. 
 
