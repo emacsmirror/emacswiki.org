@@ -1,3 +1,8 @@
+Extensive script for piping things in & out of Emacs and more:
+
+https://github.com/agzam/mx-piper 
+
+
 Using pipe commands with Emacs can be a bit tricky. 
 
 == Piping things into Emacs ==
