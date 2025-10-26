@@ -22,3 +22,5 @@ EevMode is different from these modes above.
 Eev can send a part of buffer to a shell that uses another terminal.
 Eev opens up another method to deal with a shell in Emacs.
 
+EmacsPipe: describes techniques for piping things in and out of [[https://www.emacswiki.org/emacs/Buffer Emacs buffers]] when using the [[Bash]] or Zsh shells.
+
