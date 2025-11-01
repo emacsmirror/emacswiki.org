@@ -14,6 +14,7 @@ Here are some Emacs things for working with or reading such documents,
 * <code>rfcr.el</code>[http://members.fortunecity.com/salkosuo/emacs/index.html] by SamiSalkosuo -- Download and cache from IETF, by number or by browsing index
 * FastFileFinder -- Includes retrieval of RFCs by number, locally or remote [http://www.splode.com/~friedman/software/emacs-lisp/#ui]
 * [https://github.com/galdor/rfc-mode rfc-mode] -- The rfc-mode Emacs major mode is a browser and reader for RFC documents.
+* [https://gitlab.com/deleuzec/rfcinfo.el rfcinfo] -- Displaying and browsing RFC status information
 
 : It seems that Lisp:rfc.el requires w3 package for url-insert-file-contents that is already in vanila emacs 22.0.91.1.  To use it properly, just comment out the "(require 'w3)" line in rfc-insert-contents-url in Lisp:rfc.el. Someone please contact to its author to correct this. ;-) -- CinSK
 
