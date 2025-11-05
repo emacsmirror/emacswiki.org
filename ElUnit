@@ -1,5 +1,5 @@
 *Note:* /The author/ PhilHagelberg
-/has marked this extension deprecated and suggests using ERT UnitTesting instead./
+/has marked this extension deprecated and suggests using [https://www.emacswiki.org/emacs/ErtTestLibrary ERT] [https://www.emacswiki.org/emacs/UnitTesting UnitTesting] instead.
 
 '''!ElUnit''' is a unit testing framework for Emacs Lisp code.
 
