@@ -29,6 +29,8 @@ Note: see [https://superuser.com/questions/1927046/cpanm-on-debian-12-fails-to-i
 
 == Some tips ==
 
+* Related: 
+
 * It works right in Emacs23 but getting the code-at-point not.
 * I use this code to setup my keymap, I think is better:
 
@@ -87,3 +89,4 @@ Note: see [https://superuser.com/questions/1927046/cpanm-on-debian-12-fails-to-i
 
  (require 'unicode-helper)
 
+CategoryUnicode
