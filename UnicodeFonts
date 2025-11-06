@@ -1,15 +1,20 @@
 ==unicode-fonts==
+
 A library to configure Unicode fonts for Emacs.
 
-https://raw.github.com/rolandwalker/unicode-fonts/master/native_mac_backend.png
+Available on [https://github.com/rolandwalker/unicode-fonts Github] and [https://melpa.org/#/unicode-fonts MELPA], and on EmacsWiki:
+
+: Lisp:unicode-fonts.el
+
 
 ==Quickstart==
+
 * Remove Unifont from your system.
 
 * Install these fonts
-** http://users.teilar.gr/~g1951d/Symbola702.zip
-** http://www.quivira-font.com/files/Quivira.ttf
-** http://sourceforge.net/projects/dejavu/files/dejavu/2.33/dejavu-fonts-ttf-2.33.tar.bz2
+** [https://localfonts.eu/freefonts/greek-free-fonts/unicode-fonts-for-ancient-scripts/symbola/ Symbola]
+** [http://www.quivira-font.com/ Quivira]
+** [https://dejavu-fonts.github.io/ DejaVu fonts]
 
 * Use an extended Latin font for your default face, such
   as Monaco, Consolas, or <nowiki>DejaVu</nowiki> Sans Mono.
@@ -60,21 +65,10 @@ See important notes about startup speed below.
 ==Minimum Useful Fonts==
 To gain any benefit from the library, you must have fonts with good
 Unicode support installed on your system.  If you are running a
-recent version of OS X or Microsoft Windows, you already own some
+recent version of macOS or Microsoft Windows, you already own some
 good multi-lingual fonts, though you would do very well to download
-and install the four items below:
-
-From http://dejavu-fonts.org/wiki/Download
-
-	DejaVu Sans, DejaVu Sans Mono
-
-From http://www.quivira-font.com/downloads.php
-
-	Quivira
-
-From http://users.teilar.gr/~g1951d/
-
-	Symbola
+and install the four items listed above.
+	
 
 It is also recommended to remove GNU Unifont from your system.
 Unifont is very useful for debugging, but not useful for reading.
@@ -101,33 +95,52 @@ blocks:
 	Latin-1 Supplement
 	Spacing Modifier Letters
 
-==Bugs==
-Calling `set-fontset-font' can easily crash Emacs.  There is a
-workaround, but it may not be sufficient on all platforms.
-Tested on Cocoa Emacs, Native Mac Emacs, X11/XQuartz,
-MS Windows XP.
-
-Widths of alternate fonts do not behave as expected on MS Windows.
-For example, <nowiki>DejaVu</nowiki> Sans Mono box-drawing characters may use a
-different width than the default font.
 
 ==Free International and Symbol Fonts==
+
 Free fonts recognized by this package may be downloaded
 from the following locations:
 
-From http://scripts.sil.org/cms/scripts/page.php?item_id=DoulosSIL_download
+From https://software.sil.org/andika/
+
+        Andika                        ; Sans-serif, extended Latin and Cyrillic
+
+From https://software.sil.org/charis/
+        
+        Charis SIL                    ; Extended Latin and Cyrillic
+
+From https://software.sil.org/doulos/
 
 	Doulos SIL                    ; Extended European and diacritics
 
-From http://scripts.sil.org/cms/scripts/page.php?item_id=Gentium_download
+From https://software.sil.org/gentium/
 
 	Gentium Plus                  ; Greek
 
-From http://users.teilar.gr/~g1951d/
+From https://catrinity-font.de/
 
-	Aegean, Aegyptus, Akkadian    ; Ancient languages
+        Catrinity                     ; A sans-serif Unicode font from author of Quivira
+
+From [https://dn-works.com/wp-content/uploads/UFAS/Fonts.pdf Unicode Fonts for Ancient Scripts]
+
+(note that the author embeds the below OTF fonts within the PDF linked above.)
+
+         Alexander                   ; 
+         Anaktoria
+         Aroania
+         Asea + variants
+         Assyrian
+         Avdira
+         Maya
+         Slavonic
+
+====These UFAS fonts no longer appear free (2025):====
+        Aegean, Aegyptus, Akkadian    ; Ancient languages
 	Analecta                      ; Ancient languages, Deseret
 	Musica                        ; Musical Symbols
+
+//Note: I've contacted the font author (George Douros) in regards to some specific other sites which appear to be distributing them to confirm whether they're legally freely available.  Will update when he replies.  -Cena, 6 Nov 25//
+
 
 From http://www.wazu.jp/gallery/views/View_MPH2BDamase.html
 
@@ -240,24 +253,16 @@ From http://www.evertype.com/fonts/nko/
 
 	Conakry                       ; N'ko
 
-==Non-free Fonts==
-Many non-free fonts are referenced by the default settings.
-However, free alternatives are also given wherever possible, and
-patches are of course accepted to improve every case.
-
 ==Chinese and Arabic Scripts==
 If you are using a language written in Chinese or Arabic script,
 try customizing `unicode-fonts-skip-font-groups' to control which
 script you see, and send a friendly bug report.
 
-==Availability==
-unicode-fonts.el is available at github:
+==Non-free Fonts==
+Many non-free fonts are referenced by the default settings.
+However, free alternatives are also given wherever possible, and
+patches are of course accepted to improve every case.
 
-: https://github.com/rolandwalker/unicode-fonts
-
-and via <nowiki>EmacsWiki</nowiki>:
-
-: Lisp:unicode-fonts.el
 
 == Example Setup ==
 
@@ -277,6 +282,21 @@ The following setup just tries to get the [https://en.wikipedia.org/wiki/Emotico
 (unicode-fonts-setup)
 }}}
 
+==Bugs==
+Calling `set-fontset-font' can easily crash Emacs.  There is a
+workaround, but it may not be sufficient on all platforms.
+Tested on Cocoa Emacs, Native Mac Emacs, X11/XQuartz,
+MS Windows XP.
+
+Widths of alternate fonts do not behave as expected on MS Windows.
+For example, <nowiki>DejaVu</nowiki> Sans Mono box-drawing characters may use a different width than the default font.
+
+
 ----
+CategoryUnicode
+
 CategoryFaces
+
 CategoryInternationalization
+
+
