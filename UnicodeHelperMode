@@ -1,6 +1,6 @@
 unicode-helper-mode is a minor mode which adds some functions to work
 with Unicode character names. Specifically, it allows to find out
-which unicode name the character at point has, and to enter unicode
+which Unicode name the character at point has, and to enter Unicode
 characters by name or codepoint number.
 
 * Download:unicode-helper.el
@@ -13,8 +13,8 @@ unicode-helper-mode where to find this file by setting
     (setq unicode-helper-data-txt "~/Documents/Unicode/UnicodeData.txt")
 
 You can get the file from unicode.org:
-http://www.unicode.org/Public/UNIDATA/UnicodeData.txt.
-It's /big/ (966 kbytes).
+https://www.unicode.org/Public/UNIDATA/UnicodeData.txt .
+It's currently (October 2025) 2.1 MB in size.
 
 On Debian, perl-modules provides UnicodeData.txt.
 
@@ -22,6 +22,10 @@ On Debian, perl-modules provides UnicodeData.txt.
     (setq describe-char-unicodedata-file
           (car (file-expand-wildcards
                 "/usr/share/perl/*/unicore/UnicodeData.txt"))))
+
+
+Note: see [https://superuser.com/questions/1927046/cpanm-on-debian-12-fails-to-install-modules this discussion] about installing UnicodeData.txt on Debian 12.
+
 
 == Some tips ==
 
