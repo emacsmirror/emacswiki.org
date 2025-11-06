@@ -1,4 +1,5 @@
-[new]
+[new:Cena:2025-11-06 20:10 UTC]
+
 in re: UFAS fonts, per George Douros (email to me, 6 November 2025):
 
 "UFAS is available exclusively on UFAS, under the general [https://dn-works.com/wp-content/uploads/UFAS/License.pdf UFAS License]. Available Fonts and Public License Options are found in [https://dn-works.com/wp-content/uploads/UFAS/Fonts.pdf Fonts]. License is the only license ever issued for UFAS software; it was first posted on my old site March 2018. It refers to all versions of UFAS.
@@ -9,7 +10,7 @@ No ‘font repository’ is allowed to distribute UFAS material.
  
 I am aware that many ‘font distributors’, luc.devroye and localfonts.eu included, still couch on that “In lieu of a license” statement and distribute old and obsolete UFAS material."
 
-- Cena
+
 ----
 
 This may be of help if you are having trouble with Emacs
