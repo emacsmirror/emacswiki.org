@@ -1,7 +1,9 @@
 ==Overview==
+
+Persistent storage for Emacs, returning nil on failure.
+
 This is a (trivial) wrapper around pcache.el, providing "soft"
-fetch and store routines which never throw an error, but instead
-return nil on failure.
+fetch and store routines which never throw an error.
 
 ==Availability==
 
