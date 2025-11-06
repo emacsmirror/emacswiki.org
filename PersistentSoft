@@ -17,10 +17,12 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 ==Compatibility and Requirements==
 
-Tested only on GNU Emacs version 24.1
+GNU Emacs version 24.4-devel     : yes, at the time of writing (2014)
+GNU Emacs version 24.3           : yes
+GNU Emacs version 23.3           : yes
+GNU Emacs version 22.3 and lower : no
 
-Uses if present: [https://github.com/sigma/pcache pcache.el] (all operations are noops
-when pcache.el is not present)
+Uses if present: [https://github.com/sigma/pcache pcache.el] (all operations are noops when pcache.el is not present).
 
 ----
 CategoryData
