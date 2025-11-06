@@ -56,7 +56,7 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested on GNU Emacs versions 23.3 and 24.1
 
-For Full Emacs 23.x suport, the library [[ucs-utils-6.0-delta.el]] should also be installed.  (Also found [https://github.com/rolandwalker/ucs-utils/blob/master/ucs-utils-6.0-delta.el on Github].
+For Full Emacs 23.x suport, the library [[ucs-utils-6.0-delta.el]] should also be installed.  (Also found [https://github.com/rolandwalker/ucs-utils/blob/master/ucs-utils-6.0-delta.el on Github]).
 
 Requires PersistentSoft
 
