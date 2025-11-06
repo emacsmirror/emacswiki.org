@@ -5,7 +5,7 @@ when Unicode display is not possible.
 Some ambiguities in Emacs' built-in Unicode data are resolved, and
 character support is updated to Unicode 6.1.
 
-In Emacs 24 and above, it can be installed from the [[Marmalade]] repository.
+In Emacs 24 and above, it can be installed from the [https://melpa.org/#/ucs-utils MELPA] repository.
 
 == Quickstart == 
 
@@ -27,7 +27,7 @@ In Emacs 24 and above, it can be installed from the [[Marmalade]] repository.
 
 There are three interactive commands
 
-        ucs-utils-ucs-insert       ; ucs-insert workalike using ido-completing-
+        ucs-utils-ucs-insert       ; ucs-insert workalike using ido-completing-read
         ucs-utils-eval             ; the inverse of ucs-insert
         ucs-utils-install-aliases  ; install shorter aliases
 
@@ -56,12 +56,13 @@ and via <nowiki>EmacsWiki</nowiki>:
 
 Tested on GNU Emacs versions 23.3 and 24.1
 
-For Full Emacs 23.x suport, the library [[ucs-utils-6.0-delta.el]] should also be installed.
+For Full Emacs 23.x suport, the library [[ucs-utils-6.0-delta.el]] should also be installed.  (Also found [https://github.com/rolandwalker/ucs-utils/blob/master/ucs-utils-6.0-delta.el on Github].
 
 Requires PersistentSoft
 
-Uses if present: [[https://github.com/skeeto/emacs-memoize memoize.el]]
+Uses if present: [[https://github.com/skeeto/emacs-memoize memoize.el]], but see memoize.el author's [https://github.com/skeeto/emacs-memoize/pull/10#issuecomment-877633800 comment about use of this library] in 2021.
 
 ----
+CategoryUnicode
 CategoryInternationalization
 CategoryExtensions
