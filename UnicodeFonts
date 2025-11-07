@@ -140,6 +140,11 @@ These fonts were previously listed as free (as in beer) but per the author (Geor
 	Analecta                      
 	Musica                     
 
+From https://babelstone.co.uk/Fonts/
+
+	BabelStone Han                ; CJK (Simplified Chinese)
+	BabelStone Phags-pa Book      ; Phags-pa
+        + many others in other CJK, Latin, symbolic sets.
 
 From http://www.wazu.jp/gallery/views/View_MPH2BDamase.html
 
@@ -147,56 +152,53 @@ From http://www.wazu.jp/gallery/views/View_MPH2BDamase.html
 	                              ; Glagolitic, Hanunoo, Kharoshthi, Limbu, Osmanya,
 	                              ; Shavian, Syloti Nagri, Tai Le, Thaana
 
-From http://wenq.org/enindex.cgi?Home
+From http://wenq.org/wqy2/index.cgi
 
 	WenQuanYi Zen Hei             ; CJK (Simplified Chinese)
 
-From http://babelstone.co.uk/Fonts/
 
-	BabelStone Han                ; CJK (Simplified Chinese)
-	BabelStone Phags-pa Book      ; Phags-pa
-
-From http://kldp.net/projects/unfonts/
+From https://kldp.net/unfonts/release/
 
 	Un Batang                     ; CJK (Hangul)
 
-From http://sourceforge.jp/projects/hanazono-font/releases/
+From https://github.com/cjkvi/HanaMinAFDKO/releases
 
 	Hana Min A, Hana Min B        ; CJK (Japanese)
 
-From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=SILYi_home
+From https://software.sil.org/nuosu/
 
 	Nuosu SIL                     ; CJK (Yi)
 
-From http://www.daicing.com/manchu/index.php?page=fonts-downloads
+From https://fonts.google.com/noto/specimen/Noto+Sans+Mongolian
 
-	Daicing Xiaokai               ; Mongolian
+	Noto Sans Mongolian              ; Mongolian
 
-From http://www.library.gov.bt/IT/fonts.html
+
+From https://fonts.google.com/specimen/Jomolhari
 
 	Jomolhari                     ; Tibetan
 
-From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=
+From https://software.sil.org/padauk/
 
 	Padauk                        ; Myanmar
 
-From http://sarovar.org/projects/samyak/
+From https://marathifonts.org/
 
 	Samyak                        ; Devanagari, Gujarati, Malayalam, Oriya, Tamil
 
-From http://guca.sourceforge.net/typography/fonts/anmoluni/
+From https://guca.sourceforge.net/typography/fonts/anmoluni/
 
 	AnmolUni                      ; Gurmukhi
 
-From http://brahmi.sourceforge.net/downloads2.html
+From https://brahmi.sourceforge.net/downloads2.html
 
 	Kedage                        ; Kannada
 
-From http://www.omicronlab.com/bangla-fonts.html
+From https://www.omicronlab.com/bangla-fonts.html
 
 	Mukti Narrow                  ; Bengali
 
-From http://www.kamban.com.au/downloads.html
+From https://fonts.google.com/specimen/Akshar
 
 	Akshar Unicode                ; Sinhala
 
@@ -204,51 +206,51 @@ From http://tabish.freeshell.org/eeyek/download.html
 
 	Eeyek Unicode                 ; Meetei Mayek
 
-From http://scripts.sil.org/CMS/scripts/page.php?&item_id=Mondulkiri
+From https://software.sil.org/mondulkiri/
 
 	Khmer Mondulkiri              ; Khmer
 
-From http://www.laoscript.net/downloads/
+From https://laoscript.net/download/
 
 	Saysettha MX                  ; Lao
 
-From http://www.geocities.jp/simsheart_alif/taithamunicode.html
+From https://software.sil.org/payaplanna/
 
-	Lanna Alif                    ; Tai Tham
+	Payaplanna                    ; Tai Tham
 
-From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=DaiBannaSIL
+From https://software.sil.org/daibanna/
 
 	Dai Banna SIL                 ; New Tai Lue
 
-From http://scripts.sil.org/cms/scripts/page.php?item_id=TaiHeritage
+From https://software.sil.org/taiheritage/
 
 	Tai Heritage Pro              ; Tai Viet
 
-From http://sabilulungan.org/aksara/
+From https://www.cufonfonts.com/font/aksara
 
 	Sundanese Unicode             ; Sundanese
 
-From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=ArabicFonts
+From https://software.sil.org/arabicfonts/
 
 	Scheherazade                  ; Arabic
 
-From http://www.farsiweb.ir/wiki/Persian_fonts
+From https://farsiweb.ir/wiki/Persian_fonts/
 
 	Koodak                        ; Arabic (Farsi)
 
-From http://openfontlibrary.org/font/ahuramazda/
+From https://fontlibrary.org/en/font/ahuramazda/
 
 	Ahuramzda                     ; Avestan
 
-From http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=AbyssinicaSIL
+From https://software.sil.org/abyssinica/download/
 
 	Abyssinica SIL                ; Ethiopic
 
-From http://www.bethmardutho.org/index.php/resources/fonts.html
+From https://sedra.bethmardutho.org/about/fonts
 
 	Estrangelo Nisibin            ; Syriac
 
-From http://www.evertype.com/fonts/nko/
+From https://www.evertype.com/fonts/nko/
 
 	Conakry                       ; N'ko
 
