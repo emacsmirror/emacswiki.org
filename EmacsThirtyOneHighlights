@@ -44,6 +44,14 @@ New user options might interest TreeSitter users:
 
 (contributed by JuriLinkov)
 
+== New VC Commands ==
+
+A number of additions to Emacs' VC system have been added:
+
+* Git Commits can be edited from LogView mode by pressing <kbd>e</kbd>, implemented by SeanWhitton,
+* New commands to cherry-pick (`vc-revision-cherry-pick', <kbd>C</kbd> in LogView) and revert (`vc-revision-revert', <kbd>R</kbd>), implemented by SeanWhitton
+* New commands under the <kbd>C-x v w</kbd> prefix for working with worktrees, also implemented by SeanWhitton.
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
