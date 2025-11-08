@@ -2,3 +2,24 @@ What does the .d mean?
 
 -- Anonymous 2019-01-14 10:03 UTC
 
+
+----
+
+[new:Cena:2025-11-08 14:23 UTC]
+
+I swear, EmacsWiki should change it's name to "Rabbit Warren Grand Central".  :)
+
+Anyway, apparently the the 'dirname.d' convention started with Unix System V, and 
+
+> .d in directory names typically indicates a directory containing many configuration files or scripts for a particular situation
+
+See: 
+
+https://askubuntu.com/questions/5039/what-is-the-difference-between-etc-init-and-etc-init-d
+
+and 
+
+https://unix.stackexchange.com/questions/4029/what-does-the-d-stand-for-in-directory-names for more details.
+
+-- Cena 2025-11-08 14:24 UTC
+
