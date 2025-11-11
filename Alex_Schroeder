@@ -35,6 +35,12 @@ Later, I also used it on ICQ. And now I'm using it on IRC.
 * [https://src.alexschroeder.ch/emacs-setup.git private laptop]
 * [[Alex Schroeder on Windows|work laptop]]
 
+== Tramp ==
+
+Ever since my server switched to Debian 13 'Trixie', Tramp would no longer connect.
+Increasing the debug level showed that Tramp was waiting for the prompt and there just wasn't any.
+I switched to using the ##sshx## method and now it works.
+
 == RSI ==
 
 RepeatedStrainInjury -- saw a doctor, started physiotherapy on
