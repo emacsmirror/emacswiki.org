@@ -88,7 +88,7 @@ more documentation.
 
 Overview of the Git work routine:
 
-# Tell Git your name and email address; these will be used as defaults to identify your commits. (Usage: git config --global user.name "Frank Chu"; git config --global user.email fchu@example.com")
+# Tell Git your name and email address; these will be used as defaults to identify your commits. (Usage: git config --global user.name "Frank Chu"; git config --global user.email "fchu@example.com")
 # Clone the repository: ##git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git##
 # Do trivial, single-commit work on /master/ and commit to upstream from there; do your non-trivial work in local feature branches, committing locally as you go (more about that below).
 # From time to time, update to get upstream newness with ##git pull## (this is like <tt>cvs update</tt> or <tt>bzr up</tt>).
