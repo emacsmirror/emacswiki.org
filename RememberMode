@@ -6,7 +6,7 @@ a mode for quickly jotting down things to remember
 * Maintainer: Michael Olson (mwolson AT gnu DOT org), and John Sullivan (john AT wjsullivan DOT net)
 * Past maintainers: SachaChua
 * Project page: https://github.com/jwiegley/remember/tree/master
-* Tutorial (unofficial): http://members.optusnet.com.au/~charles57/GTD/remember.html
+* Tutorial (unofficial): [https://web.archive.org/web/20231226035958/https://members.optusnet.com.au/~charles57/GTD/remember.html archive link]
 
 [new]
 This excellent feature inspired Capture in OrgMode and that is now (Aug2010) recommended for new users, see http://orgmode.org/manual/Capture.html#Capture
@@ -44,88 +44,48 @@ Remember is often used in conjunction with PlannerMode and/or OrgMode.
 
 == Installation ==
 
-Here, we assume that Planner will be unpacked to the ##~/elisp##
+Remember has been included with Emacs since v23.  However, if you'd like to download and install the source code, here are some instructions.
+
+Here, we assume that Remember will be unpacked to the ##~/elisp##
 directory.  It can be placed anywhere you like, really, but this
 is a fairly standard spot to place Emacs Lisp stuff.
 
-=== Getting a release ===
-
-You have two options: stable or development.
-
-==== Getting the stable release ====
-
-Using a tarball:
-
 <pre>
-wget http://download.gna.org/remember-el/remember-2.0.tar.gz
-tar -xzf remember-2.0.tar.gz
-mv remember-2.0 remember
+cd elisp
+git clone https://github.com/jwiegley/remember.git
+cd remember
+make autoloads
 </pre>
 
-Using a zip file:
+You can generate manuals with
 
 <pre>
-wget http://download.gna.org/remember-el/remember-2.0.zip
-unzip remember-2.0.zip
-mv remember-2.0 remember
+make doc 
 </pre>
 
-==== Getting the latest development snapshot ====
+This will create:
+* remember.info
+* remember-extra.info
+* remember.html
+* remember-extra.html
 
-Using git:
+
+Add to your .emacs the following statements:
 
 <pre>
-cd ~/elisp
-git clone git://repo.or.cz/remember-el.git remember
+(add-to-list 'load-path "~/elisp/remember")
+(require 'remember)
 </pre>
 
-If you are behind a restrictive firewall and wish to use git, then do the following instead:
 
-<pre>
-cd ~/elisp
-git clone http://repo.or.cz/r/remember-el.git remember
-</pre>
+This will load the git version of Remember and bypass the built-in version.
 
-Using a downloaded tarball:
-
-<pre>
-cd ~/elisp
-wget http://mwolson.org/static/dist/remember-latest.tar.gz
-tar -xzf remember-latest.tar.gz
-</pre>
-
-Using a downloaded zip file:
-
-<pre>
-cd ~/elisp
-wget http://mwolson.org/static/dist/remember-latest.zip
-tar -xzf remember-latest.zip
-</pre>
-
-=== Setting up ===
-
-[new]
-Now that RememberMode is included in Emacs (as of Emacs 23), activation is as simple as:
-    (require 'remember)
-[new]
-
-After unpacking, install Remember by copying the directory "remember" to a nice spot on the hard drive, say ##~/elisp/remember##.  Add to your .emacs the following statements:
-
-    (add-to-list 'load-path "~/elisp/remember")
 
 ==== Setting up for OrgMode ====
 
 [new]
 Now that OrgMode and RememberMode are included in Emacs (as of Emacs 23), activation is as simple as:
     (org-remember-insinuate)
-
-Note that there is no need for:
-    (require 'remember)
-[new]
-
-Basically you should follow the instructions in the org-mode info file. However this currently forgets that you also need something like this in your .emacs:
-
-    (require 'remember)
 
 If you are, like me, missing the function org-remember-insinuate, try the following
 
