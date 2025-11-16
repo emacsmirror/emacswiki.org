@@ -11,9 +11,9 @@ The best way is to simply use the manual within Emacs.  Then you can simply use 
 
 For GNU Emacs:
 
-* http://www.gnu.org/manual/manual.html
-* http://www.gnu.org/software/emacs/manual/elisp.html
-* Available in print from the GnuPress.
+* [https://www.gnu.org/software/emacs/manual/html_node/emacs/index.html GNU Emacs v30.2]
+* [https://www.gnu.org/software/emacs/manual/elisp.html GNU Emacs Lisp Reference Manual]
+* Available in print from the [https://shop.fsf.org/ FSF store].
 
 To get the manual into Emacs on Debian GNU/Linux or when you can't see an Elisp section after doing M-x info, or if you get the error "Info file elisp does not exist", then you need to:
 
@@ -35,7 +35,7 @@ The XEmacs Lisp Reference Manual, as well as all the other manuals, are availabl
 * http://www.xemacs.org/Documentation/
 * http://www.dk.xemacs.org/Documentation/
 
-According to DanielLaLiberte, the ''[http://groups.google.com/groups?selm=6b82c009-4c0b-43d8-a17d-af485b65ac48@r66g2000hsg.googlegroups.com history of the GNU Emacs Lisp Reference Manual]'':
+According to DanielLaLiberte, the ''[https://groups.google.com/g/comp.lang.lisp/c/9wmmzyPrtwc/m/pXcOQ8Ll5LcJ history of the GNU Emacs Lisp Reference Manual]'':
 
 : ''Starting with Emacs 17, and transitioning to Emacs 18, I was trying to
 develop a rather substantial extension and I was forced to learn what
