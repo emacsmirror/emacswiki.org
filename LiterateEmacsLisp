@@ -30,9 +30,9 @@ And for the file local variables section of your .tex file:
 
  mode: literate-emacs-lisp
 
-You'll also need a copy of lp-elisp.el:
+You'll also need a copy:
 
-* http://edward.oconnor.cx/elisp/lp-elisp.el
+* [https://web.archive.org/web/20150419012526/http://edward.oconnor.cx/elisp/lp-elisp.el lp-elisp.el]
 
 
 ----
