@@ -1,0 +1,70 @@
+<code>read-multiple-choice</code> is a natively compiled function built-in to Emacs.
+
+It can be used as a lighter-weight alternative to menu-driven packages like [[Transient]] or [[Hydra]], for when a simple selection menu with several options and a single input is desired.
+
+
+==Signature==
+
+<pre>
+(read-multiple-choice PROMPT CHOICES &optional HELP-STRING SHOW-HELP LONG-FORM)
+</pre>
+
+
+==Examples==
+
+===Simple===
+
+<pre>
+ (read-multiple-choice
+ "Continue connecting?"
+ '((?a "always" "Accept certificate for this and future sessions.")
+   (?s "session only" "Accept certificate this session only.")
+   (?n "no" "Refuse to use certificate, close connection.")))
+</pre>
+
+source: [https://www.gnu.org/software/emacs/manual/html_node/elisp/Reading-One-Event.html Elisp manual]
+
+Screenshot:
+
+[[image:readmultc.png]]
+
+
+===More complex===
+
+<pre>
+(defun sentry (sentry)
+  "Sets minibuffer completion style."
+  (interactive
+   (let ((choices '((?o "(orderless)")
+                    (?b "(basic substring)")
+                    (?p "(partial-completion)")
+                    (?f "(flex)")
+                    (?i "(initials)"))))
+
+     (alist-get (car (read-multiple-choice "Sentry: " choices))
+                choices)))
+  (message "`completion-style' set to %s"
+           (setq completion-styles (read sentry))))
+</pre>
+
+source: [https://emacs.stackexchange.com/questions/74556/setting-completion-styles-with-read-multiple-choice StackExchange]
+
+Screenshot:
+
+[[image:sentryfun.png]]
+
+
+=== vs. completing-read-multiple ===
+
+<code>completing-read-multiple</code> is designed to receive multiple /inputs/ via minibuffer completion.  
+
+TODO: create CompletingReadMultiple
+
+== See also ==
+
+* [https://www.gnu.org/software/emacs/manual/html_node/elisp/Reading-One-Event.html "Reading One Event"] from the Elisp Manual.
+
+----
+CategoryCompletion
+
+CategoryMinibufferCompletion
