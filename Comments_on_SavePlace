@@ -8,7 +8,10 @@ Enabling save-place slowed down my emacs exiting by a huge amount - 9 seconds.  
 ----
 
 I believe the advice about the problems with the daemon might be a bit outdated, given that if you have emacs as a systemd service (as will be the default way of running the daemon on most linux systems atm), it is correctly exited with 
+
+{{{
 ExecStop=/usr/local/bin/emacsclient --eval "(kill-emacs)".
+}}}
 
 -- Anonymous 2025-11-12 15:31 UTC
 
