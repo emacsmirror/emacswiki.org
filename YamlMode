@@ -6,6 +6,21 @@ And also available as DebianPackage:yaml-mode.
 
 It features font locking for data forms and comments, and some electric keys to help with block literals.
 
+==  yaml-ts-mode for tree-sitter support ==
+
+You may also want to use tree-sitter on modern emacs versions.
+
+https://www.emacswiki.org/emacs/Tree-sitter
+
+{{{
+(use-package yaml-ts-mode
+   :ensure t
+   :mode
+       ("\\.yaml\\'" ;;;; Standard YAML files
+        "\\.yml\\'" ;;;; Common shorthand for YAML
+        "\\.eyaml\\'")) ;;;; Encrypted YAML files 
+}}}
+
 == Spaces vs. Tabs ==
 
 <code>yaml-mode.el</code> enforces spaces instead of TABs in yaml-mode, regardless of emacs configuration.
