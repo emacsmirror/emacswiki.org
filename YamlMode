@@ -21,6 +21,19 @@ https://www.emacswiki.org/emacs/Tree-sitter
         "\\.eyaml\\'")) ;;;; Encrypted YAML files 
 }}}
 
+== Language Server (lsp) ==
+
+You might also want to add lsp support with [https://github.com/redhat-developer/yaml-language-server yaml-language-server] 
+
+
+=== eglot ===
+
+{{{
+(add-to-list 'eglot-server-programs
+            '(yaml.mode . ("yaml-language-server" "--stdio"))
+             (yaml-ts-mode . ("yaml-language-server" "--stdio")))
+}}}
+
 == Spaces vs. Tabs ==
 
 <code>yaml-mode.el</code> enforces spaces instead of TABs in yaml-mode, regardless of emacs configuration.
