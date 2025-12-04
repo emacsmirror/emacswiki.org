@@ -55,8 +55,8 @@ There's a bunch of other functionality available to manipulate terms, notes, the
 
 
 
-deego> ,,sbcfoo is also short for single board computer (ie. a raspberry pi)                                                                                                           [23:37]
-<fsbot> D'oh!  [set-also] But there’s no such term: sbcfoo
+    <deego> ,,sbcfoo is also short for single board computer (ie. a raspberry pi)                                                                                                         
+    <fsbot> D'oh!  [set-also] But there’s no such term: sbcfoo
 
 As we saw above, the bot understands and executes a limited and modified subset of lisp we refer to as **fslisp**, meant to help you control some of the bot's behavior. Furthermore, it sandboxes everything to ensure we internally always stay in the `fs-' namespace. These `fs-' functions and macros use various codewalkers, are carefully designed to avoid the irc user being able to do things like ##(shell-command "rm -rf /")##, ##(eval '(kill-system))##, etc, and are therefore sometimes very different from their usual emacs counterparts. Another source of difference arises because they were written with bot-related functionality in mind. For example, `fs-replace-string' is used to replace strings within the notes of terms, and is thus very  different from the usual `replace-string' found in emacs.
 
