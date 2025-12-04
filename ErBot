@@ -18,7 +18,7 @@ You often use the easiest paren-free English syntax to command the bot, but as i
     <fsbot> (fs-set-term "Emacs" "a good editor")
 
 
-This tells you that a sentence of the form "foo is bar" gets parsed into an `fs-set-term' form. So far, the bot has merely parsed the command, not actually executed it. 
+This tells you that your English sentence get parsed as a lisp form. Sentences of the form "foo is bar" (often) get parsed as the `fs-set-term' form. The parser will not always read your mind perfectly, so you are very welcome to use lisp versions directly! So far, the bot has merely parsed the command, not actually executed it. 
 Next, you actually execute the command and tell the bot that Emacs is a good editor:
 
    <deego> ,Emacs is a good editor                                                                                                                                                          
