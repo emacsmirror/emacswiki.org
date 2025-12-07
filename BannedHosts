@@ -185,3 +185,4 @@
 ^195\. # 2025-11-25 [195.0.0.0 - 195.255.255.255] Comments on BannedContent
 ^144\.124\. # 2025-11-25 [144.124.0.0 - 144.124.255.255] Comments on BannedContent
 ^151\. # 2025-12-07 [151.0.0.0 - 151.255.255.255] Comments on BannedContent
+^XXX\. # 2025-12-07 [2600:3c00:0000:0000:0000:0000:0000:0000 - 2600:3cff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
