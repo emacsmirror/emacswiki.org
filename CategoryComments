@@ -18,6 +18,7 @@ Comments in code depend on the programming language used.
 ** Use `##C-M-;##' to toggle ignoring comments while searching code
 ** Use '''`comment'''' as the thing type to search only the comments
 * LineCommentBanner -- one-line banner-style comments
+* LiterateEmacsLisp -- literate programming with EmacsLisp
 * [[rebox2]] -- [[LeWang]]’s fork of ##rebox.el## that does comment box editing and filling
 * SemanticRecoder -- create or fill comments based on local context
 * UncommentSexp -- comment/uncomment a [[sexp]]
