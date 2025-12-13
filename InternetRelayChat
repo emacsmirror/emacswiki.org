@@ -104,7 +104,11 @@ A bouncer is like an IRC proxy server. It connects to IRC and you connect to it.
 
 Several different bouncers are available but NicFerrier has written ShoesOff in EmacsLisp.
 
-== IRC Robots in EmacsLisp ==
+== IRC Bots ==
+
+The IRC bot in EmacsChannel, called fsbot, is an instance of ErBot, find more information about it [[ErBot|on its page here on the wiki.]]
+
+=== IRC Robots in EmacsLisp ===
 
 A number of robots have been written in EmacsLisp using [[ERC]] or [[rcirc]].
 
