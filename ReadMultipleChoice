@@ -65,6 +65,4 @@ TODO: create CompletingReadMultiple
 * [https://www.gnu.org/software/emacs/manual/html_node/elisp/Reading-One-Event.html "Reading One Event"] from the Elisp Manual.
 
 ----
-CategoryCompletion
-
-CategoryMinibufferCompletion
+CategoryCompletion MinibufferCompletion
