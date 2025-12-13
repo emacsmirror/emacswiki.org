@@ -2,11 +2,13 @@ Click the heading to search for pages in this category.
 
 The scope for this page encompasses any wiki page that relates in any way to Emacs completion. For discussion, see DiscussionCategoryCompletion.
 ==Overview==
-'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to 
+'''[[Completion]]''' can mean different things in Emacs. In particular, it refers to:
 * [[MinibufferCompletion]], completing input in the [[minibuffer]].   Minibuffer input can be a command that you enter using `M-x' or text that you enter in response to a prompt in the minibuffer. File-name input is an example of the latter.
 * [[BufferTextCompletion]], completing text in a [[buffer]] other than the minibuffer.
 
 Besides the question of ''where'' text is completed (minibuffer or other buffer) is the question of ''how''. Completion can be effected in various ways (e.g. using different kinds of matching, filtering, sorting), and it can be accomplished using various user interfaces (e.g. popup selection list/menu).
+
+* ReadMultipleChoice -- a built-in Emacs function for when a simple selection menu with several options and a single input is desired.
 
 [:OtherCompletion]
 == Other Completion ==
