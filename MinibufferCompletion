@@ -27,6 +27,7 @@ These packages or sets of complementary packages extend or enhance minibuffer co
 * ManHtml -- Like `M-x man', but for HTML pages, with completion out of an alist.
 * [[Synonyms]] -- Input completion for thesaurus lookup.
 * Lisp:timid.el -- Complete entries from the history timidly, that is non-aggressively.
+* ReadMultipleChoice -- built-in Emacs function for when a simple selection menu with several options, and a single input is desired.
 
 ----
 CategoryCompletion
