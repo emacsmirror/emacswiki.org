@@ -9,6 +9,7 @@ One of the best ways to learn more about Emacs is to get to know other people wh
 * EmacsConf -- next one is Nov 27-28, 2021; details at https://emacsconf.org/2021/
 * EmacsStackExchange -- technical Emacs questions and answers
 * [[InternetRelayChat|IRC]] (Internet Relay Chat) -- real-time discussion, EmacsChannel in particular
+** ErBot -- documentation for the erbot software, which powers the fsbot irc bot on the EmacsChannel
 * CategoryChatClient -- other chat systems, including Matrix ([https://matrix.to/#/#emacs:matrix.org #emacs:matrix.org])
 * [[Usergroups]] -- Emacs user groups and meetups all over the world.
 * %%EmacsWiki%% [[CategoryHomepage|Homepages]] -- home pages of Emacs friends, including '''you!'''
