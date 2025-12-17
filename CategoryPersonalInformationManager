@@ -14,6 +14,8 @@ address lists. See CategoryBbdb
 jewish, mayan and other calendars, prints weekly and monthly calendars
 (using LaTeX and not including your appointments).
 
+* [[Calfw]] -- Calendar framework to display a calendar view in Emacs.
+
 * CategorizingInformationManager collects information from different
 sources and converts it into a database of related facts and displays
 category trees in a view buffer.  It can be used as stand-alone PIM,
