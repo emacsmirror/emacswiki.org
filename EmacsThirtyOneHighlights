@@ -64,10 +64,11 @@ These changes were made by StefanKangas.
 
 Generalised versions of `drop' and `take' have been added in the form of `drop-while' and `take-while'.  Both take predicates instead of a number of elements, and have efficient compiler macros.  These have been used to implement the `any' and `all' higher-order predicates that test if a predicate holds for any/all elements in a list.
 
+These functions have been implemented by MattiasEngdegård, see https://lists.gnu.org/archive/html/bug-gnu-emacs/2025-10/msg00419.html.
+
 === New macro `cond*' ===
 
 This macro is a generalisation of `cond', allowing the user to bind variables between clauses and perform pattern matching.  It is also available on ELPA as "cond-star", so packages can use it without depending on Emacs 31.
 
 The macro was implemented by RichardStallman.  Read https://yhetil.org/emacs-devel/E1r3SgH-0007Rb-BU@fencepost.gnu.org/ if you are interested in the motivation behind the macro, and how it compares to `pcase'.  Technical discussions on the implementation of the macro can be found here: https://yhetil.org/emacs-devel/E1rQJDv-0001UG-2E@fencepost.gnu.org/.
 
-These functions have been implemented by MattiasEngdegård, see https://lists.gnu.org/archive/html/bug-gnu-emacs/2025-10/msg00419.html.
