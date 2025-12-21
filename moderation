@@ -109,6 +109,20 @@ This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both bl
 (global-set-key (kbd "C-c <F1>") '\#emacs-litharage-quickban)
 }}}
 
+Same, but always targets current channel and wrapped as a proper ERC command:
+{{{
+(defun erc-cmd-LITHARGE-BAN (nick &optional duration reason)
+  "Use litharge to ban NICK from the current channel."
+  (or duration (setq duration "1y"))
+  (or reason (setq reason "subhuman"))
+  (erc-message "PRIVMSG"
+	       (format "litharge b %s %s %s %s\n"
+                       (or (erc-default-target) (current-buffer))
+		       nick
+                       duration
+                       reason)))
+}}}
+
 ### restrict #emacs
 
 This automates the restrictions described at the top of the page.
@@ -124,7 +138,7 @@ The binding suggested here is ##C-c C-<f5>.
 (global-set-key (kbd "C-c <f5>") '\#emacs-restrict)
 }}}
 
-### restrict #emacs
+### unrestrict #emacs
 
 This reverses the channel restrictions enabling people who have not registered with network service to send messages to #emacs.
 The binding suggested here is ##C-c C-<f5>##.
