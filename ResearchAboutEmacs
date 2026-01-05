@@ -16,6 +16,8 @@ Houser, Chris and Kalter, Scott D.  (1992).  [https://dl.acm.org/doi/10.1145/147
 
 Lapalme, Guy.  (1998).  [https://pdfs.semanticscholar.org/ab48/0568f9a0e4a6fc3b25918c1a481bb1b99c37.pdf Dynamic Tabbing for Automatic Indentation with the Layout Rule].  Journal of Functional Programming (JFP), 8(5), pp 493-502.
 
+Liu, Tsung-Han; Contovounesios, Basil L; Guan, Yawen; and Pit-Claudel, Clément.  (2026). [https://popl26.sigplan.org/details/tpsa-2026-papers/3 Tracking Dynamically Bound Variable Dependencies], Theory and Practice of Static Analysis, Jan 2026.
+
 Monnier, Stefan and Sperber, Michael. (2020). [https://dl.acm.org/doi/abs/10.1145/3386324
 Evolution of Emacs Lisp]. /ACM HOPL'2020/.
 
