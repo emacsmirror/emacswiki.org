@@ -180,6 +180,7 @@ If you're using [[Vertico]], it might not be obvious how to get out of the compl
 
 *CREDIT*: [https://old.reddit.com/r/emacs/comments/1iup1jb/autoinsert_keyword_selection_becomes_never_ending/ @mepcotterell]
 
+For me onla M-j worked to get out of the completing-read.
 == See also ==
 
 * AutoInsertChoose prompts you to
