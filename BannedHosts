@@ -174,3 +174,4 @@
 ^5\. # 2025-12-27 [5.0.0.0 - 5.255.255.255] Comments on BannedContent
 ^XXX\. # 2026-01-10 [2409:8000:0000:0000:0000:0000:0000:0000 - 2409:8fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
 ^XXX\. # 2026-01-10 [2409:8000:0000:0000:0000:0000:0000:0000 - 2409:8fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
+^37\. # 2026-01-10 [37.0.0.0 - 37.255.255.255] Comments on ZoneMode
