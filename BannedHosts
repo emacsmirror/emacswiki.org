@@ -173,3 +173,4 @@
 ^146\.59\. # 2025-12-27 [146.59.0.0 - 146.59.255.255] Comments on カテゴリ・ハイパーメディア
 ^5\. # 2025-12-27 [5.0.0.0 - 5.255.255.255] Comments on BannedContent
 ^XXX\. # 2026-01-10 [2409:8000:0000:0000:0000:0000:0000:0000 - 2409:8fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
+^XXX\. # 2026-01-10 [2409:8000:0000:0000:0000:0000:0000:0000 - 2409:8fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
