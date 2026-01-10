@@ -176,3 +176,4 @@
 ^XXX\. # 2026-01-10 [2409:8000:0000:0000:0000:0000:0000:0000 - 2409:8fff:ffff:ffff:ffff:ffff:ffff:ffff] Comments on BannedContent
 ^37\. # 2026-01-10 [37.0.0.0 - 37.255.255.255] Comments on ZoneMode
 ^196\.196\. # 2026-01-10 [196.196.0.0 - 196.196.255.255] Comments on NxmlModeForXHTML
+^176\. # 2026-01-10 [176.0.0.0 - 176.255.255.255] Comments on カテゴリ・ハイパーメディア
