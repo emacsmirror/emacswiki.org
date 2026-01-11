@@ -106,6 +106,7 @@ Tips and tricks for writing a MajorMode.
 
 * FindFunc -- Find functions or variables.
 * AutomaticFileHeaders -- File headers that are automatically inserted and updated.
+** AutoInsertMode -- A built-in Emacs mode that automatically inserts text into new buffers based on the file extension or major mode.
 * AutoRecompile - re-byte-compile Emacs lisp files.
 * BatchMode -- EmacsLisp as a scripting language
 * CommonLispForEmacs -- How to use CommonLisp to program Emacs.
