@@ -111,16 +111,19 @@ This is a quick-and-dirty "quickban" for #emacs bound to C-c <f1>.  Copy both bl
 
 Same, but always targets current channel and wrapped as a proper ERC command:
 {{{
-(defun erc-cmd-LITHARGE-BAN (nick &optional duration reason)
-  "Use litharge to ban NICK from the current channel."
-  (or duration (setq duration "1y"))
-  (or reason (setq reason "subhuman"))
-  (erc-message "PRIVMSG"
-	       (format "litharge b %s %s %s %s\n"
-                       (or (erc-default-target) (current-buffer))
-		       nick
-                       duration
-                       reason)))
+(defun erc-cmd-LBAN (user &optional duration reason)
+  "Ban USER from current channel via litharge for DURATION giving REASON."
+  (let ((channel (erc-default-target))
+	(duration (or duration "1y"))
+	(reason (if reason
+		    (setq erc-litharge-last-reason reason)
+		  erc-litharge-last-reason)))
+    (let ((cmd (format "PRIVMSG %s :b %s %s %s %s"
+					    "litharge"
+					    channel user duration reason)))
+      (message "sending command: %s" cmd)
+      (erc-server-send cmd))))
+
 }}}
 
 ### restrict #emacs
