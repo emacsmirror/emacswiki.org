@@ -202,6 +202,82 @@ like this in your ##.psqlrc## file:
 
   \set PROMPT1 '// %n@%M %/\n'
 
+=== Custom and/or Replacement interpreter commands ===
+
+The ##:input-filter## property of a ##sql-product-alist## entry allows
+us to manipulate input before it is sent, which facilitates "custom
+commands" which you can enter at the interpreter prompt in order to
+have your custom input executed in place of what you typed.
+
+The following example changes the behaviour of ##\d <table>## in the
+Postgres ##psql## interpreter so that it instead shows only the table
+columns (and none of the indexes, constraints, etc, which can consume
+a great many lines of output).  This is not a configurable option for
+psql at all, but by instead executing a query against the information
+schema we can get the desired outcome (in a very similar format).
+
+ ;; See `sql-input-sender' and `sql-product-alist'.  Note that
+ ;; `comint-input-filter-functions' is useless, as it does not enable
+ ;; you to modify the input (not since lexical-binding, at least).
+ (require 'sql)
+ (let ((filters (sql-get-product-feature 'postgres :input-filter))
+       (myfilter 'my-sql-postgres-input-filter))
+   (unless (listp filters)
+     (setq filters (list filters)))
+   (unless (memq myfilter filters)
+     (push myfilter filters))
+   (sql-set-product-feature 'postgres :input-filter filters)))
+
+ ;; Transform certain psql commands.
+ (defun my-sql-postgres-input-filter (input)
+   "Rewrite psql's \\d command so that less information is shown.
+ 
+ To run the command normally, use ;\\d (the semicolon introduces a no-op
+ which prevents this function from manipulating the command).
+ 
+ Alternatively, use \\d+ (for maximum information).
+ 
+ This is an :input-filter function for `postgres' in `sql-product-alist'."
+   ;; Make \d be \dt
+   (cond ((string-match "\\` *\\\\d *\n?\\'" input)
+          "\\dt")
+         ;; \d <table> and \d <schema>.<table>
+         ((string-match "\\` *\\\\d +\\(?:\\([^ \n]+\\)\\.\\)?\\([^ \n]+\\) *\n?\\'" input)
+          ;; See https://stackoverflow.com/q/109325
+          ;; TODO: "Quote" the table-name to handle mixed case names?
+          ;; Maybe not... else \d+ and \d will be inconsistent...
+          ;; (message "%s"
+          (apply #'format "\
+ SELECT \
+ column_name AS \"Column\", \
+ CASE \
+ WHEN character_maximum_length IS NOT NULL \
+ THEN CONCAT(data_type, '(', character_maximum_length, ')') \
+ ELSE data_type \
+ END AS \"Type\", \
+ CASE \
+ WHEN is_nullable = 'NO' THEN 'not null' \
+ WHEN is_nullable = 'YES' THEN NULL \
+ ELSE is_nullable \
+ END AS \"Nullable\", \
+ column_default AS \"Default\" \
+ FROM information_schema.columns \
+ WHERE table_name = '%s'%s \
+ ORDER BY ordinal_position;"
+                 (if (match-string 1 input)
+                     ;; <schema>.<table>
+                     (list (match-string 2 input)
+                           (format " AND table_schema = '%s'"
+                                   (match-string 1 input)))
+                   ;; <table>
+                   (list (match-string 2 input)
+                         ""))))
+         ;;) ;;message
+         (t
+          input)))
+
+-- Phil S.
+
 == Other SQL modes ==
 
 * RobRiepel's mode based on a mode by LynnSlater with support for SQL*Plus by Oracle and isql by Sybase: http://www.stanford.edu/people/riepel/SQL-mode.html
