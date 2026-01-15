@@ -202,6 +202,7 @@ like this in your ##.psqlrc## file:
 
   \set PROMPT1 '// %n@%M %/\n'
 
+[:input-filter]
 === Custom and/or Replacement interpreter commands ===
 
 The ##:input-filter## property of a ##sql-product-alist## entry allows
