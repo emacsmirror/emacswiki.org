@@ -167,6 +167,7 @@ I wrote a minor mode, available on MELPA and MELPA Stable ( https://melpa.org/#/
 
 -- Aldric G.
 
+[:output-alignment]
 === Misaligned query results / Filtering the prompts from query output ===
 
 For PostgreSQL at least, this can be an annoyance. The following answer at EmacsStackExchange provides a solution:
