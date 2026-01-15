@@ -46,6 +46,10 @@ automatically set it up when visiting pg_dump output.
        (hide-sublevels 1))))
  
  (add-hook 'sql-mode-hook 'my-possibly-setup-pgdump-outline)
+
+== Customising psql commands ==
+
+See [[SqlMode#input-filter]] which provides an example of changing the behaviour of ##\d <table>##
  
 ----
 CategorySql
