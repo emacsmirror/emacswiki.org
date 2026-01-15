@@ -50,7 +50,11 @@ automatically set it up when visiting pg_dump output.
 == Customising psql commands ==
 
 See [[SqlMode#input-filter]] which provides an example of changing the behaviour of ##\d <table>##
- 
+
+== Misaligned query results / Filtering the prompts from query output ==
+
+See [[SqlMode#output-alignment]]
+
 ----
 CategorySql
 CategoryDatabase
