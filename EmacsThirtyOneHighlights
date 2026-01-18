@@ -58,6 +58,10 @@ By customizing `package-review-policy', you can inspect packages after downloadi
 
 This feature was implemented by PhilipKaludercic and DanielMendler.
 
+== User Lisp Directory ==
+
+By default, Emacs will byte-compile and auto-load all Lisp files in a "user-lisp" directory within the root of your Emacs configuration at startup.  This UserLispDirectory is useful for little personal scripts or packages you maintain yourself.  It is also possible to manually invoke `user-lisp-prepare' during a session.
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
