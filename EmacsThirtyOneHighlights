@@ -52,6 +52,12 @@ A number of additions to Emacs' VC system have been added:
 * New commands to cherry-pick (`vc-revision-cherry-pick', <kbd>C</kbd> in LogView) and revert (`vc-revision-revert', <kbd>R</kbd>), implemented by SeanWhitton
 * New commands under the <kbd>C-x v w</kbd> prefix for working with worktrees, also implemented by SeanWhitton.
 
+== Package Reviewing ==
+
+By customizing `package-review-policy', you can inspect packages after downloading them and before they are installed.  This is useful for security-minded people but also people who want to see what new features were added or removed by reading the changelog.  When updating a package, you can also view a diff or even send an email to the package maintainer with comments.
+
+This feature was implemented by PhilipKaludercic and DanielMendler.
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
