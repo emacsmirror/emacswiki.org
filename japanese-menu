@@ -1,0 +1,46 @@
+== japanese-menu.el ==
+
+Translate Emacs GUI menus (menu-bar, pull-down menus, popup menus)
+from English to Japanese using a label dictionary.
+
+This package targets GNU Emacs GUI on Debian / Ubuntu systems.
+
+=== Features ===
+* Translates menu-bar labels
+* Translates pull-down menus
+* Translates mode-specific menus (e.g. Info-mode)
+* Translates popup menus (right-click)
+
+=== Installation ===
+1. Put japanese-menu.el somewhere in your load-path, e.g.:
+
+ ~/.emacs.d/lisp/japanese-menu.el
+
+2. Add to your init.el:
+
+ (add-to-list 'load-path "~/.emacs.d/lisp")
+ (require 'japanese-menu)
+ (japanese-menu-setup)
+
+=== Usage ===
+Restart Emacs or evaluate init.el.
+You can also manually run:
+
+ M-x japanese-menu-translate-current-menubar
+
+=== Verified Environment ===
+* Host OS: macOS (VMware Fusion)
+* Guest OS: Ubuntu (aarch64)
+* Desktop: GNOME (Wayland)
+* Emacs: GNU Emacs 30.1 (GTK)
+
+=== Download ===
+[[AttachFile:japanese-menu-el.zip]]
+
+=== Notes ===
+* This package is for GUI Emacs only.
+* Terminal Emacs (emacs -nw) is not supported.
+* Menu labels may vary depending on Emacs version and packages.
+
+=== License ===
+MIT License
