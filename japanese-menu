@@ -35,7 +35,9 @@ You can also manually run:
 * Emacs: GNU Emacs 30.1 (GTK)
 
 === Download ===
-[[AttachFile:japanese-menu-el.zip]]
+Download
+See: https://github.com/USERNAME/emacs-japanese-menu
+
 
 === Notes ===
 * This package is for GUI Emacs only.
