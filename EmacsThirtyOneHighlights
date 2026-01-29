@@ -64,6 +64,10 @@ By default, Emacs will byte-compile and auto-load all Lisp files in a "user-lisp
 
 This feature was added by PhilipKaludercic.
 
+==  Fast JSON path extraction via Tree-sitter ==
+If you frequently need to find or copy the JQ path, you can now use the new builtin `json-ts-jq-path-at-point`
+https://www.reddit.com/r/emacs/comments/1qlelxe/fast_json_path_extraction_via_treesitter/
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
