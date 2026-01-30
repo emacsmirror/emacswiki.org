@@ -6,7 +6,7 @@ But it's not enough.
 
 So here's a new idea: When load goes up, the entire wiki is password protected -- even for reading. I know, that's terrible. But perhaps it'll help us through the times when the scrapers effectively execute a distributed denial-of-service attack on the wiki.
 
-Thus, should you be greeted by a login prompt, use **username** "alex" and **password** "secret". Yeah, it's as silly as that. If you fail to answer correctly, the error message will remind you of the username and password. Just to be sure.
+!!Should you be greeted by a login prompt, use **username** "alex" and **password** "secret".!! Yeah, it's as silly as that. If you fail to answer correctly, the error message will remind you of the username and password. Just to be sure.
 
 The way it's going to work for the moment is that every 20 minutes a job will check if average server load is higher than 10. If so, a password is required. And then, 20 minutes later, if the situation is better, the check is removed again. There's a write-up, [https://alexschroeder.ch/view/2026-01-30-lock-the-gate on my blog]. I'm going to fiddle with it some more.
 
