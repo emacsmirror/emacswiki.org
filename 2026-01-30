@@ -1,0 +1,15 @@
+I'm going to add yet another layer of defence to the wiki.
+
+Sadly, the wiki has been down a lot. I think it's the AI bots that are trying to use Emacs Wiki to train the large language models of their masters.
+These requests are hard to defend against. I have a gazillion [https://alexschroeder.ch/view/Artificial_Intelligence_Bookmarks bookmarks] on the topic -- the article [https://drewdevault.com/2025/03/17/2025-03-17-Stop-externalizing-your-costs-on-me.html Please stop externalizing your costs directly into my face] by Drew DeVault is a starting point I recommend. If you want to learn more about the endless struggle, take a look at the [https://alexschroeder.ch/view/Butlerian_Jihad Butlerian Jihad] section of my blog. And if you're just interested in the technical aspects of it all, I documented [https://transjovian.org/view/fight-bots/index the setup].
+But it's not enough.
+
+So here's a new idea: When load goes up, the entire wiki is password protected -- even for reading. I know, that's terrible. But perhaps it'll help us through the times when the scrapers effectively execute a distributed denial-of-service attack on the wiki.
+
+Thus, should you be greeted by a login prompt, use **username** "alex" and **password** "secret". Yeah, it's as silly as that. If you fail to answer correctly, the error message will remind you of the username and password. Just to be sure.
+
+The way it's going to work for the moment is that every 20 minutes a job will check if average server load is higher than 10. If so, a password is required. And then, 20 minutes later, if the situation is better, the check is removed again. There's a write-up, [https://alexschroeder.ch/view/2026-01-30-lock-the-gate on my blog]. I'm going to fiddle with it some more.
+
+I'm sorry it has come to this.
+
+-- [[Alex Schroeder]]
