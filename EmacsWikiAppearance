@@ -13,6 +13,10 @@ While they're still technically possible with Firefox, Mozilla [https://support.
 Emacs' [https://www.gnu.org/software/emacs/manual/html_mono/eww.html eww] does not support CSS at all.
 
 
+== Customizing EmacsWiki's appearance in 2026 ==
+
+Using a custom stylesheet (including the user contribued ones below) is possible via the browser plugin Stylus ([https://github.com/openstyles/stylus github repo]).  It's available for [https://addons.mozilla.org/en-US/firefox/addon/styl-us/ Firefox] and [https://chrome.google.com/webstore/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne Chromium-based] browsers.   
+
 == Settings ==
 
 === Margin ===
