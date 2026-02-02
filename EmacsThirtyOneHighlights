@@ -71,6 +71,33 @@ The variable line-spacing can be set to a cons cell to specify the space above a
 
 This feature was added by AlexanderKaminski und DanielMendler.
 
+== Eager displaying and updating default completion UI ==
+
+The completion UI supports the settings =completion-eager-display= and =completion-eager-update= to show the completion UI immediately and update it on the fly.
+
+Example settings:
+
+{{{
+(setq
+ ;; One column view with annotations
+ completions-format 'one-column
+ completions-detailed t
+ completions-group t
+ ;; Sort candidates by history position
+ completions-sort 'historical
+ ;; Allow navigating from the minibuffer
+ minibuffer-visible-completions 'up-down
+ ;; Show completions eagerly and update automatically
+ completion-eager-update t
+ completion-eager-display t
+ completion-auto-help 'always
+ ;; Disable noise in the *Completions* buffer
+ completion-show-help nil)
+}}}
+
+
+This feature was contributed by SpencerBaugh, JuriLinkov and DanielMendler.
+
 
 ==  Fast JSON path extraction via Tree-sitter ==
 
