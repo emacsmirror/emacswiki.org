@@ -64,6 +64,14 @@ By default, Emacs will byte-compile and auto-load all Lisp files in a "user-lisp
 
 This feature was added by PhilipKaludercic.
 
+
+== Centered lines with line spacing ==
+
+The variable line-spacing can be set to a cons cell to specify the space above and below the line. Before Emacs 31 line-spacing only supported additional space below the line.
+
+This feature was added by AlexanderKaminski und DanielMendler.
+
+
 ==  Fast JSON path extraction via Tree-sitter ==
 
 If you frequently need to find or copy the [https://jqlang.org/ JQ] path in a JSON file, you can now use the new command `json-ts-jq-path-at-point'.
