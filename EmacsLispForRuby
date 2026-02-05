@@ -5,11 +5,16 @@ I call the Ruby language to manipulate Emacs `EmacsRuby'.
 
 El4r and Test::Unit enables you to test EmacsLisp/EmacsRuby programs automatically.
 
-http://www.rubyist.net/~rubikitch/computer/el4r/index.en.html
+----
 
-Gentoo ebuilds are available at: http://darcs.thehatcher.com/vic/erebor-ebuilds/app-emacs/el4r.
+Latest version: 1.04 (2006)
 
-GitHub link: https://github.com/michaelklishin/el4r
+The code can be downloaded from [https://github.com/michaelklishin/el4r Github].
+
+Documentation is available [https://web.archive.org/web/20160404151616/http://www.rubyist.net/~rubikitch/computer/el4r/index.en.html#label:10 via the Wayback Machine].
+
 
 ----
+CategoryRubyLanguage
+
 CategoryExtensionLanguage
