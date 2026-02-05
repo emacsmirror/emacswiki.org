@@ -2,4 +2,4 @@ This file allows a user to connect to and download files from the [https://www.e
 
 The Emacs Lisp List is still accessible as of this writing in early February 2026, and last updated in 2014.
 
-Lisp:ell.el(emacs lisp list)
+Lisp: ell.el
