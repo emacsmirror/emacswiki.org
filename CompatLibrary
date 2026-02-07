@@ -1,1 +1,3 @@
 The Compat library is a forwards-compatibility library for Emacs.  In other words, it defines functionality that newer versions of Emacs have built-in, in such a way that older versions of Emacs can make use of it.
+
+See https://elpa.gnu.org/packages/compat.html.
