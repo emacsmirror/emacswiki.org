@@ -1,43 +1,37 @@
-Hi, I have been using Emacs since about 2014 or 2015.
+Hi, I am an academic computer scientist and started to use Emacs as a teenager in 2014.
 
-I have a personal website, where I sometimes post about Emacs: https://sdf.org/~pkal/.
+== Work ==
 
-== Packages ==
+I maintain a few packages that are on GNU ELPA.  Of these, [[CompatLibrary]] is the most successful one I comaintain with Daniel Mendler.
 
-Here are a few packages on mine which I have contributed to ELPA or MELPA:
+In the Emacs project I mostly work on PackageEl and GnuELPA.  I have the self-assigned job of reviewing incoming packages, providing feedback and trying to contextualize the submissions.  Besides this I have occasional contributions all over the place, fixing up minor annoyances or trying to polish features.
 
-* [http://elpa.gnu.org/packages/setup.html setup] (see SetupEl)
-* [http://elpa.gnu.org/packages/shell-command+.html shell-command+]
-* [http://elpa.gnu.org/packages/vc-backup.html vc-backup]
-* [http://elpa.gnu.org/packages/compat.html compat]
-* [https://elpa.gnu.org/packages/autocrypt.html autocrypt]
-* [https://melpa.org/#/insert-kaomoji insert-kaomoji]
-* [https://elpa.gnu.org/packages/xref-union.html xref-union]
-* [https://elpa.gnu.org/packages/site-lisp.html site-lisp]
-* [https://elpa.gnu.org/packages/do-at-point.html do-at-point]
+On EmacsWiki I have started the EmacsThirtyHighlights and EmacsThirtyOneHighlights pages.
 
+== Opinions ==
 
-I am also an occasional contributor to core Emacs (https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=author&q=philipk%40posteo.net), GNU ELPA (https://git.savannah.gnu.org/cgit/emacs/elpa.git/log/?qt=author&q=philipk%40posteo.net) and NonGNU ELPA (https://git.savannah.gnu.org/cgit/emacs/nongnu.git/log/?qt=author&q=philipk%40posteo.net).
+(I preface this with the assurance of my apologies for a inclination to theatrics.) 
 
-== Misc ==
+* Emacs should be usable OOTB without having to install hundreds of packages.
+* Emacs being usable doesn't mean that it should mimick other programs UI and UX.
+* Emacs virtues lie in a consistent abstraction (rich text) and a simple, low-barrier extensibility (Lisp).
+* Emacs is both a program and the totality of users.  A re-implementation that breaks with the latter, peruses the former in vain.
+* Discussions on appearance are mostly a distraction.  The main advantage of the current look and feel is that it scares away people without taste.
+* Most attempts to brush up the appearance of Emacs are doomed to indulge in a design language that will feel outdated much faster than their designers anticipate.  Worse yet, in most cases is is already worn out, unbeknown to these innovators. 
+* Systems like OrgMode or Magit, while neat, are a distraction.  For the most part, they are coincidentally implemented in Emacs and do not demonstrate any inherent advantages.
+* GnuEmacs resembles a UnixShell more than a LispMachine.  Accepting that it is a part of a UnixSystem and utilizing the OS concurrency and tools is a fruitful exercise. 
+* GnuEmacs is a transitory stage of a certain diaspora between universal, generalized computing or man's mechanized subjugation.   
 
-In the modernisation debate I am on the traditional side, and prefer OOTB behaviour.
+== Links ==
 
-You can find me IRC (libera.chat) with the username pkal.
+I have a personal website: https://sdf.org/~pkal/ with some articles on Emacs and some Elisp scripts.
 
-You might also find me on the EmacsMailingLists emacs-devel and help-gnu-emacs.
-
-I have an Emacs-related account on the [https://social.sdfeu.org/@pkal Fediverse].
+I am also on the Fediverse: https://social.sdfeu.org/@pkal, but I don't only post about Emacs.
 
 ----
 
 [new:DrewAdams:2021-01-03 23:59 UTC]
 Welcome to the wiki. -- DrewAdams
-
-
-
-
-
 
 ----
 CategoryHomepage
