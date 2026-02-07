@@ -102,10 +102,10 @@ This feature was contributed by SpencerBaugh, JuriLinkov and DanielMendler.
 ==  Fast JSON path extraction via Tree-sitter ==
 
 If you frequently need to find or copy the [https://jqlang.org/ JQ] path in a JSON file, you can now use the new command `json-ts-jq-path-at-point'.
-== Elisp Changes ==
 
 This feature was contributed by BinbinYe.
 
+== Elisp Changes ==
 
 === Functions moved out of cl-lib ===
 
