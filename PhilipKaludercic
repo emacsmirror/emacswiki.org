@@ -2,7 +2,7 @@ Hi, I am an academic computer scientist and started to use Emacs as a teenager i
 
 == Work ==
 
-I maintain a few packages that are on GNU ELPA.  Of these, [[CompatLibrary]] is the most successful one I comaintain with Daniel Mendler.
+I maintain a few packages that are on GNU ELPA.  Of these, [[CompatLibrary]] is the most successful one I comaintain with DanielMendler.
 
 In the Emacs project I mostly work on PackageEl and GnuELPA.  I have the self-assigned job of reviewing incoming packages, providing feedback and trying to contextualize the submissions.  Besides this I have occasional contributions all over the place, fixing up minor annoyances or trying to polish features.
 
