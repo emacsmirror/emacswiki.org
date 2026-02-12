@@ -137,17 +137,17 @@ Answer from [[khi]]:
 
 * [https://osdn.net/projects/howm/lists/archive/eng/2005/000014.html rd-mode (yet another document format)]
 * sort todo list
-** [https://osdn.net/projects/howm/lists/archive/eng/2005/000007.html Thread 1]
-** [https://osdn.net/projects/howm/lists/archive/eng/2005/000009.html Thread 2]
-* [https://osdn.net/projects/howm/lists/archive/eng/2005/000016.html highlight specified words]
+** [https://web.archive.org/web/20240727025807/https://osdn.net/projects/howm/lists/archive/eng/2005/000007.html Thread 1]
+** [https://web.archive.org/web/20240326145024/https://osdn.net/projects/howm/lists/archive/eng/2005/000009.html Thread 2]
+* [https://web.archive.org/web/20240326145009/https://osdn.net/projects/howm/lists/archive/eng/2005/000016.html highlight specified words]
 * add new action-lock (embed buttons, toggle-switches, etc. into notes)
-** [https://osdn.net/projects/howm/lists/archive/eng/2006/000023.html Thread 1]
-** [https://osdn.net/projects/howm/lists/archive/eng/2006/000024.html Thread 2]
-** [https://osdn.net/projects/howm/lists/archive/eng/2006/000027.html Thread 3]
-* [https://osdn.net/projects/howm/lists/archive/eng/2008/000038.html combination with OrgMode] / more [https://github.com/kaorahi/howm/issues/17 *] [https://github.com/kaorahi/howm/issues/42#issuecomment-2629032504 *] [https://github.com/kaorahi/howm/issues/38#issuecomment-2636893231 *]
-* [https://osdn.net/projects/howm/lists/archive/eng/2008/000050.html save and kill buffer] by C-c C-c
-* [https://osdn.net/projects/howm/lists/archive/eng/2008/000059.html switch context (separating work and personal)]
-* [https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
+** [https://web.archive.org/web/20240326144613/https://osdn.net/projects/howm/lists/archive/eng/2006/000023.html Thread 1]
+** [https://web.archive.org/web/20240326144630/https://osdn.net/projects/howm/lists/archive/eng/2006/000024.html Thread 2]
+** [https://web.archive.org/web/20240326144632/https://osdn.net/projects/howm/lists/archive/eng/2006/000027.html Thread 3]
+* [https://web.archive.org/web/20241118012011/https://osdn.net/projects/howm/lists/archive/eng/2008/000038.html combination with OrgMode] / more [https://github.com/kaorahi/howm/issues/17 *] [https://github.com/kaorahi/howm/issues/42#issuecomment-2629032504 *] [https://github.com/kaorahi/howm/issues/38#issuecomment-2636893231 *]
+* [https://web.archive.org/web/20240727025815/https://osdn.net/projects/howm/lists/archive/eng/2008/000050.html save and kill buffer] by C-c C-c
+* [https://web.archive.org/web/20240727025815/https://osdn.net/projects/howm/lists/archive/eng/2008/000059.html switch context (separating work and personal)]
+* [https://web.archive.org/web/20240326145219/https://osdn.net/projects/howm/lists/archive/eng/2008/000089.html howmoney (manage expense)]
 * [https://leahneukirchen.org/blog/archive/2022/03/note-taking-in-emacs-with-howm.html Blog post on taking notes with howm] -- a nice introduction along with goodies like replacing grep with ripgrep and using counsel-rg.
 
 = More Tips =
