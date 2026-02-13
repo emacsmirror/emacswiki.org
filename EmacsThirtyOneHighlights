@@ -105,6 +105,12 @@ If you frequently need to find or copy the [https://jqlang.org/ JQ] path in a JS
 
 This feature was contributed by BinbinYe.
 
+== Automatic Package Suggestions ==
+
+Emacs now has a database of package hints that it can use to suggest installing a package, if your Emacs currently lacks any specific major mode for a file.  For instance, if you are editing a .cob (COBOL) file with `package-autosuggest-mode' enabled, a button will appear in the mode line that you can click to confirm installing the new major mode.
+
+This feature was implemented by PhilipKaludercic.
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
