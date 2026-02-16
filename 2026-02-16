@@ -1,3 +1,16 @@
+<<<<<<< you
+[new]
+OK, new bot defence! 😄 Instead of switching on basic authentication when load goes up, I'm going to use a "press this button" form instead. The idea is described by [https://fedi.splitbrain.org/@splitbrain @splitbrain] in the [https://www.patreon.com/posts/fighting-bots-145820472 Fighting Bots] post and the code is adapted from the [https://github.com/splitbrain/botcheck botcheck repository].
+
+I'm sure this will disrupt a lot of bots, services, feed aggregators and other automations, but before looking into all of that I need to know if it does the job it's intended to do.
+
+The idea is that this defence layer is always on which prevents the regular bots from running into the [https://transjovian.org/view/fight-bots/index Butlerian Jihad] defence system which blocks whole autonomous systems. Because /that/ is a really heavy hammer that is affecting a lot of people, unfortunately.
+
+Let's see how it goes.
+
+-- [[Alex Schroeder]]
+||||||| ancestor
+DeletedPage=======
 [new]
 OK, new bot defence! 😄 Instead of switching on basic authentication when load goes up, I'm going to use a "press this button" form instead. The idea is described by @splitbrain@social.splitbrain.org in the [https://www.patreon.com/posts/fighting-bots-145820472 Fighting Bots] post and the code is adapted from the [https://github.com/splitbrain/botcheck botcheck repository].
 
@@ -8,3 +21,4 @@ The idea is that this defence layer is always on which prevents the regular bots
 Let's see how it goes.
 
 -- [[Alex Schroeder]]
+>>>>>>> other
