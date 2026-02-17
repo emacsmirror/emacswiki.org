@@ -7,6 +7,13 @@ The idea is that this defence layer is always on which prevents the regular bots
 
 Let's see how it goes. For more info, see [https://alexschroeder.ch/view/2026-02-17-bot-check my blog post].
 
+Text browsers so far:
+
+- `eww` in Emacs doesn't work;
+- `lynx` doesn't work;
+- `w3m` works;
+- `links2` doesn't work.
+
 -- [[Alex Schroeder]]
 
 [new]
