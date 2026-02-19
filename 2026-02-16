@@ -10,9 +10,9 @@ Let's see how it goes. For more info, see [https://alexschroeder.ch/view/2026-02
 Text browsers so far:
 
 * ##eww## in Emacs doesn't work;
-* ##lynx## doesn't work;
+* ##lynx## works;
 * ##w3m## works;
-* ##links2## doesn't work.
+* ##links2## works, if you reload.
 
 -- [[Alex Schroeder]]
 
