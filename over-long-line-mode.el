@@ -1,1 +1,1 @@
-#REDIRECT [[so-long.el]]
+#REDIRECT [[SoLong]]
