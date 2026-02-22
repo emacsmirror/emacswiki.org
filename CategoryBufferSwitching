@@ -26,8 +26,8 @@ The following are specific tricks and packages for buffer switching.
 * [[iflipb]] -- interactively flip between recently visited buffers
 * InteractivelyDoThings -- Same as %%IswitchBuffers%%, for buffers, but also affects file access
 * IswitchBuffers -- choose buffer without a menu (name-based)
-* Lisp:contentswitch.el]] -- switch buffers by their content
-* Lisp:jump-or-exec.el]] -- Jump to a buffer matched by buffer name, or call function when not found. See also [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
+* Lisp:contentswitch.el -- switch buffers by their content
+* Lisp:jump-or-exec.el -- Jump to a buffer matched by buffer name, or call function when not found. See also [[http://sawfish.wikia.com/wiki/Jump-or-exec jump-or-exec from sawfish]].
 * ListBuffers -- List buffers (default behavior for `C-x C-b')
 * LustyExplorer -- Dynamic filesystem explorer and buffer switcher
 * [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
