@@ -1,2 +1,1 @@
-#REDIRECT [[rcirc-notify.el]]
-   
+
