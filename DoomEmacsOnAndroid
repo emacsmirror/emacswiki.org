@@ -118,6 +118,7 @@ Now edit <tt>$HOME/doom/init.el</tt> and add the following near the top, before 
   (let ((termuxpath "/data/data/com.termux/files/usr/bin"))
     (setenv "PATH" (format "%s:%s" termuxpath
 		       (getenv "PATH")))
+    (setenv "LD_LIBRARY_PATH" "/data/data/com.termux/files/usr/lib")
     (push termuxpath exec-path)
     (push "~/.config/emacs/bin" exec-path)))
 [/code]
