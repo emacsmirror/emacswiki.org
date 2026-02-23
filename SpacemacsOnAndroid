@@ -63,6 +63,7 @@ $ mv .emacs.d .old.emacs.d; mkdir .emacs.d; git clone https://github.com/syl20bn
     (setenv "PATH" (format "%s:%s" termuxpath
 		       (getenv "PATH")))
     (push termuxpath exec-path)
+    (setenv "LD_LIBRARY_PATH" "/data/data/com.termux/files/usr/lib")
     (setenv "LANG" "en_US.UTF-8")))  ;; Set LANG to what is configured in Termux.
 ;; (setq package-check-signature nil)
 [/code]
