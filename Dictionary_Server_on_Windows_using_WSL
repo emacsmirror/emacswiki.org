@@ -86,6 +86,6 @@ Return to the ##wsl## terminal and verify that the service runs:
 dict awesome
 }}}
 
-Open Emacs (outside the WSL terminal) and run ##M-x dictionary##.
+Open Emacs (inside or outside the WSL terminal) and run ##M-x dictionary##.
 
 CategoryDictionary CategoryWThirtyTwo
