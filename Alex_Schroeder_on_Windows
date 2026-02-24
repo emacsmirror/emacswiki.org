@@ -1,5 +1,184 @@
 ;;; See https://www.emacswiki.org/wiki/Alex_Schroeder
 
+;; Open with this file
+(setq initial-buffer-choice "~/NOTES")
+
+;; disable fancy stuff
+(dolist (mode '(blink-cursor-mode
+		tool-bar-mode
+		menu-bar-mode
+		scroll-bar-mode))
+  (when (fboundp mode)
+    (funcall mode -1)))
+
+;; active some other bling
+;; (toggle-frame-fullscreen)
+(show-paren-mode 1)
+(winner-mode 1)
+(windmove-default-keybindings)
+(column-number-mode 1)
+
+;; Make the initial frame less tall because the font size is so large.
+;; With emacs-client, it's the other one.
+(setq initial-frame-alist
+      '((top . 1) (left . 1) (width . 100) (height . 25))
+      default-frame-alist initial-frame-alist)
+
+;; I no longer know how custom themes work. It seems I cannot extend
+;; themes in the ways I want them to. So now I'm falling back to using
+;; face-spec-set all over the place.
+(face-spec-set 'default '((t (:family "Iosevka" :height 120 :background "#ffe" :foreground "#111"))))
+(face-spec-set 'fixed-pitch '((t (:family "Iosevka Term"))))
+(face-spec-set 'fixed-pitch-serif '((t (:family "Iosevka Term"))))
+(face-spec-set 'variable-pitch '((t (:family "Iosevka Etoile"))))
+
+(face-spec-set 'error '((t (:foreground "tomato"))))
+(face-spec-set 'region '((t (:background "#eeb"))))
+(face-spec-set 'secondary-selection '((t (:background "#ffa"))))
+(face-spec-set 'mode-line-inactive '((t (:foreground "grey30"))))
+(face-spec-set 'mode-line-highlight '((t (:foreground "dim gray"))))
+(face-spec-set 'query-replace '((t (:background "dark gray" :foreground "#ffe"))))
+
+(face-spec-set 'highlight '((t (:foreground "grey30"))))
+(face-spec-set 'idle-highlight '((t (:background "light gray"))))
+
+(face-spec-set 'completions-highlight '((t (:background "light gray"))))
+
+(face-spec-set 'dictionary-reference-face '((t (:inherit default))))
+
+(face-spec-set 'dired-directory '((t (:inherit font-lock-string-face))))
+
+(face-spec-set 'eglot-highlight-symbol-face '((t (:background "light gray"))))
+
+(face-spec-set 'eshell-prompt '((t (:foreground "#111"))))
+
+(face-spec-set 'font-lock-builtin-face '((t (:foreground "#111"))))
+(face-spec-set 'font-lock-comment-face '((t (:foreground "dim gray"))))
+(face-spec-set 'font-lock-comment-delimiter-face '((t (:inherit font-lock-comment-face))))
+(face-spec-set 'font-lock-constant-face '((t (:inherit bold :foreground "#111"))))
+(face-spec-set 'font-lock-doc-face '((t (:inherit font-lock-comment-face :slant italic))))
+(face-spec-set 'font-lock-function-name-face '((t (:foreground "#111"))))
+(face-spec-set 'font-lock-keyword-face '((t (:inherit font-lock-constant-face :foreground "#111"))))
+(face-spec-set 'font-lock-preprocessor-face '((t (:inherit italic))))
+(face-spec-set 'font-lock-reference-face '((t (:inherit default))))
+(face-spec-set 'font-lock-string-face '((t (:foreground "steel blue"))))
+(face-spec-set 'font-lock-type-face '((t (:inherit underline :foreground "#111"))))
+(face-spec-set 'font-lock-variable-name-face '((t (:foreground "#111"))))
+(face-spec-set 'font-lock-variable-use-face '((t (:foreground "#111"))))
+(face-spec-set 'font-lock-warning-face '((t (:foreground "tomato"))))
+
+(face-spec-set 'hbut-face '((t (:inherit link))))
+(face-spec-set 'hbut-flash '((t (:background "light gray"))))
+(face-spec-set 'hbut-item-face '((t (:inherit link))))
+
+(face-spec-set 'isearch '((t (:foreground "#111" :background "#cfc"))))
+(face-spec-set 'isearch-fail '((t (:foreground "#111" :background "#fdd"))))
+(face-spec-set 'isearch-group-1 '((t (:foreground "#111" :background "#bfb"))))
+(face-spec-set 'isearch-group-2 '((t (:foreground "#111" :background "#9d9"))))
+(face-spec-set 'lazy-highlight '((t (:foreground "#111" :background "#dfd"))))
+
+(face-spec-set 'magit-bisect-bad '((t (:foreground "#111" :bold t))))
+(face-spec-set 'magit-bisect-good '((t (:foreground "#111" :bold t))))
+(face-spec-set 'magit-bisect-skip '((t (:foreground "#111" :bold t))))
+(face-spec-set 'magit-branch-remote '((t (:foreground "#111" :bold t))))
+(face-spec-set 'magit-branch-warning '((t (:foreground "tomato"))))
+(face-spec-set 'magit-header-line '((t (:foreground "#111"))))
+(face-spec-set 'magit-section-heading '((t (:foreground "#111" :bold t))))
+(face-spec-set 'magit-section-highlight '((t (:foreground "#111"))))
+(face-spec-set 'magit-sequence-head '((t (:foreground "#111"))))
+(face-spec-set 'git-gutter:added '((t (:foreground "#111"))))
+(face-spec-set 'git-gutter:deleted '((t (:foreground "#111"))))
+(face-spec-set 'git-gutter:modified '((t (:foreground "#111"))))
+(face-spec-set 'git-gutter:separator '((t (:foreground "#111"))))
+
+(face-spec-set 'markdown-blockquote-face '((t (:foreground "dim gray"))))
+
+(face-spec-set 'markup-replacement-face '((t (:inherit default))))
+
+(face-spec-set 'adoc-meta-face '((t (:font "Iosevka"))))
+(face-spec-set 'adoc-replacement-face '((t (:foreground "dim gray"  :font "Iosevka" :bold nil))))
+(face-spec-set 'adoc-preprocessor-face '((t (:foreground "dim gray" :bold nil))))
+(face-spec-set 'adoc-command-face '((t (:foreground "dim gray" :font "Iosevka" :bold nil :box nil))))
+(face-spec-set 'adoc-complex-replacement-face '((t (:font "Iosevka" :foreground "dim gray" :background "#ffe" :bold t :box nil))))
+(face-spec-set 'adoc-typewriter-face '((t (:foreground "dim gray" :bold nil))))
+(face-spec-set 'adoc-verbatim-face '((t (:background "#ffe"))))
+(face-spec-set 'adoc-emphasis-face '((t (:foreground "dim gray" :italic t))))
+(face-spec-set 'adoc-bold-face '((t (:foreground "dim gray" :bold t))))
+(face-spec-set 'adoc-secondary-text-face '((t (:foreground "#111"))))
+(face-spec-set 'adoc-gen-face '((t (:foreground "#111" :bold t))))
+(face-spec-set 'adoc-reference-face '((t (:inherit link))))
+               
+(face-spec-set 'rcirc-my-nick '((t (:foreground "steel blue"))))
+(face-spec-set 'rcirc-dim-nick '((t (:foreground "dim gray"))))
+(face-spec-set 'rcirc-prompt '((t (:inherit bold))))
+
+(face-spec-set 'sh-quoted-exec '((t (:foreground "tomato"))))
+
+(face-spec-set 'wgrep-delete-face '((t (:inherit font-lock-comment-face :strike-through t))))
+(face-spec-set 'wgrep-done-face '((t (:inherit default))))
+(face-spec-set 'wgrep-face '((t (:inherit default))))
+(face-spec-set 'wgrep-file-face '((t (:inherit default))))
+
+(face-spec-set 'tex-verbatim '((t (:foreground "dim gray"))))
+
+(setq ansi-color-names-vector
+      ["black" "red3" "green3" "yellow3" "blue2" "magenta3" "cyan3" "gray90"])
+
+;; Monochrome emoji support
+
+;; (set-fontset-font t 'symbol "Segoe UI Emoji" nil 'append)
+;; (setq w32-non-USB-fonts '((emoji Segoe\ UI\ Emoji)))
+(set-fontset-font t 'unicode (font-spec :family "Segoe UI Emoji") nil 'prepend) 
+
+;; Color emoji on Windows don't work
+
+;; (use-package emojify
+;;   :config
+;;   (global-emojify-mode)
+;;   (global-emojify-mode-line-mode -1))
+
+;; at the very end, resume where we left off
+(setq desktop-restore-frames nil
+      desktop-save t
+      desktop-load-locked-desktop t
+      ;; don't save any files
+      desktop-files-not-to-save ""
+      desktop-globals-to-save
+      '(desktop-missing-file-warning
+        search-ring
+        regexp-search-ring
+        file-name-history
+        asc:file-names-seen)
+      desktop-modes-not-to-save
+      '(tags-table-mode Info-mode
+	dired-mode eww-mode))
+(desktop-save-mode 1)
+
+;; This is stuff Emacs adds automatically
+
+;; enable disabled stuff
+(put 'narrow-to-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-fold-core-style 'overlays)
+ '(package-selected-packages
+   '(adoc-mode browse-kill-ring emojify expand-region expand-selection
+               idle-highlight-mode langtool
+               langtool-ignore-fonts langtool-popup magit
+               markdown-mode move-text password-generator rw-hunspell
+               seq swiper typewriter-roll-mode typo use-package wgrep)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ;; Install use-package if necessary. The use-package expressions then
 ;; contain :ensure t for further installations.
 (package-initialize)
@@ -20,22 +199,8 @@
 (prefer-coding-system 'utf-8)
 
 ;; No tabs
-(setq-default indent-tabs-mode nil)
-
-;; disable fancy stuff
-(dolist (mode '(blink-cursor-mode
-		tool-bar-mode
-		menu-bar-mode
-		scroll-bar-mode))
-  (when (fboundp mode)
-    (funcall mode -1)))
-
-;; active some other bling
-;; (toggle-frame-fullscreen)
-(show-paren-mode 1)
-(winner-mode 1)
-;; (windmove-default-keybindings)
-(column-number-mode 1)
+(setq-default indent-tabs-mode nil
+              css-indent-offset 2)
 
 ;; save minibuffer history
 (savehist-mode 1)
@@ -94,11 +259,14 @@
   (let ((buffer-names (mapcar 'buffer-name (buffer-list)))
         (file-names nil)
         (file-names-alist nil)
-        (default nil)n
+        (default nil)
         (this-buffer-name (buffer-name (current-buffer))))
     ;; build filename list (reversed!)
     (dolist (full-name asc:file-names-seen)
-      (let* ((name (if (file-directory-p full-name)
+      ;; file-directory-p invokes tramp, which asks for passwords…
+      (let* ((name (if (and (or (not (fboundp 'tramp-tramp-file-p))
+                                (not (tramp-tramp-file-p full-name)))
+                            (file-directory-p full-name))
                        ;; parent directory with a slash…
                        (file-name-as-directory
                         (file-name-nondirectory
@@ -123,15 +291,18 @@
                   (format "Switch to (%s): " default)
                   candidates
                   (lambda (s)
-                    (and (not (string-empty-p s))
-                         (not (or (string= (substring s 0 1) " ")
-                                  (eq this-buffer-name s)))))
+                    (not (or (string= s "")
+                             (string= (substring s 0 1) " ")
+                             (eq this-buffer-name s))))
                   nil nil
                   'switch-buffer-or-find-file-history
                   default))
            (buf (get-buffer name))
            (files (cdr (assoc name file-names-alist))))
       (cond (buf (switch-to-buffer buf))
+            ((= 0 (length files))
+             (message "No such file found, creating new buffer")
+             (find-file name))
             ((= 1 (length files))
              (find-file (car files)))
             (t (find-file
@@ -148,7 +319,8 @@
   :bind ("C-'" . er/expand-region))
 
 ;; German
-(setq default-input-method 'german-prefix)
+(setq default-input-method 'german-prefix
+      calendar-week-start-day 1)
 
 ;; completion
 (global-set-key (kbd "C-<tab>") #'hippie-expand)
@@ -168,16 +340,37 @@
   :ensure t
   :config (global-idle-highlight-mode))
 
+(add-hook 'grep-mode-hook (lambda () (idle-highlight-mode 0)))
+
 ;; http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
+(defvar endless/fill nil
+  "The current state of filling.")
+
 (defun endless/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   (interactive)
-  (let ((fill-column
-         (if (eq last-command 'endless/fill-or-unfill)
-             (progn (setq this-command nil)
-                    (point-max))
-           fill-column)))
-    (call-interactively #'fill-paragraph)))
+  (cond ((or (not (eq last-command 'endless/fill-or-unfill))
+             (eq endless/fill 'sentence))
+         (message "Normal fill")
+         (setq endless/fill nil)
+         (call-interactively #'fill-paragraph))
+        ((not endless/fill)
+         (message "Unfill")
+         (let ((fill-column (point-max)))
+           (setq endless/fill 'unfill)
+           (call-interactively #'fill-paragraph)))
+        ((eq endless/fill 'unfill)
+         (message "One line one sentence")
+         (setq endless/fill 'sentence)
+         (let ((fill-column (point-max)))
+           (setq endless/fill 'unfill)
+           (call-interactively #'fill-paragraph))
+         (beginning-of-line)
+         (save-excursion
+           (while (re-search-forward "[.!?]['\"]?" (line-end-position) t)
+             (newline)
+             (while (eq (char-after) ? )
+               (delete-char 1)))))))
 
 (global-set-key [remap fill-paragraph]
                 #'endless/fill-or-unfill)
@@ -191,45 +384,61 @@
       dired-dwim-target t
       ;; add -v for the natural sort of (version) numbers within text
       dired-listing-switches "-alv")
-
-;; Hunspell
+                              
 (setenv "LANG" "de_CH.UTF-8")
-(setenv "DICTPATH" "c:/msys64/ucrt64/share/hunspell/")
-(setq ispell-local-dictionary "de_CH"
-      ispell-local-dictionary-alist
-      '(("de_CH" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil utf-8)
+(setq ispell-dictionary-alist
+      '(("de_CH" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil nil nil iso-latin-1)
         ;; add apostrophe
-        ("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['0-9]" t ("-d" "en_US") nil utf-8)))
+        ("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['0-9]" t ("-d" "en_US") nil ascii))
+      ispell-hunspell-dictionary-alist ispell-dictionary-alist
+      ;; default to Swiss German
+      ispell-local-dictionary "de_CH")
 
 (use-package dictionary
   :bind ("C-c d" . dictionary-search))
 
 ;; Swiper
 (use-package swiper :ensure t
+  :commands (swiper-from-isearch)
   :bind ("C-o" . swiper))
 
 ;; Number Mark
 (add-to-list 'load-path (expand-file-name "asc" user-emacs-directory))
 (autoload 'number-mark-mode "number-mark.el" "Working with numbers." t)
 
+;; Typo Mode
+(use-package typo
+  :ensure t)
+
 ;; AsciiDoc
 (use-package adoc-mode
   :ensure t
-  :mode "\\.ad\\(oc\\)?\\'"
-  :bind ("C-c C-o" . asc:adoc-follow-xref)
-  :config
-  (add-hook 'adoc-mode-hook 'visual-line-mode)
-  (add-hook 'adoc-mode-hook 'flyspell-mode)
-  (add-hook 'adoc-mode-hook 'abbrev-mode)
-  (add-hook 'adoc-mode-hook 'number-mark-mode)
-  (add-hook 'adoc-mode-hook (lambda () (setq ispell-local-dictionary "en_US"))))
+  :mode "\\.adoc\\'")
+
+(add-hook 'adoc-mode-hook 'asc:adoc-mode-init)
+
+(defun asc:adoc-mode-init ()
+  (visual-line-mode)
+  (flyspell-mode)
+  (abbrev-mode)
+  (number-mark-mode)
+  (hi-lock-face-buffer "^\\([^.!? \t\r\n]+ +\\)\\{25\\}\\(.+\\)" 'hi-pink 2)
+  (hi-lock-face-buffer "\\bwill\\|simple\\|easy\\|just\\b")
+  (add-to-list 'adoc-font-lock-keywords
+               '("TODO" . 'font-lock-warning-face))
+  (setq ispell-local-dictionary "en_US"))
+
+;; fix warning message
+(defface adoc-delimiter '((t (:inherit adoc-meta-face))) "No idea")
 
 (defun asc:modules-directory ()
   "Return the modules directory we're in."
   (let ((dir default-directory))
-    (while (not (string= "modules"
-                         (file-name-nondirectory
-                          (directory-file-name dir))))
+    (while (and
+            (not (string= dir "/"))
+            (not (string= "modules"
+                          (file-name-nondirectory
+                           (directory-file-name dir)))))
       (setq dir (expand-file-name
                  (file-name-concat dir ".."))))
     dir))
@@ -247,39 +456,190 @@
                  (file-name-concat dir ".."))))
     last))
 
-(defun asc:adoc-follow-xref ()
-  "Follow the xref at point."
+(defun asc:to-environment-variables ()
+  "Turn the current thing into an adoc environment variable link."
   (interactive)
-  (let ((data (or (adoc-example-at-point)
-                  (adoc-image-at-point)
-                  (adoc-page-at-point)
-                  (error "No Asciidoc reference at point")))
-        module dir file)
-    (cond ((= 3 (length data)) (setq module (nth 1 data) dir (nth 0 data) file (nth 2 data)))
-          ((= 2 (length data)) (setq module (asc:module-name) dir (nth 0 data) file (nth 1 data)))
-          (t (error "Cannot parse %S" data)))
-    (find-file (file-name-concat (asc:modules-directory) module dir file))))
+  (skip-chars-backward "a-zA-Z.")
+  (when (equal (char-before) ?`)
+    (delete-char -1))
+  (let ((start (point)))
+    (skip-chars-forward "a-zA-Z.")
+    (when (equal (char-after) ?`)
+      (delete-char 1))
+    (let ((s (buffer-substring start (point))))
+      (insert "]")
+      (goto-char start)
+      (insert "xref:")
+      (unless (string-match "/configuration/" (buffer-file-name))
+        (insert "configuration:"))
+      (insert "environment-variables.adoc#"
+              (replace-regexp-in-string "\\." "-" (downcase s))
+              "["))))
+
+(defun asc:to-setting ()
+  "Turn the current thing into an adoc setting link."
+  (interactive)
+  (skip-chars-backward "a-zA-Z.")
+  (when (equal (char-before) ?`)
+    (delete-char -1))
+  (let ((start (point)))
+    (skip-chars-forward "a-zA-Z.")
+    (when (equal (char-after) ?`)
+      (delete-char 1))
+    (let ((s (buffer-substring start (point))))
+      (insert "]")
+      (goto-char start)
+      (insert "xref:")
+      (unless (string-match "/configuration/" (buffer-file-name))
+        (insert "configuration:"))
+      (insert "settings.adoc#"
+              (replace-regexp-in-string "\\." "-" (downcase s))
+              "["))))
+
+(defun asc:to-parameter ()
+  "Turn the current thing into an adoc parameter link."
+  (interactive)
+  (skip-chars-backward "a-zA-Z0-9_")
+  (when (equal (char-before) ?`)
+    (delete-char -1))
+  (let ((start (point)))
+    (skip-chars-forward "a-zA-Z0-9_")
+    (when (equal (char-after) ?`)
+      (delete-char 1))
+    (let ((s (buffer-substring start (point))))
+      (insert "]")
+      (goto-char start)
+      (insert "xref:")
+      (unless (string-match "/configuration/" (buffer-file-name))
+        (insert "configuration:"))
+      (insert "parameter.adoc#"
+              (replace-regexp-in-string "\\." "-" (downcase s))
+              "["))))
+
+(autoload 'adoc-xref-id-at-point "adoc-mode")
 
 (defun adoc-example-at-point ()
   "Return the example at point."
   (save-excursion
     (goto-char (line-beginning-position))
     (when (looking-at "include::example\\$\\([^[]+\\)")
-      (append '("examples") (split-string (match-string 1) ":")))))
+      (list (append '("examples") (split-string (match-string 1) ":"))))))
 
 (defun adoc-image-at-point ()
   "Return the image at point."
   (save-excursion
     (goto-char (line-beginning-position))
     (when (looking-at "image::\\([^[]+\\)")
-      (append '("images") (split-string (match-string 1) ":")))))
+      (list (append '("images") (split-string (match-string 1) ":"))))))
 
 (defun adoc-page-at-point ()
   "Return the page at point."
   (save-excursion
-    (let ((id (adoc-xref-id-at-point)))
-      (when id
-        (append '("pages") (split-string id ":"))))))
+    (let* ((id (adoc-xref-id-at-point))
+           (elems (when id (split-string (adoc-xref-id-at-point) "#")))
+           (path (car elems))
+           (frag (nth 1 elems)))
+      (cond ((and path (string-match "\\.adoc$" path))
+             (list (append '("pages") (split-string path ":")) frag))
+            ((= (length elems) 1)
+             (cons nil elems))))))
+
+(defun adoc-include-at-point ()
+  "Return the file at point."
+  (save-excursion
+    (goto-char (line-beginning-position))
+    (when (looking-at "include::\\([^[]+\\)")
+      (let ((elems (split-string (match-string 1) ":")))
+        (when (string-match "^partial\\$" (car (last elems)))
+          (setcar (last elems) (substring (car (last elems)) 8)))
+        (list (append '("partials") elems))))))
+
+(defun adoc-attribute-use-at-point ()
+  "Return the attribute used at point."
+  (save-excursion
+    (let ((from (when (or (eq (char-before) ?\{)
+                          (and (skip-chars-backward "a-z_")
+                               (eq (char-before) ?\{)))
+                  (point)))
+          (to (and (skip-chars-forward "a-z_")
+                   (eq (char-after) ?\})
+                   (point))))
+      (when (and from to)
+        (let ((attribute (buffer-substring from to)))
+          (list (list "partials" "ROOT" "attributes.adoc") attribute))))))
+
+(defun adoc-cross-reference-at-point ()
+  "Return the id used at point.
+<<foo,bar>> is detected by `adoc-xref-id-at-point' and therefore
+handled by `adoc-page-at-point', but <<foo>> is not, strangely."
+  (save-excursion
+    (let ((from (when (search-backward "<<" (line-beginning-position) t)
+                  (+ (point) 2)))
+          (to (when (search-forward ">>" (line-end-position) t)
+                  (- (point) 2))))
+      (when (and from to)
+        (list nil (car (split-string (buffer-substring from to) ",")))))))
+
+(keymap-global-set "M-<return>" 'asc:follow-link)
+
+(autoload 'ffap-guesser "ffap")
+
+(defun asc:follow-link ()
+  "Follow the link of whatever we're looking at."
+  (interactive)
+  (let (thing)
+    (cond ((setq thing (ffap-guesser))
+           (find-file thing))
+          ((adoc-xref))
+          ((and (setq thing (sexp-at-point))
+                (or (boundp thing)
+                    (listp thing)))
+           (message "%S" (eval thing)))
+          ((condition-case err (xref-find-definitions
+                                (xref-backend-identifier-at-point
+                                 (xref-find-backend)))
+             (t nil)))
+          ((setq thing (ivy-thing-at-point))
+           (swiper-all thing))
+          (t (message "?")))))
+
+(defun adoc-xref ()
+  "Follow adoc references and open the associated file."
+  (let* ((data (or (adoc-example-at-point)
+                   (adoc-image-at-point)
+                   (adoc-page-at-point)
+                   (adoc-cross-reference-at-point)
+                   (adoc-include-at-point)
+                   (adoc-attribute-use-at-point)))
+         (path (car data))
+         (id (nth 1 data))
+         (modules-dir (asc:modules-directory))
+         module dir file target found)
+    (when (and path (not (string= modules-dir "/")))
+      (cond ((= 3 (length path)) (setq module (nth 1 path) dir (nth 0 path) file (nth 2 path)))
+            ((= 2 (length path)) (setq module (asc:module-name) dir (nth 0 path) file (nth 1 path)))
+            (t (error "Too long: %S" path)))
+      (setq found t
+            target (file-name-concat modules-dir module dir file))
+      (find-file target))
+    (when id
+      (let ((re (concat "#" id
+                        "\\|\\[\\[" id "\\]\\]"
+                        "\\|= *" (replace-regexp-in-string "-" " " id) "$")))
+        (goto-char (point-min))
+        (search-forward-regexp re)
+        (setq found t)))
+    found))
+
+;; (defun adoc-ref ()
+;;   "Follow adoc references and jump to the correct definition."
+;;   (let ((id (adoc-cross-reference-at-point)))
+;;     (when id
+;;       (let ((re (concat "#" id
+;;                         "\\|\\[\\[" id "\\]\\]"
+;;                         "\\|= *" (replace-regexp-in-string "-" " " id) "$")))
+;;         (goto-char (point-min))
+;;         (search-forward-regexp re)))))
 
 ;; See (edit-abbrevs)
 
@@ -304,6 +664,15 @@
   "----\n"
   "\n"
   "----")
+
+(define-skeleton adoc:table "tab" nil
+  "[cols=\"1,1\"]\n"
+  "|===\n"
+  "|" _ " | header\n"
+  "\n"
+  "|cell\n"
+  "|cell\n"
+  "|===\n")
 
 (defun adoc:nav-entry ()
   "Insert navigation entry and open file."
@@ -364,6 +733,22 @@
             "----\n"
             "<1>")))
 
+(defun asc:adoc-callout-shift (shift)
+  "Shift the remaining callouts by SHIFT."
+  (interactive "p")
+  (let ((shift (or shift 1))
+        first n)
+    (catch 'done
+      (save-excursion
+        (while (re-search-forward "<\\([0-9]+\\)>" nil t)
+          (setq n (string-to-number (match-string 1)))
+          (if (not first)
+              (setq first n)
+            (setq first (1+ first))
+            (unless (= first n)
+              (throw 'done first)))
+          (replace-match (format "<%d>" (+ n shift))) )))))
+
 (defconst asc:java-style
   '((c-basic-offset . 2)
     (c-comment-only-line-offset 0 . 0)
@@ -386,13 +771,17 @@
   "My C Programming Style")
 (c-add-style "java" asc:java-style)
 
+;; JavaScript
+(setq js-indent-level 2)
+
 ;; Customizations for all modes in CC Mode.
 (defun asc:java-mode-common-hook ()
   (setq tab-width 8
         indent-tabs-mode nil))
 (add-hook 'java-mode-hook 'asc:java-mode-common-hook)
 
-(setq langtool-language-tool-jar "/dev/doc/LanguageTool-6.1/languagetool-commandline.jar"
+;; https://www.languagetool.org/download/snapshots/?C=M;O=D
+(setq langtool-language-tool-jar "/home/alex/dev/LanguageTool-6.8-SNAPSHOT/languagetool-commandline.jar"
       langtool-default-language "en-US"
       langtool-java-user-arguments '("-Dfile.encoding=UTF-8"))
 
@@ -446,35 +835,19 @@
               ;; markup-underline-face
               ;; markup-value-face
               markup-verbatim-face))
+
+;; ediff
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
 ;; magit
 (use-package magit
   :ensure t
   :bind ("C-c g" . magit-status))
 
-;; magit and Cygwin
-(defadvice magit-expand-git-file-name
-    (before magit-expand-git-file-name-cygwin activate)
-  "Handle Cygwin directory names such as /cygdrive/c/*
-by changing them to C:/*"
-  (when (string-match "^/cygdrive/\\([a-z]\\)/\\(.*\\)" filename)
-    (setq filename (concat (match-string 1 filename) ":/"
-			   (match-string 2 filename)))))
-
-(defun un-cygwin-buffer-file-name ()
-  (when (string-match "^\\([a-z]\\):/cygdrive/\\([a-z]\\)/\\(.*\\)" buffer-file-name)
-    ;; assertion:  filename should look like "c:/cygwin/c/Users..." i.e. the drive is repeated
-    (when (equal (match-string 1 buffer-file-name) (match-string 2 buffer-file-name))
-      (set-visited-file-name
-       (concat (match-string 1 buffer-file-name) ":/"
-	       (match-string 3 buffer-file-name)) 't))))
-
-(add-hook 'git-commit-mode-hook 'un-cygwin-buffer-file-name)
+;; (use-package git-gutter
+;;   :ensure t)
 
 ;; grep
-
-;; default to case insensitive
-(eval-after-load "grep"
-  '(grep-apply-setting 'grep-command "grep --color -niH -e "))
 
 (defun grep-word-at-point (word)
   "Grep for the region, or thing at point.
@@ -491,12 +864,41 @@ current buffer. Use a prefix argument to override either."
       (setq word (read-string "Grep for: " word)
 	    pattern (read-string "Files to grep: " pattern)))
     (setq word (replace-regexp-in-string "\"" "\\\"" word))
-    (grep (format "grep --color -niH -e \"%s\" %s" word pattern))))
+    (grep (format "grep --color -niH --null -e \"%s\" %s" word pattern))))
 
 (global-set-key (kbd "C-c s") 'grep-word-at-point)
 
+(defun git-grep-word-at-point (word)
+  "Git grep for the region, or thing at point."
+  (interactive (list (thing-at-point 'symbol)))
+  (when (use-region-p)
+    (setq word (buffer-substring-no-properties
+		(region-beginning) (region-end))))
+  (when (or current-prefix-arg
+            (null word))
+    (setq word (read-string "Git grep for: " word)))
+  (git-grep (regexp-quote word)))
+
+(defun git-grep (regexp)
+  "Git grep for the REGEXP."
+  (interactive "sRegexp: ")
+  (grep (format "git grep --color -niH -e \"%s\"" regexp)))
+
 (use-package wgrep
   :ensure t)
+
+;; kill-ring
+
+(use-package browse-kill-ring
+  :ensure t
+  :config (browse-kill-ring-default-keybindings))
+
+;; WSL clipboard fix
+(setq interprogram-cut-function 
+      (lambda (text)
+        (with-temp-buffer
+          (insert text)
+          (call-process-region (point-min) (point-max) "win32yank.exe" nil 0 nil "-i" "--crlf"))))
 
 ;; eshell
 
@@ -533,7 +935,6 @@ current buffer. Use a prefix argument to override either."
   (local-set-key (kbd "<up>") 'previous-line)
   (local-set-key (kbd "<down>") 'next-line)
   (eldoc-mode 1)
-  (eshell-smart-initialize)
   (setenv "PAGER" "cat")
   (setenv "EDITOR" "emacsclient"))
 
@@ -542,156 +943,6 @@ current buffer. Use a prefix argument to override either."
   (interactive "r")
   (let ((inhibit-read-only t))
     (kill-region (region-beginning) (region-end))))
-
-(setq shell-file-name (executable-find "cmdproxy")
-      shell-file-name "C:/tools/emacs/libexec/emacs/28.2/x86_64-w64-mingw32/cmdproxy.exe")
-
-;; initial frame size not so tall because the font size is so large
-(setq initial-frame-alist
-      '((top . 1) (left . 1) (width . 100) (height . 30)))
-
-;; Theme at the end
-(use-package brutalist-theme
-  :ensure t
-  :config
-  (let
-      ((fg "#111111")
-       (fg-table "#222291")
-       (fg-dim "dim gray")
-       (fg-slight-dim "grey70")
-       (bg "#fffff8")
-       (bg-light "#ddddd8")
-       (fg-light "#ddddd8")
-       (bg-highlight "#FFF1AA")
-       (bg-highlight-2 "LightCyan")
-       (bg-highlight-3 "LightGreen")
-       (bg-highlight-dim "#eeeee8")
-       (diff-added "#e9ffe9")
-       (diff-added-highlight "#a4f4a3")
-       (diff-removed "#ffecec")
-       (diff-removed-highlight "#f9cbca")
-       (powerline1 "grey22")
-       (powerline2 "grey40")
-       (string "blue")
-       (cursor "white smoke")
-       (paren-match "blue")
-       (paren-mismatch "red"))
-    (custom-theme-set-faces
-     'brutalist
-     `(markup-list-face ((t (:background ,bg :foreground ,fg-table))))
-     `(markup-complex-replacement-face ((t (:background ,bg-highlight :foreground ,fg))))
-     `(markup-internal-reference-face ((t (:underline t :foreground ,fg-slight-dim))))
-     `(markup-meta-face ((t (:background ,bg :foreground ,fg-dim))))
-     `(markup-secondary-text-face ((t (:background ,bg :foreground ,fg-dim))))
-     `(mode-line-inactive ((t (:inherit mode-line :foreground ,fg-dim)))))))
-;; if you add to the above, (disable-theme 'brutalist) and enable the theme again
-(enable-theme 'brutalist)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            ;; ensure this face really does get set!
-            (set-face-foreground 'mode-line-inactive "dim gray")))
-
-;; font even further back
-(defface markup-replacement-face '((t (:inherit default))) "")
-(when (find-font (font-spec :name "Iosevka"))
-  (dolist (face '(default fixed-pitch))
-    (set-face-attribute face nil :family "Iosevka" :height 120)))
-
-;; Meow
-
-(defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
-
-(defface meow-normal-indicator '((t (:foreground "orange"))) "N")
-
-(use-package meow :ensure t
-  :config (progn
-            (meow-setup)
-            (meow-global-mode 1)))
 
 ;; add isearch
 
@@ -765,40 +1016,8 @@ current buffer. Use a prefix argument to override either."
      :transient nil)]])
 
 (define-key isearch-mode-map (kbd "<f2>") 'cc/isearch-menu)
+(define-key isearch-mode-map (kbd "C-o") 'swiper-from-isearch)
 
-;; at the very end, resume where we left off
-(setq desktop-restore-frames nil
-      desktop-save t
-      desktop-load-locked-desktop t
-      ;; don't save any files
-      desktop-files-not-to-save ""
-      desktop-globals-to-save
-      '(desktop-missing-file-warning
-        search-ring
-        regexp-search-ring
-        file-name-history
-        asc:file-names-seen)
-      desktop-modes-not-to-save
-      '(tags-table-mode Info-mode
-	dired-mode eww-mode))
-(desktop-save-mode 1)
-
-;; emacs-client
-(server-start)
-
-;; enable disabled stuff
-(put 'narrow-to-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(swiper expand-region expand-selection langtool langtool-ignore-fonts langtool-popup rw-hunspell brutalist-theme wgrep magit adoc-mode idle-highlight-mode move-text use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(global-set-key (kbd "C-x 8 1 2") "½")
+(global-set-key (kbd "C-x 8 _ 2") "₂")
+(global-set-key (kbd "C-x 8 <right>") "→")
