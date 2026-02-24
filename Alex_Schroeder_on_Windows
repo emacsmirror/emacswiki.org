@@ -1,4 +1,4 @@
-;;; See https://www.emacswiki.org/wiki/Alex_Schroeder
+;;; See https://www.emacswiki.org/emacs/Alex_Schroeder
 
 ;; Open with this file
 (setq initial-buffer-choice "~/NOTES")
