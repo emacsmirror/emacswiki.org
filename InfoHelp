@@ -1,6 +1,8 @@
-Are you like me looking for function and variable names in Info and want to quickly access their documentation?
-Then infohelp.el might help you.
-It tries to make underlined links of those names.
+Are you looking for function and variable names in Info and want to quickly access their documentation?
 
-Get it from http://OurComments.org/Emacs/DL/elisp/
+Then **infohelp.el** by Lennart Borgman might help you. It tries to make underlined links of those names. Lennart Borgman was the creator of the EmacsW32 distribution for Windows in the late 2000s, but is not currently (2026) updating this distribution. 
+
+An older version of **infohelp.el** is at https://web.archive.org/web/20130114135709/http://ourcomments.org/Emacs/DL/elisp/ (last updated June 16, 2006). Requires Emacs 22, the most recent version at that date.
+
+The former domain for Lennart's files (http://OurComments.org/Emacs/DL/elisp/) was sold to a third party and appears to be hacked.
 
