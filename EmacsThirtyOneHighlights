@@ -19,7 +19,8 @@ See https://www.gnu.org/software/emacs/manual/html_node/emacs/Text_002dOnly-Mous
 
 You can rotate all vertical and horizontal splits using the <kbd>C-x w t</kbd> command, rotate all windows using <kbd>C-x w r</kbd> followed by a left (clockwise) or right (counter-clockwise) key and flip the layout using <kbd>C-x w f</kbd> followed by any arrow key.
 
-Contributed by EshelYaron, see https://lists.gnu.org/archive/html/emacs-devel/2025-01/msg00322.html.
+Contributed by PranshuSharma, see https://lists.gnu.org/archive/html/emacs-devel/2025-01/msg00002.html.
+
 
 == More TreeSitter support ==
 
