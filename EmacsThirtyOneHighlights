@@ -74,7 +74,7 @@ This feature was added by AlexanderKaminski und DanielMendler.
 
 == Eager displaying and updating default completion UI ==
 
-The completion UI supports the settings =completion-eager-display= and =completion-eager-update= to show the completion UI immediately and update it on the fly.
+The completion UI supports the settings `completion-eager-display' and `completion-eager-update' to show the completion UI immediately and update it on the fly.
 
 Example settings:
 
