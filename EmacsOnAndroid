@@ -9,7 +9,7 @@ This port features extensive support for touch screen input and on-screen keyboa
  
 Regularly updated prebuilts of both development snapshots and releases are available at: https://sourceforge.net/projects/android-ports-for-gnu-emacs
 
-F-Droid also provides prebuilts, but they are at times outdated, and do not work on older systems.
+[https://f-droid.org/en/packages/org.gnu.emacs F-Droid also provides up-to-date prebuilts with automatic updates], but they do not work on older systems.
 
 Instructions for how to use Doom Emacs on this port: DoomEmacsOnAndroid
 
