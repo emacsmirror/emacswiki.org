@@ -35,3 +35,4 @@ For `eww', I think you need to treat the 402 result like a 200 result:
 }}}
 
 On my system, it still doesn't work because I meddle with cookies and `url-privacy-level' so it fails somewhere else.
+It works with ##emacs -Q##, however.
