@@ -20,3 +20,18 @@ Text browsers so far:
 Oh man, I had nearly forgotten that spam is still an issue, in addition to everything else. Thank you very much, [[Cena]], for your tireless efforts!
 
 -- [[Alex Schroeder]]
+
+[new]
+For `eww', I think you need to treat the 402 result like a 200 result:
+
+{{{
+(let ((fake-line '(402 OK "Payment required but we don't care")))
+  ;; sadly, url-http-codes is a defconst, so we cannot use let to bind it
+  (condition-case err
+      (progn
+       (setq url-http-codes (cons fake-line url-http-codes))
+       (eww "https://www.emacswiki.org/"))
+    (t (setq url-http-codes (delete fake-line url-http-codes)))))
+}}}
+
+On my system, it still doesn't work because I meddle with cookies and `url-privacy-level' so it fails somewhere else.
