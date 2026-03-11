@@ -1,3 +1,5 @@
 Emacs 31 adds a Theme (as in collection of user options, not a color scheme) for new users.  You can enable it by loading the `newcomers-presets' theme, or on the startup screen.  
 
 The options this theme enables might change over time, depending on new features being added or deprecated by others.
+
+You can fine the current definition of the theme, including the options it enabled here: https://cgit.git.savannah.gnu.org/cgit/emacs.git/tree/etc/themes/newcomers-presets-theme.el.
