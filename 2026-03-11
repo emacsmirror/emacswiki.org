@@ -5,6 +5,6 @@ Issues:
 
 * git add, commit and push to the [https://github.com/emacsmirror/emacswiki.org mirror] (closed)
 * messages about malformed regular expressions on BannedContent (closed)
-* messages about malformed Unicode remain confusing (e.g. /UTF-8 "\xE1" does not map to Unicode/ but when I search for that byte it finds occurrences of LATIN SMALL LETTER E WITH TILDE, ###xE1 #xBA #xBD##)
+* messages about malformed Unicode remain confusing (e.g. ##UTF-8 "\xE1" does not map to Unicode## but when I search for that byte it finds occurrences of LATIN SMALL LETTER E WITH TILDE, ###xE1 #xBA #xBD##)
 
 -- [[Alex Schroeder]]
