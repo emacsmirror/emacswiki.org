@@ -1,4 +1,4 @@
-;; bbdb-gnokii.el --- Export phone entries from BBDB to gnokii contacts file.
+;;; bbdb-gnokii.el --- Export phone entries from BBDB to gnokii contacts file.
 
 ;;
 ;; Copyright (C) 2000, 2003, 2004, 2005, 2006
@@ -167,8 +167,6 @@
 
 ;; See the variables and code below for more details.  You may check all
 ;; customizable variables using `M-x customize-group RET bbdb-gnokii RET'.
-
- 
 
 ;;; History:
 
