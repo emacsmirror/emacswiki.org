@@ -349,10 +349,10 @@ if that value is non-nil."
     shiplist
   ))
 
-(defmacro emvaders-goto-x-y (x y)
-  (`(goto-char (+ (* (, y) emvaders-line-length)
-		  (, x)
-		  1))))
+(defun emvaders-goto-x-y (x y)
+  (goto-char (+ (* y emvaders-line-length)
+		  x
+		  1)))
 
 (defun emvaders-char-at (pos)
   (char-after (+ (* (cdr pos) emvaders-line-length) (car pos) 1)))
