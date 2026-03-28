@@ -1,13 +1,13 @@
-== Pour(-)quoi et depuis quand je suis fan d'EMACS ==
+== Pour(-)quoi et depuis quand je suis fan d'Emacs ==
 
-J'utilise EMACS depuis 1991. À l'époque j'étais étudiant et notre professeur d'info avant de nous initier à EMACS nous avait déclaré qu'il y avait deux catégories de personnes, les utilisateurs de VI et ceux d'EMACS, et que malheureusement il faisait partie de la seconde. À l'époque je n'avais jamais entendu parlé ni de VI ni d'EMACS, et je savais encore moins que ce genre de débat est t'une trôllerie me tirez vous. Mais cela m'avait frappé parce que je m'étais demandé pourquoi alors son cours ne concernait pas VI.
+J'utilise Emacs depuis 1991. À l'époque j'étais étudiant et notre professeur d'info avant de nous initier à Emacs nous avait déclaré qu'il y avait deux catégories de personnes, les utilisateurs de VI et ceux d'Emacs, et que malheureusement il faisait partie de la seconde. À l'époque je n'avais jamais entendu parlé ni de VI ni d'Emacs, et je savais encore moins que ce genre de débat est t'une trôllerie me tirez vous. Mais cela m'avait frappé parce que je m'étais demandé pourquoi alors son cours ne concernait pas VI.
 
-Ce que j'apprécie le plus dans EMACS, c'est:
+Ce que j'apprécie le plus dans Emacs, c'est:
 * qu'on n'a pas besoin de faire des tonnes de manipes avec une souris
 * qu'on peut mettre de très grosses lettres qui ne fatiguent pas les yeux, parce ce n'est pas la peine d'avoir dix milles fenêtres tapissant simultannément l'écran, vu que basculer de l'une à l'autre se fait en deux ou trois coups de clavier.
 
 
-J'utilise EMACS principalement :
+J'utilise Emacs principalement :
 * Comme un éditeur de LaTeX et [http://www.emacswiki.org/emacs/Texinfo Texinfo] avec AUCTeX. 
 * Comme un calculateur scientifique avec Calc (voir AdvancedDeskCalculator, ce que j'aime le plus c'est la manipulation des unités, et la polonaise inverse) 
 * Comme un tableur avec SES (voir SimpleEmacsSpreadsheet)
@@ -28,6 +28,16 @@ Je contribue également assez régulièrement à Emacs Calc ([AdvancedDeskCalcul
 
 J'ai également contibué à emacs-template (http://emacs-template.sourceforge.net/)
 
+Je suis le maiteneur de SES.
+
+== Construction d'Emacs 31.0.5 sur MSYS2 x86_64-w64-mingw32 ==
+
+Récemment je suis tombé sur un problème d'installation d'Emacs à partir des sources. J'avais reconstruit Emacs dans une console MINGW64, mais quand je lançais l'application installée, j'obtenais un popup m'indiquant que la fonction <tt>clock_gettime64</tt> était introuvable dans une DLL. Et pourtant <tt>c:\msys64\mingw64\bin</tt> était bien dans mon <TT>PATH</TT>. Je me suis aperçu que la DLL <tt>libwinpthread-1.dll</tt> avait une version incomplète dans les chemins <tt>c:\Strawberry\perl\bin</tt> et <tt>c:\Strawberry\c\bin</tt> que j'ai dans mon <TT>PATH</TT> système _avant_ <tt>c:\msys64\mingw64\bin</tt>, mais pas dans la console MINGW64 où j'avais fait la construction parce qu'elle utilise le Perl de MSYS2 et non Strawberry Perl. Du coup, j'ai résolu ce problème ainsi :
+
+* Renommer les fichiers <tt>libwinpthread-1.dll</tt> de Strawberry Perl en <tt>libwinpthread-1.dll.old</tt>
+* Mettre à la place un lien symbolique avec le <tt>libwinpthread-1.dll</tt> de mingw64
+
+Je pense que la DLL de Strawberry Perl a été compilée pour une machine 32bits, et donc ne contient pas les fonctions spécifiques à une architecture 64bits, d'où ce problème d'incomplétude.
 
 
 [new:DrewAdams:2009-07-25 13:51 UTC]
