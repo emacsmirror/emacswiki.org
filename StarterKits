@@ -32,7 +32,7 @@ This should not be viewed as a comprehensive list.
 || [[https://github.com/Lambda-Emacs/lambda-emacs Lambda Emacs]]         ||   201 ||         30.1+ ||    Standard || "... aimed at those engaged in writing and academic work in the humanities ."||
 || [[https://github.com/abougouffa/minemacs MinEmacs]]                   ||   200 ||           29+ ||    Standard || "...a complete and fast Emacs configuration framework."  ||
 || [[https://github.com/jcs-emacs/jcs-emacs JCS-Emacs]]                  ||   110 ||            ?? ||    Standard || "...polished and goes toward to the modern text editor, or even better, it goes beyond modern IDE"||
-|| [[https://github.com/darkstego/wakib-emacs  Wakib Emacs]]             ||    39 ||.        26.3+ ||  Wakib-Keys || "... a modern, user-friendly version of Emacs."||
+|| [[https://github.com/darkstego/wakib-emacs  Wakib Emacs]]             ||    39 ||         26.3+ ||  Wakib-Keys || "... a modern, user-friendly version of Emacs."||
 || [[https://github.com/monkeyjunglejuice/emacs.onboard Emacs.Onboard]]  ||    27 ||         28.2+ ||    Standard || "... a comprehensive, portable starter-kit for Emacs."||
 
 == Archived / Not active ==
