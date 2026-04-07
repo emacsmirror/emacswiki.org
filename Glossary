@@ -5,7 +5,7 @@ Emacs jargon predates most user interfaces used today. See EmacsJargon for an in
 See also Emacs' official [[Manual:Glossary]].
 
 * '''[::atom]''' -- a Lisp entity that is not a [[cons]].  This includes [[symbol]]s and strings.
-* '''[::alist]''' -- a [[list]] whose elements are [[cons]]es.
+* '''[::alist]''' -- Short for Association List. A [[list]] whose elements are [[cons]]es. The car of each cons cell is considered a key and the cdr a value. 
 * [[bookmark]] -- just what it sounds like: a saved location in a file or buffer
 * '''[::bound variable]''' -- a [[variable]] that has a [[symbol value]]
 * [[buffer]] -- editing happens in buffers (workspaces)
