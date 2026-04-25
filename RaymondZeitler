@@ -14,7 +14,7 @@ I can be reached at r.zeitler@ieee.org.  But questions or comments that pertain 
 My .emacs:
 <pre>
 ;;; -*- lexical-binding: t -*-
-;;; Time-stamp: "2025-04-17 09:34:58 RayZ"
+;;; Time-stamp: "2026-04-21 22:05:23 RayZ"
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -22,15 +22,72 @@ My .emacs:
 ;; You may delete these explanatory comments.
 (package-initialize)
 
+(defun eweek (year)
+  "Returns the date on which Engineers Week begins for the year given in
+YEAR.  Returns the date in the standard format for a (Gregorian)
+calendar date in calendar.el, a list of integers (MONTH DAY YEAR)"
+  (calendar-gregorian-from-absolute
+   (calendar-dayname-on-or-before
+    0 (calendar-absolute-from-gregorian (list 2 22 year)))))
 
-(setq initial-frame-alist '((top . 0) (left . 0)
-			    (width . 135) (height . 45)
-			    (cursor-type . bar)
-			    ))
+; The following is defined by custom-set-variables
+;(setq initial-frame-alist '((top . 0) (left . 0)
+;			    (width . 208) (height . 53)
+;			    (cursor-type . bar)
+;			    ))
 
 (setq frame-title-format '("GNU Emacs " emacs-version ": %b" (buffer-file-name ": %f")))
 (keymap-global-set "C-+" 'text-scale-increase)
 (keymap-global-set "C-=" 'text-scale-decrease)
+
+;; ~~~~~~~~~~~
+(keymap-global-set "s-<up>" 'scroll-up-line)
+(keymap-global-set "s-<down>" 'scroll-down-line)
+
+
+(defun rz-org-toggle-today-tag ()
+  "Toggle the tag :today: for the current item.
+Bind this to C-M-S-t perhaps during a org-mode-hook
+invocation, eventually."
+  (interactive)
+  ;; org-clock.el line 1409...
+  (let ((selected-task) (target-pos))
+    (save-excursion
+      (when (and selected-task (marker-buffer selected-task))
+	;; There is a selected task, move to the correct buffer
+	;; and set the new target position.
+	(set-buffer (org-base-buffer (marker-buffer selected-task)))
+	(setq target-pos (marker-position selected-task))
+	(move-marker selected-task nil))
+      (org-back-to-heading t)
+      (org-set-tags (org--add-or-remove-tag "today" (org-get-tags nil t)))
+      (message "Tags now are: %s" (org-get-tags nil t))
+      )
+    )
+  )
+
+ (defun rz-agenda-toggle-today-tag ()
+   "Toggle the tag :today: for the current item in the Agenda.
+ Bind this to C-M-S-t perhaps during org-agenda-finalize-hook
+ invocation, eventually."
+   (interactive)
+   ;; org-agenda.el line 9778 (org-agenda-add-note)
+   (org-agenda-check-no-diary)
+   (let* ((marker (or (org-get-at-bol 'org-marker)
+ 		     (org-agenda-error)))
+ 	 (buffer (marker-buffer marker))
+ 	 (pos (marker-position marker))
+ 	 (_hdmarker (org-get-at-bol 'org-hd-marker))
+ 	 (inhibit-read-only t))
+     (with-current-buffer buffer
+       (widen)
+       (goto-char pos)
+       (org-fold-show-context 'agenda)
+       (rz-org-toggle-today-tag)
+       ;; At this point, the tag doesn't appear in the Agenda.
+       ;; Calls to (save-buffer) and (org-agenda-redo) would fix this.
+       ;; But that would be inconsistent with org-agenda-clock-in
+       (message "Press s r to refresh the Agenda view"))))
 
 ;; The following two functions are from http://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/
 (defun move-line-up ()
@@ -76,6 +133,14 @@ My .emacs:
 (keymap-global-set "S-<left>" #'(lambda () (interactive) (scroll-left 1)))
 (keymap-global-set "S-<right>" #'(lambda () (interactive) (scroll-right 1)))
 
+; https://www.reddit.com/r/emacs/comments/w8ueet/middle_mouse_button_scroll_without_scroll_wheel/
+(global-set-key
+  [down-mouse-2]
+  (lambda ()
+    (interactive)
+    (unless (scroll-on-drag)
+      (mouse-yank-primary t))))
+; (keymap-global-set "drag-mouse-2" #'(lambda () (interactive) (scroll-down 1)))
 ;; C-backspace should delete previous word, not whitespace up to word...
 ;; from https://emacs.stackexchange.com/questions/30616/py-hungry-delete-backwards-instead-backward-kill-word-in-python-mode-el
 (add-hook 'python-mode-hook
@@ -83,11 +148,29 @@ My .emacs:
             (define-key python-mode-map (kbd "<C-backspace>") 'backward-kill-word)))
 
 (keymap-global-set "C-c a" 'org-agenda)
+(keymap-global-set "C-c l" 'org-store-link)
+(keymap-global-set "C-c c" 'org-capture)
+(keymap-global-set "C-M-S-<return>" 'apropos-follow) ; 2026-03-08 not sure I need this
 
+; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "C-M-S-t") 'rz-org-toggle-today-tag)))
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+; (defalias 'org-float 'diary-float)
+; (load "~/MyLisp/next-spec-day") ; See https://github.com/chenfengyuan/elisp/blob/master/next-spec-day.el
+
+;;; Windows setup:
+;;;   Set shortcut properties to...
+;;;;      Target: "C:\Program Files\Emacs\emacs-30.1\bin\runemacs.exe" (include quotes)
+;;;;      Start in: %home%
+;;;   Altap Salamander editor setup:
+;;;;      Command:   c:\PROGRA~1\Emacs\emacs-30.1\bin\emacsclientw.exe (quotes are not needed here)
+;;;;      Arguments: -a c:\PROGRA~1\Emacs\emacs-30.1\bin\runemacs.exe $(Name)
+;;;;      Initial dir:  $(FullPath)
 (server-start)
 ;; per https://www.gnu.org/software/emacs/manual/html_node/emacs/Emacs-Server.html
 ;; See also: https://www.gnu.org/software/emacs/manual/html_node/emacs/Invoking-emacsclient.html
 ;; ...and: https://www.gnu.org/software/emacs/manual/html_node/emacs/emacsclient-Options.html
+(atomic-chrome-start-server)
 
 ;; per https://emacs.stackexchange.com/questions/80908/using-hunspell-in-emacs-on-windows-10
 (setenv "LANG" "en_US.UTF-8")
@@ -97,38 +180,234 @@ My .emacs:
 ;(global-set-key (kbd "C-/") 'ispell-word)
 ;(global-set-key (kbd "C-M-/") 'ispell-region)
 
+(load "~/MyLisp/exelnA")
+(load "~/MyLisp/csrshp")
+(load "~/MyLisp/remcr.kbm")
+(load "~/MyLisp/unfill.kbm")
+(load "~/MyLisp/asciify.kbm")	; 2025-08-05 Added
+(load "~/MyLisp/uf.kbm")	; 2025-08-16 Added
+(load "~/rz-emacs-date.el")     ; 2025-09-15 Added
+
+;; ~~~~~~~~~~~
+;; 2026-02-18 Lifted from http://xahlee.info/emacs/emacs/emacs_windows_meta_key.html
+;; for emacs running on Windows
+;; set keyboard Win key or other to type Super or Hyper or other
+
+;; Left Windows key
+(setq w32-pass-lwindow-to-system nil)
+(setq w32-lwindow-modifier 'super)
+;; value can be 'hyper, 'super, 'meta, 'alt, 'control or 'shift
+;; lower case s is for super
+;; s is for super; for example: (keymap-global-set "s-b" #'backward-word)
+
+;; Right Windows key
+(setq w32-pass-rwindow-to-system nil)
+(setq w32-rwindow-modifier 'super)
+;; lower case s is for super
+;; s is for super; for example: (keymap-global-set "s-b" #'backward-word)
+
+;; Menu key
+(setq w32-pass-apps-to-system nil)
+(setq w32-apps-modifier 'hyper)
+;; H is for hyper; for example: (keymap-global-set "H-b" #'backward-word)
+
+;; however, it seems that this also is needed:
+(w32-register-hot-key [s-])
+;; ~~~~~~~~~~~
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(auto-revert-verbose t)
+ '(bbdb-default-country "USA")
+ '(bbdb-default-xfield 'connection)
  '(before-save-hook '(time-stamp))
- '(blink-matching-paren t)
+ '(blink-cursor-blinks 0)
+ '(blink-matching-paren 'jump)
+ '(cal-tex-24 t)
+ '(cal-tex-diary t)
+ '(calendar-daylight-time-zone-name "EDT")
+ '(calendar-latitude 41.42424242)
+ '(calendar-location-name "Home")
+ '(calendar-longitude -72.42424242)
+ '(calendar-standard-time-zone-name "EST")
+ '(calendar-time-display-form
+   '(24-hours ":" minutes (if time-zone " (") time-zone
+	      (if time-zone ")")))
  '(column-number-indicator-zero-based nil)
  '(column-number-mode t)
+ '(context-menu-mode nil)
+ '(cursor-type 'bar)
  '(delete-selection-mode t)
+ '(holiday-other-holidays
+   '((holiday-fixed 1 28 "Data Privacy Day")
+     (holiday-fixed 2 5 "National Weatherperson's Day")
+     (holiday-fixed 2 15 "Susan B Anthony Day")
+     (holiday-fixed 3 14 "Pi π Day")
+     (holiday-float 4 4 4 "Take Our Daughters and Sons to Work Day")
+     (holiday-float 5 4 1 "National Day of Prayer")
+     (holiday-fixed 5 4 "Star Wars Day")
+     (holiday-fixed 5 25 "Towel Day") (holiday-fixed 6 6 "D-Day")
+     (holiday-fixed 6 14 "Flag Day") (holiday-fixed 6 19 "Juneteenth")
+     (holiday-fixed 9 11 "Patriot's Day")
+     (holiday-fixed 9 19 "Talk Like a Pirate Day")
+     (holiday-fixed 9 22 "Hobbit Day")
+     (holiday-fixed 11
+		    (calendar-extract-day
+		     (calendar-gregorian-from-absolute
+		      (1+
+		       (calendar-dayname-on-or-before 1
+						      (+ 6
+							 (calendar-absolute-from-gregorian
+							  (list 11 1
+								displayed-year)))))))
+		    "Election Day")
+     (holiday-fixed 12 23 "Festivus")))
  '(inhibit-startup-screen t)
+ '(initial-frame-alist '((top . 0) (left . 0) (width . 180) (height . 47)))
+ '(latex-run-command "pdflatex")
  '(mode-line-position-column-format '("C%"))
+ '(org-agenda-custom-commands
+   '(("Jw" "Jobs -- Waiting For Response" tags-todo
+      "Apply+TODO=\"WAITING\""
+      ((org-agenda-span nil) (org-agenda-files '("~/job_search.org"))))
+     ("Jn" "Jobs -- No Interview" tags "+Apply+TODO=\"DONE\""
+      ((org-agenda-span nil) (org-agenda-files '("~/job_search.org"))))
+     ("R" "Med Refills" agenda "+Refill"
+      ((org-agenda-span 'week) (org-agenda-files '("~/meds.org"))))
+     ("f" "Fortnight View" tags ""
+      ((org-agenda-span 'fortnight) (org-agenda-overriding-header "")))
+     ("n" "Agenda and all TODOs" ((agenda "" nil) (alltodo "" nil))
+      nil)
+     ("Bw" "Bills for the Week (Recurring)" agenda "+Bills"
+      ((org-agenda-span 'week) (org-agenda-files '("~/bills.org"))))
+     ("Bm" "Bills for the Month (Recurring)" agenda "Bills"
+      ((org-agenda-span 'month) (org-agenda-files '("~/bills.org"))))
+     ("S" "Scanner Day Book" tags-todo "SDB"
+      ((org-agenda-span nil)
+       (org-agenda-overriding-header "Scanner Day Book")))
+     ("." "Todo List for Today"
+      ((tags-todo "today|TODAY"
+		  ((org-agenda-span 'day)
+		   (org-agenda-include-diary nil)))
+       (agenda ""
+	       ((org-agenda-overriding-header "Today's Agenda")
+		(org-agenda-span 'day))))
+      nil)))
  '(org-agenda-files
-   '("~/SDB.org" "~/blog.org" ~/bills.org"))
+   '("~/todo.org" "c:/Users/RayZ/AppData/Roaming/HOME/wife.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/sgi.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/todo.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/SDB.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/job_search.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/ieee.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/edu.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/blog.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/bills.org"))
+ '(org-agenda-finalize-hook
+   '((lambda nil
+       (local-set-key (kbd "C-M-S-t") 'rz-agenda-toggle-today-tag))))
+ '(org-agenda-include-diary t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-babel-load-languages '((emacs-lisp . t) (python . t) (octave . t) (shell . t)))
+ '(org-babel-python-command-session 'auto)
+ '(org-babel-shell-names '("c:\\Windows\\System32\\cmd.exe /D /C "))
+ '(org-blank-before-new-entry '((heading) (plain-list-item)))
+ '(org-capture-templates
+   '(("t" "todo" entry (file+headline "todo.org" "Tasks")
+      "* TODO %?\12%U\12%a\12")
+     ("n" "note" entry (file "notes.org") "* %?\12%U\12%a\12"
+      :empty-lines 1)
+     ("m" "musings" entry (file "notes.org")
+      "* %?\12%U\12%a %c\12%a %x" :jump-to-captured t :empty-lines 1)
+     ("j" "Journal")
+     ("jj" "Journal (now)" item (file+olp+datetree "journal.org")
+      "%(format-time-string \"%H:%M\") %?\12%a %x" :jump-to-captured t
+      :empty-lines 1)
+     ("jd" "Journal (date specified)" item
+      (file+olp+datetree "journal.org")
+      "%(format-time-string \"%H:%M\") %?\12%a %x" :jump-to-captured t
+      :empty-lines 1 :time-prompt t)
+     ("b" "Blog entry task for org-mode")
+     ("bl" "Luddite Geek topic" entry (file+headline "blog.org" "LG")
+      "* STARTED \12%c\12%x\12%?" :clock-in t :clock-keep t
+      :jump-to-captured t)
+     ("bs" "Square Peg topic" entry
+      (file+headline "blog.org" "SPoaRW") "* STARTED \12%c\12%?"
+      :clock-in t :clock-keep t :jump-to-captured t)
+     ("bt" "Teresa's topic" entry (file+regexp "blog.org" "CatCrzy")
+      "* STARTED \12%c\12%?" :clock-in t :clock-keep t
+      :jump-to-captured t)
+     ("bu" "Unsure which blog?  Choose this" entry
+      (file+headline "blog.org" "Incubator") "* STARTED \12%c\12%?"
+      :clock-in t :clock-keep t :prepend t :jump-to-captured t)))
+ '(org-clock-mode-line-total 'current)
+ '(org-clock-out-remove-zero-time-clocks t)
+ '(org-clock-rounding-minutes 3)
+ '(org-datetree-add-timestamp 'inactive)
  '(org-deadline-warning-days 8)
+ '(org-directory "~/")
+ '(org-export-with-broken-links 'mark)
+ '(org-file-apps
+   '((auto-mode . emacs) (directory . emacs) ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . default) ("\\.pdf\\'" . default)
+     ("\\.od[pst]\\'" . default) ("\\.docx?\\'" . default)
+     ("\\.xlsx?\\'" . default)))
+ '(org-link-search-must-match-exact-headline nil)
+ '(org-log-state-notes-insert-after-drawers t)
+ '(org-mode-hook
+   '(#[0 "\300\301\302\303\304$\207"
+	 [add-hook change-major-mode-hook org-fold-show-all append
+		   local]
+	 5]
+     #[0 "\300\301\302\303\304$\207"
+	 [add-hook change-major-mode-hook org-babel-show-result-all
+		   append local]
+	 5]
+     org-babel-result-hide-spec org-babel-hide-all-hashes
+     #[nil ((local-set-key (kbd "C-M-S-t") 'rz-org-toggle-today-tag))
+	   (t)]
+     org-contacts-org-complete-setup
+     (lambda nil
+       (local-set-key (kbd "C-M-S-t") 'rz-org-toggle-today-tag))))
  '(org-mouse-features
    '(yank-link activate-stars activate-bullets activate-checkboxes))
+ '(org-return-follows-link t)
  '(org-reverse-note-order t)
+ '(org-timestamp-rounding-minutes '(6 6))
  '(org-todo-keywords
-   '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "DEFERRED(f!)" "|"
-	       "CANCELLED(c!)" "DONE(n!)")))
+   '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "|"
+	       "DEFERRED(f@!)" "CANCELLED(c@!)" "DONE(n!)")))
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+     ("melpa" . "https://melpa.org/packages/")))
  '(package-selected-packages
-   '(csv-mode elpy git-modes gnuplot helm htmlize mastodon org-journal
-	      python python-mode swift-mode toc-org))
+   '(atomic-chrome basic-mode bbdb browse-url-dwim csv-mode ctxmenu
+		   dilbert elpy git-modes gnuplot helm htmlize
+		   markdown-mode mastodon matlab-mode ob-powershell
+		   org org-contacts org-journal org-remark powershell
+		   python python-mode scroll-on-drag swift-mode
+		   toc-org))
+ '(printer-name "~/print_output.txt")
+ '(safe-local-variable-values
+   '((eval face-remap-add-relative 'default '(:background "yellow"))))
+ '(scroll-down-aggressively nil)
  '(show-paren-style 'parenthesis)
  '(show-trailing-whitespace t)
  '(size-indication-mode t)
  '(text-mode-hook
    '(turn-on-flyspell turn-on-auto-fill text-mode-hook-identify))
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(warning-suppress-log-types
+   '((org-element org-element-cache) (org-element org-element-parser)
+     (org-element org-element-parser)))
+ '(warning-suppress-types '((org-element org-element-parser))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -136,9 +415,15 @@ My .emacs:
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono" :foundry "outline" :slant normal :weight regular :height 92 :width normal))))
- '(show-paren-match ((t (:background "pale green"))))
+ '(show-paren-match ((t (:background "turquoise"))))
  '(show-paren-mismatch ((t (:background "yellow" :foreground "red" :weight bold))))
  '(trailing-whitespace ((t (:background "pale goldenrod")))))
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'org-transpose-element 'disabled t)
+(put 'transpose-sexps 'disabled t)
+(put 'scroll-left 'disabled t)
+(put 'scroll-right 'disabled t)
 </pre>
 
 ----
