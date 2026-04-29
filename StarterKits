@@ -76,8 +76,12 @@ Here are some questions you can use to help you choose a starter kit:
 * Are you looking for a starter kit that includes specific packages? Take a look at the starter kit description to see if it lists the features it includes.
 
 * Are you looking for specific keyboard shortcut schemes? A starter kit that customizes the keybindings extensively can make it easier for you to get started, although it might be a little harder for you to follow other people's notes if they're writing about functions based on standard Emacs keybindings.
-** People who really want to continue using `C-c' to copy and `C-v' to paste might consider [https://github.com/darkstego/wakib-emacs Wakib Emacs]. (On the other hand, it might be worth learning the Emacs shortcuts instead, because `C-c' is very useful as the starting point of other keyboard shortcuts.)
-** People who are coming from a Vim background might want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
+
+** If you don't like the way the standard keybindings involve many modifiers like Ctrl or Alt (Meta) in keyboard shortcuts, look for a starter kit that mentions leader keys or modal editing. Leader keys is the idea of grouping custom shortcuts behind one easy keybinding, and modal editing is about switching between "insert" mode and "command" mode so that you can have more keyboard shortcuts available without needing Ctrl or Alt (Meta) as much.
+
+** If you are coming from a Vim background, you may want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
+
+** If you really want to continue using `C-c' to copy and `C-v' to paste, consider [https://github.com/darkstego/wakib-emacs Wakib Emacs]. (On the other hand, it might be worth learning the Emacs shortcuts instead, because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 
 * Do you want something that just changes things slightly or something more extensive?
 
