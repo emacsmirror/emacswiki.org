@@ -2,12 +2,12 @@ Getting stuck?  Trying to figure something out?
 
 == Built-in Help ==
 
-* Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.  
+* Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.
 
 
 == Get Un-stuck ==
 
-* Use '''`C-g'''' to cancel whatever command you're in. 
+* Use '''`C-g'''' to cancel whatever command you're in.
 Use more than one `C-g', if necessary, to quit some operations.  An alternative is `ESC ESC ESC'.
 * Use '''`##C-]##'''' (`abort-recursive-edit') like a super-`C-g', and command '''`top-level'''' as well.
 * In many uneditable buffers, such as ##* help## buffers, '''`q'''' often quits that buffer/window.
@@ -25,22 +25,23 @@ Use more than one `C-g', if necessary, to quit some operations.  An alternative 
 
 == Ask for help ==
 
-* Remember that Emacs has many options, and the defaults might not be what you expect.  
+* Remember that Emacs has many options, and the defaults might not be what you expect.
 * You might get better help if you describe what you want and politely ask for suggestions instead of saying that Emacs is broken.
 
 === Where to ask for help ===
 
-You can post questions:
+Many Emacs problems are easier to solve if you can discuss things in real-time. If you are lucky enough to live near an in-person meetup (see [[Usergroups]]) or if you know other Emacs users in real life, that could be a great way to learn. A number of meetups are online, such as EmacsATX, OrgMeetup, [https://emacs-apac.gitlab.io/announcements/ Emacs APAC], [https://emacs-berlin.org/ Emacs Berlin] (hybrid). Don't feel intimidated; beginners are welcome!
+
+You can also post questions:
 
 * In the appropriate EmacsMailingLists or EmacsNewsgroups.
+* On Reddit's [https://old.reddit.com/r/emacs /r/Emacs] and [https://old.reddit.com/r/orgmode /r/Orgmode] subreddits. These are more discussion-oriented than question-and-answer sites such as Stack Exchange, but people also post their questions there.
 * On [[EmacsStackExchange|relevant Stack Exchange sites]]. Please:
 ** Pose specific, concrete questions.
 ** Accept correct answers, to recognize people's help and make it easy for other people to find the most helpful answers.
-
-* On Reddit's [https://old.reddit.com/r/emacs /r/Emacs] and [https://old.reddit.com/r/orgmode /r/Orgmode] subreddits. These are more discussion-oriented than are question-and-answer sites such as Stack Exchange.
 * On the EmacsChannel. If you need to share your config, use a service such as Gist or Pastebin.
-* With ''pay'' services such as https://www.codementor.io/emacs-experts/
 
+Some people offer paid EmacsCoaching services.
 
 == Feeling frustrated? ==
 
@@ -51,4 +52,3 @@ See CategoryCommunity to find more community resources.
 ----
 
 CategoryHelp
-
