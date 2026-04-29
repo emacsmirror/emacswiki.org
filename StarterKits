@@ -110,7 +110,7 @@ Here are some questions you can use to help you choose a starter kit:
 
 === Getting help if you use a starter kit ===
 
-Some starter kits like [[Spacemacs]] and DoomEmacs have their own communities where you can ask for help. Ask those communities first before asking general Emacs community help resources because those starter kits modify Emacs behavior extensively.
+Some starter kits like [[Spacemacs]] ([https://github.com/syl20bnr/spacemacs#getting-help Gitter IM chat or IRC]) and DoomEmacs ([https://github.com/doomemacs/doomemacs#getting-help Discord]) have their own communities where you can ask for help. Ask those communities first before asking general Emacs community help resources because those starter kits modify Emacs behavior extensively.
 
 For other starter kits, sometimes the author of the starter kit will be able to help if you have a specific question or suggestion. See the starter kit's page for any instructions on asking for help, or check the project to see if it has an Issues tab that is pretty active.
 
