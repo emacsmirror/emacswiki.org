@@ -4,13 +4,13 @@ If you use a complex starter kit and encounter something that you want additiona
 
 Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online).
 
-= Things to know before you start =
+== Things to know before you start ==
 
-== Basic tutorial ==
+=== Basic tutorial ===
 
 If you have not yet read the EmacsTutorial, start with that so that you can understand how to use keyboard shortcuts and commands described in the starter kit documentation. If you prefer a webpage, [https://www.gnu.org/software/emacs/tour/ The GNU Emacs Guided Tour] may be useful.
 
-== Installing and using Git ==
+=== Installing and using Git ===
 
 Starter kit installation instructions include steps like "Clone this repository" or "Check out this code." If you come from a non-programming background, you might find it useful to first read a tutorial on how to install and use the Git version control system.
 
@@ -18,7 +18,7 @@ Starter kit installation instructions include steps like "Clone this repository"
 * [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository Git - Getting a Git Repository]
 * [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository Cloning a repository - GitHub Docs]
 
-== Using the command line ==
+=== Using the command line ===
 
 Starter kit installation instructions often assume that you are using Git from the command line so that you can type `git clone ...'. If you are not sure how to open a terminal on your computer,
 
@@ -30,7 +30,7 @@ You can use the command-line to try a starter kit without committing to it. If y
 
    emacs --init-directory emacs-bedrock/
 
-== Finding and editing your init file ==
+=== Finding and editing your init file ===
 
 Starter kits also sometimes ask you to add code to your InitFile (your Emacs configuration file). This file might not exist until you create it. Emacs checks for user configuration in a number of locations, so you might see references to `~/.emacs', `~/.emacs.d/init.el', or `~/.config/emacs/init.el' in people's notes. If you do not know where your init file is located, you can check the variable `user-init-file' with the following command:
 
@@ -42,7 +42,7 @@ After you make any changes suggested by the starter kit, you can save your init 
 
 To run the code in your current Emacs, you can use `M-x eval-buffer'. Alternatively, you can use `M-x restart-emacs'. You can also start a separate Emacs instead.
 
-== Literate configurations ==
+=== Literate configurations ===
 
 A number of starter kits use OrgMode to describe the text and embed the code so that they can include more explanations and screenshots. Examples:
 
@@ -53,7 +53,7 @@ A number of starter kits use OrgMode to describe the text and embed the code so 
 
 Because they are written to be read by people as well as by computers, these starter kits might be a good way to learn more about Emacs Lisp along the way.
 
-== Choosing a starter kit ==
+=== Choosing a starter kit ===
 
 You might want to start by browsing through screenshots or videos about the starter kit to see if it includes the features you are interested in or if it comes with the workflows you are thinking of using.
 
@@ -100,7 +100,7 @@ Here are some questions you can use to help you choose a starter kit:
 *** [https://github.com/abougouffa/minemacs MinEmacs]: see [https://github.com/abougouffa/minemacs/blob/main/docs/packages.md package list]; has some configuration for AI; get help by [https://github.com/abougouffa/minemacs/issues opening issues]
 *** [https://github.com/jcs-emacs/jcs-emacs JCS Emacs]: focuses on programming across different operating systems and environments; see [https://github.com/jcs-emacs/jcs-emacs#details list of features]; the author is unable to provide support for customized versions, so ask general Emacs communities for help; [https://github.com/jcs-emacs/jcs-emacs/blob/master/docs/FAQ.md FAQ]
 
-= Starter kits by popularity =
+== Starter kits by popularity ==
 
 The kits are ranked in very rough terms of popularity, as measured by the number of stars on their !GitHub repository (updated 27 March 2026).
 
@@ -112,7 +112,7 @@ The kits are ranked in very rough terms of popularity, as measured by the number
 
 This list is not a comprehensive list.
 
-== Active ==
+=== Active ===
 
 || Name                                                                  || Stars || Emacs version || Keybindings || Description                   ||
 || [[https://github.com/syl20bnr/spacemacs Spacemacs]]                   || 24.8k ||         28.2+ ||   Evil      || "...a sophisticated and polished set-up, focused on ergonomics, mnemonics and consistency." ||
@@ -138,7 +138,7 @@ This list is not a comprehensive list.
 || [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] || || || || "... Stepping stones to a better Emacs experience" ||
 || [https://github.com/xgarrido/emacs-starter-kit xgarrido/emacs-starter-kit] || || || || "... A cleaner version of the literate starter kit for Emacs24" ||
 
-== Archived / Not active ==
+=== Archived / Not active ===
 
 [[https://github.com/rdallasgray/graphene Graphene]]\\
 [[https://github.com/GChristensen/rho-emacs Rho Emacs]]\\
@@ -150,11 +150,11 @@ This list is not a comprehensive list.
 [[https://github.com/ocodo/.emacs.d  ocodo .emacs.d]]\\
 
 
-== Not-a-config ==
+=== Not-a-config ===
 
 [[https://github.com/ergoemacs/ergoemacs-mode Ergo Emacs]]  -  A comprehensive set of keybindings.
 
-== Personal configs ==
+=== Personal configs ===
 
 There are a large number of personal configurations collected [[https://github.com/caisah/emacs.dz here]].
 
