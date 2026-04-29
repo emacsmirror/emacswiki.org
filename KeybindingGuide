@@ -1,4 +1,7 @@
-You can customize your keyboard shortcuts. Check out [https://www.masteringemacs.org/article/mastering-key-bindings-emacs Mastering Key Bindings in Emacs - Mastering Emacs] for a tutorial.
+You can customize your keyboard shortcuts. Check out the following tutorials:
+
+* [https://www.gnu.org/software/emacs/manual/html_node/efaq/Binding-keys-to-commands.html Binding keys to commands] in the [https://www.gnu.org/software/emacs/manual/html_node/efaq/ Emacs FAQ]
+* [https://www.masteringemacs.org/article/mastering-key-bindings-emacs Mastering Key Bindings in Emacs - Mastering Emacs]
 
 In general:
 
