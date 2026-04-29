@@ -149,7 +149,6 @@ This list is not a comprehensive list.
 || [[https://github.com/jcs-emacs/jcs-emacs JCS-Emacs]]                  ||   110 ||            ?? ||    Standard || "...polished and goes toward to the modern text editor, or even better, it goes beyond modern IDE"||
 || [[https://github.com/darkstego/wakib-emacs  Wakib Emacs]]             ||    39 ||         26.3+ ||  Wakib-Keys || "... a modern, user-friendly version of Emacs."||
 || [[https://github.com/monkeyjunglejuice/emacs.onboard Emacs.Onboard]]  ||    27 ||         28.2+ ||    Standard || "... a comprehensive, portable starter-kit for Emacs."||
-
 || [https://git.sr.ht/~technomancy/better-defaults Better Defaults]  || || || || "... A few nice changes for Emacs" ||
 || [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] || || || || "... Stepping stones to a better Emacs experience" ||
 || [https://github.com/xgarrido/emacs-starter-kit xgarrido/emacs-starter-kit] || || || || "... A cleaner version of the literate starter kit for Emacs24" ||
