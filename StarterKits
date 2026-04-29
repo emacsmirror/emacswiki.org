@@ -4,6 +4,55 @@ If you use a complex starter kit and encounter something that you want additiona
 
 Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online).
 
+= Things to know before you start =
+
+*Basic tutorial:* If you have not yet read the EmacsTutorial, start with that so that you can understand how to use keyboard shortcuts and commands described in the starter kit documentation. If you prefer a webpage, [https://www.gnu.org/software/emacs/tour/ The GNU Emacs Guided Tour] may be useful.
+
+*Git:* Starter kit installation instructions include steps like "Clone this repository" or "Check out this code." If you come from a non-programming background, you might find it useful to first read a tutorial on how to install and use the Git version control system.
+
+* [https://github.com/git-guides/install-git Git Guides - install git · GitHub]
+* [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository Git - Getting a Git Repository]
+* [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository Cloning a repository - GitHub Docs]
+
+*Your init file:* Starter kits also sometimes ask you to add code to your InitFile (your Emacs configuration file). This file might not exist until you create it. Emacs checks for user configuration in a number of locations, so you might see references to `~/.emacs', `~/.emacs.d/init.el', or `~/.config/emacs/init.el'. If you do not know where your init file is located, you can check the variable `user-init-file' with the following command:
+
+   M-x describe-variable RET user-init-file RET
+
+This will show you the current value of `user-init-file' in the part that says "Its value is ...". Take note of that filename (or select and copy it), then open the file. You can open the file by using the menu bar (File - Open File) or by using `M-x find-file'.
+
+After you make any changes suggested by the starter kit, you can save your init file using the menu bar (File - Save) or using `M-x save-buffer'.
+
+To run the code in your current Emacs, you can use `M-x eval-buffer'. Alternatively, you can use `M-x restart-emacs'. You can also start a separate Emacs instead.
+
+= Choosing a starter kit =
+
+You might want to start by browsing through screenshots or videos about the starter kit to see if it includes the features you are interested in or if it comes with the workflows you are thinking of using.
+
+Here are some questions you can use to help you choose a starter kit:
+
+* What do you want to do with Emacs? Many starter kits are oriented towards a specific purpose, such as writing or programming.
+* Are you looking for specific keyboard shortcut schemes? People who are coming from a Vim background might want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
+* Do you want something that just changes things slightly or something more extensive?
+
+** Minimalist: just a few changes to Emacs that you can use or read through and adapt to your own configuration
+*** [https://git.sr.ht/~technomancy/better-defaults ~technomancy/better-defaults]
+*** [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]: has screenshots and lots of explanations
+** In the middle
+*** [https://github.com/bbatsov/prelude bbatsov/prelude] Includes a [https://prelude.emacsredux.com/en/latest/ user manual]; a little closer to the standard Emacs experience compared to Spacemacs and Doom Emacs
+** More complex: changes Emacs extensively; if you need help, start by asking the starter kit community because they have more experience with it
+** [https://github.com/doomemacs/doomemacs Doom Emacs]: great for people coming from Vim; has [https://github.com/doomemacs/doomemacs/blob/master/docs/index.org documentation]; [https://github.com/doomemacs/doomemacs#getting-help help is available] via Discord
+*** [https://www.youtube.com/playlist?list=PLhXZp00uXBk4np17N39WvB80zgxlZfVwj DoomCasts: Emacs Doom Screencasts - YouTube]
+*** [https://www.youtube.com/playlist?list=PLyy8KUDC8P7X6YkegqrnEnymzMWCNB4bN Doom Emacs Tutorials by DistroTube - YouTube]
+** [https://github.com/syl20bnr/spacemacs Spacemacs]
+*** Videos
+**** [https://www.youtube.com/watch?v=ZFV5EqpZ6_s&list=PLrJ2YN5y27KLhd3yNs2dR8_inqtEiEweE Spacemacs ABC]
+**** [https://www.youtube.com/watch?v=r-BHx7VNX5s&list=PLd_Oyt6lAQ8Rxb0HUnGbRrn6R4Cdt2yoI Spacemacs tutorial videos]
+*** [https://github.com/syl20bnr/spacemacs#getting-help Help is available] via Gitter IM chat or IRC
+** [https://github.com/purcell/emacs.d purcell/emacs.d] Focused on web development, more of an intermediate/advanced thing
+** [https://github.com/rougier/nano-emacs rougier/nano-emacs] Focused on modernizing Emacs appearance
+
+= By popularity =
+
 The kits are ranked in very rough terms of popularity, as measured by the number of stars on their !GitHub repository (updated 27 March 2026).
 
 'Active' indicates that there have been contributions to the repo within the last 12 months.
@@ -12,7 +61,7 @@ The kits are ranked in very rough terms of popularity, as measured by the number
 
 'Description' is taken from the description of the project in Github.
 
-This should not be viewed as a comprehensive list.
+This list is not a comprehensive list.
 
 == Active ==
 
@@ -35,6 +84,10 @@ This should not be viewed as a comprehensive list.
 || [[https://github.com/jcs-emacs/jcs-emacs JCS-Emacs]]                  ||   110 ||            ?? ||    Standard || "...polished and goes toward to the modern text editor, or even better, it goes beyond modern IDE"||
 || [[https://github.com/darkstego/wakib-emacs  Wakib Emacs]]             ||    39 ||         26.3+ ||  Wakib-Keys || "... a modern, user-friendly version of Emacs."||
 || [[https://github.com/monkeyjunglejuice/emacs.onboard Emacs.Onboard]]  ||    27 ||         28.2+ ||    Standard || "... a comprehensive, portable starter-kit for Emacs."||
+
+|| [https://git.sr.ht/~technomancy/better-defaults Better Defaults]  || || || || "... A few nice changes for Emacs" ||
+|| [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] || || || || "... Stepping stones to a better Emacs experience" ||
+|| [https://github.com/xgarrido/emacs-starter-kit xgarrido/emacs-starter-kit] || || || || "... A cleaner version of the literate starter kit for Emacs24" ||
 
 == Archived / Not active ==
 
