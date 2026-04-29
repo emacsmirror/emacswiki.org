@@ -5,8 +5,7 @@ workflows that can help you use Emacs more effectively.
 
 Check out [https://emacs.tv emacs.tv] for a collection of Emacs videos sorted by date.
 
-The links are generally ordered by the year the video was published,
-with the newer videos at the top.
+The links are generally ordered by topic, subtopic, level, and/or date.
 
 == Screencasts about Emacs ==
 
@@ -118,7 +117,7 @@ with the newer videos at the top.
 ==== Lisp ====
 
 * SlimeMode
-** http://common-lisp.net/project/movies/movies/slime.mov (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here - MarcoBaringer 
+** http://common-lisp.net/project/movies/movies/slime.mov (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here - MarcoBaringer
 ** http://www.unixuser.org/~euske/vnc2swf/slime.html
 * Redshank: http://www.foldr.org/~michaelw/emacs/redshank/ - a helper for all CommonLisp hackers, written by MichaelWeber
 * [https://www.youtube.com/watch?v=4X-1fJm25Ww The evolution of the Emacs tooling for Clojure] (35:11) Bozhidar Batsov
