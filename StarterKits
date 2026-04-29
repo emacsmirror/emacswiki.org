@@ -30,9 +30,9 @@ Starter kit installation instructions include steps like "Clone this repository"
 
 Starter kit installation instructions often assume that you are using Git from the command line so that you can type `git clone ...'. If you are not sure how to open a terminal on your computer,
 
-- Windows: Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
-- Mac OS X: Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
-- Linux: This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
+* *Windows:* Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
+* *Mac OS X:* Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
+* *Linux:* This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
 
 You can use the command-line to try a starter kit without committing to it. If you use `--init-directory' when starting Emacs, you can try many starter kits without committing to using them. For example, if you've checked out [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] into the `emacs-bedrock/' directory, the following command starts an Emacs session with that as the basis.
 
