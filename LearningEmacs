@@ -54,6 +54,10 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 * [https://github.com/emacs-tw/awesome-emacs Awesome Emacs] has lots of recommendations.
 
+* Enable [[WhichKey]] or [[KeySee]] to aid in exploration and key binding familiarity.
+
+* Use a suggestion system for `M-x', such as `icomplete-mode', `fido-vertical-mode', or [[Smex]].
+
 * Use [[EmacsNewbieWithIcicles|Icicles]] to explore [[key]]s, commands, variables, [[face]]s, [[buffer]]s, files, [[property list]]s,... that match a given pattern (name or [[regexp]]). Far more than AproposMode.
 
 * Use LaCarte to more easily explore Emacs menus.
@@ -68,9 +72,6 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 * Play the game KeyWiz to learn Emacs key bindings.
 
-* Use a suggestion system for `M-x', such as `icomplete-mode' or [[Smex]].
-
-* Enable [[WhichKey]] or [[KeySee]] to aid in exploration and key binding familiarity.
 
 
 ----
