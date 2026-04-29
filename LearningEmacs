@@ -62,7 +62,7 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 * You don't have to be a programmer to enjoy Emacs, but learning a little bit of Emacs Lisp can help you make the most of it. The [https://protesilaos.com/emacs/emacs-lisp-elements Emacs Lisp Elements] book might be useful.
 
-* Use [[EmacsNewbieWithIcicles|Icicles]] to explore [[key]]s, commands, variables, [[face]]s, [[buffer]]s, files, [[property list]]s,... that match a given pattern (name or [[regexp]]). Far more than AproposMode.
+* Use [[EmacsNewbieWithIcicles|Icicles]] to explore [[key]]s, commands, variables, [[face]]s, [[buffer]]s, files, [[property list]]s,... that match a given pattern (name or [[regexp]]).
 
 * Use LaCarte to more easily explore Emacs menus.
 
@@ -71,8 +71,6 @@ then you might not be using it enough to matter.  Don't worry about it.
 * Use the [https://github.com/Wilfred/helpful helpful] package for an enhanced help with more contextual information
 
 * Use the improved Emacs help provided by HelpPlus.
-
-* Enable a random TipOfTheDay.
 
 * Play the game KeyWiz to learn Emacs key bindings.
 
