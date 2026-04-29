@@ -1,7 +1,5 @@
 Sometimes it helps to try out Emacs the way someone with more experience has configured it. There are a number of "starter kits" or "distros" that modify Emacs in different ways. Some are lightweight changes to try to provide better defaults. Others modify Emacs extensively. Whether you're starting out or looking around for inspiration, it might be worth trying out a few to see if any of them fit the way you want to work.
 
-If you use a complex starter kit and encounter something that you want additional help with, try asking the specific community for the starter kit if there is one, or reach out to the author first. If you can't find help that way, then reach out to other Emacs help resources (GetHelp). Make sure to mention which starter kit you're using, how you've modified it, and what you want to do. This is because starter kits can modify a lot of Emacs's behavior, so it helps to ask people with experience with your specific starter kit.
-
 Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online).
 
 == Things to know before you start ==
@@ -99,6 +97,24 @@ Here are some questions you can use to help you choose a starter kit:
 *** [https://github.com/MatthewZMD/.emacs.d M-EMACS]: uses literate configuration style
 *** [https://github.com/abougouffa/minemacs MinEmacs]: see [https://github.com/abougouffa/minemacs/blob/main/docs/packages.md package list]; has some configuration for AI; get help by [https://github.com/abougouffa/minemacs/issues opening issues]
 *** [https://github.com/jcs-emacs/jcs-emacs JCS Emacs]: focuses on programming across different operating systems and environments; see [https://github.com/jcs-emacs/jcs-emacs#details list of features]; the author is unable to provide support for customized versions, so ask general Emacs communities for help; [https://github.com/jcs-emacs/jcs-emacs/blob/master/docs/FAQ.md FAQ]
+
+=== Getting help if you use a starter kit ===
+
+Some starter kits like [[Spacemacs]] and DoomEmacs have their own communities where you can ask for help. Ask those communities first before asking general Emacs community help resources because those starter kits modify Emacs behavior extensively.
+
+For other starter kits, sometimes the author of the starter kit will be able to help if you have a specific question or suggestion. See the starter kit's page for any instructions on asking for help, or check the project to see if it has an Issues tab that is pretty active.
+
+If you can't find help that way, then reach out to other Emacs help resources (GetHelp). Make sure to mention which starter kit you're using, how you've modified it, and what you want to do. This is because starter kits can modify a lot of Emacs's behavior, so it helps to ask people with experience with your specific starter kit.
+
+=== Starter kits versus writing your own configuration ===
+
+Starter kits can be a great way to get going quickly. You can try out Emacs with the settings that more experienced users have recommended. If you find something that clicks with your workflow, that can save you a lot of time.
+
+On the other hand, sometimes it's hard to understand all the different changes that a starter kit might make. Growing your configuration slowly, step by step, can help you learn more about how things work.
+
+Many people find it useful to eventually write their own configuration from from scratch, possibly copying the parts they liked from the starter kit they used. If you LearnEmacsLisp, you can make your own Emacs configuration.
+
+It's also okay to continue using a starter kit if you found one that works for you. Some starter kits like DoomEmacs provide a way to integrate your customizations into the starter kit.
 
 == Starter kits by popularity ==
 
