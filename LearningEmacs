@@ -1,13 +1,11 @@
 This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
 
 * A short list of basic Emacs features: WhyUseEmacs.
-* Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
+* Try the EmacsTutorial, or read one of the BooksAboutEmacs.
+* All the new keyboard shortcuts and terms can be overwhelming to learn. You might find it helpful to focus on one or two shortcuts at a time, maybe using sticky notes near your computer or `C-h C-q' (`M-x help-quick-toggle'). It's okay to learn things a little at a time.
 * Learn Emacs using its SelfDocumentation. '''Asking Emacs''' directly is the best way to get to know it. (Start by asking it how to ask it...)
 * Stuck? GetHelp
-* Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
 * Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]] or in [[http://epub-manuals.ourproject.org/blog/gnu-emacs-manual/ epub format]].
-* LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
-* Watch EmacsScreencasts -- A good place to start, with many resources.
 * Some beginner-oriented tutorials written by users:
 ** [https://www.masteringemacs.org/reading-guide Mastering Emacs reading guide]
 ** [http://xahlee.info/emacs/index.html Xah Emacs Tutorial]
@@ -17,6 +15,9 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 ** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
 ** [http://www.jesshamrick.com/post/2012-09-10-absolute-beginners-guide-to-emacs/ Absolute Beginners Guide to Emacs] - another Emacs intro for newbies.
 * Consider trying out one of the StarterKits. There are many varying accounts of people switching to and from starter kits to hand-rolled configurations. However, these will certainly help in getting started faster and as references.
+* Watch EmacsScreencasts -- A good place to start, with many resources.
+* Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
+* LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
 * [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs.
 
 Some people learn best by doing, not reading.  To learn by doing, get yourself a text file
@@ -49,7 +50,7 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 # If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different key.  But not before.
 
-''Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.''  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. 
+''Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.''  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs.
 
 == Emacs Lisp libraries and snippets that can help you learn Emacs ==
 
