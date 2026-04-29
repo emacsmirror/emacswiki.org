@@ -1,14 +1,14 @@
-There are many so-called "starter kits" which provide default Emacs configurations that reflect the preferences of their creators.  You may also see them referred to as 'distros'. They are all quite different from the default GnuEmacs default configuration. They can be useful in obtaining configuration snippets and learning Emacs. In this context, it is also worth being aware of the [https://codeberg.org/pkal/ecg Emacs Configuration Generator].
+Sometimes it helps to try out Emacs the way someone with more experience has configured it. There are a number of "starter kits" or "distros" that modify Emacs in different ways. Some are lightweight changes to try to provide better defaults. Others modify Emacs extensively. Whether you're starting out or looking around for inspiration, it might be worth trying out a few to see if any of them fit the way you want to work.
 
-[https://github.com/alphapapa/with-emacs.sh with-emacs.sh] by alphapapa could be one approach to trying different configurations, including starter kits. The repo includes brief comparisons of alternatives.
+If you use a complex starter kit and encounter something that you want additional help with, try asking the specific community for the starter kit if there is one, or reach out to the author first. If you can't find help that way, then reach out to other Emacs help resources (GetHelp). Make sure to mention which starter kit you're using, how you've modified it, and what you want to do. This is because starter kits can modify a lot of Emacs's behavior, so it helps to ask people with experience with your specific starter kit.
 
-Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online/in Github.).
+Note: The 'starter kits' listed here are those specifically designed for public use (vs. personal configurations posted online).
 
 The kits are ranked in very rough terms of popularity, as measured by the number of stars on their !GitHub repository (updated 27 March 2026).
 
 'Active' indicates that there have been contributions to the repo within the last 12 months.
 
-'Keybindings' indicates whether it ships with standard Emacs bindings or Evil-mode (Vim) modal bindings.
+'Keybindings' indicates whether it ships with standard Emacs bindings or Evil-mode (Vim) modal bindings. If you're starting out and you don't already have the muscle memory for things like hjkl navigation or insert/command modes from using Vim or similar editors, consider using the standard Emacs keybindings because it will be easier for you to find help.
 
 'Description' is taken from the description of the project in Github.
 
@@ -26,6 +26,7 @@ This should not be viewed as a comprehensive list.
 || [[https://github.com/jkitchin/scimax Scimax]]                         ||  1.1k ||         27.1+ ||    Standard ||  "...a comprehensive configuration of Emacs for scientific programming and publishing." ||
 || [[https://github.com/SystemCrafters/crafted-emacs Crafted Emacs]]     ||   869 ||            ?? ||    Standard || "...nice baseline for users who want to create their own Emacs configuration." ||
 || [[https://github.com/jamescherti/minimal-emacs.d Minimal Emacs]]      ||   746 ||           29+ ||    Standard ||"...better defaults, an optimized startup, and a clean foundation for building your own vanilla Emacs setup."||
+|| [[https://github.com/pprevos/emacs-writing-studio Emacs Writing Studio || 736 || || || ||
 || [[https://github.com/MatthewZMD/.emacs.d M-EMACS]]                    ||   728 ||         26.1+ ||    Standard ||"...designed to enhance your experience while providing an easily navigable resource."||
 || [[https://github.com/LionyxML/emacs-kick Emacs Kick]]                 ||   339 ||         30.1+ ||   Evil      || "...starting point for building your own Emacs configuration. " ||
 || [[https://github.com/MiniApollo/kickstart.emacs kickstart.emacs]]     ||   229 ||         30.1+ ||    Standard || "...a template for your own configuration."||
