@@ -5,14 +5,15 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 * Learn Emacs using its SelfDocumentation. '''Asking Emacs''' directly is the best way to get to know it. (Start by asking it how to ask it...)
 * Stuck? GetHelp
 * Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]] or in [[http://epub-manuals.ourproject.org/blog/gnu-emacs-manual/ epub format]].
-* Some beginner-oriented tutorials written by users:
-** [https://www.masteringemacs.org/reading-guide Mastering Emacs reading guide]
+* Some beginner-oriented tutorials:
+** [https://www.gnu.org/software/emacs/tour/ GNU Emacs: A Guided Tour]: This page has screenshots and a short tutoral.
+** [https://www.masteringemacs.org/article/beginners-guide-to-emacs An Emacs Tutorial: Beginner's Guide to Emacs - Mastering Emacs]
+** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts
+** [https://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
+** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual (PART 1) - THE BASICS]
 ** [http://xahlee.info/emacs/index.html Xah Emacs Tutorial]
 ** EmacsCrashCourse.
-** [https://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
-** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
 ** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
-** [http://www.jesshamrick.com/post/2012-09-10-absolute-beginners-guide-to-emacs/ Absolute Beginners Guide to Emacs] - another Emacs intro for newbies.
 * Consider trying out one of the StarterKits. There are many varying accounts of people switching to and from starter kits to hand-rolled configurations. However, these will certainly help in getting started faster and as references.
 * Watch EmacsScreencasts -- A good place to start, with many resources.
 * Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
