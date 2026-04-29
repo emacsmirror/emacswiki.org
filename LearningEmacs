@@ -25,14 +25,15 @@ losing it. But don't worry -- Emacs makes it
 hard to lose your work, and it has a great '''[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html undo]]''' command: '''`##C-/##'''' or `##C-_##'.
 
 Emacs [[key binding]]s can be intimidating at first since they are quite
-distinct from those used in other applications and platforms.  Keep
-the following advice in mind.
+distinct from those used in other applications and platforms.  Start by focusing on just a few keybindings, and feel free to use physical aids like sticky notes or a small notebook to help you learn.  Here are some tips:
 
 # Try to memorize only the most commonly used keys presented in the EmacsTutorial. You will learn other keys as you go.
 
+# `M-x help-quick' (`C-h C-q`) shows some basic keybindings.
+
 # Use [[AproposMode|apropos]] and [[SelfDocumentation|help]] to find commands to accomplish a task.
 
-# You can run a command using `M-x' and typing its name at the prompt.
+# You can run a command using `M-x' and typing its name at the prompt. Try `M-x fido-vertical-mode' for simple completion.
 
 # You can run a command again by using `M-x M-p' to recall it.
 
@@ -40,6 +41,8 @@ the following advice in mind.
 
 # If you forget a key binding, try `C-h w M-p' to peek at it
 again or use `C-h b' to browse the bindings available in the current [[buffer]].
+
+# If you know the first part of a keybinding (ex: `C-x 5`), you can type it in and then press `C-h` to get a list of all the keybindings that start with that combination. Consider enabling WhichKey for automatic help whenever you pause in the middle of a long keybinding.
 
 # If you can't burn a key binding into your brain with this approach,
 then you might not be using it enough to matter.  Don't worry about it.
