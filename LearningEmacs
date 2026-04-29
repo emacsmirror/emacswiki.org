@@ -2,7 +2,6 @@ This page provides tips for learning to use Emacs and learning more about Emacs.
 
 * A short list of basic Emacs features: WhyUseEmacs.
 * Try the EmacsTutorial, or read one of the BooksAboutEmacs.
-* All the new keyboard shortcuts and terms can be overwhelming to learn. You might find it helpful to focus on one or two shortcuts at a time, maybe using sticky notes near your computer or `C-h C-q' (`M-x help-quick-toggle'). It's okay to learn things a little at a time.
 * Learn Emacs using its SelfDocumentation. '''Asking Emacs''' directly is the best way to get to know it. (Start by asking it how to ask it...)
 * Stuck? GetHelp
 * Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]] or in [[http://epub-manuals.ourproject.org/blog/gnu-emacs-manual/ epub format]].
@@ -28,32 +27,33 @@ hard to lose your work, and it has a great '''[[https://www.gnu.org/software/ema
 Emacs [[key binding]]s can be intimidating at first since they are quite
 distinct from those used in other applications and platforms.  Start by focusing on just a few keybindings, and feel free to use physical aids like sticky notes or a small notebook to help you learn.  Here are some tips:
 
-# Try to memorize only the most commonly used keys presented in the EmacsTutorial. You will learn other keys as you go.
+* Try to memorize only the most commonly used keys presented in the EmacsTutorial. You will learn other keys as you go.
 
-# `M-x help-quick' (`C-h C-q`) shows some basic keybindings.
+* You might find it helpful to focus on one or two shortcuts at a time, maybe using sticky notes or an index card It's okay to learn things a little at a time.
 
-# Use [[AproposMode|apropos]] and [[SelfDocumentation|help]] to find commands to accomplish a task.
+* `M-x help-quick-toggle' (`C-h C-q`) shows some basic keybindings.
 
-# You can run a command using `M-x' and typing its name at the prompt. Try `M-x fido-vertical-mode' for simple completion.
+* Use [[AproposMode|apropos]] and [[SelfDocumentation|help]] to find commands to accomplish a task.
 
-# You can run a command again by using `M-x M-p' to recall it.
+* You can run a command using `M-x' and typing its name at the prompt. Try `M-x fido-vertical-mode' for simple completion.
 
-# Use `C-h w' to see if what keys a given command is bound to, if any.
+* You can run a command again by using `M-x M-p' to recall it.
 
-# If you forget a key binding, try `C-h w M-p' to peek at it
+* Use `C-h w' to see if what keys a given command is bound to, if any.
+
+* If you forget a key binding, try `C-h w M-p' to peek at it
 again or use `C-h b' to browse the bindings available in the current [[buffer]].
 
-# If you know the first part of a keybinding (ex: `C-x 5`), you can type it in and then press `C-h` to get a list of all the keybindings that start with that combination. Consider enabling WhichKey for automatic help whenever you pause in the middle of a long keybinding.
+* If you know the first part of a keybinding (ex: `C-x 5`), you can type it in and then press `C-h` to get a list of all the keybindings that start with that combination. Consider enabling WhichKey for automatic help whenever you pause in the middle of a long keybinding.
 
-# If you can't burn a key binding into your brain with this approach,
+* If you can't burn a key binding into your brain with this approach,
 then you might not be using it enough to matter.  Don't worry about it.
 
-# If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different key.  But not before.
+* If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different key.
 
-''Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.''  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs.
+''Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.''  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' can be your command line in Emacs.
 
 == Emacs Lisp libraries and snippets that can help you learn Emacs ==
-
 
 * [https://github.com/emacs-tw/awesome-emacs Awesome Emacs] has lots of recommendations.
 
