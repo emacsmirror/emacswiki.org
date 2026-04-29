@@ -14,7 +14,17 @@ Note: The 'starter kits' listed here are those specifically designed for public 
 * [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository Git - Getting a Git Repository]
 * [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository Cloning a repository - GitHub Docs]
 
-*Your init file:* Starter kits also sometimes ask you to add code to your InitFile (your Emacs configuration file). This file might not exist until you create it. Emacs checks for user configuration in a number of locations, so you might see references to `~/.emacs', `~/.emacs.d/init.el', or `~/.config/emacs/init.el'. If you do not know where your init file is located, you can check the variable `user-init-file' with the following command:
+*Command line:* Starter kit installation instructions often assume that you are using Git from the command line so that you can type `git clone ...'. If you are not sure how to open a terminal on your computer,
+
+- Windows: Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
+- Mac OS X: Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
+- Linux: This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
+
+*Trying a starter kit without committing to it:* If you use `--init-directory' when starting Emacs, you can try many starter kits without committing to using them. For example, if you've checked out [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] into the `emacs-bedrock/' directory, the following command starts an Emacs session with that as the basis.
+
+   emacs --init-directory emacs-bedrock/
+
+*Your init file:* Starter kits also sometimes ask you to add code to your InitFile (your Emacs configuration file). This file might not exist until you create it. Emacs checks for user configuration in a number of locations, so you might see references to `~/.emacs', `~/.emacs.d/init.el', or `~/.config/emacs/init.el' in people's notes. If you do not know where your init file is located, you can check the variable `user-init-file' with the following command:
 
    M-x describe-variable RET user-init-file RET
 
@@ -24,32 +34,59 @@ After you make any changes suggested by the starter kit, you can save your init 
 
 To run the code in your current Emacs, you can use `M-x eval-buffer'. Alternatively, you can use `M-x restart-emacs'. You can also start a separate Emacs instead.
 
+*Literate configuration with Org Mode:* A number of starter kits use Org Mode to describe the text and embed the code so that they can include more explanations and screenshots. Examples:
+
+* [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]
+* [https://github.com/MiniApollo/kickstart.emacs kickstart.emacs]
+* [https://github.com/MatthewZMD/.emacs.d M-EMACS]
+* [https://xgarrido.github.io/emacs-starter-kit/starter-kit.html xgarrido's Emacs Starter Kit]
+
+Because they are written to be read by people as well as by computers, these starter kits might be a good way to learn more about Emacs Lisp along the way.
+
 = Choosing a starter kit =
 
 You might want to start by browsing through screenshots or videos about the starter kit to see if it includes the features you are interested in or if it comes with the workflows you are thinking of using.
 
 Here are some questions you can use to help you choose a starter kit:
 
-* What do you want to do with Emacs? Many starter kits are oriented towards a specific purpose, such as writing or programming.
-* Are you looking for specific keyboard shortcut schemes? People who are coming from a Vim background might want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
+* What do you want to do with Emacs? A number of starter kits are oriented towards a specific purpose.
+** Writing/humanities:
+*** [https://github.com/Lambda-Emacs/lambda-emacs Lambda Emacs] Emacs configuration aimed at those engaged in writing and academic work in the humanities
+*** [https://github.com/pprevos/emacs-writing-studio Emacs Writing Studio]: focused on writing prose with Org Mode; no-code configuration;
+[https://github.com/pprevos/emacs-writing-studio/tree/master/documents has a book], [https://payhip.com/b/alhIJ PDF version is USD 9.99]
+* Are you looking for a starter kit that includes specific packages?
+* Are you looking for specific keyboard shortcut schemes? A starter kit that customizes the keybindings extensively can make it easier for you to get started, although it might be a little harder for you to follow other people's notes if they're writing about functions based on standard Emacs keybindings.
+** People who really want to continue using `C-c' to copy and `C-v' to paste might consider [https://github.com/darkstego/wakib-emacs Wakib Emacs]. (On the other hand, it might be worth learning the Emacs shortcuts instead, because `C-c' is very useful as the starting point of other keyboard shortcuts.)
+** People who are coming from a Vim background might want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
+
 * Do you want something that just changes things slightly or something more extensive?
 
 ** Minimalist: just a few changes to Emacs that you can use or read through and adapt to your own configuration
 *** [https://git.sr.ht/~technomancy/better-defaults ~technomancy/better-defaults]
 *** [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]: has screenshots and lots of explanations
+*** [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock]
+*** [https://github.com/SystemCrafters/crafted-emacs Crafted Emacs]: has a [https://github.com/SystemCrafters/crafted-emacs/blob/master/docs/getting-started-guide.org guide to getting started] and [https://github.com/SystemCrafters/crafted-emacs/tree/master/docs other docs]; [https://systemcrafters.net/community/ general community information for !SystemCrafters]
+*** [https://github.com/monkeyjunglejuice/emacs.onboard Emacs ONBOARD]: uses a leader key, supports zero-code configuration
 ** In the middle
 *** [https://github.com/bbatsov/prelude bbatsov/prelude] Includes a [https://prelude.emacsredux.com/en/latest/ user manual]; a little closer to the standard Emacs experience compared to Spacemacs and Doom Emacs
+*** [https://github.com/LionyxML/emacs-kick Emacs Kick]: focused on people coming from a Vim background
+*** [https://github.com/MiniApollo/kickstart.emacs MiniApollo/kickstart.emacs]: [https://github.com/MiniApollo/kickstart.emacs/blob/main/init.org Literate configuration] which includes lots of comments
 ** More complex: changes Emacs extensively; if you need help, start by asking the starter kit community because they have more experience with it
 ** [https://github.com/doomemacs/doomemacs Doom Emacs]: great for people coming from Vim; has [https://github.com/doomemacs/doomemacs/blob/master/docs/index.org documentation]; [https://github.com/doomemacs/doomemacs#getting-help help is available] via Discord
 *** [https://www.youtube.com/playlist?list=PLhXZp00uXBk4np17N39WvB80zgxlZfVwj DoomCasts: Emacs Doom Screencasts - YouTube]
 *** [https://www.youtube.com/playlist?list=PLyy8KUDC8P7X6YkegqrnEnymzMWCNB4bN Doom Emacs Tutorials by DistroTube - YouTube]
-** [https://github.com/syl20bnr/spacemacs Spacemacs]
-*** Videos
+*** [https://github.com/syl20bnr/spacemacs Spacemacs]
 **** [https://www.youtube.com/watch?v=ZFV5EqpZ6_s&list=PLrJ2YN5y27KLhd3yNs2dR8_inqtEiEweE Spacemacs ABC]
 **** [https://www.youtube.com/watch?v=r-BHx7VNX5s&list=PLd_Oyt6lAQ8Rxb0HUnGbRrn6R4Cdt2yoI Spacemacs tutorial videos]
-*** [https://github.com/syl20bnr/spacemacs#getting-help Help is available] via Gitter IM chat or IRC
-** [https://github.com/purcell/emacs.d purcell/emacs.d] Focused on web development, more of an intermediate/advanced thing
-** [https://github.com/rougier/nano-emacs rougier/nano-emacs] Focused on modernizing Emacs appearance
+**** [https://github.com/syl20bnr/spacemacs#getting-help Help is available] via Gitter IM chat or IRC
+*** [https://github.com/purcell/emacs.d purcell/emacs.d] Focused on web development
+*** [https://github.com/rougier/nano-emacs rougier/nano-emacs] Focused on modernizing Emacs appearance
+*** [https://github.com/darkstego/wakib-emacs Wakib Emacs]: Changes Emacs to use common keyboard shortcuts: using `C-c' to copy, `C-v' to paste, etc. Defines additional keyboard shortcuts following the Wakib Emacs scheme.
+**** [https://youtu.be/rK51Lp_lreI Video introduction to Wakib Emacs]
+*** [https://github.com/seagle0128/.emacs.d Centaur Emacs]: Has screenshots; enhanced Chinese support
+*** [https://github.com/MatthewZMD/.emacs.d M-EMACS]: uses literate configuration style
+*** [https://github.com/abougouffa/minemacs MinEmacs]: see [https://github.com/abougouffa/minemacs/blob/main/docs/packages.md package list]; has some configuration for AI; get help by [https://github.com/abougouffa/minemacs/issues opening issues]
+*** [https://github.com/jcs-emacs/jcs-emacs JCS Emacs]: focuses on programming across different operating systems and environments; see [https://github.com/jcs-emacs/jcs-emacs#details list of features]; the author is unable to provide support for customized versions, so ask general Emacs communities for help; [https://github.com/jcs-emacs/jcs-emacs/blob/master/docs/FAQ.md FAQ]
 
 = By popularity =
 
