@@ -9,6 +9,8 @@ The links are generally ordered by topic, subtopic, level, and/or date.
 
 If you're new to Emacs, don't worry. You don't have to watch all of the videos to figure things out. Feel free to try different videos until you find something that clicks with you. You don't have to understand everything in one go, either. You can come back to a video and learn more as you gain more experience.
 
+Emacs generally tries to keep things working over different versions, so old videos might still be useful, but new videos can show you features that have been added to Emacs or its packages. If you're not sure about something, check the date on the video and see if there's something recent.
+
 == Screencasts about Emacs ==
 
 === Installation ===
@@ -62,7 +64,14 @@ This section is meant to list videos that are beginner friendly. Refer to the vi
 
 === Starter kits ===
 
+DoomEmacs
+
 * [https://www.youtube.com/watch?v=37H7bD-G7nE Doom Emacs On Day One (Learn These Things FIRST!)] (35:09)
+
+[[Spacemacs]]
+
+* [https://www.youtube.com/watch?v=fdLCuJcS2Aw Spacemacs: Installation, Configuration, and Navigation Tutorial] (2019, 24:15)
+* [https://www.youtube.com/watch?v=hCNOB5jjtmc&list=PLhqJJNjsQ7KFkMVBunWWzFD8SlH714qm4 Spacemacs tutorials]
 
 === Video channels, playlists and screencast series ===
 
