@@ -4,6 +4,16 @@ Note: The 'starter kits' listed here are those specifically designed for public 
 
 == Things to know before you start ==
 
+=== Starter kits versus writing your own configuration ===
+
+Starter kits can be a great way to get going quickly. You can try out Emacs with the settings that more experienced users have recommended. If you find something that clicks with your workflow, that can save you a lot of time.
+
+On the other hand, sometimes it's hard to understand all the different changes that a starter kit might make. Growing your configuration slowly, step by step, can help you learn more about how things work.
+
+Many people find it useful to eventually write their own configuration from from scratch, possibly copying the parts they liked from the starter kit they used. If you LearnEmacsLisp, you can make your own Emacs configuration.
+
+It's also okay to continue using a starter kit if you found one that works for you. Some starter kits like DoomEmacs provide a way to integrate your customizations into the starter kit.
+
 === Basic tutorial ===
 
 If you have not yet read the EmacsTutorial, start with that so that you can understand how to use keyboard shortcuts and commands described in the starter kit documentation. If you prefer a webpage, [https://www.gnu.org/software/emacs/tour/ The GNU Emacs Guided Tour] may be useful.
@@ -105,16 +115,6 @@ Some starter kits like [[Spacemacs]] and DoomEmacs have their own communities wh
 For other starter kits, sometimes the author of the starter kit will be able to help if you have a specific question or suggestion. See the starter kit's page for any instructions on asking for help, or check the project to see if it has an Issues tab that is pretty active.
 
 If you can't find help that way, then reach out to other Emacs help resources (GetHelp). Make sure to mention which starter kit you're using, how you've modified it, and what you want to do. This is because starter kits can modify a lot of Emacs's behavior, so it helps to ask people with experience with your specific starter kit.
-
-=== Starter kits versus writing your own configuration ===
-
-Starter kits can be a great way to get going quickly. You can try out Emacs with the settings that more experienced users have recommended. If you find something that clicks with your workflow, that can save you a lot of time.
-
-On the other hand, sometimes it's hard to understand all the different changes that a starter kit might make. Growing your configuration slowly, step by step, can help you learn more about how things work.
-
-Many people find it useful to eventually write their own configuration from from scratch, possibly copying the parts they liked from the starter kit they used. If you LearnEmacsLisp, you can make your own Emacs configuration.
-
-It's also okay to continue using a starter kit if you found one that works for you. Some starter kits like DoomEmacs provide a way to integrate your customizations into the starter kit.
 
 == Starter kits by popularity ==
 
