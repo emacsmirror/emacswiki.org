@@ -26,7 +26,7 @@ This should not be viewed as a comprehensive list.
 || [[https://github.com/jkitchin/scimax Scimax]]                         ||  1.1k ||         27.1+ ||    Standard ||  "...a comprehensive configuration of Emacs for scientific programming and publishing." ||
 || [[https://github.com/SystemCrafters/crafted-emacs Crafted Emacs]]     ||   869 ||            ?? ||    Standard || "...nice baseline for users who want to create their own Emacs configuration." ||
 || [[https://github.com/jamescherti/minimal-emacs.d Minimal Emacs]]      ||   746 ||           29+ ||    Standard ||"...better defaults, an optimized startup, and a clean foundation for building your own vanilla Emacs setup."||
-|| [[https://github.com/pprevos/emacs-writing-studio Emacs Writing Studio || 736 || || || ||
+|| [[https://github.com/pprevos/emacs-writing-studio Emacs Writing Studio] || 736 ||                 ||    || "...a configuration and comprehensive manual for writers seeking an integrated research, writing, and publication tool."    ||
 || [[https://github.com/MatthewZMD/.emacs.d M-EMACS]]                    ||   728 ||         26.1+ ||    Standard ||"...designed to enhance your experience while providing an easily navigable resource."||
 || [[https://github.com/LionyxML/emacs-kick Emacs Kick]]                 ||   339 ||         30.1+ ||   Evil      || "...starting point for building your own Emacs configuration. " ||
 || [[https://github.com/MiniApollo/kickstart.emacs kickstart.emacs]]     ||   229 ||         30.1+ ||    Standard || "...a template for your own configuration."||
