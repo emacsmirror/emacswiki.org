@@ -59,7 +59,7 @@ A number of starter kits use OrgMode to describe the text and embed the code so 
 * [https://github.com/MatthewZMD/.emacs.d M-EMACS]
 * [https://xgarrido.github.io/emacs-starter-kit/starter-kit.html xgarrido's Emacs Starter Kit]
 
-Because they are written to be read by people as well as by computers, these starter kits might be a good way to learn more about Emacs Lisp along the way.
+Because they are written to be read by people as well as by computers, these starter kits may be a good way to learn more about Emacs Lisp along the way.
 
 === Choosing a starter kit ===
 
