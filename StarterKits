@@ -93,7 +93,9 @@ because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 ** Minimalist: just a few changes to Emacs that you can use or read through and adapt to your own configuration
 *** [https://git.sr.ht/~technomancy/better-defaults ~technomancy/better-defaults]:
 provides better defaults with lightweight changes.
-*** [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]: has screenshots and lots of explanations
+*** [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]:
+provides better defaults and optimized startup,
+has screenshots and lots of explanations.
 *** [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock]
 *** [https://github.com/SystemCrafters/crafted-emacs Crafted Emacs]: has a [https://github.com/SystemCrafters/crafted-emacs/blob/master/docs/getting-started-guide.org guide to getting started] and [https://github.com/SystemCrafters/crafted-emacs/tree/master/docs other docs]; [https://systemcrafters.net/community/ general community information for !SystemCrafters]
 *** [https://github.com/monkeyjunglejuice/emacs.onboard Emacs ONBOARD]: uses a leader key, supports zero-code configuration
