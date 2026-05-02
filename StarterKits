@@ -110,7 +110,11 @@ because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 **** [https://github.com/syl20bnr/spacemacs#getting-help Help is available] via Gitter IM chat or IRC
 *** [https://github.com/purcell/emacs.d purcell/emacs.d] Focused on web development
 *** [https://github.com/rougier/nano-emacs rougier/nano-emacs] Focused on modernizing Emacs appearance
-*** [https://github.com/darkstego/wakib-emacs Wakib Emacs]: Changes Emacs to use common keyboard shortcuts: using `C-c' to copy, `C-v' to paste, etc. Defines additional keyboard shortcuts following the Wakib Emacs scheme.
+*** [https://github.com/darkstego/wakib-emacs Wakib Emacs]:
+Changes Emacs to use common keyboard shortcuts:
+using `C-c' to copy, `C-v' to paste, etc.
+(refer CuaMode, Common User Access Mode).
+Defines additional keyboard shortcuts following the Wakib Emacs scheme.
 **** [https://youtu.be/rK51Lp_lreI Video introduction to Wakib Emacs]
 *** [https://github.com/seagle0128/.emacs.d Centaur Emacs]: Has screenshots; enhanced Chinese support
 *** [https://github.com/MatthewZMD/.emacs.d M-EMACS]: uses literate configuration style
