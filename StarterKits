@@ -81,7 +81,12 @@ Here are some questions you can use to help you choose a starter kit:
 
 ** If you are coming from a Vim background, you may want to use a starter kit that uses EvilMode to set up Vim-based keybindings, such as DoomEmacs or [[Spacemacs]].
 
-** If you really want to continue using `C-c' to copy and `C-v' to paste, consider [https://github.com/darkstego/wakib-emacs Wakib Emacs]. (On the other hand, it might be worth learning the Emacs shortcuts instead, because `C-c' is very useful as the starting point of other keyboard shortcuts.)
+** If you really want to continue using `C-c' to copy and `C-v' to paste,
+you may want to use a starter kit that uses CuaMode to set up Common User Access (CUA) shortcuts,
+such as [https://github.com/darkstego/wakib-emacs Wakib Emacs].
+(On the other hand,
+it might be worth learning the Emacs shortcuts instead,
+because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 
 * Do you want something that just changes things slightly or something more extensive?
 
