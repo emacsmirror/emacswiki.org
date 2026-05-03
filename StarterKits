@@ -95,6 +95,9 @@ because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 provides better defaults.
 *** NewcomersTheme:
 provides better defaults.
+*** [https://protesilaos.com/codelog/2026-04-30-emacs-decent-default-sacha-chua/ Prot's defaults]:
+provides better defaults,
+has a lot of explanations.
 *** [https://github.com/jamescherti/minimal-emacs.d jamescherti/minimal-emacs.d]:
 provides better defaults and optimized startup,
 has screenshots and lots of explanations.
