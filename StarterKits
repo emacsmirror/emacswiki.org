@@ -93,6 +93,8 @@ because `C-c' is very useful as the starting point of other keyboard shortcuts.)
 ** Minimalist: lightweight changes to Emacs that you can use or read through and adapt to your own configuration
 *** [https://git.sr.ht/~technomancy/better-defaults ~technomancy/better-defaults]:
 provides better defaults.
+*** [https://github.com/grettke/lolsmacs grettke/lolsmacs]:
+provides better defaults.
 *** NewcomersTheme:
 provides better defaults.
 *** [https://protesilaos.com/codelog/2026-04-30-emacs-decent-default-sacha-chua/ Prot's decent defaults]:
