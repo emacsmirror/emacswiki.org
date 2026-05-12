@@ -1,30 +1,30 @@
 [[zh:初始化文件]]
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
-If you would like to confirm where your init file is located, you can check the variable '''user-init-file''' by using the menu item *Help - Describe - Describe variable* and typing in '''user-init-file''', or using the following command:
+If you would like to confirm where your init file is located, you can check the variable ##user-init-file## by using the menu item *Help - Describe - Describe variable* and typing in ##user-init-file##, or using the following command:
 
    M-x describe-variable RET user-init-file RET
 
 Emacs will tell you the file that it is using in the section "Its value is ...".
 
 This file might not exist yet. You can create or open it with the menu item *File - Visit New File*.
-Because this file starts with a dot (`.'), it is a hidden file and may not be visible until you check the checkbox "Show hidden files" (or similar; this is system-dependent). Even if it is not visible, you can find it by typing the filename into the Name: or filename box. Alternatively, you can use the command `M-x find-file' or the keyboard shortcut `C-x C-f', like this:
+Because this file starts with a dot (##.##), it is a hidden file and may not be visible until you check the checkbox "Show hidden files" (or similar; this is system-dependent). Even if it is not visible, you can find it by typing the filename into the Name: or filename box. Alternatively, you can use the command ##M-x find-file## or the keyboard shortcut ##C-x C-f##, like this:
 
    C-x C-f ~/.emacs
 
-* For GnuEmacs, your init file is ###~/.emacs##, ##~/.emacs.el##, or ##~/.emacs.d/init.el##.  You can choose to use any of these names. ##~/## stands for your home directory.
+* For GnuEmacs, your init file is ##~/.emacs##, ##~/.emacs.el##, or ##~/.emacs.d/init.el##.  You can choose to use any of these names. ##~/## stands for your home directory.
 ** Since version 27.1, if neither of the above files nor the directory ##~/.emacs.d## exist, GnuEmacs will find (but not create) the config file ##emacs/init.el## you put in an XDG-compatible location. Namely:
 *** ##~/.config/emacs/init.el## if the environment variable ##XDG_CONFIG_HOME## is unset, and
 *** ##$XDG_CONFIG_HOME/emacs/init.el## if ##XDG_CONFIG_HOME## /is/ set.
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
-See the Emacs manual (`C-h r') node
+See the Emacs manual (##C-h r##) node
 [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]] for more information.
 
 == Trying out your changes ==
 
-When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer' to evaluate everything, or `M-x eval-region' to evaluate the currently selected [[region]] with `C-SPC` (same as `M-x set-mark-command`), or just putting your [[cursor]] after the expression you want to evaluate and then using `C-x C-e' (same as `M-x eval-last-sexp') to run it.  See EvaluatingExpressions.
+When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use ##M-x eval-buffer## to evaluate everything, or ##M-x eval-region## to evaluate the currently selected [[region]] with ##C-SPC## (same as ##M-x set-mark-command##), or just putting your [[cursor]] after the expression you want to evaluate and then using ##C-x C-e## (same as ##M-x eval-last-sexp##) to run it.  See EvaluatingExpressions.
 
 For info about how to load other EmacsLisp files automatically when you start Emacs, see InstallingPackages.
 
@@ -46,14 +46,14 @@ See the pages in CategoryDotEmacs for configuration suggestions and tips.
 
 * I got an "End of file during parsing" error when I started Emacs.
 
-** You might have missing or extra parentheses, quotation marks, or other characters. Open your init file and review the code carefully. You can use `M-x check-parens' to find unmatched parentheses, brackets, or quotation marks.
+** You might have missing or extra parentheses, quotation marks, or other characters. Open your init file and review the code carefully. You can use ##M-x check-parens## to find unmatched parentheses, brackets, or quotation marks.
 
-* I put something in my `~/.emacs.d/init.el', but it didn't get loaded when I started Emacs.
-** Emacs checks for the existence of one of these files, in order: `~/.emacs', `~/.emacs.el', `~/.emacs.d/init.el', `~/.config/emacs/init.el'. It stops at the first file found and ignores the rest. Check if `~/.emacs' exists. You can move the contents of that file to your `~/.emacs.d/init.el' and delete `~/.emacs' in order to use `~/.emacs.d/init.el' instead.
+* I put something in my ##~/.emacs.d/init.el##, but it didn't get loaded when I started Emacs.
+** Emacs checks for the existence of one of these files, in order: ##~/.emacs##, ##~/.emacs.el##, ##~/.emacs.d/init.el##, ##~/.config/emacs/init.el##. It stops at the first file found and ignores the rest. Check if ##~/.emacs## exists. You can move the contents of that file to your ##~/.emacs.d/init.el## and delete ##~/.emacs## in order to use ##~/.emacs.d/init.el## instead.
 
 * Something causes an error when I start Emacs.
 
-** After starting Emacs, type `C-h e' or use `M-x view-echo-area-messages' to see any messages or errors from when it loaded. See DebugFileLoading for more troubleshooting tips.
+** After starting Emacs, type ##C-h e## or use ##M-x view-echo-area-messages## to see any messages or errors from when it loaded. See DebugFileLoading for more troubleshooting tips.
 
 == Organizing your InitFile ==
 
