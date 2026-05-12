@@ -34,13 +34,21 @@ To start Emacs with a specific init file:
 
    emacs -q -l ~/my-init-file.el
 
+== Related resources ==
+
 For more information about init files and custom files (Emacs 22 or later):
 
 : ##C-h r i init-file RET## or ##M-: (info "(emacs) Init File")##
 : ##M-: (info "(emacs) Saving Customizations")##
 : ##M-: (info "(elisp) Init File")##
 
-See the pages in CategoryDotEmacs for configuration suggestions and tips.
+Here are some things you might want to try out:
+
+* KeybindingGuide
+* LearnEmacsLisp
+* You can also look at StarterKits for ideas.
+
+See other pages in CategoryDotEmacs for configuration suggestions and tips.
 
 == Troubleshooting ==
 
@@ -55,7 +63,7 @@ See the pages in CategoryDotEmacs for configuration suggestions and tips.
 
 ** After starting Emacs, type ##C-h e## or use ##M-x view-echo-area-messages## to see any messages or errors from when it loaded. See DebugFileLoading for more troubleshooting tips.
 
-== Organizing your InitFile ==
+== Organizing your init file ==
 
 When your InitFile gets very long, it can be hard for you to organize it so that related customizations are near each other. See DotEmacsStructuring for tips.
 
