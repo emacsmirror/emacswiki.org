@@ -7,6 +7,8 @@ configuration (ex: Linux / Windows / Mac OS X).
 
 == Splitting your configuration up into separate files ==
 
+One option is to break up a lengthy init file into a number of EmacsLisp libraries and a small, top-level init file that loads those libraries, especially if you define commands and other functions. Some of the init files posted on %%EmacsWiki%% are organized in this way, as a set of library files.
+
 [https://sites.google.com/site/steveyegge2/my-dot-emacs-file Steve
 Yegge's init file] is a good example of an intricate init file that
 still has some order to it. Different parts of initialization are
@@ -35,7 +37,7 @@ For example, something like the following at the beginning of the file.
 (defvar *slime-enabled* t)      ;; superior lisp interaction mode
 (defvar *globrep-enabled* nil)  ;; global find and replace
 (defvar *dict-enabled* nil)     ;; mizspellnigs & dictionaries
-(defvar *vc-darcs-enabled* nil) ;; darcs using vc interface  
+(defvar *vc-darcs-enabled* nil) ;; darcs using vc interface
 (defvar *paredit-enabled* nil)  ;; paredit-mode
 </pre>
 
@@ -43,13 +45,13 @@ then somewhere further down...
 
 <pre>
 (when *paredit-enabled*
-  (autoload 'enable-paredit-mode "paredit" 
+  (autoload 'enable-paredit-mode "paredit"
             "Turns on pseudo-structural editing of Lisp code." t)
   (add-hook 'lisp-mode-hook 'enable-paredit-mode)
   (add-hook 'scheme-mode-hook 'enable-paredit-mode))
 </pre>
 
-so setting ##*paredit-enabled*## to either ##t## or ##nil## would enable or disable the feature completely. This can be especially useful when testing several modes for interoperability, or moving to a new setup. 
+so setting ##*paredit-enabled*## to either ##t## or ##nil## would enable or disable the feature completely. This can be especially useful when testing several modes for interoperability, or moving to a new setup.
 
 == Organizing package-related configuration with use-package ==
 
@@ -69,7 +71,7 @@ Here's a sample configuration snippet:
       (bind-key "M-O" 'isearch-moccur-all isearch-mode-map)
       :config
       (use-package moccur-edit))
-  
+
 == Org Mode and literate configuration ==
 
 You can use OrgMode to organize your InitFile and optionally publish
@@ -83,8 +85,8 @@ dependencies gracefully.
 
 Here are some examples:
 
+* https://github.com/MatthewZMD/.emacs.d
+* https://github.com/MiniApollo/kickstart.emacs/blob/main/init.org
 * http://doc.norang.ca/org-mode.html
-* http://sachachua.com/dotemacs
-* http://mescal.imag.fr/membres/arnaud.legrand/misc/init.php
 
 If you would like to write your config in one Org file but have it generate multiple Emacs Lisp files, see the tutorial at https://github.com/pierre-lecocq/literal-emacs .
