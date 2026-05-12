@@ -2,17 +2,17 @@ When your InitFile has a bug, or when you load external files that cause errors,
 the bug is often hard to find, because the Emacs Lisp reader does not know about line numbers
 and files -- it just knows an error happened, and that's it.
 
-
 You have several options:
 
-# Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach.
-** In Emacs:
-### Use '''Tools - Shell Commands - Async Shell Command''' or ##M-x async-shell-command##
-### Specify ##emacs --debug-init## to start a new Emacs
-** Alternatively, you can use the terminal to start ##emacs --debug-init## (see the CommandLine page for tutorials).
+# You can add ##(setq debug-on-error t)## to the beginning of your InitFile and restart Emacs. You can remove it or comment it out by adding ##;; ## to the start of the line when you are done debugging, or interactively turn debugging on and off by using ##M-x toggle-debug-on-error##.
 
-# You can add ##(setq debug-on-error t)## to the beginning of your InitFile and restart Emacs.
-# Binary Search -- select half of the file in a region, and ##M-x eval-region##. Depending on whether that
+# Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach.
+#* In Emacs:
+#*# Use '''Tools - Shell Commands - Async Shell Command''' or ##M-x async-shell-command##
+#*# Specify ##emacs --debug-init## to start a new Emacs
+#* Alternatively, you can use the terminal to start ##emacs --debug-init## (see the CommandLine page for tutorials).
+
+# Binary Search -- select half of the file in a [[region]], and ##M-x eval-region##. Depending on whether that
   causes the error or not, split this half or the other half again, and repeat.
 # Simplified Binary Search -- add ##(error "No error until here")## in the middle of your file.
   If you get the error "No error until here" when reloading the file, move the expression
