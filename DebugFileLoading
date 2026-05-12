@@ -5,10 +5,8 @@ and files -- it just knows an error happened, and that's it.
 
 You have several options:
 
-# Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach. If you are not sure how to open a terminal on your computer:
-*** *Windows:* Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
-*** *Mac OS X:* Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
-*** *Linux:* This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
+# Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach. In Emacs, use ##M-x async-shell-command## and specify ##emacs --debug-init## to start a new Emacs. Alternatively, you can use the terminal to start ##emacs --debug-init## (see the CommandLine page for tutorials).
+
 # You can add ##(setq debug-on-error t)## to the beginning of your InitFile and restart Emacs.
 # Binary Search -- select half of the file in a region, and ##M-x eval-region##. Depending on whether that
   causes the error or not, split this half or the other half again, and repeat.
