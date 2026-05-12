@@ -6,10 +6,10 @@ and files -- it just knows an error happened, and that's it.
 You have several options:
 
 # Try the CommandLine switch ##--debug-init## to trigger the debugger when an error is thrown. Assuming an error <em>is</em> being thrown, this is the best approach.
-#* In Emacs:
-#*# Use '''Tools - Shell Commands - Async Shell Command''' or ##M-x async-shell-command##
-#*# Specify ##emacs --debug-init## to start a new Emacs
-#* Alternatively, you can use the terminal to start ##emacs --debug-init## (see the CommandLine page for tutorials).
+** In Emacs:
+### Use '''Tools - Shell Commands - Async Shell Command''' or ##M-x async-shell-command##
+### Specify ##emacs --debug-init## to start a new Emacs
+** Alternatively, you can use the terminal to start ##emacs --debug-init## (see the CommandLine page for tutorials).
 
 # You can add ##(setq debug-on-error t)## to the beginning of your InitFile and restart Emacs.
 # Binary Search -- select half of the file in a region, and ##M-x eval-region##. Depending on whether that
