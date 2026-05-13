@@ -1,0 +1,15 @@
+Starter kit or package installation instructions include steps like "Clone this repository" or "Check out this code." If you come from a non-programming background, you might find it useful to first read a tutorial on how to install and use the [[Git]] version control system.
+
+* [https://github.com/git-guides/install-git Git Guides - install git · GitHub]
+* [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository Git - Getting a Git Repository]
+* [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository Cloning a repository - GitHub Docs]
+
+== Using the command line ==
+
+Instructions often assume that you are using Git from the command line so that you can type `git clone ...'. If you are not sure how to open a terminal on your computer:
+
+* *Windows:* Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
+* *Mac OS X:* Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
+* *Linux:* This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
+
+Now that you have a terminal, you can type in or paste the command you need, such as ##git clone ...##
