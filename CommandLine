@@ -1,4 +1,4 @@
-Emacs has many command-line arguments that you can use to modify its startup behavior.
+Emacs has many command-line arguments that you can use to modify its startup behavior. To use them, you may need to open a command-line terminal.
 
 === Starting a command line ===
 
