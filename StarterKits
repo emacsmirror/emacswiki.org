@@ -20,21 +20,11 @@ If you have not yet read the EmacsTutorial, start with that so that you can unde
 
 === Installing and using Git ===
 
-Starter kit installation instructions include steps like "Clone this repository" or "Check out this code." If you come from a non-programming background, you might find it useful to first read a tutorial on how to install and use the Git version control system.
-
-* [https://github.com/git-guides/install-git Git Guides - install git · GitHub]
-* [https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository Git - Getting a Git Repository]
-* [https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository Cloning a repository - GitHub Docs]
+Starter kit installation instructions include steps like "Clone this repository" or "Check out this code." If you come from a non-programming background, you might find it useful to first read a tutorial on how to [[GitClone|install Git]] and use the CommandLine.
 
 === Using the command line ===
 
-Starter kit installation instructions often assume that you are using Git from the command line so that you can type `git clone ...'. If you are not sure how to open a terminal on your computer,
-
-* *Windows:* Click the start menu, type cmd, and select "Command Prompt". [https://www.dpconline.org/handbook/tool-demos/command-line-intro/command-basics Tutorial]
-* *Mac OS X:* Open the Applications folder, open Utilities, and start Terminal. [https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line Tutorial]
-* *Linux:* This depends on your distribution of Linux. In general, look for an application that mentions being a terminal or a console. [https://documentation.ubuntu.com/desktop/en/latest/tutorial/the-linux-command-line-for-beginners/ Ubuntu tutorial]
-
-You can use the command-line to try a starter kit without committing to it. If you use `--init-directory' when starting Emacs, you can try many starter kits without committing to using them. For example, if you've checked out [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] into the `emacs-bedrock/' directory, the following command starts an Emacs session with that as the basis.
+You can use the [[CommandLine|command line (tutorial)]] to try a starter kit without committing to it. If you use `--init-directory' when starting Emacs, you can try many starter kits without committing to using them. For example, if you've checked out [https://codeberg.org/ashton314/emacs-bedrock Emacs Bedrock] into the `emacs-bedrock/' directory, the following command starts an Emacs session with that as the basis.
 
    emacs --init-directory emacs-bedrock/
 
@@ -109,7 +99,7 @@ has screenshots and lots of explanations.
 *** [https://github.com/bbatsov/prelude bbatsov/prelude] Includes a [https://prelude.emacsredux.com/en/latest/ user manual]; a little closer to the standard Emacs experience compared to Spacemacs and Doom Emacs
 *** [https://github.com/LionyxML/emacs-kick Emacs Kick]: focused on people coming from a Vim background
 *** [https://github.com/MiniApollo/kickstart.emacs MiniApollo/kickstart.emacs]: [https://github.com/MiniApollo/kickstart.emacs/blob/main/init.org Literate configuration] which includes lots of comments
-** More complex: changes Emacs extensively; if you need help, start by asking the starter kit community because they have more experience with it
+** More complex: changes Emalitcs extensively; if you need help, start by asking the starter kit community because they have more experience with it
 *** [https://github.com/doomemacs/doomemacs Doom Emacs]: great for people coming from Vim; has [https://github.com/doomemacs/doomemacs/blob/master/docs/index.org documentation]; [https://github.com/doomemacs/doomemacs#getting-help help is available] via Discord
 **** [https://www.youtube.com/playlist?list=PLhXZp00uXBk4np17N39WvB80zgxlZfVwj DoomCasts: Emacs Doom Screencasts - YouTube]
 **** [https://www.youtube.com/playlist?list=PLyy8KUDC8P7X6YkegqrnEnymzMWCNB4bN Doom Emacs Tutorials by DistroTube - YouTube]
