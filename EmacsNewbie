@@ -29,8 +29,19 @@
 
 == Next Steps ==
 
+If you're learning Emacs because you're curious about Org Mode or Magit, check out the following tutorials:
+
+* OrgMode
+** [https://orgmode.org/worg/org-tutorials/index.html Org tutorials]
+* [[Magit]]
+** [https://magit.vc/screenshots/ It's Magit! A visual walk-through]
+** [https://www.masteringemacs.org/article/introduction-magit-emacs-mode-git An introduction to Magit, an Emacs mode for Git - Mastering Emacs]
+
+Other resources:
+
 * KeyboardMacros -- Automate repetitive actions by recording what you do (mouse, menu, keyboard) and then playing it back again.
 * CategoryDocumentation -- Read on...
+
 
 
 ----
