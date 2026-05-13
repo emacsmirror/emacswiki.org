@@ -1,6 +1,8 @@
 [http://git-scm.com/ Git is a distributed version control system] much like [[Mercurial]], [[Bazaar]]
 and DaRcs.
 
+If you are new to Git and you need to run ##git clone ...##, see GitClone for beginner tips.
+
 == Official Front Ends ==
 
 Emacs comes with a front end for Git, supporting a large subset of Git's functionality.
