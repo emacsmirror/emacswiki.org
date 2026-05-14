@@ -99,7 +99,7 @@ has screenshots and lots of explanations.
 *** [https://github.com/bbatsov/prelude bbatsov/prelude] Includes a [https://prelude.emacsredux.com/en/latest/ user manual]; a little closer to the standard Emacs experience compared to Spacemacs and Doom Emacs
 *** [https://github.com/LionyxML/emacs-kick Emacs Kick]: focused on people coming from a Vim background
 *** [https://github.com/MiniApollo/kickstart.emacs MiniApollo/kickstart.emacs]: [https://github.com/MiniApollo/kickstart.emacs/blob/main/init.org Literate configuration] which includes lots of comments
-** More complex: changes Emalitcs extensively; if you need help, start by asking the starter kit community because they have more experience with it
+** More complex: changes Emacs extensively; if you need help, start by asking the starter kit community because they have more experience with it
 *** [https://github.com/doomemacs/doomemacs Doom Emacs]: great for people coming from Vim; has [https://github.com/doomemacs/doomemacs/blob/master/docs/index.org documentation]; [https://github.com/doomemacs/doomemacs#getting-help help is available] via Discord
 **** [https://www.youtube.com/playlist?list=PLhXZp00uXBk4np17N39WvB80zgxlZfVwj DoomCasts: Emacs Doom Screencasts - YouTube]
 **** [https://www.youtube.com/playlist?list=PLyy8KUDC8P7X6YkegqrnEnymzMWCNB4bN Doom Emacs Tutorials by DistroTube - YouTube]
