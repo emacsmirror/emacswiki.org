@@ -30,7 +30,7 @@ Org-mode is included by default from Emacs 22.1 onward. No additional steps are 
 Intermediate/advanced users: If you want, you can [https://orgmode.org/worg/dev/index.html install the latest development version] using [[GitClone|git clone https://git.savannah.nongnu.org/git/org-mode.git]].
 
 [:using]
-== Learning and Using Org Mode ==
+== Using Org Mode ==
 
 * Check the Org Mode website for many [https://orgmode.org/worg/org-tutorials/index.html Org Mode tutorials] and [http://orgmode.org/worg/ other resources].
 
