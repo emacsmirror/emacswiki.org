@@ -1,5 +1,7 @@
 For the common use case where you want to edit HTML, Javascript, and CSS in an .html file, see [https://web-mode.org/ Web Mode].
 
+Since Emacs 26, the build-in mhtml-mode supports this use-case out of the box.
+
 Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 
 = polymode =
