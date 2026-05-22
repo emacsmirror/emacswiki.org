@@ -15,7 +15,8 @@ I can be reached at r.zeitler@ieee.org.  But questions or comments that pertain 
 My .emacs:
 <pre>
 ;;; -*- lexical-binding: t -*-
-;;; Time-stamp: "2026-04-21 22:05:23 RayZ"
+;;; Time-stamp: "2026-05-21 12:21:06 RayZ"
+;;; 2026-04-25 Uploaded to my emacs wiki page at https://emacswiki.org
 
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
@@ -123,8 +124,12 @@ invocation, eventually."
   (shell-command (buffer-substring (line-beginning-position)
                                    (line-end-position))))
 
+;; Visit the next/previous window/tab...
+(keymap-global-set "s-<next>" 'other-window)
+(keymap-global-set "s-<prior>" #'(lambda () (interactive) (other-window -1)))
 (keymap-global-set "C-<tab>" 'next-buffer)
 (keymap-global-set "C-S-<tab>" 'previous-buffer)
+
 (keymap-global-set "C-c x" 'exeln)
 (keymap-global-set "C-c s" 'shellfn)
 (keymap-global-set "C-c d" 'insert-date-and-time)
@@ -222,6 +227,10 @@ invocation, eventually."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(archive-zip-expunge '("C:\\Program Files\\7-Zip\\7z.exe" "d"))
+ '(archive-zip-extract '("C:\\Program Files\\7-Zip\\7z.exe" "e" "-so"))
+ '(archive-zip-update '("C:\\Program Files\\7-Zip\\7z.exe" "u" "-spf"))
+ '(archive-zip-update-case '("zip" "u" "-spf"))
  '(auto-revert-verbose t)
  '(bbdb-default-country "USA")
  '(bbdb-default-xfield 'connection)
@@ -231,9 +240,9 @@ invocation, eventually."
  '(cal-tex-24 t)
  '(cal-tex-diary t)
  '(calendar-daylight-time-zone-name "EDT")
- '(calendar-latitude 41.42424242)
+ '(calendar-latitude 41.8008492581101)
  '(calendar-location-name "Home")
- '(calendar-longitude -72.42424242)
+ '(calendar-longitude -72.855608613203)
  '(calendar-standard-time-zone-name "EST")
  '(calendar-time-display-form
    '(24-hours ":" minutes (if time-zone " (") time-zone
@@ -243,6 +252,7 @@ invocation, eventually."
  '(context-menu-mode nil)
  '(cursor-type 'bar)
  '(delete-selection-mode t)
+ '(dired-guess-shell-gzip-quiet nil)
  '(holiday-other-holidays
    '((holiday-fixed 1 28 "Data Privacy Day")
      (holiday-fixed 2 5 "National Weatherperson's Day")
@@ -277,8 +287,8 @@ invocation, eventually."
       ((org-agenda-span nil) (org-agenda-files '("~/job_search.org"))))
      ("Jn" "Jobs -- No Interview" tags "+Apply+TODO=\"DONE\""
       ((org-agenda-span nil) (org-agenda-files '("~/job_search.org"))))
-     ("R" "Med Refills" agenda "+Refill"
-      ((org-agenda-span 'week) (org-agenda-files '("~/meds.org"))))
+     ("R" "Med Refills" tags-todo "+Refill"
+      ((org-agenda-span nil) (org-agenda-files '("~/teresa.org"))))
      ("f" "Fortnight View" tags ""
       ((org-agenda-span 'fortnight) (org-agenda-overriding-header "")))
      ("n" "Agenda and all TODOs" ((agenda "" nil) (alltodo "" nil))
@@ -299,9 +309,9 @@ invocation, eventually."
 		(org-agenda-span 'day))))
       nil)))
  '(org-agenda-files
-   '("~/todo.org" "c:/Users/RayZ/AppData/Roaming/HOME/wife.org"
+   '("c:/Users/RayZ/AppData/Roaming/HOME/todo.org"
+     "c:/Users/RayZ/AppData/Roaming/HOME/teresa.org"
      "c:/Users/RayZ/AppData/Roaming/HOME/sgi.org"
-     "c:/Users/RayZ/AppData/Roaming/HOME/todo.org"
      "c:/Users/RayZ/AppData/Roaming/HOME/SDB.org"
      "c:/Users/RayZ/AppData/Roaming/HOME/job_search.org"
      "c:/Users/RayZ/AppData/Roaming/HOME/ieee.org"
@@ -336,10 +346,14 @@ invocation, eventually."
       :empty-lines 1 :time-prompt t)
      ("b" "Blog entry task for org-mode")
      ("bl" "Luddite Geek topic" entry (file+headline "blog.org" "LG")
-      "* STARTED \12%c\12%x\12%?" :clock-in t :clock-keep t
-      :jump-to-captured t)
+      "* STARTED [[https://ludditegeek.blogspot.com][Luddite Geek]] \12%c\12%x\12%?"
+      :clock-in t :clock-keep t :jump-to-captured t)
      ("bs" "Square Peg topic" entry
-      (file+headline "blog.org" "SPoaRW") "* STARTED \12%c\12%?"
+      (file+headline "blog.org" "^* SPoaRW .+$")
+      "* STARTED [[https://square--peg.blogspot.com][Website]] \12%c\12%?"
+      :clock-in t :clock-keep t :jump-to-captured t)
+     ("br" "Recipe" entry (file+headline "blog.org" "SPoaRW")
+      "* STARTED [[https://square--peg.blogspot.com][Website]] \12%c\12%?"
       :clock-in t :clock-keep t :jump-to-captured t)
      ("bt" "Teresa's topic" entry (file+regexp "blog.org" "CatCrzy")
       "* STARTED \12%c\12%?" :clock-in t :clock-keep t
@@ -358,7 +372,7 @@ invocation, eventually."
    '((auto-mode . emacs) (directory . emacs) ("\\.mm\\'" . default)
      ("\\.x?html?\\'" . default) ("\\.pdf\\'" . default)
      ("\\.od[pst]\\'" . default) ("\\.docx?\\'" . default)
-     ("\\.xlsx?\\'" . default)))
+     ("\\.xlsx?\\'" . default) ("\\.pptx?\\'" . default)))
  '(org-link-search-must-match-exact-headline nil)
  '(org-log-state-notes-insert-after-drawers t)
  '(org-mode-hook
@@ -380,6 +394,8 @@ invocation, eventually."
    '(yank-link activate-stars activate-bullets activate-checkboxes))
  '(org-return-follows-link t)
  '(org-reverse-note-order t)
+ '(org-tag-alist nil)
+ '(org-tag-persistent-alist '(("note" . 78) ("today" . 84)))
  '(org-timestamp-rounding-minutes '(6 6))
  '(org-todo-keywords
    '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "|"
