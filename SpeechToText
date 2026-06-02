@@ -2,6 +2,7 @@
 == Speech Recognition Engines ==
 
 These are the programs implementing the actual speech recognition:
+* Talon (free as in beer) https://talon.wiki/
 * !DragonDictate (proprietary license, Windows only) http://www.ddwin.com/dictate.htm
 * Dragon !NaturallySpeaking (proprietary license, Windows only) http://www.ddwin.com/natural.htm
 ** Natlink is a Python library that interfaces with it. http://qh.antenna.nl/unimacro/index.html
@@ -21,6 +22,10 @@ There were several packages for driving Emacs through voice input, but mostly no
 ==== Whisper ====
 
 https://github.com/natrys/whisper.el is a "Speech-to-Text interface for Emacs using OpenAI’s whisper speech recognition model. For the inference engine it uses the awesome C/C++ port whisper.cpp that can run on consumer grade CPU (without requiring a high end GPU)."
+
+==== phony.el ====
+
+https://github.com/ErikPrantare/phony.el "Bindings for defining voice commands in Emacs." (Uses talon)
 
 === Dormant? ===
 
