@@ -1,0 +1,6 @@
+> ;; sadly, url-http-codes is a defconst, so we cannot use let to bind it
+
+Let-binding seems to work for me? (checked with Emacs 28.3, and today's master).
+
+-- npostavs 2026-06-03 17:40 UTC
+
