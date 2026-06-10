@@ -4,3 +4,10 @@ Let-binding seems to work for me? (checked with Emacs 28.3, and today's master).
 
 -- npostavs 2026-06-03 17:40 UTC
 
+
+----
+
+Yes, let-binding works with `defconst` vars the same way it works with `defvar` vars.
+
+-- DrewAdams 2026-06-10 16:00 UTC
+
