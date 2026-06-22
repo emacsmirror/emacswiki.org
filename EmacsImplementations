@@ -21,6 +21,7 @@ Other implementations still alive:
 ** [[Climacs]], a Common Lisp Implementation of Emacs
 ** Second Climacs (successor to Climacs, in development)
 ** [[PortableHemlock]], a Common Lisp variant of Hemlock „to free Hemlock from its CMUCL prison”
+** [[Lem]], a Common Lisp Emacs-alike which claims not to imitate Emacs but actually does steal a lot of ELisp code more or less directly...
 
 
 Other more or less obscure implementations:
