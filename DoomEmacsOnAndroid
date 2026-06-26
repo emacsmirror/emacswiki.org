@@ -257,27 +257,6 @@ To enable <tt>menu-bar</tt> and <tt>tool-bar</tt>, add the following to emacs co
               (tooltip-mode 1))))
 [/code]
 
-=Suggestion: Move user-emacs-directory to /sdcard/emacs/cache/=
-To reduce the risk of loosing precious files such as <tt>recentf</tt> and <tt>bookmarks</tt> it might be a
-good idea to move directory <tt>$HOME/.config/emacs/.local/cache/</tt>
-to, say, under <tt>/sdcard/emacs/</tt>:
-[code]
-$ mkdir -p /sdcard/emacs
-$ cp -r -p $HOME/.config/emacs/.local/cache/ /sdcard/emacs/
-[/code]
-
-Then put the following in your emacs config file:
-[code]
-(customize-set-variable 'user-emacs-directory "/sdcard/emacs/cache/")
-(setq doom-cache-dir user-emacs-directory)
-(customize-set-variable 'bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory))
-(customize-set-variable 'bookmark-save-flag 1) ; Save bookmark list immediately when it has been updated.
-(after! recentf
-  (progn
-    (setq recentf-max-saved-items 10000) ; Set it to whatever you prefer, the default is too small
-    (add-hook 'find-file-hook 'recentf-save-list)))
-[/code]
-
 =Suggestion: run "doom doctor", when Doom Emacs has been configured=
 When Doom Emacs has been installed and configured, it is a good idea to check that there is nothing amiss, for example expected applications in Termux:
 [code]
