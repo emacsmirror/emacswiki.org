@@ -728,12 +728,17 @@ The problem is that when I jump to a bookmark created for a xwidget webkit buffe
 the buffer is created but no window shows it.  This doesn't happen when using emacs built-in bookmark library.
 
 Emacs version: 31.0.50
+
 (bookmark+-1.el) Update #: 9764
 
 Recipe:
+
 1. M-x xwidget-webkit-browse-url RET https://example.com
+
 2. C-x r m (bookmark-set) -> name it, e.g. "example"
+
 3. Restart Emacs
+
 3. C-x r b example (bookmark-jump)
 
 Expected: The xwidget-webkit buffer is displayed in a window.
