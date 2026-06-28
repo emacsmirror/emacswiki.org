@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 28 13:09:39 2026 (-0700)
+;; Last-Updated: Sun Jun 28 13:53:51 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 9775
+;;     Update #: 9778
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7845,6 +7845,8 @@ If either is a record then it need not belong to `bookmark-alist'."
           (m2           '(nil))
           (t            nil))))
 
+;; Keep this alias for a while, in case someone has it referenced in a bookmark or state file.
+(defalias 'bmkp-visited-more-cp 'bmkp-visited-more-often-cp)
 (defun bmkp-visited-more-often-cp (b1 b2)
   "True if bookmark B1 was visited more often than B2.
 Return nil if incomparable as described.
@@ -7867,7 +7869,7 @@ If either is a record then it need not belong to `bookmark-alist'."
           (v2                '(nil))
           (t                 nil))))
 
-;; Keep this alias for a while, in case someone has it referenced in a state file.
+;; Keep this alias for a while, in case someone has it referenced in a bookmark or state file.
 (defalias 'bmkp-bookmark-last-access-cp 'bmkp-visited-more-recently-cp)
 (bmkp-make-obsolete 'bmkp-bookmark-last-access-cp 'bmkp-visited-more-recently-cp "2025-08-20")
 
