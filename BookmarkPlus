@@ -3465,7 +3465,6 @@ You can also change directly to one of the main sort orders
 * '''`##s 0##'''' -- Sort by bookmark creation date/time
 * '''`##s b##'''' -- Sort by last __b__uffer or file access
 * '''`##s a##'''' -- Sort __a__nnotated (`##a##') before unannotated
-* '''`##s d##'''' -- Sort by last bookmark access __d__ate/time
 * '''`##s D##'''' -- Sort flagged (`##D##') before unflagged
 * '''`##s f d##'''' -- Sort by last local __f__ile access __d__ate/time
 * '''`##s f k##'''' -- Sort by local __f__ile __k__ind: file, symlink, dir
@@ -3478,16 +3477,17 @@ You can also change directly to one of the main sort orders
 * '''`##s n##'''' -- Sort by bookmark __n__ame
 * '''`##s t##'''' -- Sort __t__agged (`##t##') before untagged
 * '''`##s v##'''' -- Sort by __v__isit frequency
+* '''`##s r##'''' -- Sort by visit __r__ecency
 
 You can __r__everse the current sort direction (ascending/descending)
-using '''`##s r##''''.  Also, repeating any of the main sort-order commands
+using '''`##s R##''''.  Also, repeating any of the main sort-order commands
 (e.g. `##s n##') cycles among that order, the reverse, and
 unsorted.
 
 [For a complex sort, which involves composing several sorting
 conditions, you can also use '''`##s C-r##'''' to reverse the order of
 bookmark sorting groups or the order within each group (depending
-on whether `##s r##' is also used).  Try it, for example, together with sorting by bookmark kind (`##s k##').
+on whether `##s R##' is also used).  Try it, for example, together with sorting by bookmark kind (`##s k##').
 
 Be aware that `##s C-r##' can be a bit
 unintuitive.  If it does not do what you expect or want, or if it
@@ -4296,8 +4296,8 @@ names manually, they are updated automatically.  In
 particular, updating a bookmark ''increments the recorded number of
 visits'' to the Info node and the ''time of the last visit''.
 
-You can ''sort'' bookmarks in the bookmark-list display by the time of
-last visit, using '''`s d'''', or by the number of visits, using '''`s v''''.
+You can ''sort'' bookmarks in the bookmark-list display by the visit 
+recency (time of last visit), using '''`s r'''', or by the number of visits, using '''`s v''''.
 
 This gives you an easy way to see which parts of the manuals you
 have visited most recently and how much you have visited them.
