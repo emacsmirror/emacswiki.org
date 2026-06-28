@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 28 13:53:51 2026 (-0700)
+;; Last-Updated: Sun Jun 28 14:40:44 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 9778
+;;     Update #: 9783
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -9255,7 +9255,7 @@ the file is an image file then the description includes the following:
         (function-p       (bmkp-function-bookmark-p bookmark))
         (kmacro-p         (bmkp-kmacro-list-bookmark-p bookmark))
         (variable-list-p  (bmkp-variable-list-bookmark-p bookmark))
-        (search-hits-p    (bmkp-icicles-search-hits-bookmark-p bookmark))
+        (search-hits-p    (and (featurep 'icicles)  (bmkp-icicles-search-hits-bookmark-p bookmark)))
         (non-invokable-p  (bmkp-non-invokable-bookmark-p bookmark))
         (desktop-p        (bmkp-desktop-bookmark-p bookmark))
         (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark))
@@ -10209,6 +10209,8 @@ You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
 searched correspond to the recorded search hits."
   (interactive)
+  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
+    (error "This command can be used only during Icicles search"))
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (bmkp-retrieve-icicle-search-hits-1))
 
@@ -10219,6 +10221,8 @@ You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
 searched correspond to the recorded search hits."
   (interactive)
+  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
+    (and (boundp 'icicle-mode)  icicle-mode) (error "This command can be used only during Icicles search"))
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (bmkp-retrieve-icicle-search-hits-1 'MORE))
 
@@ -11689,7 +11693,7 @@ You need library `narrow-indirect.el' to use this command."
     (error "You need library `narrow-indirect.el' for this command"))
   (let ((bmkp-handle-region-function  'bmkp-handle-region+narrow-indirect))
     (call-interactively
-     (if (and (boundp 'icicle-mode)  icicle-mode) ; Icicles
+     (if (fboundp 'icicle-bookmark-region-other-window) ; Icicles
          #'icicle-bookmark-region-other-window
        #'bmkp-region-jump-other-window))))
 
