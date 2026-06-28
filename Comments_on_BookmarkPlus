@@ -762,7 +762,8 @@ Anyway, send me a bug report by email and I'll try to follow up. Thanks for your
 
 ----
 
-As a quick check, could you try with this redefinition of `xwidget-webkit-bookmark-jump-handler'? The only change from the vanilla 30.2 version is the addition of the last sexp: `(when bmkp-jump-display-function...)'.
+[new:DrewAdams:2026-06-28 22:43 UTC]
+Zhengyi: As a quick check, could you try with this redefinition of `xwidget-webkit-bookmark-jump-handler'? The only change from the vanilla 30.2 version is the addition of the last sexp: `(when bmkp-jump-display-function...)'.
 
 <pre>
 (defun xwidget-webkit-bookmark-jump-handler (bookmark)
