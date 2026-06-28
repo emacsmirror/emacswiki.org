@@ -4,11 +4,11 @@
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Sep 15 18:09:29 2024 (-0700)
-;;           By: dradams
-;;     Update #: 238
+;; Last-Updated: Sun Jun 28 13:04:26 2026 (-0700)
+;;           By: drew0
+;;     Update #: 243
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -16,7 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `bookmark', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -105,7 +105,8 @@
 ;;    `bmkp-define-type-from-hander', `bmkp-lexlet', `bmkp-lexlet*',
 ;;    `bmkp-make-plain-predicate', `bmkp-menu-bar-make-toggle',
 ;;    `bmkp-with-bookmark-dir', `bmkp-with-help-window',
-;;    `bmkp-with-output-to-plain-temp-buffer'.
+;;    `bmkp-with-output-to-plain-temp-buffer',
+;;    `with-buffer-modified-unmodified'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -142,6 +143,9 @@
 ;; bookmark-bmenu-surreptitiously-rebuild-list, bmkp-get-bookmark,
 ;; bookmark-get-filename
 
+;; Quiet the byte-compiler
+
+(defvar lexical-binding) ; Emacs 24+
  
 ;;(@* "Functions")
 
@@ -182,6 +186,14 @@
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+;; Same as what's defined in vanilla `bookmark.el'.
+;;;###autoload (autoload 'with-buffer-modified-unmodified "bookmark+")
+(defmacro with-buffer-modified-unmodified (&rest body)
+  "Save and restore `buffer-modified-p' state around BODY."
+  (let ((was-modified  (make-symbol "was-modified")))
+    `(let ((,was-modified  (buffer-modified-p)))
+       (unwind-protect (progn ,@body) (set-buffer-modified-p ,was-modified)))))
 
 ;; Same as `icicle-with-help-window' in `icicles-mac.el'.
 ;;;###autoload (autoload 'bmkp-with-help-window "bookmark+")
