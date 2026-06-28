@@ -760,5 +760,24 @@ You can also try to get some debug info, by entering the handler you see in your
 
 Anyway, send me a bug report by email and I'll try to follow up. Thanks for your report, and sorry for the trouble.
 
-Reply to Zhengyi
+----
 
+As a quick check, could you try with this redefinition of `xwidget-webkit-bookmark-jump-handler'? The only change from the vanilla 30.2 version is the addition of the last sexp: `(when bmkp-jump-display-function...)'.
+
+<pre>
+(defun xwidget-webkit-bookmark-jump-handler (bookmark)
+  "Jump to the web page bookmarked by the bookmark record BOOKMARK.
+If `xwidget-webkit-bookmark-jump-new-session' is non-nil, create
+a new xwidget-webkit session, otherwise use an existing session."
+  (let* ((url (bookmark-prop-get bookmark 'page))
+	 (xwbuf (if (or xwidget-webkit-bookmark-jump-new-session
+                        (not (xwidget-webkit-current-session)))
+	            (xwidget-webkit--create-new-session-buffer url)
+                  (xwidget-buffer (xwidget-webkit-current-session)))))
+    (with-current-buffer xwbuf
+      (xwidget-webkit-goto-uri (xwidget-webkit-current-session) url))
+    (set-buffer xwbuf)
+    (when bmkp-jump-display-function
+      (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
+      (raise-frame))))
+</pre>
