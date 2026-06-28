@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul 29 15:38:57 2025 (-0700)
-;;           By: dradams
-;;     Update #: 15433
+;; Last-Updated: Sun Jun 28 13:36:34 2026 (-0700)
+;;           By: drew0
+;;     Update #: 15440
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -463,7 +463,7 @@
 ;;       variable for your type, again, for use with
 ;;       `bookmark-completing-read'.
 ;;
-;;    You can use macro `bmkp-define-type-from-hander' to define a
+;;    You can use macro `bmkp-define-type-from-handler' to define a
 ;;    simple bookmark type that's based only on a given handler.  You
 ;;    pass it the TYPE name and HANDLER name as arguments.  It does #1
 ;;    and #2 above, plus it defines:
@@ -3064,7 +3064,6 @@
 ;;  `s 0'   – Sort by bookmark creation date/time
 ;;  `s b'   – Sort by last buffer or file access
 ;;  `s a'   – Sort annotated (`a') before unannotated
-;;  `s d'   – Sort by last bookmark access date/time
 ;;  `s D'   – Sort flagged (`D') before unflagged
 ;;  `s f d' – Sort by last local file access date/time
 ;;  `s f k' – Sort by local file kind: file, symlink, dir
@@ -3076,16 +3075,17 @@
 ;;  `s k'   – Sort by bookmark type (kind)
 ;;  `s n'   – Sort by bookmark name
 ;;  `s t'   – Sort tagged (`t') before untagged
-;;  `s v'   – Sort by visit frequency
+;;  `s v'   – Sort by bookmark visit frequency
+;;  `s r'   – Sort by bookmark visit recency (last use date/time)
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
-;;  using `s r'.  Also, repeating any of the main sort-order commands
+;;  using `s R'.  Also, repeating any of the main sort-order commands
 ;;  (e.g. `s n') cycles among that order, the reverse, and unsorted.
 ;;
 ;;  For a complex sort, which involves composing several sorting
 ;;  conditions, you can also use `s C-r' to reverse the order of
 ;;  bookmark sorting groups or the order within each group (depending
-;;  on whether `s r' is also used).  Try it, for example, together
+;;  on whether `s R' is also used).  Try it, for example, together
 ;;  with sorting by bookmark kind (`s k').
 ;;
 ;;  Be aware that `s C-r' can be a bit unintuitive.  If it does not do
@@ -3814,8 +3814,9 @@
 ;;  increments the recorded number of visits to the Info node and the
 ;;  time of the last visit.
 ;;
-;;  You can sort bookmarks in the bookmark-list display by the time of
-;;  last visit, using `s d', or by the number of visits, using `s v'.
+;;  You can sort bookmarks in the bookmark-list display by the visit
+;;  recency (time of last visit), using `s r', or by the number of
+;;  visits, using `s v'.
 ;;
 ;;  This gives you an easy way to see which parts of the manuals you
 ;;  have visited most recently and how much you have visited them.
