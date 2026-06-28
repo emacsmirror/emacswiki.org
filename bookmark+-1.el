@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug 20 14:29:19 2025 (-0700)
-;;           By: dradams
-;;     Update #: 9764
+;; Last-Updated: Sun Jun 28 13:09:39 2026 (-0700)
+;;           By: drew0
+;;     Update #: 9775
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -445,9 +445,8 @@
 ;;    `bmkp-types-alist', `bmkp-unomit-all', `bmkp-untag-a-file',
 ;;    `bmkp-url-target-set', `bmkp-url-jump',
 ;;    `bmkp-url-jump-other-window', `bmkp-variable-list-jump',
-;;    `bmkp-version', `bmkp-visit-external-annotation',
-;;    `bmkp-w32-browser-jump', `bmkp-w3m-jump',
-;;    `bmkp-w3m-jump-other-window',
+;;    `bmkp-visit-external-annotation', `bmkp-w32-browser-jump',
+;;    `bmkp-w3m-jump', `bmkp-w3m-jump-other-window',
 ;;    `bmkp-wrap-bookmark-with-last-kbd-macro'.
 ;;
 ;;  User options defined here:
@@ -509,8 +508,7 @@
 ;;    `bmkp-autonamed-this-buffer-alist-only',
 ;;    `bmkp-autonamed-this-buffer-bookmark-p',
 ;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-data-from-record',
-;;    `bmkp-bookmark-description', `bmkp-bookmark-last-access-cp',
-;;    `bmkp-bookmark-file-alist-only',
+;;    `bmkp-bookmark-description', `bmkp-bookmark-file-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-name-member',
@@ -722,8 +720,7 @@
 ;;    `bmkp-specific-files-history', `bmkp-store-org-link-checking-p',
 ;;    `bmkp-tag-history', `bmkp-tags-alist', `bmkp-temporary-history',
 ;;    `bmkp-url-history', `bmkp-use-w32-browser-p',
-;;    `bmkp-variable-list-history', `bmkp-version-number',
-;;    `bmkp-w3m-history'.
+;;    `bmkp-variable-list-history', `bmkp-w3m-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -956,6 +953,7 @@
 (defvar kmacro-counter)                 ; In `kmacro.el'
 (defvar kmacro-counter-format-start)    ; In `kmacro.el'
 (defvar kmacro-ring)                    ; In `kmacro.el'
+(defvar last-repeatable-command)        ; In `repeat.el'
 (defvar Man-arguments)                  ; In `man.el'
 (defvar Man-notify-method)              ; In `man.el'
 (defvar org-store-link-functions)       ; In `org.el'
@@ -964,7 +962,7 @@
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+
 (defvar repeat-previous-repeated-command) ; In `repeat.el'
 (defvar repeat-message-function)        ; In `repeat.el'
-(defvar last-repeatable-command)        ; In `repeat.el'
+(defvar user-emacs-directory)           ; Emacs 23+
 (defvar w3m-current-title)              ; In `w3m.el'
 (defvar w3m-current-url)                ; In `w3m.el'
 (defvar w3m-mode-map)                   ; In `w3m.el'
@@ -5497,7 +5495,7 @@ NAME."
 (defun bmkp-send-bug-report ()          ; Not bound
   "Send a bug report about a Bookmark+ problem."
   (interactive)
-  (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+  (browse-url (format (concat "mailto:" "drew0000000" "@" "gmail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
@@ -7869,6 +7867,10 @@ If either is a record then it need not belong to `bookmark-alist'."
           (v2                '(nil))
           (t                 nil))))
 
+;; Keep this alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-bookmark-last-access-cp 'bmkp-visited-more-recently-cp)
+(bmkp-make-obsolete 'bmkp-bookmark-last-access-cp 'bmkp-visited-more-recently-cp "2025-08-20")
+
 (defun bmkp-visited-more-recently-cp (b1 b2)
   "True if bookmark B1 was visited more recently than B2.
 Return nil if incomparable as described.
@@ -7926,30 +7928,6 @@ If either is a record then it need not belong to `bookmark-alist'."
   (let ((time1  (bookmark-prop-get b1 'created))
         (time2  (bookmark-prop-get b2 'created)))
     (if (or time1  time2) (equal time1 time2) (equal b1 b2))))
-
-(defun bmkp-bookmark-last-access-cp (b1 b2)
-  "True if bookmark B1 was visited more recently than B2.
-Return nil if incomparable as described.
-
-True also if B1 was visited but B2 was not.
-Reverse the roles of B1 and B2 for a false value.
-A true value is returned as `(t)', a false value as `(nil)'.
-
-B1 and B2 are full bookmarks (records) or bookmark names.
-If either is a record then it need not belong to `bookmark-alist'."
-  (setq b1  (bmkp-get-bookmark b1)
-        b2  (bmkp-get-bookmark b2))
-  (let ((t1  (bmkp-get-visit-time b1))
-        (t2  (bmkp-get-visit-time b2)))
-    (cond ((and t1 t2)
-           (setq t1  (bmkp-float-time t1)
-                 t2  (bmkp-float-time t2))
-           (cond ((> t1 t2)  '(t))
-                 ((> t2 t1)  '(nil))
-                 (t          nil)))
-          (t1                '(t))
-          (t2                '(nil))
-          (t                 nil))))
 
 (defun bmkp-buffer-last-access-cp (b1 b2)
   "True if bookmark B1's buffer or file was visited more recently than B2's.
