@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 28 14:40:44 2026 (-0700)
+;; Last-Updated: Sun Jun 28 14:58:47 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 9783
+;;     Update #: 9784
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -10209,8 +10209,6 @@ You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
 searched correspond to the recorded search hits."
   (interactive)
-  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
-    (error "This command can be used only during Icicles search"))
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (bmkp-retrieve-icicle-search-hits-1))
 
@@ -10221,8 +10219,6 @@ You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
 searched correspond to the recorded search hits."
   (interactive)
-  (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
-    (and (boundp 'icicle-mode)  icicle-mode) (error "This command can be used only during Icicles search"))
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (bmkp-retrieve-icicle-search-hits-1 'MORE))
 
