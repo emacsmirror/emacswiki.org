@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 20 14:33:18 2025 (-0700)
-;;           By: dradams
-;;     Update #: 17080
+;; Last-Updated: Sun Jun 28 13:34:05 2026 (-0700)
+;;           By: drew0
+;;     Update #: 17115
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/06/28 drew0
+;;     Removed bmkp-bookmark-last-access-cp.  Replaced it with alias to bmkp-visited-more-recently-cp.
+;;     bmkp-send-bug-report: Updated address.
 ;; 2025/08/20 dadams
 ;;     Include bookmark attribute last-modified, from Emacs 29+.
 ;;     Renamed bookmark attribute time to last-visited.
@@ -1610,6 +1613,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/06/28 drew0
+;;     Corrected bmkp-bmenu-sort-by-bookmark-visit-frequency: had forgotten rename of
+;;      bmkp-visited-more-cp to bmkp-visited-more-often-cp.
+;;     Replaced bmkp-bmenu-sort-by-last-bookmark-access by bmkp-bmenu-sort-by-bookmark-visit-recency.
+;;      Changed binding from s d to s r.  Replace in bookmark-bmenu-mode and bmkp-bmenu-sort-menu doc.
+;;     bmkp-bmenu-sort-by-bookmark-visit-frequency: bmkp-visited-more-cp -> bmkp-visited-more-often-cp.
+;;     Changed binding of bmkp-reverse-sort-order from s r to s R.
 ;; 2025/07/30 dadams
 ;;     bmkp-bmenu-edit-menu: Added bmkp-bmenu-edit-bookmark-name-and-location.
 ;; 2025/07/27 dadams
@@ -2360,6 +2370,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-doc.el'")
 ;;
+;; 2026/06/28 drew0
+;;     Sorting Bookmarks: bookmark access date/time -> bookmark visit frequency. Binding s d -> s v.
+;;                        Reverse sort binding changed from s r to s R.
+;;     Automatic Info Bookmarking: s d -> s r.
 ;; 2024/09/16 dadams
 ;;     Added doc about bmkp-define-type-from-hander.
 ;; 2020/07/04 dadams
@@ -2703,6 +2717,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2026/06/21 drew0
+;;     Added vacuous defvar for lexical-binding.
 ;; 2025/05/07 dadams
 ;;     Added macro with-buffer-modified-unmodified, from vanilla bookmark.el.
 ;; 2024/09/16 dadams
@@ -2766,6 +2782,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/06/28 drew0
+;;     Version 2026.06.28
 ;; 2025/08/20 dadams
 ;;     Version 2025.08.20
 ;; 2025/07/30 dadams
