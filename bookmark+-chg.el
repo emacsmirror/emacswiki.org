@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 28 13:34:05 2026 (-0700)
+;; Last-Updated: Sun Jun 28 15:10:41 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17115
+;;     Update #: 17126
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -149,6 +149,8 @@
 ;; 2026/06/28 drew0
 ;;     Removed bmkp-bookmark-last-access-cp.  Replaced it with alias to bmkp-visited-more-recently-cp.
 ;;     bmkp-send-bug-report: Updated address.
+;;     bmkp-bookmark-description: Check (featurep 'icicles).
+;;     bmkp-region-jump-narrow-indirect-other-window: simple fboundp check, not icicle-mode check.
 ;; 2025/08/20 dadams
 ;;     Include bookmark attribute last-modified, from Emacs 29+.
 ;;     Renamed bookmark attribute time to last-visited.
@@ -159,6 +161,7 @@
 ;;     bmkp-get-visit-time: Support both last-visited (new name) and time (old name).
 ;;     Added: bmkp-visited-more-recently-cp.
 ;;     Renamed bmkp-visited-more-cp to bmkp-visited-more-often-cp.
+;;     bmkp-retrieve-icicle-search-hits-1: Error if not icicle-searching-p.
 ;; 2025/07/29 dadams
 ;;     Added bmkp-bookmark-all-dired-buffers.
 ;; 2025/07/27 dadams
