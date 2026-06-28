@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2025, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jul 30 09:39:26 2025 (-0700)
-;;           By: dradams
-;;     Update #: 4316
+;; Last-Updated: Sun Jun 28 13:16:00 2026 (-0700)
+;;           By: drew0
+;;     Update #: 4333
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -216,13 +216,13 @@
 ;;    `bmkp-bmenu-sort-annotated-before-unannotated',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
+;;    `bmkp-bmenu-sort-by-bookmark-visit-recency',
 ;;    `bmkp-bmenu-sort-by-bookmark-type',
 ;;    `bmkp-bmenu-sort-by-creation-time',
 ;;    `bmkp-bmenu-sort-by-file-name',
 ;;    `bmkp-bmenu-sort-by-Gnus-thread',
 ;;    `bmkp-bmenu-sort-by-Info-node-name',
 ;;    `bmkp-bmenu-sort-by-Info-position',
-;;    `bmkp-bmenu-sort-by-last-bookmark-access',
 ;;    `bmkp-bmenu-sort-by-last-buffer-or-file-access',
 ;;    `bmkp-bmenu-sort-by-last-local-file-access',
 ;;    `bmkp-bmenu-sort-by-last-local-file-update',
@@ -444,18 +444,18 @@ Elements of ALIST that are not conses are ignored."
 
 ;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
 ;; bmkp-bookmark-description, bmkp-bookmark-file-bookmark-p,
-;; bmkp-bookmark-last-access-cp, bmkp-bookmark-list-bookmark-p,
-;; bmkp-buffer-last-access-cp, bmkp-completing-read-buffer-name,
-;; bmkp-completing-read-file-name, bmkp-current-bookmark-file,
-;; bmkp-current-sort-order, bmkp-describe-bookmark,
-;; bmkp-describe-bookmark-internals, bmkp-desktop-bookmark-p,
-;; bmkp-edit-bookmark-name-and-location, bmkp-file-alpha-cp,
-;; bmkp-file-remote-p, bmkp-function-bookmark-p, bmkp-get-bookmark,
-;; bmkp-get-buffer-name, bmkp-get-tags, bmkp-gnus-bookmark-p,
-;; bmkp-gnus-cp, bmkp-handler-cp, bmkp-incremental-filter-delay,
-;; bmkp-image-bookmark-p, bmkp-info-bookmark-p,
-;; bmkp-info-node-name-cp, bmkp-info-position-cp,
-;; bmkp-isearch-bookmarks, bmkp-isearch-bookmarks-regexp, bmkp-jump-1,
+;; bmkp-bookmark-list-bookmark-p, bmkp-buffer-last-access-cp,
+;; bmkp-completing-read-buffer-name, bmkp-completing-read-file-name,
+;; bmkp-current-bookmark-file, bmkp-current-sort-order,
+;; bmkp-describe-bookmark, bmkp-describe-bookmark-internals,
+;; bmkp-desktop-bookmark-p, bmkp-edit-bookmark-name-and-location,
+;; bmkp-file-alpha-cp, bmkp-file-remote-p, bmkp-function-bookmark-p,
+;; bmkp-get-bookmark, bmkp-get-buffer-name, bmkp-get-tags,
+;; bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
+;; bmkp-incremental-filter-delay, bmkp-image-bookmark-p,
+;; bmkp-info-bookmark-p, bmkp-info-node-name-cp,
+;; bmkp-info-position-cp, bmkp-isearch-bookmarks,
+;; bmkp-isearch-bookmarks-regexp, bmkp-jump-1,
 ;; bmkp-last-bookmark-file, bmkp-last-specific-buffer,
 ;; bmkp-last-specific-file, bmkp-latest-bookmark-alist,
 ;; bmkp-local-file-bookmark-p, bmkp-local-file-type-cp,
@@ -476,7 +476,8 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-sort-omit, bmkp-sort-comparer, bmkp-sorted-alist,
 ;; bmkp-su-or-sudo-regexp, bmkp-tag-name, bmkp-tags-list,
 ;; bmkp-url-bookmark-p, bmkp-url-cp, bmkp-unmarked-bookmarks-only,
-;; bmkp-variable-list-bookmark-p, bmkp-visited-more-cp
+;; bmkp-variable-list-bookmark-p, bmkp-visited-more-often-cp,
+;; bmkp-visited-more-recently-cp.
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-get-lighting
@@ -1809,7 +1810,7 @@ to cycle)
 `\\[bmkp-bmenu-sort-by-creation-time]'\t- Sort by bookmark creation time
 `\\[bmkp-bmenu-sort-by-last-buffer-or-file-access]'\t- Sort by last buffer or file \
 access
-`\\[bmkp-bmenu-sort-by-last-bookmark-access]'\t- Sort by last bookmark access time
+`\\[bmkp-bmenu-sort-by-bookmark-visit-recency]'\t- Sort by bookmark visit recency
 `\\[bmkp-bmenu-sort-by-Gnus-thread]'\t- Sort by Gnus thread: group, article, message
 `\\[bmkp-bmenu-sort-by-Info-node-name]'\t- Sort by Info manual, node, position in node
 `\\[bmkp-bmenu-sort-by-Info-position]'\t- Sort by Info manual, position in manual
@@ -5326,7 +5327,7 @@ With a prefix arg, reverse the current sort order."
 
 ;; This is a general command.  It is in this file because it is used only by the bmenu code.
 ;;;###autoload (autoload 'bmkp-reverse-sort-order "bookmark+")
-(defun bmkp-reverse-sort-order ()       ; Bound to `s r' in bookmark list
+(defun bmkp-reverse-sort-order ()       ; Bound to `s R' in bookmark list
   "Reverse the current bookmark sort order.
 If you combine this with \\<bookmark-bmenu-mode-map>\
 `\\[bmkp-reverse-multi-sort-order]', then see the doc for that command."
@@ -5518,18 +5519,18 @@ before a local file bookmark.  When two bookmarks are not comparable
 by such critera, sort them by bookmark name.  (In particular, sort
 remote-file bookmarks by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s v' in bookmark list
- "by bookmark visit frequency"          ; `bmkp-bmenu-sort-by-bookmark-visit-frequency'
- ((bmkp-visited-more-cp) bmkp-alpha-p)
- "Sort bookmarks by the number of times they were visited as bookmarks.
-When two bookmarks are not comparable by visit frequency, compare them
+(bmkp-define-sort-command               ; Bound to `s r' in bookmark list
+ "by bookmark visit recency"            ; `bmkp-bmenu-sort-by-bookmark-visit-recency'
+ ((bmkp-visited-more-recently-cp) bmkp-alpha-p)
+ "Sort bookmarks by how recently they were visited (visit time).
+When two bookmarks are not comparable by visit time, compare them
 by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s d' in bookmark list
- "by last bookmark access"              ; `bmkp-bmenu-sort-by-last-bookmark-access'
- ((bmkp-bookmark-last-access-cp) bmkp-alpha-p)
- "Sort bookmarks by the time of their last visit as bookmarks.
-When two bookmarks are not comparable by visit time, compare them
+(bmkp-define-sort-command               ; Bound to `s v' in bookmark list
+ "by bookmark visit frequency"          ; `bmkp-bmenu-sort-by-bookmark-visit-frequency'
+ ((bmkp-visited-more-often-cp) bmkp-alpha-p)
+ "Sort bookmarks by the number of times they were visited.
+When two bookmarks are not comparable by visit frequency, compare them
 by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s n' in bookmark list
@@ -5832,7 +5833,6 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
 (define-key bookmark-bmenu-mode-map "sa"                   'bmkp-bmenu-sort-annotated-before-unannotated)
 (define-key bookmark-bmenu-mode-map "sb"                   'bmkp-bmenu-sort-by-last-buffer-or-file-access)
-(define-key bookmark-bmenu-mode-map "sd"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
 (define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-last-local-file-access)
 (define-key bookmark-bmenu-mode-map "sfk"                  'bmkp-bmenu-sort-by-local-file-type)
@@ -5844,7 +5844,8 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "sI"                   'bmkp-bmenu-sort-by-Info-position)
 (define-key bookmark-bmenu-mode-map "sk"                   'bmkp-bmenu-sort-by-bookmark-type)
 (define-key bookmark-bmenu-mode-map "sn"                   'bmkp-bmenu-sort-by-bookmark-name)
-(define-key bookmark-bmenu-mode-map "sr"                   'bmkp-reverse-sort-order)
+(define-key bookmark-bmenu-mode-map "sr"                   'bmkp-bmenu-sort-by-bookmark-visit-recency)
+(define-key bookmark-bmenu-mode-map "sR"                   'bmkp-reverse-sort-order)
 (define-key bookmark-bmenu-mode-map "s\C-r"                'bmkp-reverse-multi-sort-order)
 (define-key bookmark-bmenu-mode-map "ss"                   'bmkp-bmenu-change-sort-order-repeat)
 (define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-tagged-before-untagged)
@@ -6423,8 +6424,8 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-creation-time]
   '(menu-item "By Creation Time" bmkp-bmenu-sort-by-creation-time
     :help "Sort bookmarks by the time of their creation"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-bookmark-access]
-  '(menu-item "By Last Bookmark Access" bmkp-bmenu-sort-by-last-bookmark-access
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-recency]
+  '(menu-item "By Last Bookmark Access" bmkp-bmenu-sort-by-bookmark-visit-recency
     :help "Sort bookmarks by the time of their last visit as bookmarks"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-frequency]
   '(menu-item "By Bookmark Use" bmkp-bmenu-sort-by-bookmark-visit-frequency
