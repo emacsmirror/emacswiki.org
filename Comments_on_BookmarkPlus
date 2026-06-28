@@ -748,3 +748,17 @@ whatever window was already visible.
 
 -- Zhengyi Fu 2026-06-26 15:29 UTC
 
+
+----
+
+[new:DrewAdams:2026-06-28 21:09 UTC]
+Hi Zhengyi: Sorry about this. I know nothing about xwidget, xwidget-webkit or `xwidget-webkit-browse-url'.  
+
+But please report the problem to me in detail, using `M-x bmkp-send-bug-report' (which sends me an email). Include the bookmark record (the Lisp code for the bookmark), which you can get using `C-u C-h RET' in buffer `*Bookmark List*'.
+
+You can also try to get some debug info, by entering the handler you see in your bookmark to the `M-x debug-on-entry' prompt and then stepping through the debugger with `d'. If you do that, send me what the debugger shows you.
+
+Anyway, send me a bug report by email and I'll try to follow up. Thanks for your report, and sorry for the trouble.
+
+-- [http://Reply to Zhengyi DrewAdams] 2026-06-28 21:09 UTC
+
