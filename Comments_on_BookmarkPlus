@@ -804,7 +804,9 @@ Zhengyi,
 
 Sorry. Forgot to say that you need to download the latest version of the files. Then when you do `M-x bmkp-send-bug-report' it will use my new email address. Can you please do that? 
 
-Glad the redefinition of `xwidget-webkit-bookmark-jump' works. I'll try to provide a better (real) fix for the problem. (FYI, this emacs-devel thread describes the problem: https://lists.gnu.org/archive/html/emacs-devel/2022-08/msg00500.html.)
+Glad the redefinition of `xwidget-webkit-bookmark-jump' works. I'll try to provide a better (real) fix for the problem.
+
+(FYI, this emacs-devel thread describes the problem: https://lists.gnu.org/archive/html/emacs-devel/2022-08/msg00500.html. And this is the last message in that thread: https://lists.gnu.org/archive/html/emacs-devel/2022-09/msg01841.html. I should follow up and try to get this fixed...)
 
 Thx -- Drew
 
