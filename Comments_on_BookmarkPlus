@@ -782,3 +782,16 @@ a new xwidget-webkit session, otherwise use an existing session."
       (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
       (raise-frame))))
 </pre>
+
+----
+
+Hi Drew,
+
+Thank you for your reply.
+
+I did send the bug report by email, but it seems your email address is not working: I got bounces.
+
+I tried the redefinition of `xwdiget-webkit-bookmark-jump-handlers' and it works.
+
+-- Zhengyi Fu 2026-06-29 01:52 UTC
+
