@@ -795,3 +795,16 @@ I tried the redefinition of `xwdiget-webkit-bookmark-jump-handlers' and it works
 
 -- Zhengyi Fu 2026-06-29 01:52 UTC
 
+
+----
+
+[new:DrewAdams:2026-06-29 19:25 UTC]
+
+Sorry. Forgot to say that you need to download the latest version of the files. Then when you do `M-x bmkp-send-bug-report' it will use my new email address. Can you please do that? 
+
+Glad the redefinition of `xwidget-webkit-bookmark-jump' works. I'll try to provide a better (real) fix for the problem. (FYI, this emacs-devel thread describes the problem: https://lists.gnu.org/archive/html/emacs-devel/2022-08/msg00500.html.)
+
+Thx -- Drew
+
+-- DrewAdams 2026-06-29 19:25 UTC
+
