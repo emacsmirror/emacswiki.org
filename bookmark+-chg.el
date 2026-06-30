@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 28 15:10:41 2026 (-0700)
+;; Last-Updated: Tue Jun 30 07:49:17 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17126
+;;     Update #: 17128
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1616,6 +1616,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/06/30 drew
+;;     bookmark-bmenu-mode-map: Bind (, like M-t, to bookmark-bmenu-toggle-filenames (like Dired).
 ;; 2026/06/28 drew0
 ;;     Corrected bmkp-bmenu-sort-by-bookmark-visit-frequency: had forgotten rename of
 ;;      bmkp-visited-more-cp to bmkp-visited-more-often-cp.
@@ -2373,6 +2375,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-doc.el'")
 ;;
+;; 2026/06/30 drew0
+;;     Filtering Bookmarks (Hiding and Showing): Say that in bmenu key ( does the same as key M-t.
 ;; 2026/06/28 drew0
 ;;     Sorting Bookmarks: bookmark access date/time -> bookmark visit frequency. Binding s d -> s v.
 ;;                        Reverse sort binding changed from s r to s R.
@@ -2785,6 +2789,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/06/30 drew0
+;;     Version 2026.06.30
 ;; 2026/06/28 drew0
 ;;     Version 2026.06.28
 ;; 2025/08/20 dadams
