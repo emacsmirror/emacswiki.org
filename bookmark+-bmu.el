@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jun 28 14:52:19 2026 (-0700)
+;; Last-Updated: Tue Jun 30 07:14:46 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4334
+;;     Update #: 4335
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5698,6 +5698,7 @@ are marked or ALLP is non-nil."
 
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET")          'bookmark-bmenu-this-window))
+(define-key bookmark-bmenu-mode-map "("                    'bookmark-bmenu-toggle-filenames) ; Like Dired 
 (define-key bookmark-bmenu-mode-map "\M-~"                 'bmkp-toggle-saving-bookmark-file)
 (define-key bookmark-bmenu-mode-map (kbd "C-M-~")          'bmkp-toggle-saving-menu-list-state)
 (define-key bookmark-bmenu-mode-map "."                    'bmkp-bmenu-show-all)
