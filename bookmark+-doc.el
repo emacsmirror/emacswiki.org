@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 28 13:36:34 2026 (-0700)
+;; Last-Updated: Tue Jun 30 07:12:45 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15440
+;;     Update #: 15441
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2959,8 +2959,9 @@
 ;;    This method has the advantage that you can show the complement,
 ;;    the bookmarks that do *not* match the regexp, by using `<'
 ;;    instead of `>'.  It also has the advantage that matching checks
-;;    the combination of bookmark name and file name (use `M-t' to
-;;    toggle showing file names).
+;;    the combination of bookmark name and file name.  You can use
+;;    `M-t' or `(' to toggle showing file names.  (`(' corresponds to
+;;    the key in Dired to toggle hiding/showing details.)
 ;;
 ;;
 ;;(@* "Only Visible Bookmarks Are Affected")
