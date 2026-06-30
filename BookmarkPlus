@@ -3308,7 +3308,9 @@ This method has
 the advantage that you can show the complement: the bookmarks
 that do ''not'' match the regexp, by using '''`##<##'''' instead of `##>##'.  It
 also has the advantage that matching checks the
-combination of bookmark name and file name (use `M-t' to toggle showing file names).
+combination of bookmark name and file name.  You can use
+`M-t' or `##(##' to toggle showing file names.  (`##(##' corresponds to
+the key in Dired to toggle hiding/showing details.)
 
 These are the keys for hiding or showing bookmarks:
 
