@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 28 14:58:47 2026 (-0700)
+;; Last-Updated: Wed Jul  1 09:20:23 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 9784
+;;     Update #: 9830
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -920,6 +920,8 @@
 (defvar desktop-basefilename)           ; In `desktop.el' (Emacs < 22)
 (defvar desktop-base-file-name)         ; In `desktop.el'
 (defvar desktop-buffer-args-list)       ; In `desktop.el'
+(defvar desktop-buffer-fail-count)      ; In `desktop.el'
+(defvar desktop-buffer-ok-count)        ; In `desktop.el'
 (defvar desktop-delay-hook)             ; In `desktop.el'
 (defvar desktop-dirname)                ; In `desktop.el'
 (defvar desktop-file-modtime)           ; In `desktop.el'
@@ -956,6 +958,7 @@
 (defvar last-repeatable-command)        ; In `repeat.el'
 (defvar Man-arguments)                  ; In `man.el'
 (defvar Man-notify-method)              ; In `man.el'
+(defvar multi-isearch-next-buffer-function) ; In `misearch.el'
 (defvar org-store-link-functions)       ; In `org.el'
 (defvar orig-buff)                      ; In `crosshairs.el'
 (defvar pp-default-function)            ; Emacs 30+
@@ -2599,9 +2602,9 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
          (fcrs     (and (not no-context)  regionp  (bmkp-end-position-pre-context beg end)))
          (ecrs     (and (not no-context)  regionp  (bmkp-end-position-post-context end))))
     `(,@(unless no-file
-          `((filename . ,(cond ((buffer-file-name) (bookmark-buffer-file-name))
-                               (dired-p            nil)
-                               (t                  bmkp-non-file-filename)))))
+          `((filename . ,(cond ((bookmark-buffer-file-name))
+                               (dired-p  nil)
+                               (t        bmkp-non-file-filename)))))
       (buffer-name . ,buf)
       ,@(unless no-context `((front-context-string . ,fcs)))
       ,@(unless no-context `((rear-context-string . ,rcs)))
@@ -4511,7 +4514,7 @@ FILES is a list of absolute file names.
 It defaults to a singleton list with the current buffer's file name,
  or to the empty list if the buffer is not visiting a file.
 A new list is returned (no side effects)."
-  (unless files  (setq files  (and (buffer-file-name)  (list (buffer-file-name)))))
+  (unless files  (setq files  (and (buffer-file-name)  (list (bookmark-buffer-file-name)))))
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (bmkp-lexlet ((ff  files))
                         (lambda (bmk)
@@ -6169,7 +6172,7 @@ If the current buffer is not visiting a file, prompt for the file name."
         (orig-latest-alist    bmkp-latest-bookmark-alist))
     (condition-case err
         (progn
-          (setq bmkp-last-specific-file     (or (buffer-file-name)
+          (setq bmkp-last-specific-file     (or (bookmark-buffer-file-name)
                                                 (let ((icicle-unpropertize-completion-result-flag  t))
                                                   (read-file-name "File: ")))
                 bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
@@ -6286,7 +6289,7 @@ If NO-DEFAULT-P is nil, then the default is the current buffer's file
         (icicle-unpropertize-completion-result-flag  t))
     (completing-read "File: " (mapcar #'list (bmkp-file-names)) nil t nil 'file-name-history
                      (and (not no-default-p)
-                          (let ((file  (buffer-file-name)))
+                          (let ((file  (bookmark-buffer-file-name)))
                             (if (and file  (member file (bmkp-file-names)))
                                 file
                               bmkp-last-specific-file))))))
@@ -6366,7 +6369,7 @@ corresponding bookmark buffer is returned."
                             (dolist (bmk  bookmarks)
                               (when (if (bmkp-get-buffer-name bmk)
                                         (equal (bmkp-get-buffer-name bmk) (buffer-name))
-                                      (equal (bookmark-get-filename bmk) (buffer-file-name)))
+                                      (bmkp-same-file-p (bookmark-get-filename bmk) (bookmark-buffer-file-name)))
                                 (throw 'bmkp-isearch-next-bookmark-buffer bmk)))
                             (car bookmarks))))
            (cadr (member this-bmk bookmarks))))
@@ -7205,7 +7208,7 @@ If it is a record then it need not belong to `bookmark-alist'."
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let ((bmk-file   (and (bmkp-file-bookmark-p bookmark)  (bookmark-get-filename bookmark)))
-        (this-file  (or (and (buffer-file-name)  (bookmark-buffer-file-name))
+        (this-file  (or (bookmark-buffer-file-name)
                         (and (eq major-mode 'dired-mode)  (if (consp dired-directory)
                                                               (car dired-directory)
                                                             dired-directory)))))
@@ -7469,7 +7472,7 @@ If either name is not absolute, then it is expanded relative to
     (and (equal remote1 remote2)
          (if (fboundp 'file-equal-p)
              (file-equal-p file1 file2)
-           ;; Need to use `expand-file-name' because prior to Emacs 24 `file-true-name' doesn't expand name.
+           ;; Need to use `expand-file-name' because prior to Emacs 24 `file-truename' doesn't expand name.
            (let ((ft1  (file-truename (expand-file-name file1)))
                  (ft2  (file-truename (expand-file-name file2))))
              (eq t (compare-strings ft1 0 (length ft1) ft2 0 (length ft2) ignore-case-p)))))))
@@ -8548,10 +8551,11 @@ Non-interactively:
           (no-overw                                    (and parg  (atom current-prefix-arg))))
      (list (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                                   (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (bmkp-ffap-guesser))
-                               (bmkp-thing-at-point 'filename)
-                               (buffer-file-name)))
+                                   (let ((def  (run-hook-with-args-until-success 'file-name-at-point-functions)))
+                                     (and def  (abbreviate-file-name def)))
+                                 (abbreviate-file-name (bmkp-ffap-guesser)))
+                               (abbreviate-file-name (bmkp-thing-at-point 'filename))
+                               (bookmark-buffer-file-name)))
            prefix-only
            (if prefix-only
                (read-string "Prefix for bookmark name: ")
@@ -8628,7 +8632,7 @@ This is added to `find-file-hook' when option
 it causes regular file access to invoke the associated bookmark.  This
 has the effect of updating the bookmark data, such as the number of
 visits."
-  (let* ((buf-file  (buffer-file-name))
+  (let* ((buf-file  (bookmark-buffer-file-name))
          (bmk       (bmkp-get-bookmark-in-alist (file-name-nondirectory buf-file)
                                                 t
                                                 (bmkp-autofile-alist-only)))
@@ -8678,19 +8682,22 @@ Non-interactively:
                                    (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
                                (let ((deflts  ())
                                      def)
-                                 (when (setq def  (buffer-file-name)) (push def deflts))
-                                 (when (setq def  (bmkp-thing-at-point 'filename)) (push def deflts))
-                                 (when (setq def  (bmkp-ffap-guesser)) (push def deflts))
+                                 (when (setq def  (bookmark-buffer-file-name)) (push def deflts))
+                                 (when (setq def  (bmkp-thing-at-point 'filename))
+                                   (push (abbreviate-file-name def) deflts))
+                                 (when (setq def  (bmkp-ffap-guesser)) (push (abbreviate-file-name def) deflts))
                                  (when (and (boundp 'file-name-at-point-functions)
                                             (setq def  (run-hook-with-args-until-success
                                                         'file-name-at-point-functions)))
-                                   (push def deflts))
+                                   (push (abbreviate-file-name def) deflts))
                                  deflts)
                              (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                                     (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                   (bmkp-ffap-guesser))
-                                 (bmkp-thing-at-point 'filename)
-                                 (buffer-file-name)))))
+                                     (let ((def  (run-hook-with-args-until-success
+                                                  'file-name-at-point-functions)))
+                                       (and def  (abbreviate-file-name def)))
+                                   (abbreviate-file-name (bmkp-ffap-guesser)))
+                                 (abbreviate-file-name (bmkp-thing-at-point 'filename))
+                                 (bookmark-buffer-file-name)))))
          nil
          (and current-prefix-arg  (read-string "Prefix for bookmark name: "))
          nil
@@ -8773,10 +8780,11 @@ Non-interactively:
    (list (let ((icicle-unpropertize-completion-result-flag  t))
            (read-file-name "File or directory to tag: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                                   (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (bmkp-ffap-guesser))
-                               (bmkp-thing-at-point 'filename)
-                               (buffer-file-name))))
+                                   (let ((def  (run-hook-with-args-until-success 'file-name-at-point-functions)))
+                                     (and def  (abbreviate-file-name def)))
+                                 (abbreviate-file-name (bmkp-ffap-guesser)))
+                               (abbreviate-file-name (bmkp-thing-at-point 'filename))
+                               (bookmark-buffer-file-name))))
          (bmkp-read-tags-completing nil nil (and current-prefix-arg
                                                  (<= (prefix-numeric-value current-prefix-arg) 0)))
          nil
@@ -8830,10 +8838,12 @@ Non-interactively:
                              (read-file-name
                               "File: " nil
                               (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
-                                      (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                    (bmkp-ffap-guesser))
-                                  (bmkp-thing-at-point 'filename)
-                                  (buffer-file-name))
+                                      (let ((def  (run-hook-with-args-until-success
+                                                   'file-name-at-point-functions)))
+                                        (and def  (abbreviate-file-name def)))
+                                    (abbreviate-file-name (bmkp-ffap-guesser)))
+                                  (abbreviate-file-name (bmkp-thing-at-point 'filename))
+                                  (bookmark-buffer-file-name))
                               t nil (lambda (ff) ; PREDICATE - only for Emacs 22+.
                                       (let* ((bmk   (bmkp-get-autofile-bookmark ff nil pref))
                                              (btgs  (and bmk  (bmkp-get-tags bmk))))
@@ -8842,10 +8852,14 @@ Non-interactively:
                                                        (when (not (member tag btgs))
                                                          (throw 'bmkp-autofile-remove-tags-pred nil)))
                                                      t)))))
-                           (error (read-file-name "File: " nil (or (bmkp-ffap-guesser)
-                                                                   (bmkp-thing-at-point 'filename)
-                                                                   (buffer-file-name)))))))
-     (list fil tgs nil pref nil 'MSG)))
+                           (error
+                            (read-file-name "File: " nil (let (def)
+                                                           (or (and (setq def  (bmkp-ffap-guesser))
+                                                                    (abbreviate-file-name def))
+                                                               (and (setq def (bmkp-thing-at-point 'filename))
+                                                                    (abbreviate-file-name def))
+                                                               (bookmark-buffer-file-name))))))))
+                 (list fil tgs nil pref nil 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
 
 ;;;###autoload (autoload 'bmkp-purge-notags-autofiles "bookmark+")
@@ -9803,12 +9817,14 @@ during this input.
 Non-interactively, non-nil MSG-P means display a status message."
   (interactive
    (list (let* ((insert-default-directory  t)
-                (std-default  (bmkp-default-bookmark-file))
-                (default      (if (bmkp-same-file-p bmkp-current-bookmark-file bmkp-last-bookmark-file)
-                                  (if (bmkp-same-file-p bmkp-current-bookmark-file std-default)
-                                      bookmark-default-file
-                                    std-default)
-                                bmkp-last-bookmark-file)))
+                (std-default              (bmkp-default-bookmark-file))
+                (default                  (if (bmkp-same-file-p
+                                               bmkp-current-bookmark-file
+                                               bmkp-last-bookmark-file)
+                                              (if (bmkp-same-file-p bmkp-current-bookmark-file std-default)
+                                                  bookmark-default-file
+                                                std-default)
+                                            bmkp-last-bookmark-file)))
            (bmkp-read-bookmark-file-name "Create bookmark to load bookmark file: "
                                          (or (file-name-directory default)  "~/")
                                          default
@@ -9971,7 +9987,8 @@ the display of proxy candidates."
   (interactive
    (progn (unless (condition-case nil (require 'desktop nil t) (error nil))
             (error "You must have library `desktop.el' to use this command"))
-          (let ((icicle-proxy-candidates                     (and (boundp 'icicle-mode) icicle-mode
+          (let ((icicle-proxy-candidates                     (and (boundp 'icicle-mode)
+                                                                  icicle-mode
                                                                   (mapcar (lambda (bmk)
                                                                             (bookmark-prop-get
                                                                              bmk 'desktop-file))
@@ -10227,8 +10244,7 @@ searched correspond to the recorded search hits."
   (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
     (error "This command can be used only during Icicles search"))
   (let* ((hits-bmks  (bmkp-icicles-search-hits-alist-only))
-         (bmk        (let ((icicle-completion-candidates
-                            icicle-completion-candidates)
+         (bmk        (let ((icicle-completion-candidates  icicle-completion-candidates)
                            (enable-recursive-minibuffers  t))
                        (bookmark-completing-read "Bookmark name"
                                                  (mapcar #'bmkp-bookmark-name-from-record hits-bmks)
@@ -11862,10 +11878,10 @@ for info about using a prefix argument."
 ;;; This is a specialization of `bookmark-jump' - see that, in particular
 ;;; for info about using a prefix argument."
 ;;;   (interactive
-;;;    (progn (unless (or (buffer-file-name)  (and (eq major-mode 'dired-mode)
-;;;                                                (if (consp dired-directory)
-;;;                                                    (car dired-directory)
-;;;                                                  dired-directory)))
+;;;    (progn (unless (or (bookmark-buffer-file-name)  (and (eq major-mode 'dired-mode)
+;;;                                                         (if (consp dired-directory)
+;;;                                                             (car dired-directory)
+;;;                                                           dired-directory)))
 ;;;             (error "This buffer is not associated with a file"))
 ;;;           (let ((alist  (bmkp-this-file-alist-only)))
 ;;;             (unless alist  (error "No bookmarks for this file"))
@@ -11878,10 +11894,10 @@ for info about using a prefix argument."
 ;;; (defun bmkp-this-file-jump-other-window (bookmark-name &optional flip-use-region-p)
 ;;;   "`bmkp-this-file-jump', but in another window."
 ;;;   (interactive
-;;;    (progn (unless (or (buffer-file-name)  (and (eq major-mode 'dired-mode)
-;;;                                                (if (consp dired-directory)
-;;;                                                    (car dired-directory)
-;;;                                                  dired-directory)))
+;;;    (progn (unless (or (bookmark-buffer-file-name)  (and (eq major-mode 'dired-mode)
+;;;                                                         (if (consp dired-directory)
+;;;                                                             (car dired-directory)
+;;;                                                           dired-directory)))
 ;;;             (error "This buffer is not associated with a file"))
 ;;;           (let ((alist  (bmkp-this-file-alist-only)))
 ;;;             (unless alist  (error "No bookmarks for this file"))
