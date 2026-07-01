@@ -1,5 +1,5 @@
 : Those who cannot remember the past are condemned to repeat it.
-: -- [http://www.iupui.edu/~santedit/ George Santayana], //Life of Reason//, Reason in Common Sense, Scribner's, 1905, page 284.
+: -- [https://santayana.indianapolis.iu.edu/about-santayana/santayana-quotations/ George Santayana], //Life of Reason//, Reason in Common Sense, Scribner's, 1905, page 284.
 
 '''Emacs''' began at the Artificial Intelligence Laboratory at
 MIT (See MeatBall:MitAiLab). Beginning in 1972, staff hacker CarlMikkelsen added
@@ -36,7 +36,7 @@ extension language.  Mock Lisp ''looked'' a bit like Lisp, but it was not really
 
 In 1981, Stallman wrote a report on Emacs as an internal document of the MIT AI Lab.  The title of the report was
 ''EmacsTheExtensibleCustomizableSelfDocumentingDisplayEditor''.
-He also gave a speech on his experiences, ''My Lisp Experiences and the Development of GNU Emacs'', 28 Oct 2002, at the International Lisp Conference.[http://www.gnu.org/gnu/rms-lisp.html]
+He also gave a speech on his experiences, ''My Lisp Experiences and the Development of GNU Emacs'', 28 Oct 2002, at the International Lisp Conference.[https://www.gnu.org/gnu/rms-lisp.html]
 
 In 1984, Stallman began writing another Emacs implementation based on the former co-planning with Gosling, naming it '''GnuEmacs''', which became the first program in the nascent GNU project. See [[WikiPedia:GNU Emacs]] for an extensive history and description. Like with Gosling Emacs, GNU Emacs's core (user interface and Lisp engine) was written in C, while the engine's Lisp itself was used to write most parts of the editor's functionality and is used as integral extension language at the same time. Stallman's EmacsLisp derived directly from MacLisp, thus featured several improvements over MockLisp, and had new features specifically suited to editing text and source code. The first widely
 distributed version of GNU Emacs was 15.34, which appeared in
@@ -60,7 +60,7 @@ Beginning with version 21, GNU Emacs was able to display inline images, so
 it was possible to display a splash image when
 starting-up. For the story behind the creation of the GNU Emacs logo, see [http://www.ee.ryerson.ca/~elf/emacs/logo/]
 
-There is also an [http://www.softwarepreservation.org/projects/LISP/embedded/#Emacs_Lisp_ Emacs Lisp section at the "History of Lisp" project page].
+There is also an [https://softwarepreservation.computerhistory.org/LISP/embedded.html#Emacs_Lisp_ Emacs Lisp section at the "History of Lisp" project page].
 
 EmacsGrepAndUnix contains a detailed (30 page) description of Emacs's early years and the resulting politicization around free and proprietary software.
 
@@ -70,7 +70,7 @@ EmacsAtWorkPaper covers the history of GnuEmacs and dynamics of the FreeSoftware
 
 : "Because programming and the world of computers moves so fast it's tempting to think of arguments about old versions of Emacs as ancient history. But the people who had those bitter arguments then are still important to us now. The relationships that were forged, or broke down are still having an impact.
 : "As far as I can see the only thing that can be done about this is that we all consider the motivation and history when we consider these issues. That's normally a history student thing rather than a computer science student thing."
-:: -- NicFerrier's Web blog.[http://www.tapsellferrier.co.uk/nics-blog/223523400.nicferrier.tapsellferrier.co.uk] 2006-05-11
+:: -- NicFerrier's Web blog.[http://www.tapsellferrier.co.uk/nics-blog/223523400.nicferrier.tapsellferrier.co.uk] 2006-05-11 [note, July 2026: this link appears lost; not in Wayback.]
 
 You can try an old emacs Version 165 online running on Tops-20 using "telnet twenex.org". (The help key is C-_, the info manual is installed C-_ i ). See http://www.twenex.org/ for more info about the system. 
 
