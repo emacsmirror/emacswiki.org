@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jun 30 07:49:17 2026 (-0700)
+;; Last-Updated: Wed Jul  1 09:54:54 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17128
+;;     Update #: 17146
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,17 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/07/01 drew0
+;;     bmkp-autofile-set, bmkp-autofile-add-tags, bmkp-autofile-remove-tags,
+;;      bmkp-completing-read-file-name, bmkp-file-target-set,
+;;      bmkp-find-file-invoke-bookmark-if-autofile, bmkp-isearch-next-bookmark-buffer,
+;;      bookmark-make-record-default, bmkp-specific-files-alist-only, bmkp-this-file-bmenu-list,
+;;      bmkp-this-file-p:
+;;        Use bookmark-buffer-file-name, not buffer-file-name, so get abbreviated (~/) filenames.
+;;     bmkp-autofile-set, bmkp-autofile-add-tags, bmkp-autofile-remove-tags, bmkp-file-target-set:
+;;        Use abbreviate-file-name.
+;;     bmkp-isearch-next-bookmark-buffer: Use bmkp-same-file-p, not equal.
+;;     Added missing vacuous defvars.
 ;; 2026/06/28 drew0
 ;;     Removed bmkp-bookmark-last-access-cp.  Replaced it with alias to bmkp-visited-more-recently-cp.
 ;;     bmkp-send-bug-report: Updated address.
@@ -1616,7 +1627,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
-;; 2026/06/30 drew
+;; 2026/07/01 drew0
+;;     Added missing vacuous defvars.
+;; 2026/06/30 drew0
 ;;     bookmark-bmenu-mode-map: Bind (, like M-t, to bookmark-bmenu-toggle-filenames (like Dired).
 ;; 2026/06/28 drew0
 ;;     Corrected bmkp-bmenu-sort-by-bookmark-visit-frequency: had forgotten rename of
@@ -2789,6 +2802,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/01 drew0
+;;     Version 2026.07.01
 ;; 2026/06/30 drew0
 ;;     Version 2026.06.30
 ;; 2026/06/28 drew0
