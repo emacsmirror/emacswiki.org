@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Jun 30 07:14:46 2026 (-0700)
+;; Last-Updated: Wed Jul  1 08:52:42 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4335
+;;     Update #: 4343
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -501,13 +501,17 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-latest-bookmark-alist)     ; In `bookmark+-1.el'.
 (defvar bmkp-modified-bookmarks)        ; In `bookmark+-1.el'.
 (defvar bmkp-non-file-filename)         ; In `bookmark+-1.el'.
+(defvar bmkp-read-bookmark-file-hook)   ; In `bookmark+-1.el'.
 (defvar bmkp-reverse-multi-sort-p)      ; In `bookmark+-1.el'.
 (defvar bmkp-reverse-sort-p)            ; In `bookmark+-1.el'.
 (defvar bmkp-sort-comparer)             ; In `bookmark+-1.el'.
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'.
 (defvar bmkp-sort-orders-alist)         ; Here.
 (defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
+(defvar bmkp-tags-alist)                ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
+(defvar bmkp-use-region)                ; In `bookmark+-1.el'.
+(defvar bmkp-use-w32-browser-p)         ; In `bookmark+-1.el'.
 (defvar describe-function-orig-buffer)  ; In `help-fns.el' (Emacs 28+).
 (defvar dired-re-mark)                  ; In `dired.el'.
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'.
@@ -4550,9 +4554,8 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
       'help-function #'(lambda ()
                          (message "Getting Bookmark+ doc from file commentary...")
                          (finder-commentary "bookmark+-doc")
-                         (when (condition-case nil (require 'linkd nil t) (error nil)) (linkd-mode 1))
-                         (when (condition-case nil (require 'fit-frame nil t) (error nil))
-                           (fit-frame)))
+                         (when (condition-case nil (require 'linkd nil t)     (error nil)) (linkd-mode 1))
+                         (when (condition-case nil (require 'fit-frame nil t) (error nil)) (fit-frame)))
       'help-echo (purecopy "mouse-2, RET: Bookmark+ documentation (no Internet needed)"))
   (define-button-type 'bmkp-customize-button
       :supertype 'help-xref
