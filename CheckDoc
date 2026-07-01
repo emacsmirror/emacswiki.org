@@ -4,8 +4,6 @@ Running CheckDoc is a must before posting to gnu.emacs.sources or uploading to t
 
 The homepage is http://cedet.sourceforge.net/checkdoc.shtml
 
-http://cedet.sourceforge.net/checkdoc.jpg
-
 checkdoc.el is part of GNU Emacs since version 21. 
 
 Here are some things extending checkdoc.  You can either download the files manually, or add [[https://www.emacswiki.org/emacs/KevinRyde user42]]'s (Kevin Ryde) ELPA:
@@ -24,3 +22,4 @@ Here are some things extending checkdoc.  You can either download the files manu
 
 ----
 CategoryCode
+
