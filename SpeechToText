@@ -23,9 +23,18 @@ There were several packages for driving Emacs through voice input, but mostly no
 
 https://github.com/natrys/whisper.el is a "Speech-to-Text interface for Emacs using OpenAI’s whisper speech recognition model. For the inference engine it uses the awesome C/C++ port whisper.cpp that can run on consumer grade CPU (without requiring a high end GPU)."
 
-==== phony.el ====
+==== Emacslisten ====
+Set of packages aimed at making voice control of Emacs good.
 
-https://github.com/ErikPrantare/phony.el "Bindings for defining voice commands in Emacs." (Uses talon)
+* https://github.com/ErikPrantare/phony.el: Elisp macros for defining spoken command languages (Uses talon).
+* https://github.com/ErikPrantare/hatty.el: Renders marks over text, allowing addressing any part of the buffer.
+* https://github.com/ErikPrantare/cursorfree.el: Defines a command language using phony and hatty.
+
+Do not confuse Emacslisten with the unmaintained EmacsListen (capital L), which see below.
+
+[quote]
+Free (as in freedom) backend for Emacslisten is planned.  Contributions appreciated!  -- Erik Präntare
+[/quote]
 
 === Dormant? ===
 
