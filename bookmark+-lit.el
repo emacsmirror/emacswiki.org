@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Oct 26 15:09:05 2023 (-0700)
-;;           By: dradams
-;;     Update #: 1091
+;; Last-Updated: Thu Jul  2 09:06:11 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1098
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -16,11 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bookmark', `bookmark+-1', `button', `bytecomp',
-;;   `cconv', `cl-lib', `col-highlight', `crosshairs', `font-lock',
-;;   `font-lock+', `help-mode', `hl-line', `hl-line+', `kmacro',
-;;   `macroexp', `pp', `pp+', `replace', `syntax', `text-mode',
-;;   `thingatpt', `thingatpt+', `vline'.
+;;   `bookmark', `pp', `pp+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -242,12 +238,12 @@
 ;; bmkp-autoname-format, bmkp-current-nav-bookmark,
 ;; bmkp-current-sort-order, bmkp-cycle-1, bmkp-default-bookmark-name,
 ;; bmkp-function-bookmark-p, bmkp-get-bookmark-in-alist, bmkp-get-buffer-name, bmkp-jump-1,
-;; bmkp-latest-bookmark-alist, bmkp-marked-bookmarks-only,
+;; bmkp-last-specific-buffer, bmkp-latest-bookmark-alist, bmkp-marked-bookmarks-only,
 ;; bmkp-msg-about-sort-order, bmkp-nav-alist, bmkp-refresh-menu-list,
 ;; bmkp-remove-if, bmkp-remove-if-not, bmkp-repeat-command,
-;; bmkp-sequence-bookmark-p, bmkp-sort-omit,
+;; bmkp-sequence-bookmark-p, bmkp-sort-comparer, bmkp-sort-omit,
 ;; bmkp-specific-buffers-alist-only, bmkp-this-buffer-alist-only,
-;; bmkp-this-file/buffer-cycle-sort-comparer, bmkp-this-buffer-p
+;; bmkp-this-file/buffer-cycle-sort-comparer, bmkp-this-buffer-p, bmkp-use-region
 
 (require 'pp+ nil t) ;; pp-read-expression-map
 
@@ -256,15 +252,18 @@
 ;; Quiet the byte-compiler
 ;;
 (defvar bmkp-autoname-format)           ; In `bookmark+-1.el'.
-(defvar bmkp-bmenu-buffer)              ; In `bookmark+.el'
+(defvar bmkp-bmenu-buffer)              ; In `bookmark+.el'.
 (defvar bmkp-current-nav-bookmark)      ; In `bookmark+-1.el'.
+(defvar bmkp-last-specific-buffer)      ; In `bookmark+-1.el'.
 (defvar bmkp-latest-bookmark-alist)     ; In `bookmark+-1.el'.
 (defvar bmkp-light-left-fringe-bitmap)  ; Defined in this file for Emacs 22+.
 (defvar bmkp-light-right-fringe-bitmap) ; Defined in this file for Emacs 22+.
 (defvar bmkp-nav-alist)                 ; In `bookmark+-1.el'.
+(defvar bmkp-sort-comparer)             ; In `bookmark+-1.el'.
 (defvar bmkp-this-file/buffer-cycle-sort-comparer) ; In `bookmark+-1.el'.
+(defvar bmkp-use-region)                ; In `bookmark+-1.el'.
 (defvar fringe-bitmaps)                 ; Built-in for Emacs 22+.
-
+(defvar icicle-unpropertize-completion-result-flag) ; In `icicles-opt.el'.
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
