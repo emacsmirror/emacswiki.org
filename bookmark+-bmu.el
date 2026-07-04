@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jul  1 08:52:42 2026 (-0700)
+;; Last-Updated: Sat Jul  4 14:50:52 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4343
+;;     Update #: 4382
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -251,7 +251,8 @@
 ;;    `bmkp-bad-bookmark', `bmkp-bookmark-file', `bmkp-bookmark-list',
 ;;    `bmkp-buffer', `bmkp-D-mark', `bmkp-desktop',
 ;;    `bmkp-file-handler', `bmkp-function', `bmkp-gnus',
-;;    `bmkp-heading', `bmkp-info', `bmkp-local-directory',
+;;    `bmkp-heading', `bmkp-icicles-search-hits', `bmkp-info',
+;;    `bmkp-kmacro-list', `bmkp-local-directory',
 ;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
 ;;    `bmkp-man', `bmkp-no-jump', `bmkp-no-local', `bmkp-non-file',
 ;;    `bmkp-remote-file', `bmkp-sequence', `bmkp-snippet',
@@ -507,6 +508,7 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-sort-comparer)             ; In `bookmark+-1.el'.
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'.
 (defvar bmkp-sort-orders-alist)         ; Here.
+(defvar bmkp-sort-orders-for-cycling-alist) ; Here.
 (defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
 (defvar bmkp-tags-alist)                ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
@@ -604,8 +606,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-function
-    '((((background dark)) (:foreground "#0000EBEB6C6C")) ; ~ green
-      (t (:foreground "DeepPink1")))
+    '((((background dark)) (:foreground "#0000EBEB6C6C" :background "DeepPink1")) ; ~ light green
+      (t (:foreground "VioletRed")))
   "*Face used for a function bookmark: a bookmark that invokes a function."
   :group 'bookmark-plus :group 'faces)
 
@@ -615,10 +617,23 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
   "*Face used for a Gnus bookmark."
   :group 'bookmark-plus :group 'faces)
 
+(defface bmkp-icicles-search-hits
+    '((t (:foreground "white" :background "gray70")))
+  "*Face used for a bookmark you can You can use only during Icicles search.
+You cannot jump to it from `*Bookmark List*'.
+You need library Icicles for this."
+  :group 'bookmark-plus :group 'faces)
+
 (defface bmkp-info
     '((((background dark)) (:foreground "#7474FFFFFFFF")) ; ~ light cyan
       (t (:foreground "DarkRed")))
-  "*Face used for a bookmarked Info node."
+  "*Face used for a bookmarked Info node (page)."
+  :group 'bookmark-plus :group 'faces)
+
+(defface bmkp-kmacro-list               ; Inverse of function bookmark
+    '((((background dark)) (:foreground "DeepPink1" :background "#0000EBEB6C6C"))
+      (t (:foreground "VioletRed" :background "Pink1")))
+  "*Face for a keyboad macro list bookmark, which restores keyboard macros."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-local-directory
@@ -656,24 +671,24 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-no-local
-    '((t (:background "orange")))
-  "*Face used for a local file bookmark whose target file does not exist."
+    '((t (:background "Orchid")))
+  "*Face used for a local-file bookmark whose target file does not exist."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-non-file
     '((t (:foreground "MediumSeaGreen")))
-  "*Face used for a bookmark not associated with an existing buffer."
+  "*Face used for a bookmark whose target buffer does not exist."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-remote-file
-    '((((background dark)) (:foreground "#6B6BFFFF2C2C")) ; ~ green
-      (t (:foreground "DarkViolet")))
+    '((((background dark)) (:foreground "#6B6BFFFF2C2C")) ; ~ light green
+      (t (:foreground "BlueViolet")))
   "*Face used for a bookmarked tramp remote file (/ssh:)."
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-sequence
     '((((background dark)) (:foreground "DeepSkyBlue"))
-      (t (:foreground "DarkOrange2")))
+      (t (:foreground "DarkOrange3")))
   "*Face used for a sequence bookmark: one composed of other bookmarks."
   :group 'bookmark-plus :group 'faces)
 
@@ -695,7 +710,7 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (defface bmkp-url
     '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ green
-      (t (:foreground "DarkMagenta")))
+      (t (:foreground "Magenta")))
   "*Face used for a bookmarked URL."
   :group 'bookmark-plus :group 'faces)
 
@@ -1190,7 +1205,8 @@ Use `customize-face' if you want to change the appearance.
 
  `bmkp-bad-bookmark', `bmkp-bookmark-file', `bmkp-bookmark-list',
  `bmkp-buffer', `bmkp-desktop', `bmkp-file-handler', `bmkp-function',
- `bmkp-gnus', `bmkp-info', `bmkp-local-directory',
+ `bmkp-icicles-search-hits', `bmkp-gnus', `bmkp-info',
+ `bmkp-kmacro-list', `bmkp-local-directory',
  `bmkp-local-file-without-region', `bmkp-local-file-with-region',
  `bmkp-man', `bmkp-no-jump', `bmkp-no-local', `bmkp-non-file',
  `bmkp-remote-file', `bmkp-sequence', `bmkp-snippet',
@@ -2782,7 +2798,7 @@ If any bookmark was marked before, and if the sort order is marked
 first or last (`s >'), then re-sort.
 
 Non-interactively:
-* MARK is the mark character or a carriage-return character (`?\r').
+* MARK is the mark character or a carriage-return character (`?\\r`).
 * Non-nil ARG (prefix arg) means query.
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
 * Non-nil optional arg MSG-P means display a status message."
@@ -4481,9 +4497,9 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                  (local-no-region  "Local file with no region\n")
                  (local-w-region   "Local file with a region\n")
                  (no-file          "No such local file\n")
-                 (buffer           "Buffer\n")
+                 (buffer           "Buffer (existing)\n")
                  (no-buf           "No such buffer now\n")
-                 (bad              "Possibly invalid bookmark\n")
+                 (bad              "User-defined or maybe invalid\n")
                  (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
                  (sudo             "Remote accessed by `su' or `sudo'\n")
                  (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
@@ -4494,47 +4510,69 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                  (desktop          "Desktop\n")
                  (sequence         "Sequence\n")
                  (variable-list    "Variable list\n")
-                 (function         "Function\n"))
-             (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus         gnus)
-             (put-text-property 0 (1- (length info))          'face 'bmkp-info         info)
-             (put-text-property 0 (1- (length man))           'face 'bmkp-man          man)
-             (put-text-property 0 (1- (length url))           'face 'bmkp-url          url)
+                 (function         "Function\n")
+                 (kmacro-list      "Keyboard macro list\n")
+                 (search-hits      "Icicles search hits\n"))
+             (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus               gnus)
+             (put-text-property 0 (1- (length info))          'face 'bmkp-info               info)
+             (put-text-property 0 (1- (length man))           'face 'bmkp-man                man)
+             (put-text-property 0 (1- (length url))           'face 'bmkp-url                url)
              (put-text-property 0 (1- (length local-no-region))
-                                'face 'bmkp-local-file-without-region                  local-no-region)
+                                'face 'bmkp-local-file-without-region                        local-no-region)
              (put-text-property 0 (1- (length local-w-region))
-                                'face 'bmkp-local-file-with-region                     local-w-region)
-             (put-text-property 0 (1- (length no-file))       'face 'bmkp-no-local     no-file)
-             (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer       buffer)
-             (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file     no-buf)
-             (put-text-property 0 (1- (length remote))        'face 'bmkp-remote-file  remote)
-             (put-text-property 0 (1- (length sudo))          'face 'bmkp-su-or-sudo   sudo)
+                                'face 'bmkp-local-file-with-region                           local-w-region)
+             (put-text-property 0 (1- (length no-file))       'face 'bmkp-no-local           no-file)
+             (put-text-property 0 (1- (length buffer))        'face 'bmkp-buffer             buffer)
+             (put-text-property 0 (1- (length no-buf))        'face 'bmkp-non-file           no-buf)
+             (put-text-property 0 (1- (length remote))        'face 'bmkp-remote-file        remote)
+             (put-text-property 0 (1- (length sudo))          'face 'bmkp-su-or-sudo         sudo)
              (put-text-property 0 (1- (length local-dir))
-                                'face 'bmkp-local-directory                            local-dir)
-             (put-text-property 0 (1- (length file-handler))  'face 'bmkp-file-handler file-handler)
+                                'face 'bmkp-local-directory                                  local-dir)
+             (put-text-property 0 (1- (length file-handler))  'face 'bmkp-file-handler       file-handler)
              (put-text-property 0 (1- (length bookmark-list))
-                                'face 'bmkp-bookmark-list                               bookmark-list)
+                                'face 'bmkp-bookmark-list                                     bookmark-list)
              (put-text-property 0 (1- (length bookmark-file))
-                                'face 'bmkp-bookmark-file                               bookmark-file)
-             (put-text-property 0 (1- (length snippet))       'face 'bmkp-snippet       snippet)
-             (put-text-property 0 (1- (length desktop))       'face 'bmkp-desktop       desktop)
-             (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
-             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
-             (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
-             (put-text-property 0 (1- (length no-jump))       'face 'bmkp-no-jump       no-jump)
-             (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark  bad)
+                                'face 'bmkp-bookmark-file                                     bookmark-file)
+             (put-text-property 0 (1- (length snippet))       'face 'bmkp-snippet             snippet)
+             (put-text-property 0 (1- (length desktop))       'face 'bmkp-desktop             desktop)
+             (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence            sequence)
+             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list       variable-list)
+             (put-text-property 0 (1- (length function))      'face 'bmkp-function            function)
+             (put-text-property 0 (1- (length kmacro-list))   'face 'bmkp-kmacro-list         kmacro-list)
+             (put-text-property 0 (1- (length search-hits))   'face 'bmkp-icicles-search-hits search-hits)
+             (put-text-property 0 (1- (length no-jump))       'face 'bmkp-no-jump             no-jump)
+             (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark        bad)
              (insert "Legend for Bookmark Types\n-------------------------\n\n")
              (when (and (fboundp 'display-images-p)  (display-images-p)
                         bmkp-bmenu-image-bookmark-icon-file
                         (file-readable-p bmkp-bmenu-image-bookmark-icon-file))
                (let ((image  (create-image bmkp-bmenu-image-bookmark-icon-file nil nil :ascent 95)))
                  (when image (insert "  ")  (insert-image image)  (insert " Image file\n"))))
-             (insert "  " gnus) (insert "  " info) (insert "  " man) (insert "  " url)
-             (insert "  " local-no-region) (insert "  " local-w-region) (insert "  " no-file)
-             (insert "  " buffer) (insert "  " no-buf) (insert "  " remote) (insert "  " sudo)
-             (insert "  " local-dir) (insert "  " file-handler) (insert "  " bookmark-list)
-             (insert "  " bookmark-file) (insert "  " snippet) (insert "  " desktop)
-             (insert "  " sequence) (insert "  " variable-list) (insert "  " function)
-             (insert "  " no-jump) (insert "  " bad)
+
+             (insert "  " man)
+             (insert "  " sequence)
+             (insert "  " info)
+             (insert "  " sudo)
+             (insert "  " function)
+             (insert "  " url)
+             (insert "  " remote)
+             (insert "  " gnus)
+             (insert "  " local-w-region)
+             (insert "  " variable-list)
+             (insert "  " buffer)
+             (insert "  " no-buf)
+             (insert "  " local-no-region)
+             (insert "  " no-jump)
+             (insert "  " local-dir)
+             (insert "  " file-handler)
+             (insert "  " bookmark-list)
+             (insert "  " bookmark-file)
+             (insert "  " snippet)
+             (insert "  " desktop)
+             (insert "  " kmacro-list)
+             (insert "  " search-hits)
+             (insert "  " no-file)
+             (insert "  " bad)
              (insert "\n\nKeys without prefix `C-x' are available only here (`*Bookmark List*').\n")
              (insert "Keys with prefix `C-x' are available everywhere.\n\n")
              (insert "Remember that you can see all bindings for a prefix key by hitting it,\n")
@@ -5104,7 +5142,7 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-no-jump)
                     '(help-echo "You CANNOT JUMP to this bookmark")))
            ((bmkp-icicles-search-hits-bookmark-p bookmark)               ; Icicles search hits bookmark
-            (append (bmkp-face-prop 'bmkp-no-jump)
+            (append (bmkp-face-prop 'bmkp-icicles-search-hits)
                     '(help-echo "You can use this only during Icicles search, NOT HERE")))
            ((bmkp-info-bookmark-p bookmark)                                             ; Info bookmark
             (append (bmkp-face-prop 'bmkp-info)
@@ -5151,6 +5189,10 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-buffer)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to buffer `%s'" ,buffp))))
+           ((bmkp-kmacro-list-bookmark-p bookmark)
+            (append (bmkp-face-prop 'bmkp-kmacro-list)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2: Invoke this keyboard macros list bookmark"))))
            ((or (not filep)  (equal filep bmkp-non-file-filename)) ; Non-file, and no existing buffer.
             (append (bmkp-face-prop 'bmkp-non-file)
                     `(mouse-face highlight follow-link t
@@ -5159,7 +5201,7 @@ Return the propertized string (the bookmark name)."
             (bmkp-face-prop 'bmkp-no-local))
            (t (append (bmkp-face-prop 'bmkp-bad-bookmark)
                       `(mouse-face highlight follow-link t
-                        help-echo (format "BAD BOOKMARK (maybe): `%s'" ,filep))))))
+                        help-echo (format "User-defined or maybe invalid: `%s'" ,filep))))))
     bookmark-name))
 
 ;;;###autoload (autoload 'bmkp-bmenu-quit "bookmark+")
