@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Jun 28 13:04:26 2026 (-0700)
+;; Last-Updated: Thu Jul  2 08:58:56 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 243
+;;     Update #: 245
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -145,6 +145,8 @@
 
 ;; Quiet the byte-compiler
 
+(defvar bmkp-bmenu-filter-function)     ; In `bookmark+-bmu.el'
+(defvar bmkp-bmenu-title)               ; In `bookmark+-bmu.el'
 (defvar lexical-binding) ; Emacs 24+
  
 ;;(@* "Functions")
