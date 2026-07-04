@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul  1 09:54:54 2026 (-0700)
+;; Last-Updated: Sat Jul  4 15:04:15 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17146
+;;     Update #: 17169
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/07/04 drew0
+;;     bmkp-bookmark-description: Include bookmark type name in description.  Added sudo not logged in.
 ;; 2026/07/01 drew0
 ;;     bmkp-autofile-set, bmkp-autofile-add-tags, bmkp-autofile-remove-tags,
 ;;      bmkp-completing-read-file-name, bmkp-file-target-set,
@@ -1627,6 +1629,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/07/04 drew0
+;;     Added faces bmkp-icicles-search-hits and bmkp-kmacro-list.
+;;     bmkp-bmenu-mode-status-help:
+;;      Legend: Changed order.  Added bmkp-icicles-search-hits and bmkp-kmacro-list.  Better wording.
+;;     bmkp-bmenu-propertize-item:
+;;      Use faces bmkp-icicles-search-hits and bmkp-kmacro-list.  Better mouseover help text.
+;;     Redefined faces bmkp-function, bmkp-no-local, bmkp-remote-file, bmkp-sequence, bmkp-url.
+;;     Added another missing vacuous defvar.
 ;; 2026/07/01 drew0
 ;;     Added missing vacuous defvars.
 ;; 2026/06/30 drew0
@@ -2802,6 +2812,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/04 drew0
+;;     Version 2026.07.04
 ;; 2026/07/01 drew0
 ;;     Version 2026.07.01
 ;; 2026/06/30 drew0
