@@ -3,12 +3,12 @@
 ;; Filename: bookmark+-doc.el
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jun 30 07:12:45 2026 (-0700)
+;; Last-Updated: Mon Jul  6 07:24:55 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15441
+;;     Update #: 15442
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
