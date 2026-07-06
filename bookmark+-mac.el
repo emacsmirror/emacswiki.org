@@ -3,12 +3,12 @@
 ;; Filename: bookmark+-mac.el
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Jul  2 08:58:56 2026 (-0700)
+;; Last-Updated: Mon Jul  6 07:25:42 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 245
+;;     Update #: 246
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
