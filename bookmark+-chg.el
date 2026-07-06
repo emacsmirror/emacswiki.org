@@ -3,12 +3,12 @@
 ;; Filename: bookmark+-chg.el
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  4 15:04:15 2026 (-0700)
+;; Last-Updated: Mon Jul  6 07:43:04 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17169
+;;     Update #: 17171
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2812,6 +2812,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/06 drew0
+;;     Version 2026.07.06
 ;; 2026/07/04 drew0
 ;;     Version 2026.07.04
 ;; 2026/07/01 drew0
