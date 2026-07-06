@@ -3,13 +3,13 @@
 ;; Filename: bookmark+-1.el
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul  4 15:19:45 2026 (-0700)
+;; Last-Updated: Mon Jul  6 07:35:08 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 9838
+;;     Update #: 9840
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5497,7 +5497,7 @@ NAME."
 (defun bmkp-send-bug-report ()          ; Not bound
   "Send a bug report about a Bookmark+ problem."
   (interactive)
-  (browse-url (format (concat "mailto:" "drew0000000" "@" "gmail" ".com?subject=\
+  (browse-url (format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
