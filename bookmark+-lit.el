@@ -3,12 +3,12 @@
 ;; Filename: bookmark+-lit.el
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Jul  2 09:06:11 2026 (-0700)
+;; Last-Updated: Mon Jul  6 07:26:31 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1098
+;;     Update #: 1099
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
