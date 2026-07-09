@@ -46,7 +46,7 @@ any PDA supported by pilot-link.
 
 * HowmMode allows you to take notes fragmentarily and browse them collectively.
 
-* [[Hyperbole]], the Everyday Hypertextual Information Manager, is a set of tools with easy-to-navigate keyboard and menubar menus that lets you hyperlink your world without learning a markup language, lets you precisely and quickly control your windows and frames, lets you quickly look up contacts in hierarchical categories (including basic BBDB integration) and comes with an extensive manual.
+* [[Hyperbole]], the Everyday Hypertextual Information Manager, is a set of tools with easy-to-navigate keyboard and menubar menus that lets you hyperlink your world without learning a markup language, lets you precisely and quickly control your windows and frames, lets you quickly look up contacts or other data in hierarchical categories (including basic BBDB integration), create Wikis with auto-highlighting WikiWords and no markup and comes with an extensive manual.
 
 * [[LinkdMode|LinkD]] lets you create links within and among Emacs buffers and files.
 
