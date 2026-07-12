@@ -1,7 +1,40 @@
 Emacs can be used as a window manager much like xmonad, ratpoison, i3 and countless others.
 
-WindowManagers
+== Window Managers ==
 
 * [[EXWM]] (X11)
 * [[EWM]] (wayland)
 * [[reka]] (wayland)
+
+== Tips & Tricks ==
+
+Some tips and tricks are useful for any Emacs based Window Manager and are collected here until a better place is found.
+
+=== Background transparency and wallpapers ===
+
+It is important to still be able to see your dog pictures when your computer starts up or any screen is unused. The following code makes emacs transparent when a frame shows only the scratch buffer and the buffer is empty.
+
+
+{{{
+(defun thk-transparency-stop-on-first-char ()
+  "hook to disable transparency in *scratch* buffer on first keypress"
+  (progn
+    (set-frame-parameter (selected-frame) 'alpha-background 100)
+    (remove-hook 'post-self-insert-hook 'thk-transparency-stop-on-first-char)
+    )
+  )
+
+(defun thk-transparency ()
+  "transparency"
+  (if (and (string-equal (buffer-name) "*scratch*")
+           (= (buffer-size (current-buffer)) 0)
+           (= (count-windows) 1))
+      (progn
+        (set-frame-parameter (selected-frame) 'alpha-background 0)
+        (add-hook 'post-self-insert-hook 'thk-transparency-stop-on-first-char 100 t)
+        )
+    (set-frame-parameter (selected-frame) 'alpha-background 100)
+    )
+  )
+(add-hook 'buffer-list-update-hook 'thk-transparency)
+}}}
