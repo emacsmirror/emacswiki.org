@@ -1,4 +1,4 @@
-Emacs X Window Manager (aka EXWM) is an Emacs tiling window manager,
+Emacs X Window Manager (aka EXWM) is an Emacs tiling window manager for X11,
 built on top of [https://github.com/ch11ng/xelb XELB] (the X protocol
 Emacs Lisp Binding).
 
@@ -13,8 +13,9 @@ Github].
 
 == See Also ==
 
-[https://www.emacswiki.org/emacs/XWindowEmacsManager X Window Emacs Manager], /obsolete/
+[[XWindowEmacsManager|X Window Emacs Manager]], /obsolete/
 
 ----
-[https://www.emacswiki.org/emacs/CategoryRelated Category Related], 
-[https://www.emacswiki.org/emacs/CategoryNeedsAttention Category Needs Attention]
+[[CategoryRelated|Category Related]], 
+[[CategoryNeedsAttention|Category Needs Attention]],
+[[CategoryWindowManager]]
