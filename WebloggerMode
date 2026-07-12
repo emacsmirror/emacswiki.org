@@ -67,7 +67,7 @@ or define `weblogger-config-alist' manually to define the blogs (s)he wishes to 
 
 You'll need the "Server Endpoint".  Here are the values for various popular weblogging platforms:
 
-  Blogger.com: http://www.blogger.com/api
+  Blogger.com: https://developers.google.com/blogger/
   Wordpress: http://BLOG-URL/xmlrpc.php (For http://hexmode.wordpress.com/, this is http://hexmode.wordpress.com/xmlrpc.php.  For a blog hosted at http://example.com/weblog/ it would be http://example.com/weblog/xmlrpc.php)
   LiveJournal: http://www.livejournal.com/interface/blogger/
   OpenWeblog: http://www.openweblog.com/interface/blogger/
