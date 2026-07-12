@@ -1,0 +1,5 @@
+EWM is a Wayland compositor that runs as a Rust dynamic module inside Emacs.
+
+https://codeberg.org/ezemtsov/ewm
+----
+[[CategoryWindowManager]]
