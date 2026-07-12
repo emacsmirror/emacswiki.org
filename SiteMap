@@ -123,6 +123,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryShell|Shell]] -- interact with a shell inside Emacs, including  [[CategoryEshell|eshell]], a cross-platform shell implemented in EmacsLisp
 * [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
 * [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
+* [[CategoryWindowManager|WindowManager]] -- Emacs as Window Manager ([[Emacs_X_Window_Manager|EXWM]], [[EWM]], [[reka]])
 
 
 [:Customization]
