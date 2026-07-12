@@ -1,0 +1,7 @@
+Emacs can be used as a window manager much like xmonad, ratpoison, i3 and countless others.
+
+WindowManagers
+
+* [[EXWM]] (X11)
+* [[EWM]] (wayland)
+* [[reka]] (wayland)
