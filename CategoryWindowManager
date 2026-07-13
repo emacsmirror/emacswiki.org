@@ -38,3 +38,15 @@ It is important to still be able to see your dog pictures when your computer sta
   )
 (add-hook 'buffer-list-update-hook 'thk-transparency)
 }}}
+
+== TODO ==
+
+The following things are still missing to make my (thk) experience with reka great and should eventually be documented here:
+
+* use emacs modeline as a statusbar (like e.g. waybar) with system tray, clock, power status, audio volume, keyboard indicators, system usage, ...
+* have keyboard shortcuts go to the right place, either emacs or the current focused application
+* a nice solution to launch applications (maybe with consult like ewm recommends)
+* avoid the pollution of emacs with async-something output buffers
+* newly launched applications should open fullscreen
+* get rid of unnecessary window decorations
+* ...
