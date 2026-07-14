@@ -13,7 +13,7 @@ To report '''Bookmark+''' bugs use one of these ways to help you prepare an emai
 
 * `M-x bmkp-send-bug-report'
 * `M-x customize-group bookmark-plus', then follow (e.g. click) the link '''Send Bug Report'''
-* `C-x r l` or `M-x bookmark-bmenu-list', to open the bookmark-list display (buffer `##*Bookmark List*##'), then use menu-bar menu '''Bookmark+' > '''Send Bug Report'''
+* `C-x r l' or `M-x bookmark-bmenu-list', to open the bookmark-list display (buffer `##*Bookmark List*##'), then use menu-bar menu '''Bookmark+' > '''Send Bug Report'''
 
 
 
@@ -29,12 +29,12 @@ To report '''Bookmark+''' bugs use one of these ways to help you prepare an emai
 
 Some basic keys you can use anywhere:
 
-* Bookmark the file you are editing: `C-x x m'
+* Bookmark the file or buffer you are editing: `C-x x m'
 * Jump to a bookmark: `C-x j j'
-* Tag a file (creates an autofile bookmark): `##C-x x t + a##'
-* List/edit your bookmarks: `C-x r l'
+* Tag a file (creates an [[#AutofileBookmarks|autofile bookmark]]): `##C-x x t + a##'
+* List/edit your bookmarks: `C-x r l' (or `C-x x e', or `M-x bookmark-bmenu-list')
 
-Some keys you can use in your bookmarks list (from `C-x r l'):
+Some keys you can use in your bookmarks-list buffer (from `C-x r l'):
 
 * Add/remove some tags to/from a bookmark: `##T +##', `T -'
 * Mark the bookmarks that have particular tags: `##T m +##'.  Hit `RET' to enter each tag you type, then hit `RET' with empty input when done.
