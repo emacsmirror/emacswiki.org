@@ -4005,7 +4005,7 @@ would then set `bmkp-autoname-format' to the format specification
 '''Bookmark+''' format specifier that corresponds to the buffer name.
 
 Recognizing the buffer name in an autonamed bookmark is important
-or commands that act only on autonamed bookmarks for a specific
+for commands that act only on autonamed bookmarks for a specific
 buffer.  That includes commands `bmkp-autonamed-this-buffer-jump'
 and `bmkp-delete-all-autonamed-for-this-buffer'.
 
