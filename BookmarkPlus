@@ -4010,7 +4010,7 @@ buffer.  That includes commands `bmkp-autonamed-this-buffer-jump'
 and `bmkp-delete-all-autonamed-for-this-buffer'.
 
 You use the special format specifier `##%B##' for the buffer name,
-instead of just `%s', because the format can have multiple `##%##'
+instead of just `##%s##', because the format can have multiple `##%##'
 sequences, and the buffer name could be anywhere in the bookmark
 name.  Depending on the buffer, the buffer name could thus be
 confused with other text in the bookmark name, unless you use `##%B##'
