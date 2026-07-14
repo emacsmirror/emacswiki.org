@@ -4315,7 +4315,7 @@ easy to see which parts of a manual you have already looked at.
 have visited it.)
 
 If you use library [[Info+]] (<tt>[[info+.el]]</tt>) then you have this complementary
-ability save your Info history list persistently.  Just enable
+ability to save your Info history list persistently.  Just enable
 minor mode `[[InfoPlus#Info-persist-history-mode|Info-persist-history-mode]]'.
 
 
