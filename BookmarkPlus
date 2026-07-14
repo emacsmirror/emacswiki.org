@@ -27,14 +27,25 @@ To report '''Bookmark+''' bugs use one of these ways to help you prepare an emai
 [:Quick-Start]
 == Quick Start ==
 
-Some basic keys you can use anywhere:
+Some basic ''keys'' you can use ''anywhere'':
 
-* Bookmark the file or buffer you are editing: `C-x x m'
-* Jump to a bookmark: `C-x j j'
-* Tag a file (creates an [[#AutofileBookmarks|autofile bookmark]]): `##C-x x t + a##'
-* List/edit your bookmarks: `C-x r l' (or `C-x x e', or `M-x bookmark-bmenu-list')
+* ''Bookmark'' the file or buffer you are editing: `C-x x m'
+* ''Jump'' to a bookmark (effect its action: typically go to its destination): `C-x j j' (or `C-x x j')
+* ''Tag'' a ''file'' (creates an [[#AutofileBookmarks|autofile bookmark]]): `##C-x x t + a##'
+* ''List/manage/edit'' your bookmarks (visit the bookmarks-list buffer, `##*Bookmark List*##'): `C-x r l' (or `C-x x e', or `M-x bookmark-bmenu-list')
+* ''Jump'' to a given ''bookmark's line in'' `##*Bookmark List*##': `C-x j C-j' (or `C-x x C-j')
 
-Some keys you can use in your bookmarks-list buffer (from `C-x r l'):
+: ''Note:''
+
+: All global '''Bookmark+''' keys are on prefix key '''`C-x x''''. Global jump keys are on prefix key '''`C-x j'''' ('''`C-x 4 j'''' for "other-window" commands).
+
+: You can change the prefix keys used for these by customizing these user [[option|options]]: `bmkp-bookmark-map-prefix-keys', `bmkp-jump-map-prefix-keys', and `bmkp-jump-other-window-map-prefix-keys'.
+
+: In other words, it's easy to move commands to different prefix keys. If you want all jump keys on `##<f1>##', use `M-x customize-option bmkp-jump-map-prefix-keys' and change `C-x j' to `##<f1>##' (or add `##<f1>##', keeping `C-x j').
+
+
+
+Some ''keys'' you can use in buffer ''`##*Bookmark List*##''' (from `C-x r l'):
 
 * Add/remove some tags to/from a bookmark: `##T +##', `T -'
 * Mark the bookmarks that have particular tags: `##T m +##'.  Hit `RET' to enter each tag you type, then hit `RET' with empty input when done.
@@ -42,7 +53,7 @@ Some keys you can use in your bookmarks-list buffer (from `C-x r l'):
 * Toggle marked/unmarked bookmarks: `t'
 * [[Dired]] the marked bookmarks: `##M-d >##'.  Enter a name for the Dired buffer.
 
-Some keys you can use in [[DiredMode]]:
+Some ''keys'' you can use in ''[[DiredMode]]'':
 
 * Bookmark the Dired directory, its current markings, etc.: `C-x r m'
 * Bookmark each of the marked files: `M-b' (you need '''[[Dired+]]''' for this)
