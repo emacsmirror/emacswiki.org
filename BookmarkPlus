@@ -4054,7 +4054,7 @@ bookmark list are saved automatically using [[option]]
 '''`bookmark-save-flag''''.  Remember that you can toggle this option
 using command `bmkp-toggle-saving-bookmark-file' (bound to '''`##M-~##''''
 in the bookmark-list buffer).  Remember too that you can at any
-changing the set of bookmarks that are susceptible to being saved.
+time change the set of bookmarks that are susceptible to being saved.
 
 You could, for example:
 
