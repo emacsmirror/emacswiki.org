@@ -2,16 +2,19 @@ This page is about package '''[::Bookmark+]''', which enhances vanilla Emacs [[b
 
 * Emacs manual, node `Bookmarks': Manual:Bookmarks
 * [[#BookmarkBasics|Bookmark Basics]], below
-* [[BookMarks|Bookmarks]]
-`
+* %%EmacsWiki%% page about [[BookMarks|Bookmarks]]
+
 The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. But see also [[#Compatibility]], below.
 
 
-To report '''Bookmark+''' bugs: Use `M-x customize-group bookmark-plus'.
-Then follow (e.g. click) the link '''Send Bug Report''', which
-helps you prepare an email to me.
+To report '''Bookmark+''' bugs use one of these ways to help you prepare an email to me:
+
+* `M-x bmkp-send-bug-report'
+* `M-x customize-group bookmark-plus', then follow (e.g. click) the link '''Send Bug Report'''
+* `C-x r l` or `M-x bookmark-bmenu-list', to open the bookmark-list display (buffer `##*Bookmark List*##'), then use menu-bar menu '''Bookmark+' > '''Send Bug Report'''
+
 
 
 
