@@ -13,7 +13,7 @@ To report '''Bookmark+''' bugs use one of these ways to help you prepare an emai
 
 * `M-x bmkp-send-bug-report'
 * `M-x customize-group bookmark-plus', then follow (e.g. click) the link '''Send Bug Report'''
-* `C-x r l' or `M-x bookmark-bmenu-list', to open the bookmark-list display (buffer `##*Bookmark List*##'), then use menu-bar menu '''Bookmark+' > '''Send Bug Report'''
+* `C-x r l' or `M-x bookmark-bmenu-list', to open the bookmark-list display (buffer `##*Bookmark List*##'), then use menu-bar menu '''Bookmark+''' > '''Send Bug Report'''
 
 
 
@@ -41,7 +41,7 @@ Some basic ''keys'' you can use ''anywhere'':
 
 : You can change the prefix keys used for these by customizing these user [[option|options]]: `bmkp-bookmark-map-prefix-keys', `bmkp-jump-map-prefix-keys', and `bmkp-jump-other-window-map-prefix-keys'.
 
-: In other words, it's easy to move commands to different prefix keys. If you want all jump keys on `##<f1>##', use `M-x customize-option bmkp-jump-map-prefix-keys' and change `C-x j' to `##<f1>##' (or add `##<f1>##', keeping `C-x j').
+: So it's easy to move commands to different prefix keys. If you want all jump keys on `##<f1>##', use `M-x customize-option bmkp-jump-map-prefix-keys' and change `C-x j' to `##<f1>##' (or add `##<f1>##', keeping `C-x j').
 
 
 
@@ -84,15 +84,15 @@ Some ''keys'' you can use in ''[[DiredMode]]'':
 
 The main '''Bookmark+''' library is ##bookmark+.el##.  The other required
 libraries are ##bookmark+-mac.el##, ##bookmark+-bmu.el##, ##bookmark+-1.el##, and ##bookmark+-key.el##.  If you
-want to be able to highlight bookmarks then you will also need library ##bookmark+-lit.el##.  I recommend that you byte-compile all of
-the libraries, after loading the source files (in particular, load
+want to be able to highlight bookmarks (their destinations) then you also need library ##bookmark+-lit.el##.  I recommend that you byte-compile all of
+the libraries, after loading the source files (in particular, after loading
 ##bookmark+-mac.el##).
 
 Put the directory of these libraries in your `load-path' and add this to your [[init file]]:
 
  (require 'bookmark+)
 
-That will load all of the '''Bookmark+''' libraries.  If you do not care about bookmark highlighting then simply do not put ##bookmark+-lit.el## in your
+That will load all of the '''Bookmark+''' libraries.  If you don't care about bookmark highlighting then don't put ##bookmark+-lit.el## in your
 `load-path'. 
 
 By default (see [[option]] '''`bmkp-crosshairs-flag''''), when you visit a
@@ -180,9 +180,10 @@ That NOTE is repeated in the Commentary of some of the individual Lisp files, in
 
 [[MELPA]] has decided to no longer accept Lisp libraries from %%EmacsWiki%%.  This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages).  Too bad.  This means that you ''must download '''Bookmark+''' and my other libraries only from Emacs Wiki.  Sorry about that.  I upload '''Bookmark+''' files only to the wiki.
 
+The information here about getting '''Bookmark+''' from MELPA is therefore ''out-of-date'', though you might still be able to get an old version of '''Bookmark+''' these ways.
+
 JonasBernoulli 's GitHub mirror for '''Bookmark+''' is also apparently not being updated, or at least not frequently.
 
-The ''following information is therefore out-of-date'', though you might still be able to get an old version of '''Bookmark+''' these ways.
 
 ----
 
@@ -353,7 +354,8 @@ name.)
      you jump to a bookmark that records a region, the region is
      activated (see [[option]] '''`bmkp-use-region'''').  (Region
      activation is not supported for Gnus bookmarks.)
-You can define your own region handler for bookmarks that
+
+: You can define your own region handler for bookmarks that
 record regions.  (This is in addition to being able to define
 bookmark handlers.)  Use [[option]] '''`bmkp-handle-region-function''''
 for this.  As one example, command
@@ -392,7 +394,7 @@ cloned indirect buffer.  (You need library
 [:AdditionalTypes]
 === Additional types of bookmarks. ===
 
-'''Bookmark+''' adds over 70 types of bookmark. (You can see what they all are by invoking function `bmkp-types-alist'.) Here are the main ones:
+'''Bookmark+''' adds almost 80 types of bookmark. (You can see what they all are by invoking function `bmkp-types-alist'.) Here are some of the main ones:
 
 * '''[[#AutofileBookmarks|Autofile]] bookmarks.'''  You can bookmark a file without visiting
 it or naming the bookmark.  The bookmark name is the same as
@@ -412,10 +414,6 @@ mark chars, not just `*'), which subdirectories are inserted, and which (sub)dir
 
 * '''[[#BookmarkFileBookmarks|Bookmark-file]] bookmarks.''' You can bookmark a ''bookmark file''.  Jumping to such a bookmark
 loads the bookmarks in the file.
-
-
-
-
 
 [:DesktopBookmarks]
 * '''Desktop bookmarks.'''  You can bookmark the current Emacs ''[[DeskTop|desktop]]'', as defined by library
@@ -1112,7 +1110,7 @@ to any keys you like, by customizing [[option|options]]
 '''`bmkp-jump-map-prefix-keys'''' and
 '''`bmkp-jump-other-window-map-prefix-keys''''.
 
-If you do not remember the different type-specfic bindings,
+If you don't remember the different type-specfic bindings,
 you can use commands '''`bmkp-jump-to-type'''' and
 '''`bmkp-jump-to-type-other-window'''' ('''`##C-x j :##'''' and '''`##C-x 4 j :##'''').  They work for any type, prompting you first for the type, then for a bookmark of that type (only).
 
@@ -1476,8 +1474,7 @@ property (e.g. is a number greater than 3.14159265358979), and then you can
 use command '''`bmkp-bmenu-mark-bookmarks-satisfying'''' to mark
 those bookmarks.
 
-Tags that have the prefix '''##"bmkp-"##''' are reserved -- do not name
-your own tags using this prefix.
+Tags that have the prefix '''##"bmkp-"##''' are reserved -- do not name your own tags using this prefix.
 Currently, '''##"bmkp-jump"##''' is the only predefined bookmark tag.
 You can give this tag a value that is a function -- it is called
 whenever the tagged bookmark is visited.  Any Lisp-readable
@@ -2077,7 +2074,7 @@ visiting it:
 
 1. In an Emacs buffer you come across a reference or a link to a
    file or a URL.  You bookmark the target without bothering to
-   visit it first.  You do not really care which position in the
+   visit it first.  You don't really care which position in the
    file is bookmarked.
 
 2. In Dired, you mark certain files and then bookmark all (each)
@@ -2182,7 +2179,7 @@ Every hit is bookmarked.
 
 Nevertheless, you can get the same effect.  Just use `C-x C-q' to
 make the buffer writable (e.g. temporarily), and then remove any
-hits that you do not want to bookmark.  You can remove hits anyway
+hits that you don't want to bookmark.  You can remove hits anyway
 you like, including by `C-k' and by [[regexp]] (`M-x flush-lines' or
 `M-x keep-lines').
 
@@ -2506,7 +2503,7 @@ commands in how the completion candidates are filtered.
 
 For the former, `read-file-name' is passed a predicate that is
 applied to ''each file name in the directory'', filtering out any such
-candidates that do not satisfy it (e.g., do not have the required
+candidates that don't satisfy it (e.g., do not have the required
 tags).
 
 This happens before you type any input to match the file name.
@@ -2596,7 +2593,7 @@ current directory only are on prefix key '''`##C-x j t .##''''.  See
 commands.
 
 The second kind of command is for visiting tagged files, that is,
-autofile bookmarksjust like the commands with prefix
+autofile bookmarks, just like the commands with prefix
 `bmkp-autofile-'.  However, these commands do not handle the
 bookmark as such, but only its associated file or directory.  They recognize its
 tags, but they pay no attention to any special handler or other
@@ -2727,8 +2724,7 @@ list (command '''`bmkp-toggle-saving-bookmark-file'''').
 
 Besides using multiple bookmark files as ''alternatives'',
 you can combine them, using them as component bookmark subsets (like modules).
-To do that, use command '''`C-x x l'''' (lowercase `l'), which is bound
-to '''`bookmark-load'''', and do not use a prefix argument.  (Using a
+To do that, use command '''`C-x x l'''' (lowercase `l'), which is bound to '''`bookmark-load'''', and don't use a prefix argument.  (Using a
 prefix argument with `C-x x l' is the same as using `C-x x L': it
 ''switches'' bookmark files.)  Here too the
 default is the name of the last bookmark file that you used.
@@ -2973,7 +2969,7 @@ File and Directory Bookmarks
 
 ('''Bookmark+''' does not use the sliding header line of vanilla Emacs
 24+, which means that [[option]] '''`bookmark-bmenu-use-header-line'''' has
-no effect.  You do not need to see `Bookmark' and `File' column
+no effect.  You don't need to see `Bookmark' and `File' column
 headers as you scroll.)
 
 
@@ -3699,7 +3695,7 @@ bookmark that you created.  But you can also choose the candidate
 shown currently in the `##*Bookmark List*##' (even if the list is not 
 displayed now).  See [[#StateRestoration|State-Restoring Commands and Bookmarks]] for information about bookmark-list bookmarks.
 
-If you do not define the navigation list before you start cycling,
+If you don't define the navigation list before you start cycling,
 it is automatically defined as follows:
 
 * If you cycle using a current-file/buffer cycling key such as `C-x x down' (see [[#CyclingCurrentBuffer|Cycling in the Current File/Buffer]]) then the
@@ -3857,8 +3853,7 @@ Previous: '''`C-x x p'''', '''`C-x x C-p'''', '''`C-x x up''''
 Starting with Emacs 23.3 (Emacs fix for bug #6256), you can also
 use the mouse wheel to cycle: `C-x x' then just rotate the wheel.
 
-Again, you can bind any keys you want to these commands (e.g. `f2', `S-f2').  If you
-do not need to use a [[prefix key]], then bind commands
+Again, you can bind any keys you want to these commands (e.g. `f2', `S-f2').  If you don't need to use a [[prefix key]], then bind commands
 `bmkp-next-bookmark-this-file/buffer' and
 `bmkp-previous-bookmark-this-file/buffer' (no ##-repeat##).
 
@@ -3986,7 +3981,7 @@ bookmarks using these commands:
 - At `occur' and `multi-occur' hits
 
 Autonamed bookmarks are normal bookmarks.  In particular, they are
-persisted.  If you do not care to persist them, you can ensure
+persisted.  If you don't care to persist them, you can ensure
 that they are automatically deleted by adding
 '''`bmkp-delete-autonamed-this-buffer-no-confirm'''' to
 `kill-buffer-hook' and '''`bmkp-delete-autonamed-no-confirm'''' to
@@ -4318,8 +4313,7 @@ recency (time of last visit), using '''`s r'''', or by the number of visits, usi
 This gives you an easy way to see which parts of the manuals you
 have visited most recently and how much you have visited them.
 Showing only Info bookmarks gives you the effect of a ''persistent
-mini-manual'' of just the visited Info nodes.  Turn the mode off anytime
-you do not want to record Info visits.
+mini-manual'' of just the visited Info nodes.  Turn the mode off anytime you don't want to record Info visits.
 
 Also useful in this context, though not related to bookmarking, is
 the ability to ''save your Info history persistently'', so links
