@@ -48,4 +48,4 @@ This is a current-state comparison of Emacs AI coding tools and integrations. Th
 || '''[https://github.com/xenodium/emacs-skills emacs-skills]''' || Instructions and skills add-on || No || Depends on consuming agent || Supplies skills and instructions to agents such as Claude Code || N/A || External-agent dependent || Depends on agent placement || Skills files || External-agent dependent || Not a standalone coding tool ||
 || '''[https://github.com/skissue/llm-tool-collection llm-tool-collection]''' || Tool library || No || Depends on consuming agent || Reusable Elisp tools for gptel-style agents || N/A || Backend-dependent || Tool-implementation dependent || Tool definitions || Tool-dependent || Not an independent agent or UI ||
 
-Corrections from package maintainers are welcome. Credit to original poster [https://www.reddit.com/user/nimzobogo/]
+Corrections from package maintainers are welcome. Credit to original poster [https://www.reddit.com/user/nimzobogo/ nimzobogo]
