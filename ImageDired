@@ -38,6 +38,46 @@ The picture above shows how Image-Dired displays the original image's file name 
 
 This image shows how well Image-Dired works with its buffers in different frames.
 
+== Random slideshow ==
+
+To run with 1 second delay:
+: M-1 M-x image-dired-slideshow-random-start RET
+
+{{{
+(require 'image-dired)
+(defun image-dired-slideshow-random-start (&optional arg)
+  "Start a random image-dired slideshow using a compact, self-contained layout."
+  (interactive "P")
+  (letrec
+      ((random-step
+        (lambda (&rest _)
+          (when-let ((buf (get-buffer image-dired-thumbnail-buffer)))
+            (with-current-buffer buf
+              (let (points)
+                (save-excursion
+                  (goto-char (point-min))
+                  (while (setq points (if (image-dired-image-at-point-p) (cons (point) points) points)
+                                 not-eob (not (eobp)))
+                    (forward-char 1))
+                (when points
+                  (goto-char (seq-random-elt points))
+                  (image-dired-display-this))))))))
+       (filter-stop
+        (lambda (orig-fun &rest args)
+          (let ((this-command (if (eq this-command 'image-dired-slideshow-random-start)
+                                  'image-dired-slideshow-start
+                                this-command)))
+            (apply orig-fun args)
+            (unless image-dired--slideshow-timer
+              (advice-remove 'image-dired-display-next random-step)
+              (advice-remove 'image-dired--slideshow-stop filter-stop))))))
+
+    (advice-add 'image-dired-display-next :override random-step)
+    (advice-add 'image-dired--slideshow-stop :around filter-stop)
+    (funcall random-step)
+    (image-dired-slideshow-start arg)))
+}}}
+
 
 == Exif rotation ==
 
