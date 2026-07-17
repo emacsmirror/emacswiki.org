@@ -321,7 +321,7 @@ more Org files to annotate one or more bookmarks.  The
 annotation saved with the bookmark itself just specifies the
 destination.  See [[#BookmarkAnnotations|Bookmark Annotations]].
 
-* You can ''[[#BookmarkTags|tag]]'' bookmarks, a la [[http://delicious.com|del.icio.us]]. In effect,
+* You can ''[[#BookmarkTags|tag]]'' bookmarks. In effect,
 '''[::bookmark tag]s''' define bookmark ''sets''.  A bookmark can have any number of tags, and multiple bookmarks can have the same tag.  You can
 sort, show/hide, or mark bookmarks based on their tags.
 
@@ -599,7 +599,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
      as your ''Home'' page at Emacs startup.)
 
 * You can ''save'' the current bookmark-list state at ''any time'' and return to it later.  There are a few ways to do this, including
-''bookmarking the list'' itself. See [[#BookmarkListViews]].
+''bookmarking the list'' itself. See [[#BookmarkListViews|Bookmark List Views]].
 
 * ''Marking''/unmarking is enhanced.  It is similar to [[DiredMode|Dired]]'s.
 
@@ -638,7 +638,7 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 according to ''Windows file associations''.  (You will also need
 library <tt>[[w32-browser.el]]</tt>.)
 
-* You can use (lax) ''[[completion]] when you set'' a bookmark using  `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'),
+* You can use (lax) ''[[completion]] when you set or update'' a bookmark (`C-x r m', for example),
 choosing from existing bookmarks for the same buffer.  This
 makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric prefix argument]] (or if there are no bookmarks for the buffer), you can choose from all bookmarks.
 
@@ -687,39 +687,44 @@ easy to go back and forth between two bookmark files.  See [[#UsingMultipleBookm
 [:BookmarkPrefixKeys]
 === Dedicated keymaps as prefix keys. ===
 
-* Prefix '''`C-x x'''' is used for bookmark keys, in general.  The
-vanilla keys on prefix `C-x r' are still available also, but that
+* Prefix '''`C-x x'''' is for bookmarking keys in general.  The
+vanilla Emacs bookmarking keys on prefix `C-x r' are still available also, but that
 prefix is shared with [[register]] commands, making it less convenient for bookmarks.  Using `C-x x' lets
 you focus on bookmarks.
 
-* Prefix '''`C-x x c'''' is for ''setting'' various kinds of bookmarks.
+* Prefix '''`C-x x a'''' is for commands involving bookmark ''annotations''.
 
-* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' (for other-window) are used for bookmark ''jump'' commands. Again, a dedicated [[prefix key]]
+* Prefixes '''`C-x j'''' and '''`C-x 4 j'''' are for bookmark ''jump'' commands. Again, a dedicated [[prefix key]]
 helps you focus on one kind of action (jumping).
 
-All of these prefix keys correspond to prefix-map [[variable]]s, so
-you need not use these particular prefixes.  You can bind these
-maps to any prefix keys you want.  These are the maps, together
+* Prefix '''`C-x x c'''' is for commands involving ''setting'' bookmarks.
+
+* Prefix '''`C-x x t'''' is for commands involving bookmark tags.
+
+These prefix keys correspond to prefix-map [[variable]]s, so
+you need not use these particular prefixes.  You can bind the
+maps to any prefix keys you want.  Here are the maps, together
 with their predefined bindings.
 
 * '''`bookmark-map''''               -- '''`C-x x''''
-* '''`bmkp-set-map''''               -- '''`C-x x c''''
-* '''`bmkp-tags-map''''              -- '''`C-x x t''''
+* '''`bmkp-annotate-map''''          -- '''`C-x x a''''
 * '''`bmkp-jump-map''''              -- '''`C-x j''''
 * '''`bmkp-jump-other-window-map'''' -- '''`C-x 4 j''''
+* '''`bmkp-set-map''''               -- '''`C-x x c''''
+* '''`bmkp-tags-map''''              -- '''`C-x x t''''
 
 Those are the prefix keys that are available by ''default''.  To
-change them, just customize these [[option|user options]], each of which
+change them you can customize these [[option|user options]], each of which
 is a list of the key sequences to use as prefix key.
 
-* '''`bmkp-bookmark-map-prefix-keys''''  -- default: '''##("^Xp")##'''
+* '''`bmkp-bookmark-map-prefix-keys''''  -- default: '''##("^Xx")##'''
 * '''`bmkp-jump-map-prefix-keys''''      -- default: '''##("^Xj")##'''
 * '''`bmkp-jump-other-window-map-prefix-keys'''' -- default: '''##("^X4j")##'''
 
 (##^X## here is actually the Control-X character.)
 
-Keymaps `bmkp-set-map' and `bmkp-tags-map' are always on
-`bookmark-map', whatever prefix keys it is on.  So if, for example, you
+Keymaps `bmkp-annotate-map', `bmkp-set-map' and `bmkp-tags-map' are always on
+`bookmark-map', whatever prefix keys it's on.  For example, if you
 customize `bmkp-bookmark-map-prefix-keys' to be '''##("^Xp" [f9])##''' then
 the keys in `bmkp-set-map' have both prefix `C-x x c' and
 prefix `##<f9> c##'.
@@ -1956,7 +1961,7 @@ tags and annotation are preserved when you update a bookmark.
 
 The bookmark list (buffer `##*Bookmark List*##') provides a view into
 the set of bookmarks.  You can mark, sort, and hide (filter, omit)
-bookmarks --- see [[#BookmarkListDisplay]].  The state of the
+bookmarks --- see [[#BookmarkListDisplay|Bookmark List Display]].  The state of the
 displayed bookmark list can thus change.
 
 At different times, and in different contexts, different views can
@@ -2014,7 +2019,7 @@ bookmark-list bookmark.
 When you use `C-x r m' (`bmkp-bookmark-set-confirm-overwrite') in buffer `##*Bookmark List*##' to
 create a bookmark-list bookmark, the current sort order, filter, regexp pattern, title, and omit
 list are saved as part of the bookmark.  (These concepts are
-described below --- see [[#BookmarkListDisplay]].)  Jumping to
+described below --- see [[#BookmarkListDisplay|Bookmark List Display]].)  Jumping to
 such a bookmark restores all of these.
 
 [:bmkp-bmenu-define-command]
@@ -2183,7 +2188,7 @@ hits that you don't want to bookmark.  You can remove hits anyway
 you like, including by `C-k' and by [[regexp]] (`M-x flush-lines' or
 `M-x keep-lines').
 
-See also: [[#AutonamedBookmarks]], bookmarking occur hits using autonamed bookmarks.
+See also: [[#AutonamedBookmarks|Autonamed Bookmarks]], bookmarking occur hits using autonamed bookmarks.
 
 
 
@@ -2943,14 +2948,25 @@ bookmark file, whatever that might be (e.g. `##~/.emacs.bmk##').
 [:BookmarkListDisplay]
 == The Bookmark List Display ==
 
-'''Bookmark+''' enhances the bookmark list (aka the bookmark "menu list", a misnomer) that is displayed in buffer `##*Bookmark List*##' when you use `C-x x e' or `C-x r l' (command `bookmark-bmenu-list').
+'''Bookmark+''' enhances the bookmark list that's displayed in buffer `##*Bookmark List*##' when you use `C-x x e' or `C-x r l' (command `bookmark-bmenu-list').
 
-At the top of the bookmark-list display is this header
+Historically, this list has also been
+called the bookmark "menu list", which is a misnomer.  The names
+of '''Bookmark+''' variables and functions involving this buffer have
+prefix `bmkp-bmenu-', and vanilla `bookmark.el' uses prefix
+`bookmark-bmenu-'.
+
+In buffer `*Bookmark List*' many commands act on a specific
+bookmark, typically a bookmark you click with the mouse or the
+bookmark listed on the current line.  Other commands act on a
+subset of the listed bookmarks, such as those that are marked.
+
+At the top of buffer `*Bookmark List*' is this header
 information:
 
 * The bookmark file used currently.  This is important because
 '''Bookmark+''' makes it easy for you to have multiple bookmark files
-and switch among them.
+and switch among them -- see [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]] 
 
 * A title that describes the kinds of bookmarks listed, that is,
 it reflects athe current filtering, if any.
@@ -2978,7 +2994,7 @@ Bookmarks are highlighted to
 indicate their type. You can mark and unmark bookmarks, show or
 hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).  Bookmarks that have been modified since the last save of the bookmark file are marked with a '''`##*##''''.
 Bookmarks that have bookmark-highlight
-override settings (see [[#DefiningHowtoHighlight]]) are
+override settings (see [[#DefiningHowtoHighlight|Defining How to Highlight]]) are
 marked with a one-character pink background.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
@@ -2993,16 +3009,39 @@ information about the bookmark list, including the following:
 
 
 
+[:JumpingFromAnywhereToBookmarkListDisplay]
+=== Jumping From Anywhere To the Bookmark List Display ===
+
+You can use command '''`bmkp-jump-to-list'''' ('''`C-x j C-j'''' or `C-x x C-j'), 
+to jump from anywhere to a bookmark in buffer `*Bookmark
+List*'.  You're prompted for the bookmark to jump to.
+
+In particular, if you're in a buffer with highlighted bookmark
+locations you can use `M-x bmkp-lighted-here-jump-to-list' ''to jump
+to the line in `*Bookmark List*' for a lighted bookmark at point''.
+If there are multiple highlighted bookmarks at point you're
+prompted for the one to jump to.
+
+You can also use many `bmkp-bmenu-*' commands from outside buffer
+`*Bookmark List*'.  For example, the `bmkp-bmenu-show-only-*'
+commands, which filter `*Bookmark List*' to show only a particular
+kind of bookmark, first jump to `*Bookmark List*' and then filter
+its display.
 
 
-[:JumpingFromBookmarkListDisplay]
+
+
+
+
+
+
+[:JumpingToBookmarksFromBookmarkListDisplay]
 === Jumping To Bookmarks from the Bookmark List Display ===
 
-Bookmark visiting (jumping) commands are globally on [[prefix key]]s
-`C-x j' and `C-x 4 j'.  In the [[#BookmarkListDisplay|bookmark-list display]]  they are
-additionally on '''`j'''' (other window) and '''`J'''' (same window).  In
-addition, '''`##j >##'''' is bound to '''`bmkp-bmenu-jump-to-marked'''', which
-jumps to each of the marked bookmarks in other windows.
+Bookmark jumping commands are globally on [[prefix key]]s
+`C-x j' and `C-x 4 j'.  In buffer `*Bookmark List*'  they're
+additionally on prefix keys '''`j'''' (other window) and '''`J'''' (same window).  ('''`##j >##'''' is bound to '''`bmkp-bmenu-jump-to-marked'''', which
+jumps to each of the marked bookmarks, in other windows.)
 
 
 
@@ -3096,7 +3135,7 @@ work in any buffer, not just buffer `##*Bookmark List*##'):
 ** '''`##T d##'''' ('''`##C-x x t d##'''') removes a set of tags from all bookmarks.
 
 In the bookmark list display you can also sort bookmarks according
-to how they are tagged, even in complex ways.  See [[#SortingBookmarks]].
+to how they are tagged, even in complex ways.  See [[#SortingBookmarks|Sorting Bookmarks]].
 
 
 
@@ -3129,7 +3168,7 @@ How would you sort your bookmarks, to show all those tagged both `blue' and `moo
 
 # `##T m * blue RET moon RET RET##', to mark them.
 
-# `##s >##' to sort the marked bookmarks first (see [[#SortingBookmarks]], below).
+# `##s >##' to sort the marked bookmarks first (see [[#SortingBookmarks|Sorting Bookmarks]], below).
 
 If you wanted to ''show'' only the marked bookmarks, instead of sorting to put them first in the list, you would use `##>##' instead of `##s >##'.
 
@@ -3137,7 +3176,7 @@ How would you query-replace the set of files that are tagged with
 ''any'' of the tags `alpha', `beta', and `gamma', but are ''not'' tagged
 `blue' or `moon'?
 
-# `##F S##', to show only the file bookmarks (see [[#FilteringBookmarks]], below).
+# `##F S##', to show only the file bookmarks (see [[#FilteringBookmarks|Filtering Bookmarks]], below).
 
 # `##T m + alpha RET beta RET gamma RET RET##', to mark the
 bookmarks that have at least one of those tags.
@@ -3247,7 +3286,7 @@ is, both the bookmark name and the file name, if shown.
 
 * '''`##F M##'''', '''`##I M##'''' etc. to __m__ark only the __f__ile bookmarks, __I__nfo
 bookmarks etc.  (The first key here is the same as the
-corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks]], below.)
+corresponding filter key, e.g. `F' for files -- see [[#FilteringBookmarks|Filtering Bookmarks]], below.)
 
 * '''`##O M##'''' to mark the orphaned bookmarks, that is, those whose
 recorded files have been renamed or deleted.  You can then
@@ -3285,9 +3324,19 @@ The type filter is reflected in the bookmark-list display title.
 It says `All Bookmarks' if no type filter is used.  Otherwise it
 tells you what kind of bookmarks are listed: `Autonamed Bookmarks', `File and Directory Bookmarks', and so on.
 
-Note: It is only filtering by bookmark type that is remembered
+You can use the commands that filter by bookmark type anywhere,
+not just in buffer `*Bookmark List*'.  For example, if you are
+in a buffer `foobar' where bookmarked locations are highlighted,
+command `bmkp-bmenu-show-only-this-buffer-lighted-bookmarks'
+jumps to `*Bookmark List*' and shows only the bookmarks
+highlighted in buffer `foobar'.
+
+Note: It is only filtering by bookmark type, not filtering by pattern matching (see next) that's remembered
 when you save a bookmark-list display state or you create a
 bookmark-list bookmark.  See [[#StateRestoration|State-Restoring Commands and Bookmarks]].
+
+
+
 
 
 
@@ -3303,7 +3352,7 @@ The commands for this are bound to keys that start with '''`P'''' (for
 "pattern").  For example, `##P B##' shows only bookmarks whose names
 match the regexp, `##P F##' shows those whose file names match, `##P A##' shows those whose annotations match, and
 `##P T##' shows those that have one or more tags that match.
-(See [[#BookmarkTags]], above, for information about tags.)
+(See [[#BookmarkTags|Bookmark Tags]], above, for information about tags.)
 
 
 
@@ -3312,7 +3361,7 @@ match the regexp, `##P F##' shows those whose file names match, `##P A##' shows 
 
 Just as in [[DiredMode|Dired]], you can use '''`##% m##'''' to mark the bookmarks that
 match a regexp.  Then use '''`##>##'''' to show only the marked bookmarks.
-See [[#MarkingAndUnmarkingBookmarks]], above.
+See [[#MarkingAndUnmarkingBookmarks|Marking and Unmarking Bookmarks]], above.
 
 This method has
 the advantage that you can show the complement: the bookmarks
@@ -3334,7 +3383,7 @@ These are the keys for hiding or showing bookmarks:
 
 * '''`##I S##'''' -- Show only __I__nfo bookmarks.
 
-* '''`##K S##'''' -- Show only des__K__top bookmarks (see [[#AdditionalTypes]]).
+* '''`##K S##'''' -- Show only des__K__top bookmarks (see [[#AdditionalTypes|Additional Types]]).
 
 * '''`##M S##'''' -- Show only __m__an-page bookmarks.
 
@@ -3342,7 +3391,7 @@ These are the keys for hiding or showing bookmarks:
 
 * '''`##R S##'''' -- Show only bookmarks with __r__egion information.
 
-* '''`##V S##'''' -- Show only __v__ariable-list bookmarks (see [[#FunctionSequenceVarlistBookmarks|variable-list]]).
+* '''`##V S##'''' -- Show only __v__ariable-list bookmarks (see [[#FunctionSequenceVarlistBookmarks|variable-list bookmarks]]).
 
 * '''`##W S##'''' -- Show only __W__3M bookmarks.
 
@@ -3414,7 +3463,7 @@ bookmark list.  And that's the reason for this feature: to hide
 those bookmarks that you don't care to see.
 
 One use for this feature is to hide the component
-bookmarks that make up a sequence bookmark (see [[#FunctionSequenceVarlistBookmarks]]). The default behavior when
+bookmarks that make up a [[#FunctionSequenceVarlistBookmarks|sequence]] bookmark. The default behavior when
 you create a sequence bookmark is in fact to omit its component
 bookmarks from the displayed list.
 
@@ -3756,7 +3805,7 @@ to use `f2' and `S-f2' to cycle forward and backward.
 
 '''Bookmark+''' does not define such key bindings, but you can.  What it
 does is define repeatable keys on the '''`bookmark-map'''' keymap, which by default
-has prefix '''`C-x x''''.  To do this it binds similar commands that can
+has prefix '''`C-x x''''.  To do this, it binds similar commands that can
 be repeated by simply repeating the key-sequence suffix.  These
 are the (default) keys:
 
