@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2010-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Jul  6 07:24:03 2026 (-0700)
+;; Last-Updated: Fri Jul 17 17:23:25 2026 (-0400)
 ;;           By: drew0
-;;     Update #: 1001
+;;     Update #: 1023
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -57,8 +57,8 @@
 ;;  User options defined here:
 ;;
 ;;    `bmkp-add-bookmarks-here-menu-flag',
-;;    `bmkp-bookmark-map-prefix-key', `bmkp-jump-map-prefix-key',
-;;    `bmkp-jump-other-window-map-prefix-key'.
+;;    `bmkp-bookmark-map-prefix-keys', `bmkp-jump-map-prefix-keys',
+;;    `bmkp-jump-other-window-map-prefix-keys'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -122,7 +122,8 @@
 
 ;; Prefix keys.
 ;;
-;; These two maps are always on `bookmark-map', wherever it is: `bmkp-set-map', `bmkp-tags-map'.
+;; These maps are always on `bookmark-map', wherever it is:
+;; `bmkp-annotate-map', `bmkp-set-map', `bmkp-tags-map'.
 ;;
 (defun bmkp-set-map-prefix-key (pref-keys-option keys)
   "Set prefix key option SYMBOL to key-sequence VALUE."
@@ -244,7 +245,8 @@ there are such bookmarks can take a little time."
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark) ; `C-x x K' (also `C-x r K', `C-x x c K')
 (define-key bookmark-map "L"      'bmkp-switch-bookmark-file-create)                  ; `C-x x L'
 (define-key bookmark-map "\C-l"   'bmkp-switch-to-bookmark-file-this-file/buffer)     ; `C-x x C-l'
-(define-key bookmark-map "m"      'bmkp-bookmark-set-confirm-overwrite)               ; `C-x x m'
+(define-key bookmark-map "m"      'bookmark-set)                                      ; `C-x x m'
+(define-key bookmark-map "M"      'bmkp-bookmark-set-confirm-overwrite)               ; `C-x x M'
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)                           ; `C-x x N'
 (define-key bookmark-map "o"      'bookmark-jump-other-window)           ; `C-x x o' (also `C-x 4 j j')
 (define-key bookmark-map "q"      'bookmark-jump-other-window)           ; `C-x x q' (also `C-x 4 j j')
@@ -346,8 +348,8 @@ there are such bookmarks can take a little time."
 (define-key bmkp-set-map "F"    'bmkp-make-function-bookmark)                  ; `C-x x c F'
 (define-key bmkp-set-map "K"    'bmkp-set-desktop-bookmark)                    ; `C-x x c K'
 (define-key bmkp-set-map "\C-k" 'bmkp-wrap-bookmark-with-last-kbd-macro)       ; `C-x x C-k'
-(define-key bmkp-set-map "m"    'bmkp-bookmark-set-confirm-overwrite)          ; `C-x x c m'
-(define-key bmkp-set-map "M"    'bookmark-set)                                 ; `C-x x c M'
+(define-key bmkp-set-map "m"    'bookmark-set)                                 ; `C-x x c m'
+(define-key bmkp-set-map "M"    'bmkp-bookmark-set-confirm-overwrite)          ; `C-x x c M'
 (define-key bmkp-set-map "s"    'bmkp-set-sequence-bookmark)                   ; `C-x x c s'
 (define-key bmkp-set-map "u"    'bmkp-url-target-set)                          ; `C-x x c u'
 (define-key bmkp-set-map "\M-w" 'bmkp-set-snippet-bookmark)                    ; `C-x x c M-w'
@@ -478,8 +480,8 @@ there are such bookmarks can take a little time."
 
 (define-key bmkp-jump-map              "a"    'bmkp-autofile-jump)                          ; `C-x j a'
 (define-key bmkp-jump-other-window-map "a"    'bmkp-autofile-jump-other-window)           ; `C-x 4 j a'
-(define-key bmkp-jump-map              "b"    'bmkp-non-file-jump)                          ; `C-x j b'
-(define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window)           ; `C-x 4 j b'
+(define-key bmkp-jump-map              "b"    'bmkp-buffer-no-file-jump)                    ; `C-x j b'
+(define-key bmkp-jump-other-window-map "b"    'bmkp-buffer-no-file-jump-other-window)     ; `C-x 4 j b'
 (define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump)                     ; `C-x j B'
 (define-key bmkp-jump-other-window-map "B"    'bmkp-bookmark-list-jump)     ; SAME COMMAND: `C-x 4 j B'
 (define-key bmkp-jump-map              "d"    'bmkp-dired-jump)                             ; `C-x j d'
@@ -488,10 +490,10 @@ there are such bookmarks can take a little time."
 (eval-after-load "eww"
   '(when (> emacs-major-version 24)     ; Emacs 25+
     (when bmkp-eww-replace-keys-flag
-      (bmkp-remap 'eww-add-bookmark       'bookmark-set                eww-mode-map)
-      (bmkp-remap 'eww-list-bookmarks     'bookmark-bmenu-list         eww-mode-map)
-      (bmkp-remap 'eww-next-bookmark      'bmkp-next-url-bookmark  eww-mode-map)
-      (bmkp-remap 'eww-previous-bookmark  'bmkp-previous-url-bookmark  eww-mode-map))
+      (bmkp-remap 'eww-add-bookmark      'bookmark-set               eww-mode-map)
+      (bmkp-remap 'eww-list-bookmarks    'bookmark-bmenu-list        eww-mode-map)
+      (bmkp-remap 'eww-next-bookmark     'bmkp-next-url-bookmark     eww-mode-map)
+      (bmkp-remap 'eww-previous-bookmark 'bmkp-previous-url-bookmark eww-mode-map))
     (define-key bmkp-jump-map              "e"  'bmkp-eww-jump)                             ; `C-x j e'
     (define-key bmkp-jump-other-window-map "e"  'bmkp-eww-jump-other-window)))            ; `C-x 4 j e'
 
@@ -504,6 +506,7 @@ there are such bookmarks can take a little time."
 (define-key bmkp-jump-map              "h"    'bmkp-lighted-jump)                           ; `C-x j h'
 (define-key bmkp-jump-other-window-map "h"    'bmkp-lighted-jump-other-window)            ; `C-x 4 j h'
 (define-key bmkp-jump-map              "i"    'bmkp-info-jump)                              ; `C-x j i'
+(define-key bmkp-jump-map              "IS"   'bmkp-bmenu-show-only-info-bookmarks)       ; `C-x j I S'
 (define-key bmkp-jump-other-window-map "i"    'bmkp-info-jump-other-window)               ; `C-x 4 j i'
 (define-key bmkp-jump-map              "\M-i" 'bmkp-image-jump)                           ; `C-x j M-i'
 (define-key bmkp-jump-other-window-map "\M-i" 'bmkp-image-jump-other-window)            ; `C-x 4 j M-i'
@@ -1038,10 +1041,10 @@ Menu for bookmarks that target this file or buffer.")
                   :help "List the bookmarks at point that are highlighted"
                   :enable (bmkp-bookmarks-lighted-at-point)))
     (define-key bmkp-highlight-menu [bmkp-next-lighted-this-buffer]
-      '(menu-item "Next in Buffer" bmkp-next-lighted-this-buffer
+      '(menu-item "Cycle to Next in Buffer" bmkp-next-lighted-this-buffer
                   :help "Cycle to the next highlighted bookmark in this buffer"))
     (define-key bmkp-highlight-menu [bmkp-previous-lighted-this-buffer]
-      '(menu-item "Previous in Buffer" bmkp-previous-lighted-this-buffer
+      '(menu-item "Cycle to Previous in Buffer" bmkp-previous-lighted-this-buffer
                   :help "Cycle to the previous highlighted bookmark in this buffer"))
     (define-key bmkp-highlight-menu [separator-0] '("--")) ;------------------------------------------
     )
@@ -1123,7 +1126,8 @@ Menu for bookmarks that target this file or buffer.")
 (define-key menu-bar-bookmark-map [set-bookmark] (cons "New/Update" bmkp-set-bookmark-menu))
 
 (defun bmkp-menu-bar-set-bookmark ()
-  "Set a bookmark, prompting for the name."
+  "Set a bookmark, prompting for the name.
+You must confirm overwriting an existing bookmark of the same NAME."
   (interactive)
   (call-interactively #'bmkp-bookmark-set-confirm-overwrite))
   
@@ -1152,7 +1156,7 @@ Menu for bookmarks that target this file or buffer.")
     :help "Set and automatically name a bookmark for a given file"))
 (define-key bmkp-set-bookmark-menu [bmkp-menu-bar-set-bookmark]
   '(menu-item "Ordinary Bookmark..." bmkp-menu-bar-set-bookmark
-    :help "Set a bookmark at point" :keys "(C-x x m)")) ; Really bound to `bookmark-set'
+    :help "Set a bookmark at point" :keys "(C-x x M)")) ; `bmkp-bookmark-set-confirm-overwrite'
 
 
 ;; Remove vanilla `bookmark-set' from main `Bookmarks' menu.
@@ -1284,7 +1288,7 @@ Menu for bookmarks that target this file or buffer.")
   '(menu-item "Image..." bmkp-image-jump-other-window :help "Jump to an image-file bookmark"))
 ;;;;; (define-key bmkp-jump-menu [bmkp-non-file-jump-other-window]
 ;;;;;   '(menu-item "Buffer (Non-File)..." bmkp-non-file-jump-other-window
-;;;;;     :help "Jump to a non-file (buffer) bookmark" :enable (bmkp-non-file-alist-only)))
+;;;;;     :help "Jump to a non-file (buffer) bookmark" :enable (bmkp-buffer-no-file-alist-only.)))
 (define-key bmkp-jump-menu [bmkp-non-file-jump-other-window]
   '(menu-item "Buffer (Non-File)..." bmkp-non-file-jump-other-window
     :help "Jump to a non-file (buffer) bookmark"))
