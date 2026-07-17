@@ -699,7 +699,7 @@ helps you focus on one kind of action (jumping).
 
 * Prefix '''`C-x x c'''' is for commands involving ''setting'' bookmarks.
 
-* Prefix '''`C-x x t'''' is for commands involving bookmark tags.
+* Prefix '''`C-x x t'''' is for commands involving bookmark ''tags''.
 
 These prefix keys correspond to prefix-map [[variable]]s, so
 you need not use these particular prefixes.  You can bind the
@@ -3025,7 +3025,7 @@ prompted for the one to jump to.
 You can also use many `bmkp-bmenu-*' commands from outside buffer
 `*Bookmark List*'.  For example, the `bmkp-bmenu-show-only-*'
 commands, which filter `*Bookmark List*' to show only a particular
-kind of bookmark, first jump to `*Bookmark List*' and then filter
+kind of bookmark, ''first jump to `*Bookmark List*''' and then filter
 its display.
 
 
