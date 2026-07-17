@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul  6 07:24:55 2026 (-0700)
+;; Last-Updated: Fri Jul 17 18:14:48 2026 (-0400)
 ;;           By: drew0
-;;     Update #: 15442
+;;     Update #: 15550
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -149,7 +149,8 @@
 ;;      (@> "Bookmark Files For Bookmarks with Specific Tags")
 ;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "The Bookmark List Display")
-;;      (@> "Jumping To Bookmarks from the Bookmark List Display")
+;;      (@> "Jumping From Anywhere To the Bookmark List Display")
+;;      (@> "Jumping To Bookmarks From the Bookmark List Display")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Tags: Sets of Bookmarks")
 ;;      (@> "Open Dired for the Marked File Bookmarks")
@@ -276,10 +277,10 @@
 ;;       annotation saved with the bookmark itself just specifies the
 ;;       destination.  See (@> "Bookmark Annotations").
 ;;
-;;     - You can tag bookmarks, a la del.icio.us.  In effect, tags
-;;       define bookmark sets.  A bookmark can have any number of
-;;       tags, and multiple bookmarks can have the same tag.  You can
-;;       sort, show/hide, or mark bookmarks based on their tags.
+;;     - You can tag bookmarks.  In effect, tags define bookmark sets.
+;;       A bookmark can have any number of tags, and multiple
+;;       bookmarks can have the same tag.  You can sort, show/hide, or
+;;       mark bookmarks based on their tags.
 ;;
 ;;     - Bookmark+ tags can be more than just names.  They can be
 ;;       full-fledged user-defined attributes, with Emacs-Lisp objects
@@ -543,12 +544,12 @@
 ;;       according to Windows file associations.  (You will also need
 ;;       library `w32-browser.el'.)
 ;;
-;;     - You can use (lax) completion when you set a bookmark using
-;;       `C-x r m' (`bmkp-bookmark-set-confirm-overwrite'), choosing
-;;       from existing bookmarks for the same buffer.  This makes it
-;;       easy to update a nearby bookmark (e.g. relocate it).  With a
-;;       numeric prefix argument (or if there are no bookmarks for the
-;;       buffer), you can choose from all bookmarks.
+;;     - You can use (lax) completion when you set or update a
+;;       bookmark (`C-x r m', for example), choosing from existing
+;;       bookmarks for the same buffer.  This makes it easy to update
+;;       a nearby bookmark (e.g. relocate it).  With a numeric prefix
+;;       argument (or if there are no bookmarks for the buffer), you
+;;       can choose from all bookmarks.
 ;;
 ;;     - You can edit a bookmark: its name and file name/location, its
 ;;       tags, or its complete defining internal Lisp record.
@@ -584,44 +585,50 @@
 ;;
 ;;  * Dedicated keymaps as prefix keys.
 ;;
-;;     - Prefix `C-x x' is used for bookmark keys, in general.  The
-;;       vanilla keys on prefix `C-x r' are still available also, but
-;;       that prefix is shared with register commands, making it less
-;;       convenient for bookmarks.  Using `C-x x' lets you focus on
-;;       bookmarks.
+;;     - Prefix `C-x x' is for bookmarking keys in general.  The
+;;       vanilla Emacs bookmarking keys on prefix `C-x r' are still
+;;       available also, but that prefix is shared with register
+;;       commands, making it less convenient for bookmarks.  Using
+;;       `C-x x' lets you focus on bookmarks.
 ;;
-;;     - Prefix `C-x x c' is for setting various kinds of bookmarks.
+;;     - Prefix `C-x x a' is for commands involving bookmark
+;;       annotations.
 ;;
-;;     - Prefixes `C-x j' and `C-x 4 j' (for other-window) are used
-;;       for bookmark jump commands.  Again, a dedicated prefix key
-;;       helps you focus on one kind of action (jumping).
+;;     - Prefixes `C-x j' and `C-x 4 j' are for bookmark jump
+;;       commands.  Again, a dedicated prefix key helps you focus on
+;;       one kind of action (jumping).
 ;;
-;;     All of these prefix keys correspond to prefix-map variables, so
-;;     you need not use these particular prefixes.  You can bind these
-;;     maps to any prefix keys you want.  These are the maps, together
-;;     with their predefined bindings.
+;;     - Prefix `C-x x c' is for commands involving setting bookmarks.
+;;
+;;     - Prefix `C-x x t' is for commands involving bookmark tags.
+;;
+;;     These prefix keys correspond to prefix-map variables, so you
+;;     need not use these particular prefixes.  You can bind the maps
+;;     to any prefix keys you want.  Here are the maps, together with
+;;     their predefined bindings.
 ;;
 ;;       `bookmark-map'               - `C-x x'
-;;       `bmkp-set-map'               - `C-x x c'
-;;       `bmkp-tags-map'              - `C-x x t'
+;;       `bmkp-annotate-map'          - `C-x x a'
 ;;       `bmkp-jump-map'              - `C-x j'
 ;;       `bmkp-jump-other-window-map' - `C-x 4 j'
+;;       `bmkp-set-map'               - `C-x x c'
+;;       `bmkp-tags-map'              - `C-x x t'
 ;;
 ;;     Those are the prefix keys that are available by default.  To
-;;     change them, just customize these user options, each of which
+;;     change them you can customize these user options, each of which
 ;;     is a list of the key sequences to use as prefix key.
 ;;
-;;     - `bmkp-bookmark-map-prefix-keys'          - default: ("^Xp")
+;;     - `bmkp-bookmark-map-prefix-keys'          - default: ("^Xx")
 ;;     - `bmkp-jump-map-prefix-keys'              - default: ("^Xj")
 ;;     - `bmkp-jump-other-window-map-prefix-keys' - default: ("^X4j")
 ;;
 ;;     (`^X' here is actually the Control-X character.)
 ;;
-;;     Keymaps `bmkp-set-map' and `bmkp-tags-map' are always on
-;;     `bookmark-map', whatever prefix keys it is on.  So if, for
-;;     example, you customize `bmkp-bookmark-map-prefix-keys' to be
-;;     ("^Xp" [f9]) then the keys in `bmkp-set-map' have both prefix
-;;     `C-x x c' and prefix `<f9> c'.
+;;     Keymaps `bmkp-annotate-map', `bmkp-set-map' and `bmkp-tags-map'
+;;     are always on `bookmark-map', whatever prefix keys it's on.
+;;     For example, if you customize `bmkp-bookmark-map-prefix-keys'
+;;     to be ("^Xp" [f9]) then the keys in `bmkp-set-map' have both
+;;     prefix `C-x x c' and prefix `<f9> c'.
 ;;
 ;;     In addition to keys on Bookmark+ keymaps, Bookmark+ binds some
 ;;     mode-specific bookmarking commands in some other modes: Occur,
@@ -2603,17 +2610,29 @@
 ;;(@* "The Bookmark List Display")
 ;;  ** The Bookmark List Display **
 ;;
-;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
-;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
-;;  when you use `C-x x e' or `C-x r l' (command
+;;  Bookmark+ enhances the bookmark list that's displayed in buffer
+;;  `*Bookmark List*' when you use `C-x x e' or `C-x r l' (command
 ;;  `bookmark-bmenu-list').
 ;;
-;;  At the top of the bookmark-list display is this header
-;;  information:
+;;  Historically, this list has also been called the bookmark "menu
+;;  list", which is a misnomer.  The names of Bookmark+ variables and
+;;  functions involving this buffer have prefix `bmkp-bmenu-', and
+;;  vanilla `bookmark.el' uses prefix `bookmark-bmenu-'.
+;;
+;;  This doc uses "*Bookmark List*" as the name of the display buffer,
+;;  but you can customize the name, which is the value of option
+;;  `bmkp-bmenu-buffer'.
+;;
+;;  In buffer `*Bookmark List*' many commands act on a specific
+;;  bookmark, typically a bookmark you click with the mouse or the
+;;  bookmark listed on the current line.  Other commands act on a
+;;  subset of the listed bookmarks, such as those that are marked.
+;;
+;;  At the top of buffer `*Bookmark List*' is this header information:
 ;;
 ;;  * The bookmark file used currently.  This is important because
 ;;    Bookmark+ makes it easy for you to have multiple bookmark files
-;;    and switch among them.
+;;    and switch among them - (@> "Using Multiple Bookmark Files").
 ;;
 ;;  * A title that describes the kinds of bookmarks listed, that is,
 ;;    it reflects athe current filtering, if any.
@@ -2622,11 +2641,11 @@
 ;;  is `c:/.emacs.bmk' and only file and directory bookmarks are
 ;;  shown:
 ;;
-;;    Bookmark file:
-;;    c:/.emacs.bmk
+;;        Bookmark file:
+;;        c:/.emacs.bmk
 ;;
-;;    File and Directory Bookmarks
-;;    ----------------------------
+;;        File and Directory Bookmarks
+;;        ----------------------------
 ;;
 ;;  (Bookmark+ does not use the sliding header line of vanilla Emacs
 ;;  24-27, which means that option `bookmark-bmenu-use-header-line'
@@ -2653,14 +2672,34 @@
 ;;  * A legend for the faces used for different bookmark types.
 ;;
 ;;
-;;(@* "Jumping To Bookmarks from the Bookmark List Display")
-;;  *** Jumping To Bookmarks from the Bookmark List Display ***
+;;(@* "Jumping From Anywhere To the Bookmark List Display")
+;;  *** Jumping From Anywhere To the Bookmark List Display ***
 ;;
-;;  Bookmark visiting (jumping) commands are globally on prefix keys
-;;  `C-x j' and `C-x 4 j'.  In the bookmark-list display they are
-;;  additionally on `j' (other window) and `J' (same window).  In
-;;  addition, `j >' is bound to `bmkp-bmenu-jump-to-marked', which
-;;  jumps to each of the marked bookmarks in other windows.
+;;  You can use command `bmkp-jump-to-list' (`C-x j C-j' or `C-x x
+;;  C-j), to jump from anywhere to a bookmark in buffer `*Bookmark
+;;  List*'.  You're prompted for the bookmark to jump to.
+;;
+;;  In particular, if you're in a buffer with highlighted bookmark
+;;  locations you can use `M-x bmkp-lighted-here-jump-to-list' to jump
+;;  to the line in `*Bookmark List*' for a lighted bookmark at point.
+;;  If there are multiple highlighted bookmarks at point you're
+;;  prompted for the one to jump to.
+;;
+;;  You can also use many `bmkp-bmenu-*' commands from outside buffer
+;;  `*Bookmark List*'.  For example, the `bmkp-bmenu-show-only-*'
+;;  commands, which filter `*Bookmark List*' to show only a particular
+;;  kind of bookmark, first jump to `*Bookmark List*' and then filter
+;;  its display.
+;;
+;;
+;;(@* "Jumping To Bookmarks From the Bookmark List Display")
+;;  *** Jumping To Bookmarks From the Bookmark List Display ***
+;;
+;;  Bookmark jumping commands are globally on prefix keys `C-x j' and
+;;  `C-x 4 j'.  In buffer `*Bookmark List* they're additionally on
+;;  prefix keys `j' (other window) and `J' (same window).  (`j >' is
+;;  bound to `bmkp-bmenu-jump-to-marked', which jumps to each of the
+;;  marked bookmarks, in other windows.)
 ;;
 ;;
 ;;(@* "Tag Commands and Keys")
@@ -2932,9 +2971,17 @@
 ;;    tells you what kind of bookmarks are listed: `Autonamed
 ;;    Bookmarks', `File and Directory Bookmarks', and so on.
 ;;
-;;    Note: It is only filtering by bookmark type that is remembered
-;;    when you save a bookmark-list display state or you create a
-;;    bookmark-list bookmark.  See (@> "State-Restoring Commands and Bookmarks").
+;;    You can use the commands that filter by bookmark type anywhere,
+;;    not just in buffer `*Bookmark List*'.  For example, if you are
+;;    in a buffer `foobar' where bookmarked locations are highlighted,
+;;    command `bmkp-bmenu-show-only-this-buffer-lighted-bookmarks'
+;;    jumps to `*Bookmark List*' and shows only the bookmarks
+;;    highlighted in buffer `foobar'.
+;;
+;;    Note: It is only filtering by bookmark type, not filtering by
+;;    pattern matching (see next), that's remembered when you save a
+;;    bookmark-list display state or you create a bookmark-list
+;;    bookmark.  See (@> "State-Restoring Commands and Bookmarks").
 ;;
 ;;  * Filtering incrementally by pattern matching
 ;;
@@ -3324,7 +3371,7 @@
 ;;
 ;;  Bookmark+ does not define such key bindings, but you can.  What it
 ;;  does is define repeatable keys on the `bookmark-map' keymap, which
-;;  by default has prefix `C-x x'.  To do this it binds similar
+;;  by default has prefix `C-x x'.  To do this, it binds similar
 ;;  commands that can be repeated by simply repeating the key-sequence
 ;;  suffix.  These are the (default) keys:
 ;;
@@ -3562,7 +3609,7 @@
 ;;  Bookmark+ format specifier that corresponds to the buffer name.
 ;;
 ;;  Recognizing the buffer name in an autonamed bookmark is important
-;;  or commands that act only on autonamed bookmarks for a specific
+;;  for commands that act only on autonamed bookmarks for a specific
 ;;  buffer.  That includes commands `bmkp-autonamed-this-buffer-jump'
 ;;  and `bmkp-delete-all-autonamed-for-this-buffer'.
 ;;
@@ -3833,7 +3880,7 @@
 ;;  have visited it.)
 ;;
 ;;  If you use library `info+.el' then you have this complementary
-;;  ability save your Info history list persistently.  Just enable
+;;  ability to save your Info history list persistently.  Just enable
 ;;  minor mode `Info-persist-history-mode'.
  
 ;;(@* "Highlighting Bookmark Locations")
