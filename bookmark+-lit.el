@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Mon Jul  6 07:26:31 2026 (-0700)
+;; Last-Updated: Fri Jul 17 16:01:48 2026 (-0400)
 ;;           By: drew0
-;;     Update #: 1099
+;;     Update #: 1105
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -90,8 +90,10 @@
 ;;
 ;;    `bmkp-bmenu-light', `bmkp-bmenu-light-marked',
 ;;    `bmkp-bmenu-set-lighting', `bmkp-bmenu-set-lighting-for-marked',
-;;    `bmkp-bmenu-show-only-lighted-bookmarks', `bmkp-bmenu-unlight',
-;;    `bmkp-bmenu-unlight-marked', `bmkp-bookmarks-lighted-at-point',
+;;    `bmkp-bmenu-show-only-lighted-bookmarks',
+;;    `bmkp-bmenu-show-only-this-buffer-lighted-bookmarks',
+;;    `bmkp-bmenu-unlight', `bmkp-bmenu-unlight-marked',
+;;    `bmkp-bookmarks-lighted-at-point',
 ;;    `bmkp-cycle-lighted-this-buffer',
 ;;    `bmkp-cycle-lighted-this-buffer-other-window',
 ;;    `bmkp-describe-bookmark-lighted-on-this-line',
@@ -474,8 +476,41 @@ To prevent showing any tooltip you can use a function, such as
 ;;  *** Menu-List (`*-bmenu-*') Commands ***
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-lighted-bookmarks "bookmark+")
-(bmkp-define-show-only-command lighted "Display (only) the highlighted bookmarks." ; `H S' in bookmark list
+(bmkp-define-show-only-command "Display (only) the highlighted bookmarks." ; `H S' in bookmark list
                                bmkp-lighted-alist-only)
+
+;; Need to define this by hand, not with `bmkp-define-show-only-command', because it needs the buffer.
+;;
+;;;###autoload (autoload 'bmkp-bmenu-show-only-this-buffer-lighted-bookmarks "bookmark+")
+(defun bmkp-bmenu-show-only-this-buffer-lighted-bookmarks () ; `H B S' in bookmark list
+  "Display (only) the lighted bookmarks for the current buffer."
+  (interactive)
+  (let ((this-buf   (buffer-name))
+        (new-alist  (bmkp-this-buffer-lighted-alist-only)))
+    (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))
+    (let ((orig-last-spec-buf     bmkp-last-specific-buffer)
+          (orig-filter-fn         bmkp-bmenu-filter-function)
+          (orig-title             bmkp-bmenu-title)
+          (orig-latest-alist      bmkp-latest-bookmark-alist))
+      (condition-case err
+          (progn
+            (setq bmkp-last-specific-buffer   this-buf
+                  bmkp-bmenu-filter-function  'bmkp-this-buffer-lighted-alist-only
+                  bmkp-bmenu-title            (format "Lighted Bookmarks in buffer `%s'" this-buf))
+            (let ((bookmark-alist         new-alist)
+                  (bmkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
+              (setq bmkp-latest-bookmark-alist  bookmark-alist)
+              (bookmark-bmenu-list 'filteredp))
+            (when (interactive-p)
+              (bmkp-msg-about-sort-order (bmkp-current-sort-order)
+                                         (format "Only lighted bookmarks for buffer `%s' are shown"
+                                                 this-buf)))
+            (raise-frame))
+        (error (progn (setq bmkp-last-specific-buffer   orig-last-spec-buf
+                            bmkp-bmenu-filter-function  orig-filter-fn
+                            bmkp-bmenu-title            orig-title
+                            bmkp-latest-bookmark-alist  orig-latest-alist)
+                      (error "%s" (error-message-string err))))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-light "bookmark+")
 (defun bmkp-bmenu-light ()              ; `H H' in bookmark list
@@ -487,9 +522,12 @@ To prevent showing any tooltip you can use a function, such as
 ;;;###autoload (autoload 'bmkp-bmenu-light-marked "bookmark+")
 (defun bmkp-bmenu-light-marked (&optional msgp) ; `H > H' in bookmark list
   "Highlight the marked bookmarks.
+If you use this command outside of buffer `*Bookmark List*' then it
+first jumps to that buffer.
+
 When called from Lisp, non-nil MSGP means echo status messages."
   (interactive (list 'MSG))
-  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))
   (when msgp (message "Highlighting marked bookmarks..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
@@ -506,9 +544,12 @@ When called from Lisp, non-nil MSGP means echo status messages."
 ;;;###autoload (autoload 'bmkp-bmenu-unlight-marked "bookmark+")
 (defun bmkp-bmenu-unlight-marked (&optional msgp) ; `H > U' in bookmark list
   "Unhighlight the marked bookmarks.
+If you use this command outside of buffer `*Bookmark List*' then it
+first jumps to that buffer.
+
 When called from Lisp, non-nil MSGP means echo status messages."
   (interactive (list 'MSG))
-  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))
   (when msgp (message "Unhighlighting marked bookmarks..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
@@ -542,10 +583,13 @@ When called from Lisp, the arguments are passed to
 You are prompted for the highlight STYLE, FACE, and condition (WHEN)
 that make up the property-list value of the `lighting' entry.
 
+If you use this command outside of buffer `*Bookmark List*' then it
+first jumps to that buffer.
+
 When called from Lisp, the args are passed to `bookmark-prop-set' for
 the current line's bookmark."
   (interactive (append (bmkp-read-set-lighting-args) '(MSG)))
-  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))
   (when msgp (message "Setting highlighting..."))
   (let ((marked    (bmkp-marked-bookmarks-only))
         (curr-bmk  (bookmark-bmenu-bookmark)))
