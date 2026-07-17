@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul  6 07:43:04 2026 (-0700)
+;; Last-Updated: Fri Jul 17 17:24:45 2026 (-0400)
 ;;           By: drew0
-;;     Update #: 17171
+;;     Update #: 17330
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,34 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/07/17 drew0
+;;     bookmark-set: Keep bmkp-properties-to-keep only when overwriting.  Improved doc string.
+;;     bmkp-bookmark-set-confirm-overwrite: Better arg names.
+;; 2026/07/15 drew0
+;;     Added: bmkp-non-annotated-alist-only, bmkp-non-autofile-alist-only.
+;;     Renamed (and created obsolete aliases):
+;;       * bmkp-non-file-bookmark-p to bmkp-buffer-bookmark-no-file-p
+;;       * bmkp-non-file-alist-only to bmkp-buffer-no-file-alist-only
+;;       * bmkp-cycle-non-file(-other-window) to bmkp-cycle-buffer-no-file(-other-window)
+;;       * bmkp-next-non-file-bookmark to bmkp-next-buffer-no-file-bookmark.
+;;           Likewise, previous and -repeat and -other-window.
+;;       * bmkp-non-file-jump(-other-window) to bmkp-buffer-no-file-jump(-other-window)
+;;     bookmark-load, bmkp-save-menu-list-state: Use abbreviate-file-name, for
+;;       portability/compatibility.
+;;     bmkp-last-as-first-bookmark-file, bmkp-properties-to-keep, bmkp-buffer-bookmark-p,
+;;       bmkp-buffer-bookmark-no-file-p, and  *-alist-only functions: Better doc strings.
+;;     bmkp-this-file/buffer-bmenu-list: Use call-interactively.
+;;     bmkp-this-(file|buffer)-bmenu-list: Added optional arg MSGP, instead of (interactive-p) test.
+;;     bmkp-msg-about-sort-order: Added missing period after first part of msg with prefix-msg.
+;;     bmkp-wrap-bookmark-with-last-kbd-macro: Mention args ARG and MSGP in doc string.
+;;     Added autoload cookies for bmkp-(cycle|next|previous)-*(-repeat) cmds defined with
+;;       bmkp-define-cycle-command and bmkp-define-next+prev-cycle-commands (using renamed types).
+;; 2026/07/09 drew0
+;;     bmkp-jump-to-list: Arg BOOKMARK is now optional.  If absent, go to last bookmark in bmenu list.
+;;     bookmark--jump-via: Use let, not setq, for bmkp-jump-display-function, to allow for
+;;       indirect/recursive calls from handler code.  Thx to Daniel German.
+;;     bmkp-has-tag-p: Allow matching whole tag cons: tag value as well as tag string/name.  Added
+;;       optional arg TEST-FN, and updated doc string for that.
 ;; 2026/07/04 drew0
 ;;     bmkp-bookmark-description: Include bookmark type name in description.  Added sudo not logged in.
 ;; 2026/07/01 drew0
@@ -1629,6 +1657,44 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/07/15 drew0
+;;     Added show-only commands:
+;;       annotated, buffer, local-file, local-non-dir, non-annotated, non-autofile, non-autonamed,
+;;       non-dir-file, orphaned-file, orphaned-remote-file, sequence, url-browse.
+;;     Added autoload cookies for all show-only commands.
+;;     Applied renaming of *-non-file-* to *-buffer-no-file-*.
+;;     Renamed *-mark-non-file-* to *-mark-buffer-no-file-*, and created obsolete alias.
+;;     Replaced (commented out) hand-coded *-show-only-orphaned-local-file-*, which includes remote
+;;       if prefix arg, with simple macro definition.
+;;     bmkp-bmenu-image-bookmark-icon-file, bmkp-bmenu-mode-status-help,
+;;       bmkp-bmenu-define-full-snapshot-command:
+;;         Use abbreviate-file-name, for portability/compatibility.
+;;     bookmark-bmenu-mode doc string:
+;;       Added show-only commands: this-buffer-lighted, annotated, sequence, buffer, local-file,
+;;         local-non-dir, orphaned-file, orphaned-remote-file, url-browse.
+;;     bmkp-no-local (face): Improved doc string.
+;;     For each bmenu command that makes sense also outside *Bookmark List*:
+;;       * Jump to it first: Replaced barf-if-not-in-menu-list with (unless ... (bmkp-jump-to-list)).
+;;       * Added to doc string: if outside *Bookmark List*, jump there first.
+;;     bmkp-bmenu-(add|remove(-all))-tags, : Better doc strings.
+;;     bookmark-bmenu-mode-map, bind: $ S    to  bmkp-bmenu-show-only-sequence-bookmarks
+;;                                    # ~ S  to  bmkp-bmenu-show-only-non-autonamed-bookmarks
+;;                                    a S    to  bmkp-bmenu-show-only-annotated-bookmarks
+;;                                    a ~ S  to  bmkp-bmenu-show-only-non-annotated-bookmarks
+;;                                    A ~ S  to  bmkp-bmenu-show-only-non-autofile-bookmarks
+;;                                    H B S  to  bmkp-bmenu-show-only-this-buffer-lighted-bookmarks
+;;                                    T ~ S  to  bmkp-bmenu-show-only-untagged-bookmarks
+;;     bmkp-bmenu-highlight-menu, bmkp-bmenu-show-menu:
+;;       Added Show Only Highlighted Here (bmkp-bmenu-show-only-this-buffer-lighted-bookmarks).
+;; 2026/07/10 drew0
+;;     Added: bmkp-bmenu-show-only-orphaned-file-bookmarks,
+;;            bmkp-bmenu-show-only-orphaned-remote-file-bookmarks.
+;;     Renamed: bmkp-bmenu-show-only-non-file-bookmarks
+;;              to bmkp-bmenu-show-only-buffer-no-file-bookmarks.
+;;     bmkp-bmenu-mark-non-file-bookmarks:
+;;       Applied renaming of bmkp-non-file-bookmark-p to bmkp-buffer-bookmark-no-file-p.
+;;     bmkp-non-file-alist-only to bmkp-buffer-no-file-alist-only:
+;;       Applied renaming of bmkp-non-file-alist-only to bmkp-buffer-no-file-alist-only.
 ;; 2026/07/04 drew0
 ;;     Added faces bmkp-icicles-search-hits and bmkp-kmacro-list.
 ;;     bmkp-bmenu-mode-status-help:
@@ -2411,6 +2477,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2026/07/17 drew0
+;;     Bind bookmark-set to C-x x m, C-x x c m (m, not M).
+;;     Bind bmkp-bookmark-set-confirm-overwrite to C-x x M, C-x x M (M, not m).
+;;     bmkp-menu-bar-set-bookmark: :keys is C-x x M (M, not m).
+;;     bmkp-(next|previous)-lighted-this-buffer: Better menu item names.
+;;     bmkp-menu-bar-set-bookmark: Better doc string - mention confirming.
+;; 2026/07/14 drew0
+;;     Applied renaming bmkp-non-file-jump(-other-window) to bmkp-buffer-no-file-jump(-other-window).
+;;     Added I S binding of bmkp-bmenu-show-only-info-bookmarks to bmkp-jump-map.
 ;; 2025/07/30 dadams
 ;;     menu-bar-bookmark-map: Added bookmark-edit-annotation.
 ;; 2023/10/23 dadams
@@ -2613,7 +2688,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
-;; 2023-10-26 dadams
+;; 2026/07/17 drew0
+;;     Added: bmkp-bmenu-show-only-this-buffer-lighted-bookmarks.
+;;     bmkp-bmenu-show-only-lighted-bookmarks:
+;;       Updated for 2026/07/14 signature change of bmkp-define-show-only-command
+;;     bmkp-bmenu-(un)light-marked, bmkp-bmenu-set-lighting-for-marked:
+;;       * Jump to it first: Replaced barf-if-not-in-menu-list with (unless ... (bmkp-jump-to-list)).
+;;       * Added to doc string: if outside *Bookmark List*, jump there first.
+;; 2023/10/26 dadams
 ;;     Duplicate definition of bmkp-make-obsolete, and remove require of bookmark+-1.el.
 ;; 2023/10/23 dadams
 ;;     lexical-binding = t.
@@ -2747,6 +2829,16 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2026/07/15 drew0
+;;     bmkp-define-show-only-command:
+;;       Append to command's doc string: if use outside *Bookmark List* then jump there first.
+;; 2026/07/14 drew0
+;;     bmkp-define-show-only-command:
+;;       Incompatible change - combined previous args TYPE and FILTER-FUNCTION into one, TYPE, which
+;;        has the format <XXX>-alist-only.  Added optional arg TITLE-TYPE.  Made DOC-STRING the first
+;;        arg.  Say in doc string to use this only for cmds that don't require an arg.
+;;       If not in *Bookmark List* then command first jumps there, so can use outside that buffer.
+;;       bmkp-bmenu-barf-if-not-in-menu-list -> bmkp-jump-to-list if not in bookmark-bmenu-mode.
 ;; 2026/06/21 drew0
 ;;     Added vacuous defvar for lexical-binding.
 ;; 2025/05/07 dadams
@@ -2812,6 +2904,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/17 drew0
+;;     Version 2026.07.17
 ;; 2026/07/06 drew0
 ;;     Version 2026.07.06
 ;; 2026/07/04 drew0
