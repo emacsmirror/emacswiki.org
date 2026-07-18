@@ -2,18 +2,23 @@ Reka is an Emacs-based window manager for wayland. It is based on river.
 
 https://codeberg.org/tazjin/reka
 
-=== Q&A ===
+== Q&A ==
 
-==== Keybindings ====
+=== Keybindings ===
 Is there a way I can bind something globally so its passed through to emacs regardless of if its a reka window or a regular buffer? -- for brightness setting or something for example
 
 basically you call (reka-push-intercept-prefix "s-d") for example, and then s-d becomes a key that is always sent to emacs
 
-=== Open Questions ===
+== Open Questions ==
 
 * How to still use C-x in applications (e.g. to cut a selection)? Maybe a way to send C-x C-x as single C-x to an application?
 * What is the best practice to launch applications?
 * What are recommended keybindings?
+
+== Reka users and configs ==
+
+* tazjin (reka author), https://code.tvl.fyi/tree/users/tazjin
+* thk, https://github.com/thkoch2001/general-config
 
 ----
 [[CategoryWindowManager]]
