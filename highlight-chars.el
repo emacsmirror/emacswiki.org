@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 15:04:15 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:24:35 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 316
+;;     Update #: 317
 ;; URL: https://www.emacswiki.org/emacs/download/highlight-chars.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -398,7 +398,7 @@
   :group 'convenience :group 'matching :group 'font-lock
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+highlight-chars.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
