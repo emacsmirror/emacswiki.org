@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:10:06 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:47:41 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14120
+;;     Update #: 14121
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -3127,7 +3127,7 @@ Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
   :prefix "diredp-" :group 'dired
   :link `(url-link :tag "Send Bug Report"
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+Dired+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
