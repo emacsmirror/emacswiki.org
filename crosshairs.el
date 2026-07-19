@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Sun Jul 19 09:32:58 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:23:04 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 523
+;;     Update #: 524
 ;; URL: https://www.emacswiki.org/emacs/download/crosshairs.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -225,7 +225,7 @@ With ARG, turn highlighting on if and only if ARG is positive."
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
