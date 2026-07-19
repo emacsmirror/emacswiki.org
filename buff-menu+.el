@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:27:26 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:43:47 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 2850
+;;     Update #: 2851
 ;; URL: https://www.emacswiki.org/emacs/download/buff-menu%2b.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -471,7 +471,7 @@
     "Enhancements to the buffer menu."
     :link `(url-link :tag "Send Bug Report"
             ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+buff-menu+.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
