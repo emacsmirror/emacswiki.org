@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 09:00:08 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:56:14 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 2041
+;;     Update #: 2042
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -385,7 +385,7 @@
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
