@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 09:19:07 2026 (-0700)
+;; Last-Updated: Sun Jul 19 09:23:58 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 2848
+;;     Update #: 2849
 ;; URL: https://www.emacswiki.org/emacs/download/buff-menu%2b.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -182,6 +182,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     Buffer-Menu-Plus (defgroup): Updated mailto address.
 ;; 2013/04/20 dadams
 ;;     list-buffers-noselect and globally:
 ;;       Set Buffer-menu-buffer+size-width to 26 if nil or unbound.  Emacs 24.3+ defaults it to nil.
