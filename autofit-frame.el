@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 0
 ;; Package-Requires: ((fit-frame "0"))
-;; Last-Updated: Sun Jul 19 09:16:24 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:29:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 714
+;;     Update #: 715
 ;; URL: https://www.emacswiki.org/emacs/download/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
@@ -228,7 +228,7 @@
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version))))
 
