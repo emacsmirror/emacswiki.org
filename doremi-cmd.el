@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Sun Jul 19 13:58:47 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:06:49 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 528
+;;     Update #: 529
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-cmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -265,7 +265,7 @@
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
           (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
