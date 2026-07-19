@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Nov 11 10:42:05 2020 (-0800)
-;;           By: dradams
-;;     Update #: 3222
+;; Last-Updated: Sun Jul 19 16:05:13 2026 (-0700)
+;;           By: drew0
+;;     Update #: 3223
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: https://emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -752,9 +752,12 @@
   "Options to define initial frame configuration."
   :prefix "1on1-" :group 'frames
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=oneonone.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+oneonone.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/oneonone.el")
