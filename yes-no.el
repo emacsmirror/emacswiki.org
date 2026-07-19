@@ -4,13 +4,13 @@
 ;; Description: Specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2017-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2017-2026, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 11:12:21 2017 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 16:26:36 2018 (-0800)
-;;           By: dradams
-;;     Update #: 507
+;; Last-Updated: Sun Jul 19 16:25:26 2026 (-0700)
+;;           By: drew0
+;;     Update #: 509
 ;; URL: https://www.emacswiki.org/emacs/download/yes-no.el
 ;; Doc URL: 
 ;; Keywords: help
@@ -159,9 +159,12 @@ used when that function calls one of these confirmation functions."
   :prefix "yn-"
   :group 'editing :group 'help :group 'convenience :group 'development :group 'environment
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=yes-no.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+yes-no.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
