@@ -4,13 +4,13 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Mon Jan  1 16:07:43 2018 (-0800)
-;;           By: dradams
-;;     Update #: 1801
+;; Last-Updated: Sun Jul 19 16:22:22 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1803
 ;; URL: https://www.emacswiki.org/emacs/download/thumb-frm.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-cmds', `frame-fns', `misc-fns', `strings',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `frame-cmds', `frame-fns', `macroexp', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -460,10 +461,12 @@ A smaller value uses display real estate better.")
   "Commands for thumbnail frames"
   :prefix "thumfr-" :group 'frames :group 'convenience
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 thumb-frm.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/thumb-frm.el")
