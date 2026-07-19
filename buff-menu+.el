@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 07:59:07 2017 (-0800)
-;;           By: dradams
-;;     Update #: 2847
+;; Last-Updated: Sun Jul 19 09:19:07 2026 (-0700)
+;;           By: drew0
+;;     Update #: 2848
 ;; URL: https://www.emacswiki.org/emacs/download/buff-menu%2b.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `fit-frame', `frame-fns', `macroexp', `misc-cmds', `misc-fns',
+;;   `rect', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -467,10 +468,12 @@
   (defgroup Buffer-Menu-Plus nil
     "Enhancements to the buffer menu."
     :link `(url-link :tag "Send Bug Report"
-            ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-buff-menu+.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+            ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
     :link '(url-link :tag "Other Libraries by Drew"
             "http://www.emacswiki.org/DrewsElispLibraries")
     :link '(url-link :tag "Download"
