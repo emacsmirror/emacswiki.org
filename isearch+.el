@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 12 16:53:02 2024 (-0700)
-;;           By: dradams
-;;     Update #: 7306
+;; Last-Updated: Sun Jul 19 15:56:45 2026 (-0700)
+;;           By: drew0
+;;     Update #: 7310
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1325,6 +1325,9 @@
 ;;; Change Log:
 ;;
 ;;(@* "Change log")
+;;
+;; 2024/12/21 dadams
+;;     isearchp-show-hit-w-crosshairs: Protect soft-require of crosshairs.el, since it hard-requires vline.el.
 ;; 2024/10/10 dadams
 ;;     Added isearchp-copy-match.  Bound it to M-w, in place of isearchp-kill-ring-save.
 ;;     Renamed isearchp-kill-ring-save to isearchp-copy-pattern (aliased old name).  Changed its binding to M-s M-w.
@@ -2215,10 +2218,12 @@
   "Isearch enhancements."
   :prefix "isearchp-" :group 'isearch
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Isearch+ bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/isearch%2b.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/IsearchPlus")
   :link '(emacs-commentary-link :tag "Commentary" "isearch+"))
@@ -7243,7 +7248,9 @@ direction).
 This is a *pseudo* filter predicate: it always returns t.
 
 This function requires library `crosshairs.el'."
-    (unless (require 'crosshairs nil t)
+    (unless (condition-case nil    ; Highlight line and col when idle.
+                (require 'crosshairs nil t) ; Hard-requires `hl-line+.el', `col-highlight.el', `vline.el'.
+              (error nil))
       (error "`isearchp-show-hit-w-crosshairs' requires library `crosshairs.el'"))
     (save-excursion (goto-char end))
     ;; Avoid calling `crosshairs' when inside `isearch-lazy-highlight-search'.
