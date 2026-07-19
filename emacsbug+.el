@@ -8,9 +8,9 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:40:45 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:38:43 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 403
+;;     Update #: 404
 ;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
@@ -140,7 +140,7 @@
   :group 'emacsbug :group 'mail
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+emacsbug+.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
