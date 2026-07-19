@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 25 09:57:13 2022 (-0700)
-;;           By: dradams
-;;     Update #: 1726
+;; Last-Updated: Sun Jul 19 15:17:25 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1727
 ;; URL: https://www.emacswiki.org/emacs/download/icomplete%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -319,7 +319,12 @@
   :prefix "icompletep-"
   :group 'completion :group 'convenience :group 'matching :group 'minibuffer
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+icomplete+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version))(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 icomplete+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
