@@ -4,13 +4,13 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2026, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Mon Jan  1 15:39:51 2018 (-0800)
-;;           By: dradams
-;;     Update #: 185
+;; Last-Updated: Sun Jul 19 16:14:22 2026 (-0700)
+;;           By: drew0
+;;     Update #: 189
 ;; URL: https://www.emacswiki.org/emacs/download/setup-cygwin.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `ange-ftp', `backquote', `comint', `cygwin-mount', `ring'.
+;;   `ange-ftp', `ansi-color', `backquote', `comint', `cygwin-mount',
+;;   `regexp-opt', `ring'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -114,6 +115,8 @@
 
 (require 'cygwin-mount)
 
+(defvar explicit-shell-args)            ; Emacs 20? 21?
+
 (when (< emacs-major-version 21)
   (defun add-to-list (list-var element &optional append)
     "Add to the value of LIST-VAR the element ELEMENT if it isn't there yet.
@@ -141,10 +144,12 @@ other hooks, such as major mode hooks, can do the job."
   :group 'files
   :group 'processes
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 setup-cygwin.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/setup-cygwin.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NTEmacsWithCygwin")
   :link '(emacs-commentary-link :tag "Commentary" "setup-cygwin"))
