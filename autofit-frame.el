@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 0
 ;; Package-Requires: ((fit-frame "0"))
-;; Last-Updated: Mon Jan  1 09:29:01 2018 (-0800)
-;;           By: dradams
-;;     Update #: 712
+;; Last-Updated: Sun Jul 19 09:16:24 2026 (-0700)
+;;           By: drew0
+;;     Update #: 714
 ;; URL: https://www.emacswiki.org/emacs/download/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
@@ -129,6 +129,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     autofit-frames-flag: Updated mailto address.
 ;; 2011/11/30 dadams
 ;;     switch-to-buffer:
 ;;       Pass NORECORD arg to switch-to-buffer-other-window.
@@ -221,12 +223,14 @@
 ;;;###autoload
 (defcustom autofit-frames-flag t
   "*Non-nil means automatically resize one-window frames to fit buffer."
-  :type 'boolean :group 'Fit-Frame      ; Group is defined in `fit-frame.el'.
+  :type 'boolean :group 'Fit-Frame ; Group is defined in `fit-frame.el'.
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-autofit-frame.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions.")))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version))))
 
 
 
