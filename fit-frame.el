@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  1 20:10:02 2018 (-0700)
-;;           By: dradams
-;;     Update #: 1392
+;; Last-Updated: Sun Jul 19 14:45:55 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1393
 ;; URL: https://www.emacswiki.org/emacs/download/fit-frame.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -131,6 +131,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     fit-frame (defgroup): Updated mailto address.
 ;; 2018/04/01 dadams
 ;;     fit-frame-max-height-percent: Change default value to 80 for Emacs 26+.
 ;; 2016/10/02 dadams
@@ -307,10 +309,12 @@
   "Resize a frame to fit its buffers."
   :group 'frames :group 'convenience
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-fit-frame.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
