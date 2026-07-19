@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 0
 ;; Package-Requires: ((vline "0"))
-;; Last-Updated: Sun Jul 19 09:26:47 2026 (-0700)
+;; Last-Updated: Sun Jul 19 09:29:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 448
+;;     Update #: 450
 ;; URL: https://www.emacswiki.org/emacs/download/col-highlight.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -130,7 +130,7 @@
 ;;; Change Log:
 ;;
 ;; 2026/07/19 drew0
-;;     column-highlight (defgroup): Updated mailto address.
+;;     column-highlight (defgroup), column-highlight-mode: Updated mailto address.
 ;; 2017/05/10 dadams
 ;;     vline-show: Wrap arg to make-string with abs.  Not a fix, but bypasses error from not
 ;;                 handling SPC char with display property value of (space :align-to N).
@@ -396,10 +396,12 @@ Column-Highlight mode uses the functions
 on `pre-command-hook' and `post-command-hook'."
   :init-value nil :global t :group 'column-highlight
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-col-highlight.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag
