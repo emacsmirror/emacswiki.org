@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:45:55 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:37:22 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1393
+;;     Update #: 1394
 ;; URL: https://www.emacswiki.org/emacs/download/fit-frame.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -310,7 +310,7 @@
   :group 'frames :group 'convenience
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+fit-frame.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
