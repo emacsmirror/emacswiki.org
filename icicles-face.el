@@ -7,9 +7,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Sun Jul 19 15:14:36 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:20:11 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 752
+;;     Update #: 754
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-face.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -117,11 +117,12 @@
   :group 'dabbrev :group 'matching :group 'minibuffer :group 'recentf
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+Icicles bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from the file header.\
-%%0A%%0AEmacs version: %s")
-          (emacs-version)))
+Each Icicles file has a header `Update #' that you can use to identify it.  \
+Include at least the `Update #' from file `icicles-chg.el', if you have that file.\
+%%0A%%0AEmacs version: %s.")
+                      (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
