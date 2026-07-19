@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Sat Mar 26 09:00:07 2022 (-0700)
-;;           By: dradams
-;;     Update #: 3080
+;; Last-Updated: Sun Jul 19 14:03:45 2026 (-0700)
+;;           By: drew0
+;;     Update #: 3083
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -325,6 +325,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     doremi-frame-commands: Updated mailto address.
 ;; 2022/03/26 dadams
 ;;     doremi-push-frame-config-for-command, doremi-frame-configs+: Removed condion that ring+.el be loaded.
 ;; 2020/11/05 dadams
@@ -665,10 +667,12 @@
   "Commands to incrementally adjust face attributes and frame parameters."
   :prefix "doremi-" :group 'doremi :group 'frames :group 'faces
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-doremi-frm.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
