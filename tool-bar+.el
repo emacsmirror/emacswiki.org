@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2025, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb 21 09:18:48 2025 (-0800)
-;;           By: dradams
-;;     Update #: 256
+;; Last-Updated: Sun Jul 19 16:23:34 2026 (-0700)
+;;           By: drew0
+;;     Update #: 258
 ;; URL: https://www.emacswiki.org/emacs/download/tool-bar%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/ToolBar#ToolBarPlus
 ;; Keywords: tool-bar, convenience, mouse, button, frame
@@ -121,10 +121,12 @@ conveniently adding tool bar items."
   ;; :variable (frame-parameter nil 'tool-bar-here-mode)
 
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 tool-bar+.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
