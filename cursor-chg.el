@@ -8,9 +8,9 @@
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 10:31:16 2018 (-0800)
-;;           By: dradams
-;;     Update #: 217
+;; Last-Updated: Sun Jul 19 09:38:23 2026 (-0700)
+;;           By: drew0
+;;     Update #: 219
 ;; URL: https://www.emacswiki.org/emacs/download/cursor-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ChangingCursorDynamically
 ;; Keywords: cursor, accessibility
@@ -94,6 +94,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     change-cursor-mode: Updated mailto address.
 ;; 2011/01/03 dadams
 ;;     Added autoload cookies for defcustom and commands.
 ;; 2006/10/28 dadams
@@ -260,7 +262,7 @@ use `\\[toggle-cursor-type-when-idle]."
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.
     (define-minor-mode change-cursor-mode
-        "Toggle changing cursor type and color.
+      "Toggle changing cursor type and color.
 With numeric ARG, turn cursor changing on if and only if ARG is positive.
 
 When this mode is on, `curchg-change-cursor-on-input-method' and
@@ -268,15 +270,17 @@ When this mode is on, `curchg-change-cursor-on-input-method' and
 changing."
       :init-value nil :global t :group 'frames
       :link `(url-link :tag "Send Bug Report"
-              ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-cursor-chg.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                       ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                                (emacs-version)))
       :link '(url-link :tag "Other Libraries by Drew"
-              "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+                       "https://www.emacswiki.org/emacs/DrewsElispLibraries")
       :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/cursor-chg.el")
       :link '(url-link :tag "Description"
-              "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
+                       "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
       :link '(emacs-commentary-link :tag "Commentary" "cursor-chg")
       (cond (change-cursor-mode
              (if curchg-change-cursor-on-overwrite/read-only-flag
@@ -317,8 +321,8 @@ changing."
              (curchg-change-cursor-on-input-method)
              (remove-hook 'post-command-hook 'curchg-change-cursor-on-input-method))
            (message "Change cursor on overwrite/read-only: %s; on input method: %s"
-             (if curchg-change-cursor-on-overwrite/read-only-flag "ON" "OFF")
-             (if curchg-change-cursor-on-input-method-flag "ON" "OFF")))
+                    (if curchg-change-cursor-on-overwrite/read-only-flag "ON" "OFF")
+                    (if curchg-change-cursor-on-input-method-flag "ON" "OFF")))
           (t
            (curchg-set-cursor-type curchg-default-cursor-type)
            (setq current-input-method nil)
