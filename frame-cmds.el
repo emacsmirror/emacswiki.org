@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sun Jul 19 14:51:26 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:26:35 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 3190
+;;     Update #: 3191
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -638,7 +638,7 @@
   :prefix "frcmds-"
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+frame-cmds.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
