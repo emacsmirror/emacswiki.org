@@ -8,9 +8,9 @@
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 0
 ;; Package-Requires: ((fit-frame "0"))
-;; Last-Updated: Sun Jul 19 14:29:16 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:43:07 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 715
+;;     Update #: 716
 ;; URL: https://www.emacswiki.org/emacs/download/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
@@ -226,7 +226,7 @@
   :type 'boolean :group 'Fit-Frame ; Group is defined in `fit-frame.el'.
   :link `(url-link :tag "Send Bug Report"
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+autofit-frame.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
