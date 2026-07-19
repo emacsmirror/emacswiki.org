@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Apr  7 17:35:06 2018 (-0700)
-;;           By: dradams
-;;     Update #: 315
+;; Last-Updated: Sun Jul 19 15:04:15 2026 (-0700)
+;;           By: drew0
+;;     Update #: 316
 ;; URL: https://www.emacswiki.org/emacs/download/highlight-chars.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -271,6 +271,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     Highlight-Chars (defgroup): Updated mailto address.
 ;; 2018/04/07 dadams
 ;;     Added: hc-remove-hc-from-font-lock-keywords, hc-remove-if.
 ;;     Renamed: hc-other-chars-font-lock-override to hc-font-lock-override.
@@ -395,10 +397,12 @@
   :prefix "hc-"
   :group 'convenience :group 'matching :group 'font-lock
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-highlight-chars.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
