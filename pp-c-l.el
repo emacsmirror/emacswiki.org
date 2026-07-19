@@ -8,9 +8,9 @@
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan  8 11:11:44 2025 (-0800)
-;;           By: dradams
-;;     Update #: 282
+;; Last-Updated: Sun Jul 19 16:09:17 2026 (-0700)
+;;           By: drew0
+;;     Update #: 283
 ;; URL: https://www.emacswiki.org/emacs/download/pp-c-l.el
 ;; Doc URL: https://emacswiki.org/emacs/PrettyControlL
 ;; Keywords: display, convenience, faces
@@ -136,9 +136,12 @@
   "Options to define pretty display of Control-l (`^L') characters."
   :prefix "pp^L-" :group 'convenience :group 'wp
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=pp-c-l.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+pp-c-l.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/pp-c-l.el")
