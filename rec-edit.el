@@ -8,9 +8,9 @@
 ;; Created: Sun Oct 27 08:27:03 2019 (-0700)
 ;; Version: 2019.10.27
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 25 08:50:11 2022 (-0800)
-;;           By: dradams
-;;     Update #: 82
+;; Last-Updated: Sun Jul 19 16:10:29 2026 (-0700)
+;;           By: drew0
+;;     Update #: 83
 ;; URL: https://www.emacswiki.org/emacs/download/rec-edit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/RecursiveEdit#rec-edit.el
 ;; Keywords: recursive edit, mode-line
@@ -127,10 +127,12 @@
   :prefix "red-"
   :group 'editing-basics :group 'Modeline :group 'Convenience :group 'Help
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 rec-edit.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download"
                    "https://www.emacswiki.org/emacs/download/rec-edit.el")
   :link '(emacs-commentary-link :tag "Commentary" "rec-edit"))
