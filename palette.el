@@ -4,13 +4,13 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2026, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Feb  6 16:06:18 2019 (-0800)
-;;           By: dradams
-;;     Update #: 927
+;; Last-Updated: Sun Jul 19 16:07:27 2026 (-0700)
+;;           By: drew0
+;;     Update #: 931
 ;; URL: https://www.emacswiki.org/emacs/download/palette.el
 ;; Doc URL: https://emacswiki.org/emacs/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -18,9 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `col-highlight', `crosshairs', `frame-fns', `hexrgb',
-;;   `hl-line', `hl-line+', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `vline'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl-lib',
+;;   `col-highlight', `crosshairs', `frame-fns', `hexrgb', `hl-line',
+;;   `hl-line+', `macroexp', `misc-cmds', `misc-fns', `rect',
+;;   `strings', `thingatpt', `thingatpt+', `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -330,6 +331,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2024/12/21 dadams
+;;     Protect soft-require of crosshairs.el, since it hard-requires vline.el.
 ;; 2019/02/06 dadams
 ;;     palette: Protect make-variable-frame-local with fboundp.
 ;; 2016/12/24 dadams
@@ -504,7 +507,10 @@
                   ;; hexrgb-rgb-to-hex, hexrgb-rgb-to-hsv, hexrgb-saturation, hexrgb-value
 
 (require 'misc-cmds nil t) ;; (no error if not found) list-colors-nearest
-(require 'crosshairs nil t) ;; (no error if not found) Recommended, to show cursor better.
+;;; Recommended, to show cursor better.
+(condition-case nil        ; Highlight line and col when idle.
+    (require 'crosshairs nil t) ; Hard-requires `hl-line+.el', `col-highlight.el', `vline.el'.
+  (error nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -514,10 +520,12 @@
   "A color palette: 1) hue x saturation palette and 2) brightness scale."
   :prefix "palette-" :group 'doremi :group 'frames :group 'faces
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 palette.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
