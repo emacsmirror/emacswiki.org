@@ -4,13 +4,13 @@
 ;; Description: Find where something is true.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2018-2023, Drew Adams, all rights reserved.
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-10-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Tue Oct  8 13:25:32 2019 (-0700)
-;;           By: dradams
-;;     Update #: 856
+;; Last-Updated: Sun Jul 19 14:44:17 2026 (-0700)
+;;           By: drew0
+;;     Update #: 858
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -309,6 +309,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     find-where (defgroup): Updated mailto address.
 ;; 2018/07/09 dadams
 ;;     Renamed find-where.el from gowhere.el.
 ;; 2018/07/04 dadams
@@ -401,10 +403,12 @@
   :prefix "fw-"
   :group 'editing :group 'convenience
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-find-where.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/find-where.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/FindWhere")
   :link '(emacs-commentary-link :tag "Commentary" "find-where"))
