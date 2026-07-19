@@ -8,9 +8,9 @@
 ;; Created: Mon Jan 17 11:16:28 2022 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 15:00:18 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:25:03 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 168
+;;     Update #: 169
 ;; URL: https://www.emacswiki.org/emacs/download/hi-var.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightElispVariables
 ;; Keywords: highlight, lisp, variables, lexical, file-local
@@ -144,7 +144,7 @@ file-local vars."
   :group 'editing :group 'faces :group 'matching :group 'font-lock :group 'programming
   :link `(url-link :tag "Send Bug Report"
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+hi-var.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
