@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 15 10:10:03 2021 (-0700)
-;;           By: dradams
-;;     Update #: 316
+;; Last-Updated: Sun Jul 19 15:09:43 2026 (-0700)
+;;           By: drew0
+;;     Update #: 317
 ;; URL: https://www.emacswiki.org/emacs/download/hl-defined.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
@@ -86,6 +86,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     Highlight-Defined (defgroup): Updated mailto address.
 ;; 2021/08/15 dadams
 ;;     Renamed hdefd-face to hdefd--face.
 ;; 2021/08/14 dadams
@@ -120,10 +122,12 @@
   "Highlight defined or undefined symbols in Emacs-Lisp."
   :prefix "hdefd-" :group 'matching :group 'font-lock :group 'programming
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-hl-defined.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
