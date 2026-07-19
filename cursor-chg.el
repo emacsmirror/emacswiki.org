@@ -8,9 +8,9 @@
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:18:39 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:46:07 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 220
+;;     Update #: 221
 ;; URL: https://www.emacswiki.org/emacs/download/cursor-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ChangingCursorDynamically
 ;; Keywords: cursor, accessibility
@@ -271,7 +271,7 @@ changing."
       :init-value nil :global t :group 'frames
       :link `(url-link :tag "Send Bug Report"
                        ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+cursor-chg.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
