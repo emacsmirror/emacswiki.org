@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 14 19:28:17 2021 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan 19 10:25:05 2022 (-0800)
-;;           By: dradams
-;;     Update #: 85
+;; Last-Updated: Sun Jul 19 14:38:23 2026 (-0700)
+;;           By: drew0
+;;     Update #: 87
 ;; URL: https://www.emacswiki.org/emacs/download/dyna-show.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightDynamicVariables
 ;; Keywords: highlight, lisp, variables, lexical
@@ -86,6 +86,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     dyna-show (defgroup): Updated mailto address.
 ;; 2022/01/17 dadams
 ;;     dyna-highlight: Move over strings, like symbols, with forward-sexp.
 ;; 2021/09/01 dadams
@@ -126,10 +128,12 @@
   :prefix "dyna-"
   :group 'editing :group 'faces :group 'matching :group 'font-lock :group 'programming
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-dyna-show.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
