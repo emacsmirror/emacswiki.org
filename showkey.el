@@ -4,13 +4,13 @@
 ;; Description: Show keys as you use them.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2022, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 25 10:30:04 2022 (-0700)
-;;           By: dradams
-;;     Update #: 163
+;; Last-Updated: Sun Jul 19 16:16:05 2026 (-0700)
+;;           By: drew0
+;;     Update #: 165
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
@@ -149,10 +149,12 @@
   "Show keys as you use them."
   :prefix "showkey-" :group 'help
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 showkey.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/showkey.el")
