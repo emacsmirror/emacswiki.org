@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 15 09:27:36 2025 (-0700)
-;;           By: dradams
-;;     Update #: 4442
+;; Last-Updated: Sun Jul 19 15:08:14 2026 (-0700)
+;;           By: drew0
+;;     Update #: 4447
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; URL (GIT mirror): https://framagit.org/steckerhalter/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
@@ -787,6 +787,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2026/07/19 drew0
+;;     highlight (defgroup): Updated mailto address.
 ;; 2025/08/15 dadams
 ;;     Added WHEN arg to make-obsolete, for 23+ compatibility.
 ;; 2025/07/24 dadams
@@ -1153,8 +1155,11 @@
 (defvar hi-lock-mode)
 (defvar hlt-act-on-any-face-flag)
 (defvar icicle-mode)                    ; In `icicles-mode.el'
+(defvar isearch-message-function)       ; In `isearch.el', Emacs 23+
 (defvar menu-bar-edit-region-menu)      ; In `menu-bar+.el'
 (defvar multi-isearch-buffer-list)      ; In `misearch.el'
+(defvar multi-isearch-current-buffer)   ; In `misearch.el'
+(defvar multi-isearch-file-list)        ; In `misearch.el'
 (defvar search-map)                     ; In `bindings.el', Emacs 23+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1301,10 +1306,12 @@
   "Highlighting."
   :prefix "hlt-" :group 'editing :group 'convenience :group 'wp :group 'faces
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-highlight.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/highlight.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/HighLight")
   :link '(emacs-commentary-link :tag "Commentary" "highlight"))
