@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 15:09:43 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:21:57 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 317
+;;     Update #: 318
 ;; URL: https://www.emacswiki.org/emacs/download/hl-defined.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
@@ -123,7 +123,7 @@
   :prefix "hdefd-" :group 'matching :group 'font-lock :group 'programming
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+hl-defined.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
