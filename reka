@@ -12,8 +12,12 @@ basically you call (reka-push-intercept-prefix "s-d") for example, and then s-d 
 == Open Questions ==
 
 * How to still use C-x in applications (e.g. to cut a selection)? Maybe a way to send C-x C-x as single C-x to an application?
+** thk: I've bound s-x to C-x in Emacs and removed C-x from reka-intercept-prefixes
 * What is the best practice to launch applications?
+** thk: I've bound s-p to launch fuzzle
 * What are recommended keybindings?
+* How to move between displays with keys? It seems C-x 5 o only works on the same display (as the docs say)
+* I'd like new apps to start fullscreen and with focus, not splitscreen. However if something (popup) has not been launched by me it should not automatically gain focus.
 
 == Reka users and configs ==
 
