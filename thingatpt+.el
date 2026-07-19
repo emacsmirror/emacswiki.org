@@ -4,12 +4,12 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2024, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Mon Dec 16 15:20:21 2024 (-0800)
-;;           By: dradams
-;;     Update #: 2427
+;; Last-Updated: Sun Jul 19 16:20:44 2026 (-0700)
+;;           By: drew0
+;;     Update #: 2429
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus
 ;; Keywords: extensions, matching, mouse
@@ -488,10 +488,12 @@
   "Enhancements to `thingatpt.el'."
   :prefix "tap-" :group 'applications :group 'development :group 'help
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Thingatpt+ bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+thingatpt+.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/thingatpt%2b.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ThingAtPointPlus")
   :link '(emacs-commentary-link :tag "Commentary" "thingatpt+"))
