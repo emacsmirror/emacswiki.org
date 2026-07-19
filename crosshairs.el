@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Wed Jan 12 12:47:40 2022 (-0800)
-;;           By: dradams
-;;     Update #: 519
+;; Last-Updated: Sun Jul 19 09:32:58 2026 (-0700)
+;;           By: drew0
+;;     Update #: 523
 ;; URL: https://www.emacswiki.org/emacs/download/crosshairs.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -98,6 +98,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     crosshairs (defgroup), crosshairs-mode: Updated mailto address.
 ;; 2022/01/12 dadams
 ;;     Explicitly require hl-line.el and vline.el.
 ;; 2017/06/26 dadams
@@ -192,14 +194,16 @@
   :prefix "crosshairs-"
   :group 'editing :group 'cursor :group 'hl-line :group 'frames
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-crosshairs.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
-          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+                   "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "https://www.emacswiki.org/emacs/download/crosshairs.el"))
+                   "https://www.emacswiki.org/emacs/download/crosshairs.el"))
 
 (defvar crosshairs-highlight-when-idle-p nil
   "Non-nil means highlight current line and column when Emacs is idle.
@@ -214,20 +218,22 @@ Do NOT change this yourself; instead, use
 
 ;;;###autoload
 (define-minor-mode crosshairs-mode
-    "Toggle highlighting the current line and column.
+  "Toggle highlighting the current line and column.
 With ARG, turn highlighting on if and only if ARG is positive."
   :init-value nil :global t :group 'crosshairs
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-crosshairs.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
-          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+                   "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "https://www.emacswiki.org/emacs/download/crosshairs.el")
+                   "https://www.emacswiki.org/emacs/download/crosshairs.el")
   :link '(url-link :tag "Description"
-          "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
+                   "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
   :link '(emacs-commentary-link :tag "Commentary" "crosshairs")
   ;; If both were already on or off, reflect that as the previous crosshairs state.
   (unless arg
