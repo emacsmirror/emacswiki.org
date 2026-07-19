@@ -1,6 +1,6 @@
 ;;; zones.el --- Zones of text - like multiple regions  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2010-2024  Free Software Foundation, Inc.
+;; Copyright (C) 2010-2026  Free Software Foundation, Inc.
 ;;
 ;; Filename: zones.el
 ;; Description:  Zones of text - like multiple regions
@@ -9,9 +9,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2025.07.24
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 24 12:50:12 2025 (-0700)
-;;           By: dradams
-;;     Update #: 3378
+;; Last-Updated: Sun Jul 19 16:26:35 2026 (-0700)
+;;           By: drew0
+;;     Update #: 3380
 ;; URL: https://elpa.gnu.org/packages/zones.html
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
@@ -1054,10 +1054,12 @@ even if this catches the signal."
   :prefix "zz-"
   :group 'editing
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 zones.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/zones.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/Zones")
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
