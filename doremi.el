@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:35:59 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:41:22 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1694
+;;     Update #: 1697
 ;; URL: https://www.emacswiki.org/emacs/download/doremi.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -240,7 +240,7 @@
 Define commands to perform repetitive or incremental operations."
   :prefix "doremi-" :group 'convenience
   :link `(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+Do Re MI bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
