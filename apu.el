@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 29 13:45:01 2020 (-0800)
-;;           By: dradams
-;;     Update #: 972
+;; Last-Updated: Sun Jul 19 09:08:13 2026 (-0700)
+;;           By: drew0
+;;     Update #: 974
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -19,9 +19,13 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `descr-text', `descr-text+', `gv',
-;;   `help-fns', `help-fns+', `help-mode', `info', `macroexp',
-;;   `naked', `radix-tree', `wid-edit', `wid-edit+'.
+;;   `auth-source', `button', `cl', `cl-generic', `cl-lib',
+;;   `cl-macs', `descr-text', `descr-text+', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `gv', `help-fns', `help-fns+',
+;;   `help-mode', `info', `macroexp', `naked', `package',
+;;   `password-cache', `radix-tree', `seq', `tabulated-list',
+;;   `url-handlers', `url-parse', `url-vars', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -165,6 +169,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     apu (defgroup): Updated mailto address.
 ;; 2020/12/29 dadams
 ;;     Added apu-include-unnamed-chars-flag.
 ;;     apu-chars-in-region-1: Report unnamed chars only if apu-include-unnamed-chars-flag is non-nil.
@@ -304,10 +310,12 @@
   :prefix "apu-"
   :group 'i18n :group 'help :group 'matching :group 'editing :group 'convenience
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-apu.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/apu.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/AproposUnicode")
   :link '(emacs-commentary-link :tag "Commentary" "apu"))
