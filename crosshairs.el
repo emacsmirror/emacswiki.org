@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Sun Jul 19 14:23:04 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:45:20 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 524
+;;     Update #: 525
 ;; URL: https://www.emacswiki.org/emacs/download/crosshairs.el
 ;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -195,7 +195,7 @@
   :group 'editing :group 'cursor :group 'hl-line :group 'frames
   :link `(url-link :tag "Send Bug Report"
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+crosshairs.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
 %%0A%%0AEmacs version: %s")
