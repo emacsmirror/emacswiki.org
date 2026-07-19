@@ -9,9 +9,9 @@
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:45:06 2020 (-0700)
-;;           By: dradams
-;;     Update #: 218
+;; Last-Updated: Sun Jul 19 14:48:53 2026 (-0700)
+;;           By: drew0
+;;     Update #: 219
 ;; URL: https://www.emacswiki.org/emacs/download/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
@@ -81,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     font-lock-menus (defgroup): Updated mailto address.
 ;; 2020/08/14 dadams
 ;;     flm-list-fonts: Use help-print-return-message, not print-help-return-message.
 ;; 2012/11/13 dadams
@@ -128,10 +130,12 @@
   "Font menus."
   :prefix "fmda-" :group 'font-lock
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-font-lock-menus.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Download"
           "https://www.emacswiki.org/emacs/download/font-lock-menus.el")
   :link '(emacs-commentary-link :tag "Commentary" "font-lock-menus"))
