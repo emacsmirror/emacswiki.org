@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 09:42:10 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:13:54 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1676
+;;     Update #: 1677
 ;; URL: https://www.emacswiki.org/emacs/download/cus-edit%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -537,7 +537,7 @@
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
