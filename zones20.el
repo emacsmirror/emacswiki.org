@@ -1,17 +1,17 @@
-;;; zones.el --- Zones of text - like multiple regions
+;;; zones20.el --- Zones of text - like multiple regions
 ;;
-;; Filename: zones.el
+;; Filename: zones20.el
 ;; Description:  Zones of text - like multiple regions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2018, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2018.10.29
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 29 15:12:58 2018 (-0700)
-;;           By: dradams
-;;     Update #: 2165
-;; URL: https://www.emacswiki.org/emacs/download/zones.el
+;; Last-Updated: Sun Jul 19 16:29:41 2026 (-0700)
+;;           By: drew0
+;;     Update #: 2168
+;; URL: https://www.emacswiki.org/emacs/download/zones20.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -19,7 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl'.
+;;   `backquote', `bytecomp', `cconv', `cl-lib', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -674,11 +674,13 @@
   :prefix "zz-"
   :group 'editing
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-zones.el bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/zones.el")
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+zones20.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/zones20.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/Zones")
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
 
@@ -1910,4 +1912,4 @@ are included in the returned list."
 (provide 'zones20)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; zones.el ends here
+;;; zones20.el ends here
