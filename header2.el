@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 26 18:42:45 2023 (-0800)
-;;           By: dradams
-;;     Update #: 2038
+;; Last-Updated: Sun Jul 19 09:00:08 2026 (-0700)
+;;           By: drew0
+;;     Update #: 2041
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -173,6 +173,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     Automatic-File-Header: Updated mailto address.
 ;; 2023/01/26 dadams
 ;;     Avoid benign byte-compiler warnings in some Emacs versions.
 ;;       make-(header|revision): beginning-of-buffer -> inlined
@@ -380,16 +382,18 @@
   :group 'files :group 'editing :group 'convenience :group 'programming
   :group 'development
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-header2.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
-          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+                   "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "https://www.emacswiki.org/emacs/download/header2.el")
+                   "https://www.emacswiki.org/emacs/download/header2.el")
   :link '(url-link :tag "Description"
-          "https://www.emacswiki.org/emacs/AutomaticFileHeaders#header2")
+                   "https://www.emacswiki.org/emacs/AutomaticFileHeaders#header2")
   :link '(emacs-commentary-link :tag "Commentary" "header2")
   )
 
