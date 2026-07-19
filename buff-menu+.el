@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 09:23:58 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:27:26 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 2849
+;;     Update #: 2850
 ;; URL: https://www.emacswiki.org/emacs/download/buff-menu%2b.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -473,7 +473,7 @@
             ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version)))
     :link '(url-link :tag "Other Libraries by Drew"
