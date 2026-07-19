@@ -8,9 +8,9 @@
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:31:05 2018 (-0800)
-;;           By: dradams
-;;     Update #: 5244
+;; Last-Updated: Sun Jul 19 15:55:32 2026 (-0700)
+;;           By: drew0
+;;     Update #: 5245
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b20.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -616,10 +616,12 @@
   "Various enhancements to Info for Emacs 20-21."
   :group 'info
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 info+20.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/info%2b20.el")
