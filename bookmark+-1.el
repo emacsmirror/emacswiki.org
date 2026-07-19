@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul 17 15:44:20 2026 (-0400)
+;; Last-Updated: Sun Jul 19 13:34:40 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10036
+;;     Update #: 10046
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -713,17 +713,17 @@
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
 ;;    `bmkp-last-save-flag-value', `bmkp-last-specific-buffer',
 ;;    `bmkp-last-specific-file', `bmkp-latest-bookmark-alist',
-;;    `bmkp-local-file-history', `bmkp-man-history',
-;;    `bmkp-modified-bookmarks', `bmkp-nav-alist',
-;;    `bmkp-non-file-filename', `bmkp-region-history',
-;;    `bmkp-remote-file-history', `bmkp-return-buffer',
-;;    `bmkp-reverse-multi-sort-p', `bmkp-reverse-sort-p',
-;;    `bmkp-snippet-history', `bmkp-sorted-alist',
-;;    `bmkp-specific-buffers-history', `bmkp-specific-files-history',
-;;    `bmkp-store-org-link-checking-p', `bmkp-tag-history',
-;;    `bmkp-tags-alist', `bmkp-temporary-history', `bmkp-url-history',
-;;    `bmkp-use-w32-browser-p', `bmkp-variable-list-history',
-;;    `bmkp-w3m-history'.
+;;    `bmkp-local-file-history', `bmkp-mailto-bug-report-text'
+;;    (defconst), `bmkp-man-history', `bmkp-modified-bookmarks',
+;;    `bmkp-nav-alist', `bmkp-non-file-filename',
+;;    `bmkp-region-history', `bmkp-remote-file-history',
+;;    `bmkp-return-buffer', `bmkp-reverse-multi-sort-p',
+;;    `bmkp-reverse-sort-p', `bmkp-snippet-history',
+;;    `bmkp-sorted-alist', `bmkp-specific-buffers-history',
+;;    `bmkp-specific-files-history', `bmkp-store-org-link-checking-p',
+;;    `bmkp-tag-history', `bmkp-tags-alist', `bmkp-temporary-history',
+;;    `bmkp-url-history', `bmkp-use-w32-browser-p',
+;;    `bmkp-variable-list-history', `bmkp-w3m-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -1748,6 +1748,15 @@ different Emacs version from that of the current session."
  
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
+
+(defconst bmkp-mailto-bug-report-text
+  (format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version))
+  "Boilerplate text in Bookmark+ bug report emails.")
 
 (defconst bmkp-non-file-filename "   - no file -"
   "Name to use for `filename' entry, for non-file bookmarks.")
@@ -5572,12 +5581,7 @@ NAME."
 (defun bmkp-send-bug-report ()          ; Not bound
   "Send a bug report about a Bookmark+ problem."
   (interactive)
-  (browse-url (format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
-&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
-%%0A%%0AEmacs version: %s")
-                      (emacs-version))))
+  (browse-url bmkp-mailto-bug-report-text))
 
 ;;;###autoload (autoload 'bmkp-toggle-bookmark-set-refreshes "bookmark+")
 (defun bmkp-toggle-bookmark-set-refreshes () ; Not bound
@@ -10972,11 +10976,7 @@ recorded number of visits.)  You can toggle the option using
 `\\[bmkp-toggle-eww-auto-type]'."
            :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
            :lighter bmkp-automatic-bookmark-mode-lighter
-           :link `(url-link :tag "Send Bug Report"
-                            ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Bookmark bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+           :link `(url-link :tag "Send Bug Report" ,bmkp-mailto-bug-report-text)
            :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
            :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
            :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
@@ -13843,11 +13843,7 @@ NOTE: If you use Emacs 21 then there is no global version of the mode
 - that is, there is no command `bmkp-global-automatic-bookmark-mode'."
                :init-value nil :group 'bookmark-plus :require 'bookmark+
                :lighter bmkp-automatic-bookmark-mode-lighter
-               :link `(url-link :tag "Send Bug Report"
-                       ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Bookmark bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+               :link `(url-link :tag "Send Bug Report" ,bmkp-mailto-bug-report-text)
                :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
                :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
                :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
@@ -13969,11 +13965,7 @@ recorded number of visits.)  You can toggle the option using
 `\\[bmkp-toggle-info-auto-type]'."
            :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
            :lighter bmkp-automatic-bookmark-mode-lighter
-           :link `(url-link :tag "Send Bug Report"
-                            ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Bookmark bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+           :link `(url-link :tag "Send Bug Report" ,bmkp-mailto-bug-report-text)
            :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
            :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
            :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
@@ -14048,11 +14040,7 @@ When the mode is turned ON:
 Non-interactively, turn temporary bookmarking on if and only if ARG is
 positive.  Non-interactively there is no prompt for confirmation."
              :init-value nil :global t :group 'bookmark-plus :lighter bmkp-temporary-bookmarking-mode-lighter
-             :link `(url-link :tag "Send Bug Report"
-                              ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Bookmark bug: \
-&body=Describe bug here, starting with `emacs -Q'.  \
-Don't forget to mention your Emacs and library versions."))
+             :link `(url-link :tag "Send Bug Report" ,bmkp-mailto-bug-report-text)
              :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
              :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
              :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
