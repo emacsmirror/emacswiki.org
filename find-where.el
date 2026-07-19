@@ -8,9 +8,9 @@
 ;; Created: Sat Mar 17 10:13:09 2018 (-0700)
 ;; Version: 2018-10-08
 ;; Package-Requires: (thingatpt+ "0")
-;; Last-Updated: Sun Jul 19 14:44:17 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:34:56 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 858
+;;     Update #: 859
 ;; URL: https://www.emacswiki.org/emacs/download/find-where.el
 ;; Doc URL: https://www.emacswiki.org/emacs/FindWhere
 ;; Keywords: motion thing search
@@ -404,7 +404,7 @@
   :group 'editing :group 'convenience
   :link `(url-link :tag "Send Bug Report"
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+find-where.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
