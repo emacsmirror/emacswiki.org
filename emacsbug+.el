@@ -8,16 +8,24 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec  3 12:14:10 2018 (-0800)
-;;           By: dradams
-;;     Update #: 400
+;; Last-Updated: Sun Jul 19 14:40:45 2026 (-0700)
+;;           By: drew0
+;;     Update #: 403
 ;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `emacsbug', `sendmail'.
+;;   `cl-lib', `derived', `dired', `dired-loaddefs', `emacsbug',
+;;   `epa', `epg', `epg-config', `font-lock', `format-spec',
+;;   `gmm-utils', `gnus-util', `ietf-drums', `macroexp',
+;;   `mail-parse', `mail-prsvr', `mail-utils', `mailabbrev',
+;;   `mailheader', `message', `mm-bodies', `mm-decode', `mm-encode',
+;;   `mm-util', `mml', `mml-sec', `password-cache', `puny',
+;;   `rfc2045', `rfc2047', `rfc2231', `rfc822', `rmail',
+;;   `rmail-loaddefs', `rmc', `sendmail', `seq', `syntax',
+;;   `time-date', `timer', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     emacsbug+ (defgroup): Updated mailto address.
 ;; 2018/12/03 dadams
 ;;     report-emacs-bug: Updated to Emacs 26 version:
 ;;       Use full emacs-version in topic for Emacs 26+, regardless of system-type.
@@ -129,10 +139,12 @@
   :prefix "ebp"
   :group 'emacsbug :group 'mail
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-emacsbug+.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
