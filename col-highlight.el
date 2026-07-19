@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 0
 ;; Package-Requires: ((vline "0"))
-;; Last-Updated: Sun Jul 19 14:25:14 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:44:29 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 451
+;;     Update #: 452
 ;; URL: https://www.emacswiki.org/emacs/download/col-highlight.el
 ;; Doc URL: https://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -192,7 +192,7 @@
   :group 'editing :group 'cursor :group 'hl-line :group 'frames
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+col-highlight.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
