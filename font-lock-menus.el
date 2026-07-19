@@ -9,9 +9,9 @@
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 14:48:53 2026 (-0700)
+;; Last-Updated: Sun Jul 19 15:36:41 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 219
+;;     Update #: 220
 ;; URL: https://www.emacswiki.org/emacs/download/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
@@ -131,7 +131,7 @@
   :prefix "fmda-" :group 'font-lock
   :link `(url-link :tag "Send Bug Report"
           ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
-Bookmark+ bug: \
+font-lock-menus.el bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
 Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
