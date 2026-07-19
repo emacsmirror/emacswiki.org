@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 09:08:13 2026 (-0700)
+;; Last-Updated: Sun Jul 19 14:30:39 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 974
+;;     Update #: 975
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
 ;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -313,7 +313,7 @@
                    ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+Be sure to mention the `Update #' from the file header.\
 %%0A%%0AEmacs version: %s")
                             (emacs-version)))
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/apu.el")
