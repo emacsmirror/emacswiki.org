@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 15 09:54:55 2021 (-0800)
-;;           By: dradams
-;;     Update #: 1898
+;; Last-Updated: Sun Jul 19 16:02:51 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1899
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -18,10 +18,25 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `color', `frame-fns', `gv', `highlight', `isearch+',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `naked',
-;;   `rect', `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `color', `crosshairs', `custom', `doremi', `doremi-frm',
+;;   `easymenu', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `facemenu', `facemenu+', `faces', `faces+',
+;;   `fit-frame', `font-lock', `font-lock+', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `gv', `help+', `help-fns',
+;;   `help-fns+', `help-macro', `help-macro+', `help-mode', `hexrgb',
+;;   `highlight', `hl-line', `hl-line+', `info', `info+', `isearch+',
+;;   `isearch-prop', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
+;;   `package', `palette', `password-cache', `pp', `pp+',
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -514,9 +529,12 @@
   :prefix "mouse3-"
   :group 'mouse
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=mouse3.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs version and mouse3.el `Update #'."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+mouse3.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
