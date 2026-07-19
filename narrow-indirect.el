@@ -8,9 +8,9 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Mar 23 15:47:49 2024 (-0700)
-;;           By: dradams
-;;     Update #: 216
+;; Last-Updated: Sun Jul 19 16:04:16 2026 (-0700)
+;;           By: drew0
+;;     Update #: 217
 ;; URL: https://www.emacswiki.org/emacs/download/narrow-indirect.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -182,10 +182,12 @@
   "Narrow using an indirect buffer."
   :prefix "ni-" :group 'editing
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 narrow-indirect.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew" "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/narrow-indirect.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NarrowIndirect")
