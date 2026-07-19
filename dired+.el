@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 21 17:12:58 2025 (-0700)
-;;           By: dradams
-;;     Update #: 14075
+;; Last-Updated: Sun Jul 19 10:12:34 2026 (-0700)
+;;           By: drew0
+;;     Update #: 14119
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1072,6 +1072,17 @@
  
 ;;; Change Log:
 ;;
+;; 2026/07/19 drew0
+;;     Dired-Plus (defgroup), diredp-send-bug-report: Updated mailto address.
+;; 2026/06/21 drew0
+;;     custom--standard-value: Corrected eval call for < Emacs 25.
+;;     dired-omit-expunge: Corrected dired-omit-expunge call for Emacs 22-25.
+;;     diredp-delete-this-file: Corrected delete-file call for Emacs 22-23.
+;;     diredp-change-marks: error, not user error, when called from Lisp.
+;;     dired-do-isearch-regexp, dired-do-(search|query-replace-regexp|find-regexp):
+;;      Call dired-post-do-command for Emacs 30+.
+;; 2025/08/25 dadams
+;;     dired-do-delete: Updated for Emacs 30: Call dired-post-do-command.
 ;; 2025/08/21 dadams
 ;;     Added: diredp--read-unique-displayable-chars.
 ;;     diredp-change-marks(-recursive): Use diredp--read-unique-displayable-chars.
@@ -2780,6 +2791,7 @@ of that nature."
 (defvar image-dired-thumb-height)                 ; In `image-dired.el'
 (defvar image-dired-thumb-width)                  ; In `image-dired.el'
 (defvar image-dired-widget-list)                  ; In `image-dired.el'
+(defvar lexical-binding)                          ; Emacs 24+
 (defvar ls-lisp-use-insert-directory-program)     ; In `ls-lisp.el'
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
@@ -2828,7 +2840,9 @@ of that nature."
 (unless (fboundp 'custom--standard-value)
   (defun custom--standard-value (variable)
     "Return the standard value of VARIABLE."
-    (eval (car (get variable 'standard-value)) t)))
+    (if (< emacs-major-version 25)
+        (eval (car (get variable 'standard-value)))
+      (eval (car (get variable 'standard-value)) t))))
 
 ;; Provide Emacs 27+ handling of hiding subdir listings.
 ;;
@@ -3112,16 +3126,18 @@ Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
   "Various enhancements to Dired."
   :prefix "diredp-" :group 'dired
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-dired+.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+                            (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
-          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+                   "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "https://www.emacswiki.org/emacs/download/dired%2b.el")
+                   "https://www.emacswiki.org/emacs/download/dired%2b.el")
   :link '(url-link :tag "Description"
-          "https://www.emacswiki.org/emacs/DiredPlus")
+                   "https://www.emacswiki.org/emacs/DiredPlus")
   :link '(emacs-commentary-link :tag "Commentary" "dired+"))
  
 ;;; Variables
@@ -4262,6 +4278,7 @@ Report in the echo area and display a log buffer."
 ;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
 (when (boundp 'dired-subdir-switches)   ; Emacs 22+
+
   (defun dired-do-redisplay (&optional arg test-for-subdir) ; Bound to `l'
     "Redisplay all marked (or next ARG) files.
 If on a subdir line, redisplay that subdirectory.  In that case,
@@ -4295,7 +4312,8 @@ See Info node `(emacs) Subdir switches' for more details."
                             arg)
       (run-hooks 'dired-after-readin-hook)
       (dired-move-to-filename)
-      (message "Redisplaying...done"))))
+      (message "Redisplaying...done")))
+  )
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -7910,7 +7928,7 @@ you replace multiple mark chars at the same time."
                      (diredp-user-error "Mark char must be displayable and not `?\r' (aka `C-m', `RET')"))
                    (list (apply #'string o-c) n-c t)))
     (unless (and (diredp--mark-chars-ok old)  (diredp--mark-chars-ok (string new)))
-      (diredp-user-error "Mark chars must be displayable and not `?\r' (aka `C-m', `RET')"))
+      (error "Mark chars must be displayable and not `?\r' (aka `C-m', `RET')"))
     (let ((string             (format "^\\([%s]\\)" old))
           (inhibit-read-only  t)
           (count              0))
@@ -8556,7 +8574,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                                (buffer-substring (progn (forward-char 4) (point))
                                                                  (line-end-position))
                                              "")))))
-                      (if (not (boundp 'lexical-binding)) ; Emacs <  24.something
+                      (if (< emacs-major-version 25) ; Emacs 22-24.
                           (eval predicate)
                         (eval predicate
                               `((inode . ,inode)
@@ -9188,7 +9206,9 @@ When called from Lisp, optional arg DETAILS is passed to
             (dolist (file  files)
               (condition-case err
                   (progn (if (fboundp 'dired-delete-file) ; Emacs 22+
-                             (dired-delete-file file dired-recursive-deletes delete-by-moving-to-trash)
+                             (if (< emacs-major-version 24)
+                                 (dired-delete-file file dired-recursive-deletes)
+                               (dired-delete-file file dired-recursive-deletes delete-by-moving-to-trash))
                            ;; This test is equivalent to (and (file-directory-p file)  (not (file-symlink-p file)))
                            ;; but more efficient.
                            (if (eq t (car (file-attributes file))) (delete-directory file) (delete-file file)))
@@ -10157,8 +10177,7 @@ You need library `bookmark+.el' to use this command."
                                         (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-paste-add-tags prefix))
-                                1 'paste-add-tags t))
+    (dired-map-over-marks-check #'(lambda () (diredp-paste-add-tags prefix)) 1 'paste-add-tags t))
   (diredp-previous-line 1))
 
 ;;;###autoload
@@ -10218,8 +10237,7 @@ You need library `bookmark+.el' to use this command."
                                         (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-paste-replace-tags prefix))
-                                1 'paste-replace-tags t))
+    (dired-map-over-marks-check #'(lambda () (diredp-paste-replace-tags prefix)) 1 'paste-replace-tags t))
   (diredp-previous-line 1))
 
 ;;;###autoload
@@ -11518,7 +11536,8 @@ When invoked interactively, raise an error if no files are marked."
                         (C-u  (and (consp arg)  arg)))
                    (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
                    (list arg t)))
-    (multi-isearch-files (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep)))
+    (prog1 (multi-isearch-files (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep))
+      (when (fboundp 'dired-post-do-command) (dired-post-do-command)))) ; Emacs 30+
 
 
   ;; REPLACE ORIGINAL in `dired.el':
@@ -11540,7 +11559,8 @@ When invoked interactively, raise an error if no files are marked."
                         (C-u  (and (consp arg)  arg)))
                    (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
                    (list arg t)))
-    (multi-isearch-files-regexp (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep)))
+    (prog1 (multi-isearch-files-regexp (dired-get-marked-files nil arg 'dired-nondirectory-p nil interactivep))
+      (when (fboundp 'dired-post-do-command) (dired-post-do-command)))) ; Emacs 30+
 
   )
 
@@ -11576,8 +11596,10 @@ When invoked interactively, raise an error if no files are marked."
                        t)))
   (if (< emacs-major-version 27)
       (tags-search regexp `(dired-get-marked-files nil ',arg #'dired-nondirectory-p nil ,interactivep))
-    (fileloop-initialize-search
-     regexp (dired-get-marked-files nil arg #'dired-nondirectory-p nil interactivep) 'default)
+    (fileloop-initialize-search regexp
+                                (dired-get-marked-files nil arg #'dired-nondirectory-p nil interactivep)
+                                'default)
+    (when (fboundp 'dired-post-do-command) (dired-post-do-command)) ; Emacs 30+
     (fileloop-continue)))
 
 
@@ -11630,6 +11652,7 @@ Emacs 26 or prior)."
           (error "File `%s' is visited read-only" file))))
     (if (< emacs-major-version 27)
         (tags-query-replace from to delimited `',dgmf-arg)
+      (when (fboundp 'dired-post-do-command) (dired-post-do-command)) ; Emacs 30+
       (fileloop-initialize-replace from to dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
       (fileloop-continue))))
 
@@ -11699,11 +11722,12 @@ REGEXP should use constructs supported by your local `grep' command."
                                 (unless xrefs (diredp-user-error "No matches for: %s" ',regexp))
                                 (when ',interactivep (message "Searching...done"))
                                 xrefs)))))
-      (if (> emacs-major-version 26)
-          (xref--show-xrefs fetcher nil) ; Emacs 27+
-        (if xrefs-26
-            (xref--show-xrefs xrefs-26 nil t)
-          (diredp-user-error "No matches for: %s" regexp)))))
+      (cond ((> emacs-major-version 26)
+             (when (fboundp 'dired-post-do-command) (dired-post-do-command)) ; Emacs 30+
+             (xref--show-xrefs fetcher nil)) ; Emacs 27+
+            (xrefs-26
+             (xref--show-xrefs xrefs-26 nil t))
+            (t (diredp-user-error "No matches for: %s" regexp)))))
 
 
   ;; REPLACE ORIGINAL in `dired-aux.el':
@@ -12444,11 +12468,13 @@ the status message."
                                                                         (line-beginning-position)
                                                                         (line-end-position))))
                                           nil)
-                         (dired-mark-unmarked-files
-                          omit-re nil nil dired-omit-localp
-                          (dired-omit-case-fold-p (if (stringp dired-directory)
-                                                      dired-directory
-                                                    (car dired-directory))))))
+                         (if (> emacs-major-version 25)
+                             (dired-mark-unmarked-files
+                              omit-re nil nil dired-omit-localp
+                              (dired-omit-case-fold-p (if (stringp dired-directory)
+                                                          dired-directory
+                                                        (car dired-directory))))
+                           (dired-mark-unmarked-files omit-re nil nil dired-omit-localp))))
                   (when dired-omit-verbose (message "(Nothing to omit)"))
                 (setq count  (+ count
                                 (dired-do-kill-lines
@@ -13418,9 +13444,7 @@ non-empty directories is allowed."
         (diredp-internal-do-deletions
          (nreverse
           ;; This cannot move point since last arg is nil.
-          (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker)))
-                                                             (push mk markers)
-                                                             mk))
+          (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker))) (push mk markers) mk))
                                 nil))
          nil
          'USE-TRASH-CAN)             ; This arg is for Emacs 24+ only.
@@ -13447,7 +13471,9 @@ ARG is the prefix argument.  It is handled as the second argument of
 `dired-map-over-marks'.
 
 As an exception, if ARG is zero then delete the marked files, but with
-the behavior specified by option `delete-by-moving-to-trash' flipped."
+the behavior specified by option `delete-by-moving-to-trash' flipped.
+
+if ARG is the symbol `marked' then delete only the marked files."
   (interactive "P")
   (let* ((flip                       (zerop (prefix-numeric-value arg)))
          (delete-by-moving-to-trash  (and (boundp 'delete-by-moving-to-trash)  (if flip
@@ -13455,10 +13481,9 @@ the behavior specified by option `delete-by-moving-to-trash' flipped."
                                                                                  delete-by-moving-to-trash)))
          (markers                    ()))
     (when flip (setq arg  nil))
-    ;; This is more consistent with the file-marking feature than
-    ;; `dired-do-flagged-delete'.  But it can be confusing to the user,
-    ;; especially since this is usually bound to `D', which is also the
-    ;; `dired-del-marker'.  So offer this warning message.
+    ;; This is more consistent with the file-marking feature than `dired-do-flagged-delete'.
+    ;; But it can be confusing to a user, especially since this is usually bound to `D',
+    ;; which is also the `dired-del-marker'.  So offer this warning message.
     (unless arg
       (ding)
       (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
@@ -13466,13 +13491,12 @@ the behavior specified by option `delete-by-moving-to-trash' flipped."
     (diredp-internal-do-deletions
      (nreverse
       ;; This can move point if ARG is an integer.
-      (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker)))
-                                                         (push mk markers)
-                                                         mk))
+      (dired-map-over-marks (cons (dired-get-filename) (let ((mk  (point-marker))) (push mk markers) mk))
                             arg))
      arg
      t)          ; Gets ANDed anyway with `delete-by-moving-to-trash'.
-    (dolist (mk  markers) (set-marker mk nil))))
+    (dolist (mk  markers) (set-marker mk nil)))
+  (when (fboundp 'dired-post-do-command) (dired-post-do-command))) ; Emacs 30+
 
 (defun diredp-internal-do-deletions (file-alist arg &optional trash)
   "`dired-internal-do-deletions', but for any Emacs version.
@@ -15918,11 +15942,11 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
 (defun diredp-send-bug-report ()        ; Not bound by default
   "Send a bug report about a Dired+ problem."
   (interactive)
-  (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-Dired+ bug: \
+  (browse-url (format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-File `dired+.el' has a header `Update #' that you can use to identify it.\
-%%0A%%0AEmacs version: %s.")
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
                       (emacs-version))))
 
 (defun diredp-visit-ignore-regexp ()    ; Taken from `image-file-name-regexp'.
