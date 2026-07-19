@@ -8,9 +8,9 @@
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Fri Sep 21 13:47:27 2018 (-0700)
-;;           By: dradams
-;;     Update #: 521
+;; Last-Updated: Sun Jul 19 13:58:47 2026 (-0700)
+;;           By: drew0
+;;     Update #: 528
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-cmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -18,7 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cus-theme', `doremi', `mwheel', `ring'.
+;;   `cl-lib', `cus-edit', `cus-face', `cus-load', `cus-start',
+;;   `cus-theme', `custom', `doremi', `macroexp', `mwheel', `ring',
+;;   `timer', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -154,6 +156,11 @@
 ;;
 ;;; Change Log:
 ;;
+;;
+;; 2026/07/19 drew0
+;;     doremi-misc-commands (defgroup):  Updated mailto address.
+;; 2026/06/21 drew0
+;;     doremi-themes-update-flag: Added :group.
 ;; 2018/09/21 dadams
 ;;     Added: doremi--pop-to-buffer-same-window.
 ;;     doremi-buffers+, doremi-buffers-1, doremi-global-marks+:
@@ -255,10 +262,12 @@
   "Miscellaneous Do Re Mi commands."
   :prefix "doremi-" :group 'doremi :group 'color-theme
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-doremi-cmd.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and library versions."))
+          ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+Bookmark+ bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
@@ -276,7 +285,8 @@ This applies to commands `doremi-custom-themes+' and
 `doremi-custom-themes' and `doremi-color-themes'.
 
 A prefix arg to the command flips the option value for the duration of
-the command.")
+the command."
+  :group 'doremi-misc-commands)
 
 ;; Replace this by your favorite custom themes.
 ;;
