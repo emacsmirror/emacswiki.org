@@ -8,9 +8,9 @@
 ;; Created: Fri May 22 12:21:59 2020 (-0700)
 ;; Version: 1
 ;; Package-Requires: ((sortie "0"))
-;; Last-Updated: Sat Dec 31 11:05:50 2022 (-0800)
-;;           By: dradams
-;;     Update #: 466
+;; Last-Updated: Sun Jul 19 15:58:30 2026 (-0700)
+;;           By: drew0
+;;     Update #: 467
 ;; URL: https://www.emacswiki.org/emacs/download/keysee.el
 ;; Doc URL: https://www.emacswiki.org/emacs/KeySee
 ;; Keywords: key completion sorting
@@ -268,9 +268,12 @@
   "Key completion preferences."
   :prefix "kc-" :group 'completion
   :link `(url-link :tag "Send Bug Report"
-                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=keysee.el bug: \
-&body=Describe bug here, starting with `emacs -q'.  \
-Don't forget to mention your Emacs and Keysee library versions."))
+                   ,(format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
+keysee.el bug: \
+&body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
+Be sure to mention the `Update #' from the file header.\
+%%0A%%0AEmacs version: %s")
+          (emacs-version)))
   :link '(url-link :tag "Other Libraries by Drew" "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/keysee.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/KeySee"))
