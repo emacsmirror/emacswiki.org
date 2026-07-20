@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul 17 17:24:45 2026 (-0400)
+;; Last-Updated: Mon Jul 20 09:07:45 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17330
+;;     Update #: 17338
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/07/20 drew0
+;; Added defconst bmkp-mailto-bug-report-text.
+;; bmkp-send-bug-report, bmkp-eww-auto-bookmark-mode, bmkp-automatic-bookmark-mode,
+;;  bmkp-info-auto-bookmark-mode, bmkp-temporary-bookmarking-mode:
+;;    Use bmkp-mailto-bug-report-text.
 ;; 2026/07/17 drew0
 ;;     bookmark-set: Keep bmkp-properties-to-keep only when overwriting.  Improved doc string.
 ;;     bmkp-bookmark-set-confirm-overwrite: Better arg names.
@@ -2904,6 +2909,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/20 drew0
+;;     Version 2026.07.20
+;;     Added bmkp-mailto-bug-report-text (also in bookmark+-1.el) - use it instead of hard-coded text.
 ;; 2026/07/17 drew0
 ;;     Version 2026.07.17
 ;; 2026/07/06 drew0
