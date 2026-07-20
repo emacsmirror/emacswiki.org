@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul 19 13:34:40 2026 (-0700)
+;; Last-Updated: Mon Jul 20 07:58:50 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10046
+;;     Update #: 10048
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -713,7 +713,7 @@
 ;;    `bmkp-last-bmenu-state-file', `bmkp-last-bookmark-file',
 ;;    `bmkp-last-save-flag-value', `bmkp-last-specific-buffer',
 ;;    `bmkp-last-specific-file', `bmkp-latest-bookmark-alist',
-;;    `bmkp-local-file-history', `bmkp-mailto-bug-report-text'
+;;    `bmkp-local-file-history', `bmkp-mailto-bug-report-text',
 ;;    (defconst), `bmkp-man-history', `bmkp-modified-bookmarks',
 ;;    `bmkp-nav-alist', `bmkp-non-file-filename',
 ;;    `bmkp-region-history', `bmkp-remote-file-history',
@@ -1749,6 +1749,9 @@ different Emacs version from that of the current session."
 ;;(@* "Internal Variables")
 ;;; Internal Variables -----------------------------------------------
 
+;; This is also in `bookmark+.el'.
+;;
+;;;###autoload (autoload 'bmkp-mailto-bug-report-text "bookmark+")
 (defconst bmkp-mailto-bug-report-text
   (format (concat "mailto:" "drew" "0000" "0001" "@gm" "ail" ".com?subject=\
 Bookmark+ bug: \
