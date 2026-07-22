@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul 20 09:07:45 2026 (-0700)
+;; Last-Updated: Tue Jul 21 17:59:48 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17338
+;;     Update #: 17376
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1662,6 +1662,24 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/07/21 drew0
+;;     Added: bmkp-bmenu-show-only-autonamed-this-buffer-bookmarks,
+;;            bmkp-bmenu-mark-((non-)annotated|non-autofile|(non-)autonamed|sequence|(un)tagged)
+;;              -bookmarks (bound to a M, a ~ M, A ~ M, # M, # ~ M, $ M, T M, T ~ M).
+;;            bmkp-bmenu-show-only((non-)annotated|non-autofile|autonamed-this-buffer|non-dir-file)
+;;              -bookmarks (bound to a S, a ~ S, # ~ S, unbound, unbound)
+;;     bookmark-bmenu-mode:
+;;       Under Mark/Unmark:
+;;         Just show type name, not verbose "Mark <type> bookmarks".
+;;         Added: (non-)annotated, non-autonamed, non-autofile, sequence, eww.
+;;       Under Hide/Show:
+;;         Added: non-(annotated|autonamed|autofile|this-buffer-lighted).  Reordered.
+;;     bmkp-bmenu-show-types-menu:
+;;       Added: (non-)(annotated|dir-file).
+;;       Moved here from *-show-menu: (this-buffer-)lighted, temporary, autonamed, autofile.
+;;     bmkp-bmenu-mark-types-menu:
+;;       Added bmkp-bmenu-mark-(un)tagged-bookmarks, non-(autonamed|autofile|annotated|sequence).
+;;       Moved here from *mark-menu: lighted, temporary, autonamed, autofile.
 ;; 2026/07/15 drew0
 ;;     Added show-only commands:
 ;;       annotated, buffer, local-file, local-non-dir, non-annotated, non-autofile, non-autonamed,
@@ -2909,6 +2927,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/21 drew0
+;;     Version 2026.07.21
 ;; 2026/07/20 drew0
 ;;     Version 2026.07.20
 ;;     Added bmkp-mailto-bug-report-text (also in bookmark+-1.el) - use it instead of hard-coded text.
