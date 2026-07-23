@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Wed Jul 15 22:25:57 2026 (-0400)
+;; Last-Updated: Thu Jul 23 13:45:20 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 256
+;;     Update #: 261
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -413,8 +413,8 @@ DOC-STRING is the doc string of the new command."
                                                                         bmkp-sort-orders-alist)))
       (setq bmkp-sort-orders-alist  (cons (cons ,sort-order ',comparer) bmkp-sort-orders-alist))
       (defun ,command ()
-        ,(concat doc-string "\nRepeating this command cycles among normal sort, reversed \
-sort, and unsorted.")
+        ,(concat doc-string "\n\nRepeating the command cycles: normal sort, reversed \
+sort, unsorted.")
         (interactive)
         (bmkp-bmenu-barf-if-not-in-menu-list)
         (cond (;; Not this sort order - make it this sort order.
