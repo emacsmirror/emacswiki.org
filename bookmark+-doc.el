@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul 17 18:14:48 2026 (-0400)
+;; Last-Updated: Thu Jul 23 14:13:54 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15550
+;;     Update #: 15553
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3121,10 +3121,11 @@
 ;;  `s g'   – Sort by Gnus thread: group, article, message.
 ;;  `s i'   – Sort by Info manual, node, position
 ;;  `s k'   – Sort by bookmark type (kind)
+;;  `s m'   – Sort by bookmark modification recency
 ;;  `s n'   – Sort by bookmark name
+;;  `s r'   – Sort by bookmark visit recency (last use date/time)
 ;;  `s t'   – Sort tagged (`t') before untagged
 ;;  `s v'   – Sort by bookmark visit frequency
-;;  `s r'   – Sort by bookmark visit recency (last use date/time)
 ;;
 ;;  You can reverse the current sort direction (ascending/descending)
 ;;  using `s R'.  Also, repeating any of the main sort-order commands
@@ -3733,7 +3734,7 @@
 ;;  ** Automatic Bookmarking **
 ;;
 ;;  You might find automatic bookmarking useful.  The idea is that
-;;  Emacs sets a bookmark for you automatically.
+;;  Emacs sets (creates or updates) a bookmark for you automatically.
 ;;
 ;;  Bookmark+ can do this either when you perform some action (besides
 ;;  explicitly bookmarking) or whenever you are idle for a given
