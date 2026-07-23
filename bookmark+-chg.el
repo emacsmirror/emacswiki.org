@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul 23 14:48:34 2026 (-0700)
+;; Last-Updated: Thu Jul 23 14:50:57 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17397
+;;     Update #: 17398
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2945,6 +2945,7 @@
 ;;
 ;; 2026/07/23 drew0
 ;;     Version 2026.07.23
+;;     bookmark-bmenu-buffer is now a defvar, not defconst, per Emacs 28+.
 ;; 2026/07/21 drew0
 ;;     Version 2026.07.21
 ;; 2026/07/20 drew0
