@@ -3535,10 +3535,11 @@ You can also change directly to one of the main sort orders
 * '''`##s g##'''' -- Sort by __G__nus thread: group, article, message.
 * '''`##s i##'''' -- Sort by __I__nfo manual, node, position
 * '''`##s k##'''' -- Sort by bookmark type (__k__ind)
+* '''`##s m##'''' -- Sort by __m__odification recency
 * '''`##s n##'''' -- Sort by bookmark __n__ame
+* '''`##s r##'''' -- Sort by visit __r__ecency
 * '''`##s t##'''' -- Sort __t__agged (`##t##') before untagged
 * '''`##s v##'''' -- Sort by __v__isit frequency
-* '''`##s r##'''' -- Sort by visit __r__ecency
 
 You can __r__everse the current sort direction (ascending/descending)
 using '''`##s R##''''.  Also, repeating any of the main sort-order commands
@@ -4219,7 +4220,7 @@ the annotation mark `a' would otherwise appear.
 == Automatic Bookmarking ==
 
 You might find automatic bookmarking useful.  The
-idea is that Emacs sets a bookmark for you automatically.
+idea is that Emacs sets (creates or updates) a bookmark for you automatically.
 
 '''Bookmark+''' can do this either when you perform some action (besides explicitly bookmarking) or whenever
 you are idle for a given period of time ([[option]]
