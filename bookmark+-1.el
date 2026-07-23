@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul 20 07:58:50 2026 (-0700)
+;; Last-Updated: Thu Jul 23 14:43:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10048
+;;     Update #: 10100
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -618,9 +618,9 @@
 ;;    `bmkp-marked-bookmark-p', `bmkp-marked-bookmarks-only',
 ;;    `bmkp-marked-cp', `bmkp-maybe-save-bookmarks',
 ;;    `bmkp-modified-bookmark-p', `bmkp-modified-cp',
-;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
-;;    `bmkp-names-same-bookmark-p', `bmkp-navlist-bookmark-p',
-;;    `bmkp-new-bookmark-default-names',
+;;    `bmkp-modified-more-recently-cp', `bmkp-msg-about-sort-order',
+;;    `bmkp-multi-sort', `bmkp-names-same-bookmark-p',
+;;    `bmkp-navlist-bookmark-p', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-non-annotated-alist-only', `bmkp-non-autofile-alist-only',
 ;;    `bmkp-non-autonamed-alist-only', `bmkp-non-dir-file-alist-only',
 ;;    `bmkp-non-dir-file-bookmark-p', `bmkp-non-invokable-alist-only',
@@ -730,13 +730,14 @@
 ;;              have been REDEFINED HERE:
 ;;
 ;;    `bookmark-default-annotation-text', `bookmark-delete',
+;;    `bookmark-edit-annotation-confirm',
 ;;    `bookmark-edit-annotation-mode', `bookmark-insert',
 ;;    `bookmark-insert-annotation',
 ;;    `bookmark-insert-current-bookmark', `bookmark-insert-location',
 ;;    `bookmark-jump', `bookmark-jump-other-frame',
 ;;    `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
-;;    `bookmark-send-edited-annotation', `bookmark-set',
+;;    `bookmark-send-edited-annotation' (Emacs <29), `bookmark-set',
 ;;    `bookmark-set-name', `bookmark-yank-word'.
 ;;
 ;;
@@ -1533,9 +1534,9 @@ undecided.  A nil value means that the next PRED decides (or
 FINAL-PRED, if there is no next PRED).
 
 Thus, a PRED is a special kind of predicate that indicates either a
-boolean value (as a singleton list) or \"I cannot decide - let the
-next guy else decide\".  (Essentially, each PRED is a hook function
-that is run using `run-hook-with-args-until-success'.)
+boolean value (as a singleton list) or \"I can't decide - let the next
+guy decide\".  (Essentially, each PRED is a hook function that is run
+using `run-hook-with-args-until-success'.)
 
 Examples:
 
@@ -1662,8 +1663,8 @@ use either \\[customize] or command `bmkp-temporary-bookmarking-mode'."
   "*`bmkp-sort-comparer' value for cycling this-file/buffer bookmarks.
 Use bookmarks for the currently visited file or (non-file) buffer.
 Some values you might want to use: ((bmkp-position-cp)),
- ((bmkp-bookmark-creation-cp)), ((bmkp-visited-more-often-cp)),
- ((bmkp-visited-more-recently-cp)).
+ ((bmkp-bookmark-creation-cp)), ((bmkp-modified-more-recently-cp)),
+ ((bmkp-visited-more-recently-cp)), ((bmkp-visited-more-often-cp)).
 See `bmkp-sort-comparer'."
   :type '(choice
           (const    :tag "None (do not sort)" nil)
@@ -1969,6 +1970,9 @@ except for the following differences.
 
  TIME-LAST-VISITED is an Emacs time representation, returned by
  `current-time'.
+
+ \"Visited\" here just means used, in the sense of \"jumped to\"; it
+ applies to bookmarks of all types, not just those with a destination.
 
 3. The buffer name is recorded, using entry `buffer-name'.  It need
 not be associated with a file.
@@ -2431,8 +2435,10 @@ annotations."
 ;;
 ;;;###autoload (autoload 'bookmark-insert-annotation "bookmark+")
 (defun bookmark-insert-annotation (bookmark)
-  "Insert annotation for BOOKMARK.
+  "Insert at point the annotation for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
+  (unless (bookmark-get-bookmark bookmark t) ; Emacs 27+
+    (error "Invalid bookmark: %s" bookmark))
   (setq bookmark  (bmkp-bookmark-name-from-record (bmkp-get-bookmark-in-alist bookmark)))
   (insert (funcall (if (boundp 'bookmark-edit-annotation-text-func)
                        bookmark-edit-annotation-text-func
@@ -2449,22 +2455,29 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; 3. Corrected typo in doc string: *send-EDITED-*.
 ;; 4. Need to use `eval', to pick up option value and reset parent keymap.
 ;; 5. Bind `C-x C-q' to `bmkp-show-this-annotation-read-only'.
+;; 6. Be able to use also with Emacs versions < Emacs 27.
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation-mode "bookmark+")
 (eval
  `(progn
-   ;; Get rid of default parent, so `bmkp-annotation-modes-inherit-from' is used for the map.
-   (when (keymapp bookmark-edit-annotation-mode-map)
-     (set-keymap-parent bookmark-edit-annotation-mode-map nil))
-   (define-derived-mode bookmark-edit-annotation-mode ,bmkp-annotation-modes-inherit-from
-       "Edit Bookmark Annotation"
-     "Mode for editing the annotation of a bookmark.
-When you have finished composing, use `C-c C-M-c'.
+    ;; Get rid of default parent, so `bmkp-annotation-modes-inherit-from' is used for the map.
+    (when (keymapp bookmark-edit-annotation-mode-map)
+      (set-keymap-parent bookmark-edit-annotation-mode-map nil))
+    (define-derived-mode bookmark-edit-annotation-mode ,bmkp-annotation-modes-inherit-from
+      "Edit Bookmark Annotation"
+      "Mode for editing the annotation of a bookmark.
+\\<bookmark-edit-annotation-mode-map>\
+When done editing, use `\\[bookmark-edit-annotation-confirm]' to confirm or (Emacs 27+)
+`\\[bookmark-edit-annotation-cancel]' to cancel.
 
 \\{bookmark-edit-annotation-mode-map}")
     (define-key bookmark-edit-annotation-mode-map "\C-x\C-q"    'bmkp-show-this-annotation-read-only)
     ;; Define this key because Org mode co-opts `C-c C-c' as a prefix key.
-    (define-key bookmark-edit-annotation-mode-map "\C-c\C-\M-c" 'bookmark-send-edited-annotation)))
+    (define-key bookmark-edit-annotation-mode-map "\C-c\C-\M-c" (if (fboundp 'bookmark-edit-annotation-confirm)
+                                                                    'bookmark-edit-annotation-confirm
+                                                                  'bookmark-send-edited-annotation))
+    (when (fboundp 'bookmark-edit-annotation-cancel) ; Emacs 29+
+      (define-key bookmark-edit-annotation-mode-map "\C-c\C-k" 'bookmark-edit-annotation-cancel))))
 
 (define-derived-mode bookmark-show-annotation-mode bookmark-edit-annotation-mode
     "Show Bookmark Annotation"
@@ -2483,8 +2496,12 @@ When you have finished composing, use `C-c C-M-c'.
 ;; 4. Make sure it's the annotation buffer that gets killed.
 ;; 5. Delete window also, if `misc-cmds.el' loaded.
 ;;
+(defalias 'bookmark-send-edited-annotation 'bookmark-edit-annotation-confirm) ; Keep the alias.
+(when (fboundp 'bookmark-edit-annotation-confirm)
+  (bmkp-make-obsolete 'bookmark-send-edited-annotation 'bookmark-edit-annotation-confirm "29.1"))
+;;;###autoload (autoload 'bookmark-edit-annotation-confirm "bookmark+")
 ;;;###autoload (autoload 'bookmark-send-edited-annotation "bookmark+")
-(defun bookmark-send-edited-annotation () ; Bound to `C-c C-M-c' in `bookmark-edit-annotation-mode'.
+(defun bookmark-edit-annotation-confirm () ; Bound to `C-c C-M-c' in `bookmark-edit-annotation-mode'.
   "Use buffer contents as annotation for a bookmark.
 Lines beginning with `#' are ignored."
   (interactive)
@@ -2601,7 +2618,8 @@ strings in the record enough.
 
 Non-nil POSITION means record it, not point, as the `position' entry.
 
-Non-nil VISITS means record it as the `visits' entry.
+Non-nil VISITS means record VISITS as the `visits' entry, and records
+the current time as the `last-visited' entry.
 
 Non-nil NO-REGION means do not include the region end, `end-position'."
   (unless (> emacs-major-version 23) (setq no-context  nil))
@@ -2644,7 +2662,7 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
 ;; as property `bmkp-full-record'.
 ;;
 (defun bookmark-alist-from-buffer (&optional do-not-propertize-p)
-  "Read and return a bookmark list (in any format) from the current buffer.
+  "Read and return a bookmark list from the current buffer.
 Unless optional arg DO-NOT-PROPERTIZE-P is non-nil, put the full
 bookmark record on the bookmark name (in the record), as a text
 property.  Point is irrelevant and unaffected."
@@ -2653,9 +2671,11 @@ property.  Point is irrelevant and unaffected."
                  (if (search-forward bookmark-end-of-version-stamp-marker nil t)
                      (condition-case err
                          (read (current-buffer))
-                       (error (error "Cannot read definitions in bookmark file:  %s"
+                       (error (error "Cannot read definitions in %s %s:  %s"
+                                     (if buffer-file-name "file" "buffer")
+                                     (or buffer-file-name (buffer-name))
                                      (error-message-string err))))
-                   ;; Else we're dealing with format version 0
+                   ;; Else we're dealing with old format, version 0
                    (if (search-forward "(" nil t)
                        (progn (forward-char -1)
                               (condition-case err
@@ -7965,6 +7985,29 @@ If either is a record then it need not belong to `bookmark-alist'."
           (m1           '(t))
           (m2           '(nil))
           (t            nil))))
+
+(when (fboundp 'bookmark-update-last-modified) ; Emacs 29+
+  (defun bmkp-modified-more-recently-cp (b1 b2)
+    "True if bookmark B1 was modified more recently than B2.
+Return nil if incomparable as described.
+
+True also if B1 was modified but B2 was not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+    (setq b1  (bmkp-get-bookmark b1)
+          b2  (bmkp-get-bookmark b2))
+    (let ((v1  (bmkp-get-last-modified b1))
+          (v2  (bmkp-get-last-modified b2)))
+      (cond ((and v1 v2)
+             (cond ((time-less-p v2 v1)  '(t))
+                   ((time-less-p v1 v2)  '(nil))
+                   (t          nil)))
+            (v1                '(t))
+            (v2                '(nil))
+            (t                 nil)))))
 
 (defun bmkp-tagged-cp (b1 b2)
   "True if bookmark B1 is tagged and bookmark B2 is not.
