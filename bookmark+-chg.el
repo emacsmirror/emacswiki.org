@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul 21 17:59:48 2026 (-0700)
+;; Last-Updated: Thu Jul 23 14:48:34 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17376
+;;     Update #: 17397
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,16 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/07/23 drew0
+;;     Added: bmkp-modified-more-recently-cp.  Mention in bmkp-this-file/buffer-cycle-sort-comparer doc.
+;;     bookmark-alist doc string:
+;;       Mention that "visit" here just means jump - not necessarily about a destination.
+;;     bookmark-insert-annotation: Error if invalid bookmark.
+;;     bookmark-edit-annotation-mode-map: Updated to support Emacs 27+ as well as earlier.
+;;     Renamed my bookmark-send-edited-annotation to bookmark-edit-annotation-confirm.
+;;       Keep old name as alias, for Emacs < 29.
+;;     bookmark-make-record-default: Improved doc string wrt VISITS arg.
+;;     bookmark-alist-from-buffer: Error msg for buffer as well as file.
 ;; 2026/07/20 drew0
 ;; Added defconst bmkp-mailto-bug-report-text.
 ;; bmkp-send-bug-report, bmkp-eww-auto-bookmark-mode, bmkp-automatic-bookmark-mode,
@@ -1662,6 +1672,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/07/23 drew0
+;;     Added: bmkp-bmenu-sort-by-modification-recency.  Bound to s m.
+;;     bookmark-bmenu-mode: Updated doc string to include bmkp-bmenu-sort-by-modification-recency.
+;;     bmkp-bmenu-sort-by-bookmark-visit-* doc strings: Say that "visits" doesn't imply a destination.
 ;; 2026/07/21 drew0
 ;;     Added: bmkp-bmenu-show-only-autonamed-this-buffer-bookmarks,
 ;;            bmkp-bmenu-mark-((non-)annotated|non-autofile|(non-)autonamed|sequence|(un)tagged)
@@ -2852,6 +2866,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2026/07/23 drew0
+;;     bmkp-define-sort-command: Typo.
 ;; 2026/07/15 drew0
 ;;     bmkp-define-show-only-command:
 ;;       Append to command's doc string: if use outside *Bookmark List* then jump there first.
@@ -2927,6 +2943,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/07/23 drew0
+;;     Version 2026.07.23
 ;; 2026/07/21 drew0
 ;;     Version 2026.07.21
 ;; 2026/07/20 drew0
