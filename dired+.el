@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 15:47:41 2026 (-0700)
+;; Last-Updated: Thu Jul 23 21:02:17 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14121
+;;     Update #: 14171
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -68,12 +68,14 @@
 ;;  they do, provided option `diredp-wrap-around-flag' is non-nil,
 ;;  which it is by default.  This means the following commands:
 ;;
-;;    `diredp-next-line'     - `n', `C-n', `down', `SPC'
-;;    `diredp-previous-line' - `p', `C-p', `up'
-;;    `diredp-next-dirline'  - `>'
-;;    `diredp-prev-dirline'  - `<'
-;;    `diredp-next-subdir'   - `C-M-n'
-;;    `diredp-prev-subdir'   - `C-M-p'
+;;    `diredp-next-line'        - `n', `C-n', `down', `SPC'
+;;    `diredp-previous-line'    - `p', `C-p', `up'
+;;    `diredp-next-dir-line'    - `>'
+;;    `diredp-prev-dir-line'    - `<'
+;;    `diredp-next-subdir'      - `C-M-n'
+;;    `diredp-prev-subdir'      - `C-M-p'
+;;    `diredp-next-nondir-line' - `]'
+;;    `diredp-prev-nondir-line' - `['
 ;;
 ;;
 ;;  Quick Viewing While Navigating
@@ -747,11 +749,13 @@
 ;;    `diredp-mouse-view-file', `diredp-move-file' (Emacs 24+),
 ;;    `diredp-move-files-named-in-kill-ring', `diredp-move-this-file',
 ;;    `diredp-multiple-w32-browser-recursive',
-;;    `diredp-nb-marked-in-mode-name', `diredp-next-dirline',
-;;    `diredp-next-line', `diredp-next-subdir', `diredp-omit-marked',
-;;    `diredp-omit-unmarked', `diredp-paste-add-tags-this-file',
-;;    `diredp-paste-files', `diredp-paste-replace-tags-this-file',
-;;    `diredp-prev-dirline', `diredp-previous-line',
+;;    `diredp-nb-marked-in-mode-name', `diredp-next-dir-line',
+;;    `diredp-next-line',
+;;    `diredp-next-nondir-line',`diredp-next-subdir',
+;;    `diredp-omit-marked', `diredp-omit-unmarked',
+;;    `diredp-paste-add-tags-this-file', `diredp-paste-files',
+;;    `diredp-paste-replace-tags-this-file', `diredp-prev-dir-line',
+;;    `diredp-prev-nondir-line', `diredp-previous-line',
 ;;    `diredp-prev-subdir', `diredp-print-this-file',
 ;;    `diredp-quit-window-kill' (Emacs 24+),
 ;;    `diredp-relsymlink-this-file',
@@ -820,7 +824,7 @@
 ;;    `diredp-ancestor-dirs', `diredp-apply-to-this-file',
 ;;    `diredp-bookmark', `diredp-common-ancestor-dir',
 ;;    `diredp-copy-as-kill-from-clipboard',
-;;    `diredp-create-files-non-directory-recursive',
+;;    `diredp-create-files-nondirectory-recursive',
 ;;    `diredp-define-snapshot-dired-commands-1', `diredp-delete-dups',
 ;;    `diredp-delete-if', `diredp-delete-if-not',
 ;;    `diredp-describe-file-1', `diredp-directories-within',
@@ -911,10 +915,10 @@
 ;;    `diredp-multiple-rename-menu', `diredp-multiple-search-menu',
 ;;    `diredp-navigate-menu', `diredp-recent-files-map',
 ;;    `diredp-regexp-recursive-menu', `diredp-re-no-dot',
-;;    `diredp-saved-markings', `diredp-single-bookmarks-menu',
-;;    `diredp-single-encryption-menu', `diredp-single-image-menu',
-;;    `diredp-single-move-copy-link-menu', `diredp-single-open-menu',
-;;    `diredp-single-rename-menu',
+;;    `diredp-re-nondir', `diredp-saved-markings',
+;;    `diredp-single-bookmarks-menu', `diredp-single-encryption-menu',
+;;    `diredp-single-image-menu', `diredp-single-move-copy-link-menu',
+;;    `diredp-single-open-menu', `diredp-single-rename-menu',
 ;;    `diredp-snapshot-cmd-buffer-name-format',
 ;;    `diredp--snapshot-cmd-other-win',
 ;;    `diredp--snapshot-cmd-same-win',
@@ -1072,6 +1076,12 @@
  
 ;;; Change Log:
 ;;
+;; 2026/07/23 drew0
+;;     Added: diredp-re-nondir, diredp-(next|prev)-nondir-line; bound to ] and [; added to diredp-navigate-menu.
+;;     Renamed: diredp-(next|prev)-dirline to diredp-(next|prev)-dir-line,
+;;              diredp-create-files-non-directory-recursive to diredp-create-files-nondirectory-recursive,
+;;              rename-non-directory-query to rename-nondirectory-query.  Created aliases and declared obsolete.
+;;     diredp-wrap-around-flag doc string: Mention behavior with numeric prefix arg > matches to buffer boundary.
 ;; 2026/07/19 drew0
 ;;     Dired-Plus (defgroup), diredp-send-bug-report: Updated mailto address.
 ;; 2026/06/21 drew0
@@ -2699,6 +2709,7 @@ of that nature."
                    (restore-buffer-modified-p nil)
                  (set-buffer-modified-p nil)))))))))
 
+(defvar lexical-binding)                          ; Emacs 24+
 ;; These are needed because Emacs 29 removed `lexical-let[*]'.
 ;;
 (defmacro diredp-lexlet (&rest all)
@@ -2791,7 +2802,6 @@ of that nature."
 (defvar image-dired-thumb-height)                 ; In `image-dired.el'
 (defvar image-dired-thumb-width)                  ; In `image-dired.el'
 (defvar image-dired-widget-list)                  ; In `image-dired.el'
-(defvar lexical-binding)                          ; Emacs 24+
 (defvar ls-lisp-use-insert-directory-program)     ; In `ls-lisp.el'
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
@@ -3480,7 +3490,14 @@ name and DESCRIPTION describes DRIVE."
 
 ;;;###autoload
 (defcustom diredp-wrap-around-flag t
-  "*Non-nil means Dired \"next\" commands wrap around to buffer beginning."
+  "*Non-nil means Dired \"next\" commands wrap around to buffer beginning.
+\(\"Previous\" commands wrap around to the buffer beginning.)
+
+Note: If you use a numeric prefix argument N with the command, and
+there are not N matches before the buffer end, search begins again for
+N matches from the buffer beginning.  It's not the case that it first
+moves as many matches as it can toward the end and then matches the
+remainder from the beginning.  This isn't ideal, but..."
   :type 'boolean :group 'Dired-Plus)
 
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
@@ -4420,7 +4437,7 @@ additional multi-command keys.  See `dired' (defadvice doc)."
                                                                  dired-listing-switches)))
             (select-window (minibuffer-window))
             (select-frame-set-input-focus (selected-frame))))
-;;; $$$$$$ Alternative: Could choose no-op for non-dir candidate.
+;;; $$$$$$ Alternative: Could choose no-op for nondir candidate.
 ;;;          (icicle-candidate-action-fn
 ;;;           (lambda (cand)
 ;;;             (cond ((file-directory-p cand)
@@ -6376,7 +6393,7 @@ With a prefix arg:
   (let* ((this-dir       (expand-file-name default-directory))
          (this-subdir    (diredp-this-subdir))
          (on-dir-line-p  (atom this-subdir)))
-    (unless on-dir-line-p               ; Subdir header line or non-directory file.
+    (unless on-dir-line-p               ; Subdir header line or nondirectory file.
       (setq this-subdir  (car this-subdir)))
     (unless (string= this-subdir this-dir)
       (when tear-off-p
@@ -6832,7 +6849,7 @@ calls.
 Non-nil optional arg NO-SYMLINKS-P means do not follow symbolic links.
 
 Non-nil optional arg INCLUDE-DIRS-P means include directory names
-along with the names of non-directories.
+along with the names of nondirectories.
 
 Non-nil optional arg PREDICATE must be a function that accepts a
 file-name argument.  Only files (and possibly directories) that
@@ -8715,9 +8732,9 @@ With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
-`diredp-create-files-non-directory-recursive'."
+`diredp-create-files-nondirectory-recursive'."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
-  (diredp-create-files-non-directory-recursive
+  (diredp-create-files-nondirectory-recursive
    #'dired-rename-file #'capitalize "Rename by capitalizing:" ignore-marks-p details))
 
 ;;;###autoload
@@ -8734,9 +8751,9 @@ With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
-`diredp-create-files-non-directory-recursive'."
+`diredp-create-files-nondirectory-recursive'."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
-  (diredp-create-files-non-directory-recursive
+  (diredp-create-files-nondirectory-recursive
    #'dired-rename-file #'upcase "Rename to uppercase:" ignore-marks-p details))
 
 ;;;###autoload
@@ -8753,9 +8770,9 @@ With a prefix argument, ignore all marks - include all files in this
 Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
-`diredp-create-files-non-directory-recursive'."
+`diredp-create-files-nondirectory-recursive'."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg diredp-list-file-attributes)))
-  (diredp-create-files-non-directory-recursive
+  (diredp-create-files-nondirectory-recursive
    #'dired-rename-file #'downcase "Rename to lowercase:" ignore-marks-p details))
 
 ;;;###autoload
@@ -9330,11 +9347,15 @@ When called from Lisp, optional arg DETAILS is passed to
      ;; `dired-file-marker', which only works in the current Dired directory.
      ?*)))
 
-(defvar rename-non-directory-query)
+(defvar rename-nondirectory-query)
 
-(defun diredp-create-files-non-directory-recursive (file-creator basename-constructor operation
+(defalias 'diredp-create-files-non-directory-recursive 'diredp-create-files-nondirectory-recursive)
+(diredp-make-obsolete 'diredp-create-files-non-directory-recursive
+                      'diredp-create-files-nondirectory-recursive
+                      "2026-07-23")
+(defun diredp-create-files-nondirectory-recursive (file-creator basename-constructor operation
                                                     &optional ignore-marks-p details)
-  "Apply FILE-CREATOR + BASENAME-CONSTRUCTOR to non-dir part of marked names.
+  "Apply FILE-CREATOR + BASENAME-CONSTRUCTOR to nondir part of marked names.
 Like `dired-create-files-non-directory', but act recursively on subdirs.
 
 The files acted on are those marked in the current Dired buffer, or
@@ -9346,7 +9367,7 @@ this Dired buffer and all subdirs, recursively.
 
 When called from Lisp, optional arg DETAILS is passed to
 `diredp-get-files'."
-  (let (rename-non-directory-query)
+  (let (rename-nondirectory-query)
     (dired-create-files
      file-creator
      operation
@@ -9359,7 +9380,7 @@ Type SPC or `y' to %s one file, DEL or `n' to skip to next,
 `!' to %s all remaining matches with no more questions."
                                           (downcase operation)
                                           (downcase operation))))
-                  (dired-query 'rename-non-directory-query (concat operation " `%s' to `%s'")
+                  (dired-query 'rename-nondirectory-query (concat operation " `%s' to `%s'")
                                (dired-make-relative from) (dired-make-relative to)))
                 to)))
      ;; Hard-code `*' marker, or else it will be removed in lower dirs because the code uses
@@ -9968,7 +9989,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
 (defun diredp-tag (tags &optional prefix)
   "Add tags to the file or directory named on the current line.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10029,7 +10050,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
 (defun diredp-untag (tags &optional prefix)
   "Remove some tags from the file or directory named on the current line.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10089,7 +10110,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
 (defun diredp-remove-all-tags (&optional prefix)
   "Remove all tags from the file or directory named on the current line.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10148,7 +10169,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
   "Add previously copied tags to the file or directory on the current line.
 The tags were previously copied from a file to `bmkp-copied-tags'.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10207,7 +10228,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
   "Replace tags for this file or dir with tags copied previously.
 The tags were previously copied from a file to `bmkp-copied-tags'.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10273,7 +10294,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
   "Set TAG value to VALUE for this file or directory.
 This does not change the TAG name.
 You need library `bookmark+.el' to use this function.
-The bookmark name is the non-directory portion of the file name,
+The bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Return nil for success, file name otherwise."
   (bookmark-maybe-load-default-file)
@@ -10422,7 +10443,7 @@ You need libraries `Bookmark and `highlight.el' for this command."
 ;;;###autoload
 (defun diredp-do-bookmark (&optional prefix arg) ; Bound to `M-b', menu `Multiple' > `Bookmark' > `Bookmark...'
   "Bookmark the marked (or the next prefix argument) files.
-Each bookmark name is the non-directory portion of the file name,
+Each bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Interactively, you are prompted for the PREFIX if
  `diredp-prompt-for-bookmark-prefix-flag' is non-nil.
@@ -10463,7 +10484,7 @@ Like `diredp-do-bookmark', but invoked using the mouse."
 If you use library `bookmark+.el' then the bookmark is an autofile.
 Return nil for success or the file name otherwise.
 
-The bookmark name is the (non-directory) file name, prefixed by
+The bookmark name is the (nondirectory) file name, prefixed by
  optional arg PREFIX (a string) if non-nil.
 
 FILE defaults to the file name on the current Dired line.
@@ -10509,7 +10530,7 @@ The bookmarked position is the beginning of the file.
 Jumping to the bookmark-file bookmark loads the set of file bookmarks.
 You need library `bookmark+.el' to use this command.
 
-Each bookmark name is the non-directory portion of the file name,
+Each bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Interactively, you are prompted for PREFIX if
  `diredp-prompt-for-bookmark-prefix-flag' is non-nil.
@@ -10566,7 +10587,7 @@ The marked files are bookmarked in file BFILE, but this command does
 not make BFILE the current bookmark file.  To make it current, use
 `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file').
 
-Each bookmark name is the non-directory portion of the file name,
+Each bookmark name is the nondirectory portion of the file name,
  prefixed by PREFIX if it is non-nil.
 Interactively, you are prompted for PREFIX if
  `diredp-prompt-for-bookmark-prefix-flag' is non-nil.
@@ -10844,7 +10865,7 @@ and FILE is expanded in `default-directory'."
           ;; (this-dir       default-directory)
           (this-subdir    (diredp-this-subdir))
           (on-dir-line-p  (atom this-subdir)))
-     (unless on-dir-line-p ; Subdir header line or non-directory file.
+     (unless on-dir-line-p ; Subdir header line or nondirectory line.
        (setq this-subdir  (car this-subdir)))
      (let* ((input  (read-string (format "Create file in `%s': " this-subdir)))
             (file   (expand-file-name input this-subdir)))
@@ -12008,8 +12029,8 @@ Binding variable `help-form' will help the user who types the help key."
 ;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
 ;; 1. Use `diredp-this-subdir' instead of `dired-get-filename'.
-;; 2. If on a subdir listing header line or a non-dir file in a subdir listing, go to
-;;    the line for the subdirectory in the parent directory listing.
+;; 2. If on a subdir listing header line or a nondirectory line in a subdir listing, go to the line for the
+;;    subdirectory in the parent directory listing.
 ;; 3. Prefix arg `C-u C-u' means remove all inserted subdir listings.
 ;; 4. Non-positive prefix arg means prompt for the subdir to insert.
 ;; 5. Fit one-window frame after inserting subdir.
@@ -12021,17 +12042,17 @@ Binding variable `help-form' will help the user who types the help key."
 Inserted subdirs are listed in the same positions as with `ls -lR'.
 
 This bounces you back and forth between a subdir line and its inserted
-listing header line.  Using it on a non-directory line in a subdir
+listing header line.  Using it on a nondirectory line in a subdir
 listing acts the same as using it on the subdir header line.
 
 * If on a subdir line, then go to the subdir's listing, creating it if
   not yet present.
 
-* If on a subdir listing header line or a non-directory file in a
+* If on a subdir listing header line or a nondirectory file in a
   subdir listing, then go to the line for the subdir in the parent
   directory listing.
 
-* If on a non-directory file in the top Dired directory listing, do
+* If on a nondirectory file in the top Dired directory listing, do
   nothing.
 
 A prefix arg changes the behavior, as follows:
@@ -12079,7 +12100,7 @@ subdirs.  Otherwise, the args are as for `dired-insert-subdir'."
       (diredp-remove-inserted-subdirs)
     (let ((opoint    (point)) ; No need for a marker for OPOINT, as subdir is always inserted after OPOINT.
           (filename  dirname))
-      (cond ((consp filename) ; Subdir header line or non-directory file.
+      (cond ((consp filename) ; Subdir header line or nondirectory line.
              (setq filename  (car filename))
              (if (assoc filename dired-subdir-alist)
                  (dired-goto-file filename) ;  On subdir header line.  Go to subdir line in parent listing.
@@ -12910,13 +12931,51 @@ Otherwise, just move to the buffer limit."
                  (list narg)))          ; Equivalent to "^p"
   (diredp-next-line (- (or arg  1))))
 
+
+;; (defvar diredp-re-nondir "^  [-rwxs]")) ; This might be as good?
+(defvar diredp-re-nondir (concat dired-re-maybe-mark dired-re-inode-size "[-rwxs]"))
+
 ;;;###autoload
-(defun diredp-next-dirline (arg &optional opoint) ; Bound to `>', menu `Dir' > `Navigate' > `Next Dirline'
+(defun diredp-next-nondir-line (arg &optional opoint) ; Bound to `]', menu `Dir' > `Navigate' > `Next Non-Dir Line'
+  "Goto ARGth next nondirectory line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
+  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                 (list narg)))          ; Equivalent to "^p"
+  (or opoint  (setq opoint  (point)))
+  (if (if (> arg 0)
+          (re-search-forward diredp-re-nondir nil t arg)
+        (beginning-of-line)
+        (re-search-backward diredp-re-nondir nil t (- arg)))
+      (dired-move-to-filename)
+    (if diredp-wrap-around-flag
+        (let ((diredp-wrap-around-flag  nil))
+          (goto-char (if (< arg 0) (point-max) (point-min)))
+          (diredp-next-nondir-line arg opoint))
+      (goto-char opoint)
+      (error "No more nondirectory files listed"))))
+
+;;;###autoload
+(defun diredp-prev-nondir-line (arg &optional opoint) ; Bound to `[', menu `Dir' > `Navigate' > `Previous Non-Dir Line'
+  "Goto ARGth previous nondirectory line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
+  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                 (list narg)))          ; Equivalent to "^p"
+  (diredp-next-nondir-line (- arg)))
+
+(defalias 'diredp-next-dirline 'diredp-next-dir-line)
+(diredp-make-obsolete 'diredp-next-dirline 'diredp-next-dir-line "2026-07-23")
+;;;###autoload
+(defun diredp-next-dir-line (arg &optional opoint) ; Bound to `>', menu `Dir' > `Navigate' > `Next Dir Line'
   "Goto ARGth next directory file line.
 If `diredp-wrap-around-flag' is non-nil then wrap around if none is
 found before the buffer beginning (buffer end, if ARG is negative).
-Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is nil, return
-nil."
+Otherwise, raise an error."
   (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
                  (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
                  (list narg)))          ; Equivalent to "^p"
@@ -12929,17 +12988,22 @@ nil."
     (if diredp-wrap-around-flag
         (let ((diredp-wrap-around-flag  nil))
           (goto-char (if (< arg 0) (point-max) (point-min)))
-          (diredp-next-dirline arg opoint))
+          (diredp-next-dir-line arg opoint))
       (goto-char opoint)
-      (error "No more subdirectories"))))
+      (error "No more directories in listing"))))
 
+(defalias 'diredp-prev-dirline 'diredp-prev-dir-line)
+(diredp-make-obsolete 'diredp-prev-dirline 'diredp-prev-dir-line "2026-07-23")
 ;;;###autoload
-(defun diredp-prev-dirline (arg)        ; Bound to `<', menu `Dir' > `Navigate' > `Prev Dirline'
-  "Goto ARGth previous directory file line."
+(defun diredp-prev-dir-line (arg)        ; Bound to `<', menu `Dir' > `Navigate' > `Prev Dir Line'
+  "Goto ARGth previous directory file line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
   (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
                  (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
                  (list narg)))          ; Equivalent to "^p"
-  (diredp-next-dirline (- arg)))
+  (diredp-next-dir-line (- arg)))
 
 ;;;###autoload
 (defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip)
@@ -17436,10 +17500,14 @@ If no one is selected, symmetric encryption will be performed.  "
   '(menu-item "Prev Subdir" diredp-prev-subdir :help "Go to previous subdirectory header line"))
 (define-key diredp-navigate-menu [next-subdir]
   '(menu-item "Next Subdir" diredp-next-subdir :help "Go to next subdirectory header line"))
-(define-key diredp-navigate-menu [prev-dirline]
-  '(menu-item "Prev Dirline" diredp-prev-dirline :help "Move to previous directory-file line"))
-(define-key diredp-navigate-menu [next-dirline]
-  '(menu-item "Next Dirline" diredp-next-dirline :help "Move to next directory-file line"))
+(define-key diredp-navigate-menu [prev-dir-line]
+  '(menu-item "Prev Dir Line" diredp-prev-dir-line :help "Move to previous directory line"))
+(define-key diredp-navigate-menu [next-dir-line]
+  '(menu-item "Next Dir Line" diredp-next-dir-line :help "Move to next directory line"))
+(define-key diredp-navigate-menu [prev-nondir-line]
+  '(menu-item "Prev Non Dir Line" diredp-prev-nondir-line :help "Move to previous nondirectory line"))
+(define-key diredp-navigate-menu [next-nondir-line]
+  '(menu-item "Next Non Dir Line" diredp-next-nondir-line :help "Move to next nondirectory line"))
 
 (define-key diredp-menu-bar-dir-menu [separator-subdir] '("--")) ; --------------------------
 
@@ -17582,10 +17650,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
 (substitute-key-definition 'dired-next-line 'diredp-next-line dired-mode-map)
 (substitute-key-definition 'dired-previous-line 'diredp-previous-line dired-mode-map)
-(substitute-key-definition 'dired-next-dirline 'diredp-next-dirline dired-mode-map)
-(substitute-key-definition 'dired-prev-dirline 'diredp-prev-dirline dired-mode-map)
+(substitute-key-definition 'dired-next-dirline 'diredp-next-dir-line dired-mode-map)
+(substitute-key-definition 'dired-prev-dirline 'diredp-prev-dir-line dired-mode-map)
 (substitute-key-definition 'dired-next-subdir 'diredp-next-subdir dired-mode-map)
 (substitute-key-definition 'dired-prev-subdir 'diredp-prev-subdir dired-mode-map)
+(define-key dired-mode-map "]" 'diredp-next-nondir-line)                   ; `]'
+(define-key dired-mode-map "[" 'diredp-prev-nondir-line)                   ; `['
 
 
 (define-key dired-mode-map [S-down-mouse-1] 'ignore) ; (normally `mouse-set-font')
