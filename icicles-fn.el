@@ -3,12 +3,12 @@
 ;; Filename: icicles-fn.el
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Feb 17 09:37:08 2025 (-0800)
-;;           By: dradams
-;;     Update #: 15330
+;; Last-Updated: Sun Jul 26 16:22:21 2026 (-0700)
+;;           By: drew0
+;;     Update #: 15334
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -490,28 +490,29 @@
 
 ;;; Defvars to quiet the byte-compiler:
 
-(when (< emacs-major-version 22)
-  (defvar completion-annotate-function)
-  (defvar completion-common-substring)
-  (defvar completion-extra-properties)
-  (defvar completion-list-insert-choice-function)
-  (defvar completion-root-regexp)
-  (defvar minibuffer-completing-symbol)
-  (defvar minibuffer-prompt-properties)
-  (defvar mouse-1-click-follows-link)
-  (defvar partial-completion-mode)
-  (defvar read-file-name-completion-ignore-case)
-  (defvar minibuffer-local-filename-completion-map)
-  (defvar minibuffer-local-must-match-filename-map)
-  (defvar minibuffer-local-filename-must-match-map)
-  (defvar read-file-name-predicate)
-  (defvar tooltip-mode))
+;; Emacs 23+
+(defvar completion-annotate-function)
+(defvar completion-common-substring)
+(defvar completion-extra-properties)
+(defvar completion-list-insert-choice-function)
+(defvar completion-root-regexp)
+(defvar icicle-Completions-text-scale-decrease) ; In `icicles-opt.el' (for Emacs 23+)
+(defvar minibuffer-completing-symbol)
+(defvar minibuffer-prompt-properties)
+(defvar mouse-1-click-follows-link)
+(defvar partial-completion-mode)
+(defvar read-file-name-completion-ignore-case)
+(defvar minibuffer-local-filename-completion-map)
+(defvar minibuffer-local-must-match-filename-map)
+(defvar minibuffer-local-filename-must-match-map)
+(defvar read-file-name-predicate)
+(defvar tooltip-mode)
 
-(when (< emacs-major-version 23)
-  (defvar completion--embedded-envvar-re) ; In `minibuffer.el'.
-  (defvar completion-styles)            ; In `minibuffer.el'
-  (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23+)
+;; Emacs 24+
+(defvar completion--embedded-envvar-re) ; In `minibuffer.el'.
+(defvar completion-styles)            ; In `minibuffer.el'
 
+;; All versions
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
 (defvar crm-local-completion-map)       ; In `crm.el'
 (defvar crm-local-must-match-map)       ; In `crm.el'
@@ -8190,7 +8191,7 @@ Use `face-attribute' for finer control."
     (let ((icicle-list-use-nth-parts  '(1)))
       (setq face  (icicle-transform-multi-completion face))))
   (when (stringp face) (setq face  (intern face)))
-  (if (> emacs-major-version 21)
+  (if (> emacs-major-version 23)
       (face-bold-p face frame inherit)
     (face-bold-p face frame)))
 
