@@ -3,12 +3,12 @@
 ;; Filename: icicles-mcmd.el
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Feb 17 11:23:11 2025 (-0800)
-;;           By: dradams
-;;     Update #: 19888
+;; Last-Updated: Sun Jul 26 16:13:44 2026 (-0700)
+;;           By: drew0
+;;     Update #: 19898
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -493,19 +493,36 @@
 
 ;; Some defvars to quiet byte-compiler a bit:
 
-(when (< emacs-major-version 22)
-  (defvar icomplete-mode)               ; In `icomplete.el'
-  (defvar icicle-Info-highlight-visited-nodes) ; In `icicles-opt.el' (for Emacs 22+)
-  (defvar read-file-name-completion-ignore-case) ; In `minibuffer.el'
-  (defvar read-file-name-predicate)
-  (defvar tooltip-mode))
+;; Emacs 21
+(defvar icomplete-mode)                      ; In `icomplete.el'
+(defvar icicle-Info-highlight-visited-nodes) ; In `icicles-opt.el' (for Emacs 22+)
+(defvar read-file-name-completion-ignore-case) ; In `minibuffer.el'
+(defvar read-file-name-predicate)
+(defvar tooltip-mode)
 
-(when (< emacs-major-version 23)
-  (defvar completion-styles)            ; In `minibuffer.el'
-  (defvar icicle-completion-style-sets) ; In `icicles-opt.el'
-  (defvar mouse-drag-copy-region)
-  (defvar read-buffer-completion-ignore-case))
+;; Emacs 21+
+(defvar recentf-list)                   ; In `recentf.el' (Emacs 21+).
 
+;; Emacs 22
+(defvar icicle-completion-style-sets)   ; In `icicles-opt.el'
+(defvar overriding-map-is-bound)        ; In Emacs 22-23.
+(defvar saved-overriding-map)           ; In Emacs 22-23.
+(defvar universal-argument-num-events)  ; Emacs 22-24.3.
+
+;; Emacs 22+
+(defvar completion-styles)              ; In `minibuffer.el'
+(defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
+(defvar minibuffer-local-must-match-filename-map) ; In Emacs 22+.
+(defvar mouse-drag-copy-region)
+(defvar read-buffer-completion-ignore-case)
+
+;; Emacs 23
+(defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
+(defvar overriding-map-is-bound)        ; In Emacs 22-23.
+(defvar saved-overriding-map)           ; In Emacs 22-23.
+(defvar universal-argument-num-events)  ; Emacs 22-24.3.
+
+;; Emacs 23+
 (defvar completion-base-position)       ; Emacs 23.2+.
 (defvar count)                          ; Here.
 (defvar doremi-boost-down-keys)         ; In `doremi.el'
@@ -514,18 +531,13 @@
 (defvar doremi-up-keys)                 ; In `doremi.el'
 (defvar filesets-data)                  ; In `filesets.el'.
 (defvar icicle-cand-preds)              ; Here.
+(defvar icicle-completion-style-sets)   ; In `icicles-opt.el'
 (defvar icicle-ido-like-mode)           ; In `icicles-cmd2.el' (implicit)
 (defvar icicle-Info-hist-list)          ; In `icicles-cmd2.el'
 (defvar ignore-comments-flag)           ; In `hide-comnt.el'.
 (defvar minibuffer-confirm-exit-commands) ; In `minibuffer.el' in Emacs 23+.
-(defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
-(defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
-(defvar minibuffer-local-must-match-filename-map) ; In Emacs 22+.
-(defvar overriding-map-is-bound)        ; In Emacs 22-23.
-(defvar recentf-list)                   ; In `recentf.el' (Emacs 21+).
-(defvar saved-overriding-map)           ; In Emacs 22-23.
+(defvar read-buffer-completion-ignore-case)
 (defvar to-insert)                      ; Here.
-(defvar universal-argument-num-events)  ; Emacs 22-24.3.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
