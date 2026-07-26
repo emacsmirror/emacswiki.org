@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 25 17:57:16 2026 (-0700)
+;; Last-Updated: Sun Jul 26 09:17:48 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14289
+;;     Update #: 14293
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1079,6 +1079,8 @@
  
 ;;; Change Log:
 ;;
+;; 2026/07/26 drew0
+;;     diredp-do-query-replace-regexp-recursive: copy-paste typo.
 ;; 2026/07/25 drew0
 ;;     Updated through Emacs 30.2.  Cleanup for 30.2 byte-compiler.
 ;;     Added Emacs 30+ versions of diredp-(next|prev)-((non)dir-line|subdir).
@@ -1859,7 +1861,7 @@
 ;;       Updated to fit change to dired-read-dir-and-switches made 2015/02/02: addition of READ-EXTRA-FILES-P.
 ;;       Use prefix arg to prompt for switches.
 ;; 2015/05/31 dadams
-;;     Added: diredp-image-show-this-file,diredp-image-show-this-file-use-frame-flag, diredp-get-image-filename.
+;;     Added: diredp-image-show-this-file, diredp-image-show-this-file-use-frame-flag, diredp-get-image-filename.
 ;;     image-dired-dired-toggle-marked-thumbs, diredp-menu-bar-immediate-menu [image]:
 ;;       Use diredp-get-image-filename.
 ;;     Bound diredp-image-show-this-file to C-t I.
@@ -5072,7 +5074,7 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
 ;;;###autoload
 (defun diredp-image-show-this-file (&optional arg) ; Menu `Single' > `Image' > `Display Full Size Or Smaller'
   "Show the image file named on this line in another frame or window.
-Option `diredp-image-show-this-file-use-frame-flag' which is used.
+See option `diredp-image-show-this-file-use-frame-flag'.
 
 With a prefix arg, shrink the image to fit a frame that many lines
 high or a window at least that many lines high.
@@ -7859,7 +7861,7 @@ When called from Lisp, optional arg DETAILS is passed to
     (if (< emacs-major-version 27)
         (tags-query-replace from to delimited `',files)
       (when (fboundp 'dired-post-do-command) (dired-post-do-command)) ; Emacs 30+
-      (fileloop-initialize-replace from to dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
+      (fileloop-initialize-replace from to files (and (not (equal from (downcase from)))  'default) delimited)
       (fileloop-continue))))
 
 ;;;###autoload
