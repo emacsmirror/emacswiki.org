@@ -3,12 +3,12 @@
 ;; Filename: icicles-mode.el
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Mon Feb 17 11:27:20 2025 (-0800)
-;;           By: dradams
-;;     Update #: 10298
+;; Last-Updated: Sun Jul 26 16:12:51 2026 (-0700)
+;;           By: drew0
+;;     Update #: 10300
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2088,7 +2088,6 @@ Used on `pre-command-hook'."
              (define-key diredp-menu-bar-recursive-marked-menu [icicles]
                (list 'menu-item "Icicles" icicle-dired-recursive-marked-menu-map
                      :visible 'icicle-mode))))
-
           (t
            (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
              "`Icicles' > `Dired Marked' submenu, in Dired mode.")
