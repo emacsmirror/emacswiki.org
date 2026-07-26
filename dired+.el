@@ -3,14 +3,14 @@
 ;; Filename: dired+.el
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1999-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 25 17:48:55 2026 (-0700)
+;; Last-Updated: Sat Jul 25 17:57:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14287
+;;     Update #: 14289
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
