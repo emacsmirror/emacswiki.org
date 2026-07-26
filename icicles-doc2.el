@@ -3,12 +3,12 @@
 ;; Filename: icicles-doc2.el
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Dec 25 10:40:27 2024 (-0800)
-;;           By: dradams
-;;     Update #: 30087
+;; Last-Updated: Sun Jul 26 16:29:19 2026 (-0700)
+;;           By: drew0
+;;     Update #: 30088
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
