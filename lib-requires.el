@@ -3,14 +3,14 @@
 ;; Filename: lib-requires.el
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 2004-2026, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 16:00:57 2026 (-0700)
+;; Last-Updated: Sat Jul 25 17:52:01 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 761
+;;     Update #: 764
 ;; URL: https://www.emacswiki.org/emacs/download/lib-requires.el
 ;; Doc URL: https://emacswiki.org/emacs/LibraryDependencies
 ;; Keywords: libraries, files
@@ -45,6 +45,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/07/25 drew0
+;;     libreq-insert-lib-requires-as-comment: backward-delete-char 2 -> delete-char -2.
 ;; 2012/02/08 dadams
 ;;     libreq-remove-duplicates: Redefined to use a hash table.
 ;; 2011/01/04 dadams
@@ -268,7 +270,7 @@ See also `libreq-requires-list' and `libreq-requires-tree'."
         (let ((beg (point))
               (fill-column (- fill-column 4)))
           (mapc (lambda (feat) (insert (format "`%s', " feat))) requires)
-          (backward-delete-char 2)
+          (delete-char -2)
           (insert ".\n")
           (let ((left-margin 2)) (fill-region-as-paragraph beg (point)))
           (comment-region beg (point) 2))
