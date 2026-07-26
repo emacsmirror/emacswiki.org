@@ -3,14 +3,14 @@
 ;; Filename: showkey.el
 ;; Description: Show keys as you use them.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2014-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 16:16:05 2026 (-0700)
+;; Last-Updated: Sat Jul 25 17:52:22 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 165
+;;     Update #: 168
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
@@ -100,6 +100,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2025/07/25 drew0
+;;     showkey-log: backward-delete-char 1 -> delete-char -1.
 ;; 2022/06/25 dadams
 ;;     showkey-(tooltip|log)-mode: Removed optional args for define-minor-mode - use only keywords.
 ;; 2018/02/10 dadams
@@ -397,7 +399,7 @@ See also minor mode `showkey-tooltip-mode'."
                                 (if (looking-at "^\[[0-9]+\]")
                                     (replace-match (format "[%d]" showkey-nb-consecutives))
                                   (insert (format "[%d]" showkey-nb-consecutives))))
-                              (backward-delete-char 1)) ; the \n
+                              (delete-char -1)) ; the \n
                              (t
                               (setq showkey-nb-consecutives  1)
                               (insert cmd-desc)))))
