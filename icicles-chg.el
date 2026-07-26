@@ -3,12 +3,12 @@
 ;; Filename: icicles-chg.el
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 2005-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Feb 17 12:25:49 2025 (-0800)
-;;           By: dradams
-;;     Update #: 11952
+;; Last-Updated: Sun Jul 26 16:01:44 2026 (-0700)
+;;           By: drew0
+;;     Update #: 11961
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -10309,6 +10309,7 @@
 ;; 2005/07/15 dadams
 ;;     Renamed: icicle-completion-help+ to icicle-completion-help.
 ;;     Replaced: icicle-delete-lines by icicle-erase-minibuffer.
+;;     choose-completion-string, completion-setup-function: Updated for Emacs 21+.
 ;;     icicle-next-candidate:
 ;;       Wrapped display-* and re-search-forward in condition-case.  Use icicle-place-overlay.
 ;;     Changed icicle-completion-help bindings to [f1].
@@ -10370,6 +10371,7 @@
 ;;     Updated to work in Emacs 21 (and 20):
 ;;       next-default-input uses delete-minibuffer-contents for 21, but erase-buffer for 20.
 ;;       minibuffer-completion-help+: bind inhibit-read-only to t around erase-buffer.
+;;     Only redefine choose-completion-string if prior to Emacs 21.
 ;; 2001/01/10 dadams
 ;;     Protected remove-windows-on via fboundp.
 ;; 1999/09/03 dadams
@@ -10381,6 +10383,10 @@
 ;; 1999/04/13 dadams
 ;;     Bound delete-lines to M-S-DEL and M-S-backspace.
 ;; 1999/03/17 dadams
+;;     choose-completion-string:
+;;       Added doc string.  Updated to correspond to Emacs 34.1.
+;;     completion-setup-function: diff prompt setups.  face1 & face2 tests.
+;;     Added: switch-to-completions.
 ;;     protect calls with test fboundp.
 ;; 1996/04/26 dadams
 ;;     Put escaped newlines on long-line strings.
@@ -10425,22 +10431,6 @@
 ;;         *Completions*.
 ;;     Log for functions that were previously in simple+.el:
 ;;       choose-completion-string, completion-setup-function, switch-to-completions.
-;; 2005/07/28 dadams
-;;     completion-setup-function:
-;;       Renamed icicle-completing-read-prompt-suffix to icicle-prompt-suffix.
-;; 2005/07/15 dadams
-;;     choose-completion-string, completion-setup-function: Updated for Emacs 21+.
-;; 2005/07/10 dadams
-;;     Renamed: command-calling-for-completion to icicle-cmd-calling-for-completion.
-;; 2004/09/21 dadams
-;;     Only redefine choose-completion-string if prior to Emacs 21.
-;; 1999/03/17 dadams
-;;     choose-completion-string:
-;;       Added doc string.  Updated to correspond to Emacs 34.1.
-;;     completion-setup-function: diff prompt setups.  face1 & face2 tests.
-;;     Added: switch-to-completions.
-;; 1996/04/26 dadams
-;;     Put escaped newlines on long-line strings.
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd.el'" - Deprecated file)
 ;;
