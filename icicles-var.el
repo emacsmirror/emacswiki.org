@@ -3,12 +3,12 @@
 ;; Filename: icicles-var.el
 ;; Description: Internal variables for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Mon Feb 17 12:14:09 2025 (-0800)
-;;           By: dradams
-;;     Update #: 1909
+;; Last-Updated: Sun Jul 26 16:09:49 2026 (-0700)
+;;           By: drew0
+;;     Update #: 1912
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
