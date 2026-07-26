@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 23 21:02:17 2026 (-0700)
+;; Last-Updated: Sat Jul 25 17:48:55 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14171
+;;     Update #: 14287
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -890,7 +890,10 @@
 ;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp--to-wdired-mode-advice' (Emacs
-;;    24+), `diredp--turn-on-breadcrumbs-if-dired' (Emacs 22+),
+;;    24+), `diredp--trivial-next-dir-line' (Emacs 30+),
+;;    `diredp--trivial-next-line-re' (Emacs 30+),
+;;    `diredp--trivial-next-nondir-line' (Emacs 30+),
+;;    `diredp--turn-on-breadcrumbs-if-dired' (Emacs 22+),
 ;;    `diredp-untag', `diredp-visit-ignore-regexp',
 ;;    `diredp-y-or-n-files-p'.
 ;;
@@ -1076,6 +1079,20 @@
  
 ;;; Change Log:
 ;;
+;; 2026/07/25 drew0
+;;     Updated through Emacs 30.2.  Cleanup for 30.2 byte-compiler.
+;;     Added Emacs 30+ versions of diredp-(next|prev)-((non)dir-line|subdir).
+;;     Added: diredp--trivial-next-line-re, diredp--trivial-next-nondir-line, diredp-next-nondir-line,
+;;            diredp-prev-nondir-line.
+;;     Replaced dired-move-to-filename-regexp with directory-listing-before-filename-regexp nearly everywhere.  E.g.:
+;;      diredp-font-lock-keywords-1, diredp-mark-sexp-recursive, dired-mark-sexp.
+;;     diredp-image-show-this-file:
+;;      Removed second arg to image-dired-display-image. FIXME: Still need to shrink image to fit frame.
+;;     diredp-read-include/exclude: memq -> string=.
+;;     diredp-do-query-replace-regexp-recursive: Use fileloop* (Emacs 27+) and  dired-post-do-command (Emacs 30+).
+;;     diredp-change-marks, diredp--read-unique-displayable-chars: ?\r -> ?\\r in doc string.
+;;     diredp-read-expression: Added doc string and set-syntax-table.  Removed eldoc stuff for Emacs 28+.
+;;     dired-buffers-for-dir, diredp-all-files: Replaced dired-in-this-tree with dired-in-this-tree-p.
 ;; 2026/07/23 drew0
 ;;     Added: diredp-re-nondir, diredp-(next|prev)-nondir-line; bound to ] and [; added to diredp-navigate-menu.
 ;;     Renamed: diredp-(next|prev)-dirline to diredp-(next|prev)-dir-line,
@@ -2743,6 +2760,7 @@ of that nature."
 (defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
 (defvar bookmark-default-file)                    ; In `bookmark.el'
+(defvar bookmark-make-record-function)            ; In `bookmark.el'
 (defvar compilation-current-error)                ; In `compile.el'
 (defvar delete-by-moving-to-trash)                ; Built-in, Emacs 23+
 (defvar dired-always-read-filesystem)             ; In `dired.el', Emacs 26+
@@ -2750,6 +2768,7 @@ of that nature."
 (defvar dired-create-files-failures)              ; In `dired-aux.el', Emacs 22+
 (defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
+(defvar dired-move-to-filename-regexp)            ; In `dired.el', < Emacs 22
 (defvar dired-omit-mode)                          ; In `dired.el', Emacs 22+
 (defvar dired-overwrite-confirmed)                ; In `dired-aux.el'
 (defvar dired-query-alist)                        ; In `dired-aux.el', Emacs < 24
@@ -2775,12 +2794,21 @@ of that nature."
 (defvar diredp-single-bookmarks-menu)             ; Here, if Bookmark+ is available
 (defvar diredp--this-dired-mode-name)             ; Here, Emacs 24+
 (defvar filesets-data)                            ; In `filesets.el'
+(defvar fit-frame-inhibit-fitting-flag)           ; In `fit-frame.el'
+(defvar fit-frame-min-height)                     ; In `fit-frame.el'
+(defvar fit-frame-min-width)                      ; In `fit-frame.el'
 (defvar font-lock-mode)                           ; In `fontcore.el'
 (defvar grep-command)                             ; In `grep.el'
+(defvar grep-find-ignored-directories)            ; In `grep.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
 (defvar header-line-format)                       ; Emacs 22+
+(defvar icicle-all-candidates-list-alt-action-fn) ; In `icicles-var.el'
+(defvar icicle-candidate-action-fn)               ; In `icicles-var.el'
 (defvar icicle-candidate-alt-action-fn)           ; In `icicles-var.el'
+(defvar icicle-candidate-help-fn)                 ; In `icicles-var.el'
 (defvar icicle-default-value)                     ; In `icicles-opt.el'
+(defvar icicle-extra-candidates)                  ; In `icicles-var.el'
+(defvar icicle-delete-candidate-object)           ; In `icicles-var.el
 (defvar icicle-file-completing-p)                 ; In `icicles-var.el'
 (defvar icicle-file-extras)                       ; In `icicles-opt.el'
 (defvar icicle-file-match-regexp)                 ; In `icicles-opt.el'
@@ -2791,10 +2819,15 @@ of that nature."
 ;; $$$$ (defvar icicle-file-sort-first-time-p)      ; In `icicles-var.el'
 (defvar icicle-files-ido-like-flag)               ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
+(defvar icicle-must-match-regexp)                 ; In `icicles-var.el'
+(defvar icicle-must-not-match-regexp)             ; In `icicles-var.el'
+(defvar icicle-must-pass-after-match-predicate)   ; In `icicles-var.el'
+(defvar icicle-require-match-flag)                ; In `icicles-opt.el'
 (defvar icicle-show-Completions-initially-flag)   ; In`icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
 (defvar icicle-sort-orders-alist)                 ; In `icicles-opt.el'
 (defvar icicle-top-level-when-sole-completion-flag) ; In `icicles-opt.el'
+(defvar icicle-transform-function)                ; In `icicles-var.el'
 (defvar image-dired-display-image-buffer)         ; In `image-dired.el'
 (defvar image-dired-line-up-method)               ; In `image-dired.el'
 (defvar image-dired-main-image-directory)         ; In `image-dired.el'
@@ -2805,6 +2838,7 @@ of that nature."
 (defvar ls-lisp-use-insert-directory-program)     ; In `ls-lisp.el'
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
+(defvar minibuffer-completing-symbol)             ; In `simple.el', Emacs < 29
 (defvar pp-read-expression-map)                   ; In `pp+.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
 (defvar recentf-case-fold-search)                 ; In `recentf.el'
@@ -3093,7 +3127,7 @@ Use \\[dired-hide-all] to (un)hide all directories."
         (dired-next-subdir 1 t))))
 
   ;; Emacs 27.1 `dired-aux.el'
-  (defun dired-hide-all (&optional ignored) ; Menu `Dir' > `Hide/Show' > `Hide/Show All Subdirs''
+  (defun dired-hide-all (&optional _ignored) ; Menu `Dir' > `Hide/Show' > `Hide/Show All Subdirs''
     "Hide all subdirectories, leaving only their header lines.
 If there is already something hidden, make everything visible again.
 Use \\[dired-hide-subdir] to (un)hide a particular subdirectory."
@@ -5065,7 +5099,8 @@ Note:
                                                           special-display-buffer-names)
                                                   special-display-buffer-names)))
             (display-buffer image-dired-display-image-buffer)
-            (image-dired-display-image img-file (not arg))))
+            (unless (condition-case nil (image-dired-display-image img-file (not arg)) (error nil))
+              (image-dired-display-image img-file)))) ; Emacs 29+: FIXME: how to shrink image to fit frame?
       (message "No image file here")))) ; An error is handled by `diredp-get-image-filename'.
 
 (defun diredp-report-file-result (file result failure echop)
@@ -5320,24 +5355,24 @@ This means file names that match regexp `diredp-omit-files-font-lock-regexp'.
    '("\\([^ ]+\\) -> .+$" 1 diredp-symlink)         ; Symbolic links
 
    ;; 1) Date/time and 2) filename w/o suffix.
-   ;;    This is a bear, and it is fragile - Emacs can change `dired-move-to-filename-regexp'.
+   ;;    This is a bear, and it is fragile - Emacs can change `directory-listing-before-filename-regexp'.
    (if (or (not (fboundp 'version<))  (version< emacs-version "23.2"))
-       (list dired-move-to-filename-regexp
+       (list directory-listing-before-filename-regexp
              (list 1 'diredp-date-time t t) ; Date/time
              (list (concat "\\(.+\\)\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions)
                                                  "\\)[*]?$")) ; Compressed-file name
                    nil nil (list 0 diredp-compressed-file-name 'keep t)))
-     `(,dired-move-to-filename-regexp
+     `(,directory-listing-before-filename-regexp
        (7 diredp-date-time t t) ; Date/time, locale (western or eastern)
        (2 diredp-date-time t t) ; Date/time, ISO
        (,(concat "\\(.+\\)\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions)
                                        "\\)[*]?$"))
         nil nil (0 diredp-compressed-file-name keep t)))) ; Compressed-file suffix
    (if (or (not (fboundp 'version<))  (version< emacs-version "23.2"))
-       (list dired-move-to-filename-regexp
+       (list directory-listing-before-filename-regexp
              (list 1 'diredp-date-time t t) ; Date/time
              (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
-     `(,dired-move-to-filename-regexp
+     `(,directory-listing-before-filename-regexp
        (7 diredp-date-time t t) ; Date/time, locale (western or eastern)
        (2 diredp-date-time t t) ; Date/time, ISO
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
@@ -5352,7 +5387,7 @@ This means file names that match regexp `diredp-omit-files-font-lock-regexp'.
                             (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "\\|")))))
      (list (concat "^  \\(.*\\(" omit-exts compr-exts "\\)[*]?\\)$") ; [*]? allows for executable flag (*).
            1 diredp-ignored-file-name t))
-   `(,(concat "^.*" dired-move-to-filename-regexp
+   `(,(concat "^.*" directory-listing-before-filename-regexp
               "\\(" diredp-omit-files-font-lock-regexp "\\)[*]?$") ; [*]? allows for executable flag (*).
      (0 diredp-omit-file-name t))
 
@@ -5946,7 +5981,7 @@ keeping only the first of a set of `equal' THINGS."
   (let* ((thgs                    (if exclude (copy-sequence things) ()))
          (prompt                  (format "%s to %s (C-g when done): " thing (if exclude 'EXCLUDE 'INCLUDE)))
          (completion-ignore-case  (or (and (boundp 'read-file-name-completion-ignore-case)
-                                           (memq thing '(Dir Directory File "Dir" "Directory" "File")) ; Hack
+                                           (string= thing '(Dir Directory File "Dir" "Directory" "File")) ; Hack
                                            read-file-name-completion-ignore-case)
                                       completion-ignore-case))
          thing)
@@ -7821,7 +7856,11 @@ When called from Lisp, optional arg DETAILS is passed to
       (let ((buffer  (get-file-buffer file)))
         (when (and buffer  (with-current-buffer buffer buffer-read-only))
           (error "File `%s' is visited read-only" file))))
-    (tags-query-replace from to delimited `',files)))
+    (if (< emacs-major-version 27)
+        (tags-query-replace from to delimited `',files)
+      (when (fboundp 'dired-post-do-command) (dired-post-do-command)) ; Emacs 30+
+      (fileloop-initialize-replace from to dgmf-arg (and (not (equal from (downcase from)))  'default) delimited)
+      (fileloop-continue))))
 
 ;;;###autoload
 (defun diredp-do-grep-recursive (command-args)
@@ -7930,7 +7969,7 @@ When called from Lisp, optional arg DETAILS is passed to
     "Change all OLD marks to NEW marks (chars used to mark Dired lines).
 You are prompted for the OLD marks as a string of unique characters.
 Then you are prompted for the NEW mark as a character.
-All must be displayable chars other than `?\r' (aka `C-m', `RET').
+All must be displayable chars other than `?\\r' (aka `C-m', `RET').
 
 Each char in the string of OLD marks is taken as a mark to change, so
 don't include a space char unless you want to replace that by the new
@@ -7942,10 +7981,10 @@ you replace multiple mark chars at the same time."
                         (n-c  (read-char (format "Change marks `%s' to (new mark char): "
                                                  (mapconcat #'string o-c ",")))))
                    (unless (diredp--mark-chars-ok (string n-c))
-                     (diredp-user-error "Mark char must be displayable and not `?\r' (aka `C-m', `RET')"))
+                     (diredp-user-error "Mark char must be displayable and not `?\\r' (aka `C-m', `RET')"))
                    (list (apply #'string o-c) n-c t)))
     (unless (and (diredp--mark-chars-ok old)  (diredp--mark-chars-ok (string new)))
-      (error "Mark chars must be displayable and not `?\r' (aka `C-m', `RET')"))
+      (error "Mark chars must be displayable and not `?\\r' (aka `C-m', `RET')"))
     (let ((string             (format "^\\([%s]\\)" old))
           (inhibit-read-only  t)
           (count              0))
@@ -8055,7 +8094,7 @@ When called from Lisp:
 
   (defun diredp--read-unique-displayable-chars (&optional prompt)
     "Read a string of displayable chars and return them as a list.
-None of the chars can be duplicated or `?\r' (aka `C-m', `RET')."
+None of the chars can be duplicated or `?\\r' (aka `C-m', `RET')."
     (let* ((cursor-in-echo-area  t)
            (prmpt   (or prompt  "Chars (string): "))
            (string  (diredp--nodups-string (read-string prmpt))))
@@ -8375,7 +8414,8 @@ Non-interactively, EXTENSION is the extension (a string).  It can also
 be a list of extension strings.
 Optional argument ARG is the prefix arg.
 
-When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'."
+When called from Lisp, DETAILS is passed to
+`diredp-mark-files-regexp-recursive'."
   (interactive (let* ((numarg  (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
                       (unmark  (and numarg  (>= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " extension: "))
@@ -8394,11 +8434,15 @@ When called from Lisp, DETAILS is passed to `diredp-mark-files-regexp-recursive'
 
 ;; This is `read--expression' (from Emacs 24.4+), except that it uses `pp-read-expression-map' if available.
 (defun diredp-read-expression (prompt &optional initial-contents)
+  "Read an Emacs Lisp expression from the minibuffer.
+PROMPT and optional argument INITIAL-CONTENTS do the same as in
+function `read-from-minibuffer'."
   (if (fboundp 'minibuffer-with-setup-hook) ; Emacs 22+
       (let ((minibuffer-completing-symbol  t))
         (minibuffer-with-setup-hook
             (lambda ()       ; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
-              (when (fboundp 'add-function) ; Emacs 24+
+              (set-syntax-table emacs-lisp-mode-syntax-table)
+              (when (and (fboundp 'add-function)  (< emacs-major-version 28)) ; Emacs 24-27
                 (add-function :before-until (local 'eldoc-documentation-function)
                               #'elisp-eldoc-documentation-function)
                 (eldoc-mode 1))
@@ -8571,7 +8615,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                (re-search-forward
                                 (if (< emacs-major-version 20)
                                     "\\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\)"
-                                  dired-move-to-filename-regexp))
+                                  directory-listing-before-filename-regexp))
                                (goto-char (match-beginning 1))
                                (forward-char -1)
                                (setq size ; `SIZE'
@@ -10364,7 +10408,7 @@ You need library `bookmark+.el' to use this command."
 Highlighting uses face `diredp-autofile-name'."
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward dired-move-to-filename-regexp nil t)
+      (while (re-search-forward directory-listing-before-filename-regexp nil t)
         ;; If Dired details are hidden the match data gets changed.
         (let* ((bmk    (save-match-data
                          (bmkp-get-autofile-bookmark (buffer-substring (match-end 0) (line-end-position)))))
@@ -10672,7 +10716,9 @@ As a side effect, killed Dired buffers for DIR are removed from
       (setq buf  (cdr elt))
       (cond ((null (buffer-name buf))   ; Buffer is killed - clean up.
              (setq dired-buffers  (delq elt dired-buffers)))
-            ((dired-in-this-tree (car elt) dir)
+            ((if (fboundp 'dired-in-this-tree-p)
+                 (dired-in-this-tree-p (car elt) dir)
+               (dired-in-this-tree (car elt) dir))
              (with-current-buffer buf
                (and (or subdirs-p  (assoc dir dired-subdir-alist))
                     (or (null file)
@@ -11913,7 +11959,10 @@ Directories are not included."
         (save-excursion (forward-line 1) (move-marker pos (1+ (point))))
         (setq file  (dired-get-filename nil 'NO-ERROR)) ; Non-nil second arg means "also . and ..".
         (when file                      ; Remove directory portion if in same directory.
-          (setq file  (dired-get-filename (dired-in-this-tree file default-directory) 'NO-ERROR)))
+          (setq file  (dired-get-filename (if (fboundp 'dired-in-this-tree-p)
+                                              (dired-in-this-tree-p file default-directory)
+                                            (dired-in-this-tree file default-directory))
+                                          'NO-ERROR)))
         (unless (or (not file)  (file-directory-p file))  (push file files))
         (goto-char pos))
       (move-marker pos nil))
@@ -12935,80 +12984,200 @@ Otherwise, just move to the buffer limit."
 ;; (defvar diredp-re-nondir "^  [-rwxs]")) ; This might be as good?
 (defvar diredp-re-nondir (concat dired-re-maybe-mark dired-re-inode-size "[-rwxs]"))
 
-;;;###autoload
-(defun diredp-next-nondir-line (arg &optional opoint) ; Bound to `]', menu `Dir' > `Navigate' > `Next Non-Dir Line'
-  "Goto ARGth next nondirectory line.
-If `diredp-wrap-around-flag' is non-nil then wrap around if none is
-found before the buffer beginning (buffer end, if ARG is negative).
-Otherwise, raise an error."
-  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
-                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-                 (list narg)))          ; Equivalent to "^p"
-  (or opoint  (setq opoint  (point)))
-  (if (if (> arg 0)
-          (re-search-forward diredp-re-nondir nil t arg)
-        (beginning-of-line)
-        (re-search-backward diredp-re-nondir nil t (- arg)))
-      (dired-move-to-filename)
-    (if diredp-wrap-around-flag
-        (let ((diredp-wrap-around-flag  nil))
-          (goto-char (if (< arg 0) (point-max) (point-min)))
-          (diredp-next-nondir-line arg opoint))
+(when (boundp 'dired-movement-style)    ; Emacs 30+
+
+  (defun diredp--trivial-next-line-re (arg regexp &optional opoint)
+    "Goto ARGth next line matching REGEXP."
+    (unless opoint (setq opoint  (point)))
+    (if (if (> arg 0)
+	    (re-search-forward regexp nil t arg)
+	  (beginning-of-line)
+	  (re-search-backward regexp nil t (- arg)))
+        (dired-move-to-filename)        ; User may type `i' or `f'
       (goto-char opoint)
-      (error "No more nondirectory files listed"))))
+      (unless dired-movement-style (error "No more lines matching \"%s\"" regexp))))
 
-;;;###autoload
-(defun diredp-prev-nondir-line (arg &optional opoint) ; Bound to `[', menu `Dir' > `Navigate' > `Previous Non-Dir Line'
-  "Goto ARGth previous nondirectory line.
-If `diredp-wrap-around-flag' is non-nil then wrap around if none is
-found before the buffer beginning (buffer end, if ARG is negative).
-Otherwise, raise an error."
-  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
-                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-                 (list narg)))          ; Equivalent to "^p"
-  (diredp-next-nondir-line (- arg)))
+  (defun diredp--trivial-next-nondir-line (arg &optional opoint)
+    "Goto ARGth next nondirectory line.
+Passes ARG, regexp `diredp-re-nondir', and OPOINT to
+`diredp--trivial-next-line-re'."
+    (diredp--trivial-next-line-re arg diredp-re-nondir opoint))
 
-(defalias 'diredp-next-dirline 'diredp-next-dir-line)
-(diredp-make-obsolete 'diredp-next-dirline 'diredp-next-dir-line "2026-07-23")
-;;;###autoload
-(defun diredp-next-dir-line (arg &optional opoint) ; Bound to `>', menu `Dir' > `Navigate' > `Next Dir Line'
-  "Goto ARGth next directory file line.
-If `diredp-wrap-around-flag' is non-nil then wrap around if none is
-found before the buffer beginning (buffer end, if ARG is negative).
-Otherwise, raise an error."
-  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
-                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-                 (list narg)))          ; Equivalent to "^p"
-  (or opoint  (setq opoint  (point)))
-  (if (if (> arg 0)
-          (re-search-forward dired-re-dir nil t arg)
-        (beginning-of-line)
-        (re-search-backward dired-re-dir nil t (- arg)))
-      (dired-move-to-filename)          ; user may type `i' or `f'
-    (if diredp-wrap-around-flag
-        (let ((diredp-wrap-around-flag  nil))
-          (goto-char (if (< arg 0) (point-max) (point-min)))
-          (diredp-next-dir-line arg opoint))
-      (goto-char opoint)
-      (error "No more directories in listing"))))
+  (defun diredp-next-nondir-line (arg &optional _opoint) ; Bound to `]', menu `Dir' > `Navigate' > `Next Non-Dir Line'
+    "Goto ARGth next nondirectory line.
+Option `dired-movement-style' controls whether to skip empty lines and
+how to move from last line."
+    (interactive "p" dired-mode)
+    (if dired-movement-style
+        (dired--move-to-next-line arg #'diredp--trivial-next-nondir-line)
+      (diredp--trivial-next-nondir-line arg)))
 
-(defalias 'diredp-prev-dirline 'diredp-prev-dir-line)
-(diredp-make-obsolete 'diredp-prev-dirline 'diredp-prev-dir-line "2026-07-23")
-;;;###autoload
-(defun diredp-prev-dir-line (arg)        ; Bound to `<', menu `Dir' > `Navigate' > `Prev Dir Line'
-  "Goto ARGth previous directory file line.
-If `diredp-wrap-around-flag' is non-nil then wrap around if none is
-found before the buffer beginning (buffer end, if ARG is negative).
-Otherwise, raise an error."
-  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
-                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-                 (list narg)))          ; Equivalent to "^p"
-  (diredp-next-dir-line (- arg)))
+  (defun diredp-prev-nondir-line (arg) ; Bound to `[', menu `Dir' > `Navigate' > `Previous Non-Dir Line'
+    "Goto ARGth previous nondirectory line.
+Option `dired-movement-style' controls whether to skip empty lines and
+how to move from last line."
+    (interactive "p" dired-mode)
+    (diredp-next-nondir-line (- arg)))
 
-;;;###autoload
-(defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip)
+  (defun diredp--trivial-next-dir-line (arg &optional opoint)
+    "Goto ARGth next directory line.
+Passes ARG, regexp `dired-re-dir', and OPOINT to
+`diredp--trivial-next-line-re'."
+    (diredp--trivial-next-line-re arg dired-re-dir opoint))
+
+  ;; Essentially the same def as vanilla `dired-next-dirline'.
+  (defun diredp-next-dir-line (arg) ; Bound to `>', menu `Dir' > `Navigate' > `Next Dir Line'
+    "Goto ARGth next directory line.
+Option `dired-movement-style' controls whether to skip empty lines and
+how to move from last line."
+    (interactive "p" dired-mode)
+    (if dired-movement-style
+        (dired--move-to-next-line arg #'diredp--trivial-next-dir-line)
+      (diredp--trivial-next-dir-line arg)))
+
+  ;; Essentially the same def as vanilla `dired-prev-dirline'.
+  (defun diredp-prev-dir-line (arg) ; Bound to `<', menu `Dir' > `Navigate' > `Prev Dir Line'
+    "Goto ARGth previous directory line.
+Option `dired-movement-style' controls whether to skip empty lines and
+how to move from last line."
+    (interactive "p" dired-mode)
+    (dired-next-dirline (- arg)))
+
+  ;; Vanilla Emacs 30 `dired-next-subdir' and `dired-prev-subdir' are in `dired.el' and `dired-aux.el', respectively.
+  ;;
+  (defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip)
                                         ; Bound to `C-M-n', menu `Dir' > `Navigate' > `Next Subdir'
-  "Go to the Nth next subdirectory, regardless of level.
+    "Go to the Nth next subdirectory, regardless of level.
+N is the numeric prefix arg (defaults to 1).
+If N = 0 then go to this directory's header line.
+
+If no subdir is found before the buffer end (buffer beginning, if ARG
+is negative), then:
+
+* If option `dired-movement-style' value is `cycle' or `cycle-files'
+  then wrap around.
+
+* Otherwise, raise an error or, if NO-ERROR-IF-NOT-FOUND is non-nil,
+  return nil.
+
+Non-nil NO-SKIP means do not move to end of header line, and return
+the position moved to so far."
+    ;; Emacs 30 uses just this for next, but not for prev: (interactive "p" dired-mode)
+    ;; Emacs 30 uses ~this for prev - I've also added second arg to `interactive', `dired-mode':
+    (interactive (list (if current-prefix-arg
+                           (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                             (when (and (boundp 'shift-select-mode)  shift-select-mode) ; Emacs 23+
+                               (handle-shift-selection)) ; Equivalent to "^p"
+                             narg)
+                         (if (dired-get-subdir) 1 0))) ; If at subdir start already, don't stay there.
+                 dired-mode)
+    (let ((this-dir  (dired-current-directory))
+          pos index)
+      ;; `nth' with negative arg does not return nil but the first element
+      (setq index  (if (memq dired-movement-style '(cycle cycle-files)) ; ~`diredp-wrap-around-flag'
+                       (mod (- (dired-subdir-index this-dir) arg) (length dired-subdir-alist))
+                     (- (dired-subdir-index this-dir) arg))
+            pos    (and (>= index 0)  (cdr (nth index dired-subdir-alist))))
+      (if pos
+          (progn (goto-char pos)
+                 (or no-skip  (end-of-line))
+                 (point))
+        (if no-error-if-not-found
+            nil                         ; Return nil if not found
+          (error "%s directory" (if (> arg 0) "Last" "First"))))))
+
+  (defun diredp-prev-subdir (arg &optional no-error-if-not-found no-skip)
+                                        ; Bound to `C-M-p', menu `Dir' > `Navigate' > `Prev Subdir'
+    "Go to the Nth previous subdirectory, regardless of level.
+When called interactively and not on a subdir line, go to this subdir's line.
+Otherwise, this is a mirror image of `diredp-next-subdir'."
+    ;; Emacs 30 uses this for next, but not for prev: (interactive "p" dired-mode)
+    (interactive
+     (list (if current-prefix-arg
+               (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                 narg)                  ; Equivalent to "^p"
+             ;; If on subdir start already then do not stay there.
+             (if (dired-get-subdir) 1 0)))
+     dired-mode)
+    (diredp-next-subdir (- arg) no-error-if-not-found no-skip))
+
+  )
+
+(unless (boundp 'dired-movement-style)  ; Emacs < 30
+
+  (defun diredp-next-nondir-line (arg &optional opoint) ; Bound to `]', menu `Dir' > `Navigate' > `Next Non-Dir Line'
+    "Goto ARGth next nondirectory line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
+    (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                   (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                   (list narg)))        ; Equivalent to "^p"
+    (or opoint  (setq opoint  (point)))
+    (if (if (> arg 0)
+            (re-search-forward diredp-re-nondir nil t arg)
+          (beginning-of-line)
+          (re-search-backward diredp-re-nondir nil t (- arg)))
+        (dired-move-to-filename)
+      (if diredp-wrap-around-flag
+          (let ((diredp-wrap-around-flag  nil))
+            (goto-char (if (< arg 0) (point-max) (point-min)))
+            (diredp-next-nondir-line arg opoint))
+        (goto-char opoint)
+        (error "No more nondirectory files listed"))))
+
+  (defun diredp-prev-nondir-line (arg &optional opoint) ; Bound to `[', menu `Dir' > `Navigate' > `Previous Non-Dir Line'
+    "Goto ARGth previous nondirectory line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
+    (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                   (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                   (list narg)))        ; Equivalent to "^p"
+    (diredp-next-nondir-line (- arg)))
+
+  (defalias 'diredp-next-dirline 'diredp-next-dir-line)
+  (diredp-make-obsolete 'diredp-next-dirline 'diredp-next-dir-line "2026-07-23")
+  (defun diredp-next-dir-line (arg &optional opoint) ; Bound to `>', menu `Dir' > `Navigate' > `Next Dir Line'
+    "Goto ARGth next directory file line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error and leave the cursor at starting position.
+
+When called from Lisp, optional arg OPOINT is where to leave the
+cursor in case of error."
+    (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                   (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                   (list narg)))        ; Equivalent to "^p"
+    (or opoint  (setq opoint  (point)))
+    (if (if (> arg 0)
+            (re-search-forward dired-re-dir nil t arg)
+          (beginning-of-line)
+          (re-search-backward dired-re-dir nil t (- arg)))
+        (dired-move-to-filename)        ; user may type `i' or `f'
+      (if diredp-wrap-around-flag
+          (let ((diredp-wrap-around-flag  nil))
+            (goto-char (if (< arg 0) (point-max) (point-min)))
+            (diredp-next-dir-line arg opoint))
+        (goto-char opoint)
+        (error "No more directories in listing"))))
+
+  (defalias 'diredp-prev-dirline 'diredp-prev-dir-line)
+  (diredp-make-obsolete 'diredp-prev-dirline 'diredp-prev-dir-line "2026-07-23")
+  (defun diredp-prev-dir-line (arg) ; Bound to `<', menu `Dir' > `Navigate' > `Prev Dir Line'
+    "Goto ARGth previous directory file line.
+If `diredp-wrap-around-flag' is non-nil then wrap around if none is
+found before the buffer beginning (buffer end, if ARG is negative).
+Otherwise, raise an error."
+    (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                   (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                   (list narg)))        ; Equivalent to "^p"
+    (diredp-next-dir-line (- arg)))
+
+  (defun diredp-next-subdir (arg &optional no-error-if-not-found no-skip)
+                                        ; Bound to `C-M-n', menu `Dir' > `Navigate' > `Next Subdir'
+    "Go to the Nth next subdirectory, regardless of level.
 N is the numeric prefix arg (defaults to 1).
 If N = 0 then go to this directory's header line.
 
@@ -13019,39 +13188,40 @@ return nil.
 
 Non-nil NO-SKIP means do not move to end of header line, and return
 the position moved to so far."
-  (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
-                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-                 (list narg)))          ; Equivalent to "^p"
-  (let ((this-dir  (dired-current-directory))
-        pos index)
-    ;; `nth' with negative arg does not return nil but the first element
-    (setq index  (if diredp-wrap-around-flag
-                     (mod (- (dired-subdir-index this-dir) arg) (length dired-subdir-alist))
-                   (- (dired-subdir-index this-dir) arg))
-          pos    (and (>= index 0)  (cdr (nth index dired-subdir-alist))))
-    (if pos
-        (progn (goto-char pos)
-               (or no-skip  (skip-chars-forward "^\n\r"))
-               (point))
-      (if no-error-if-not-found
-          nil                           ; Return nil if not found
-        (error "%s directory" (if (> arg 0) "Last" "First"))))))
+    (interactive (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                   (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                   (list narg)))        ; Equivalent to "^p"
+    (let ((this-dir  (dired-current-directory))
+          pos index)
+      ;; `nth' with negative arg does not return nil but the first element
+      (setq index  (if diredp-wrap-around-flag
+                       (mod (- (dired-subdir-index this-dir) arg) (length dired-subdir-alist))
+                     (- (dired-subdir-index this-dir) arg))
+            pos    (and (>= index 0)  (cdr (nth index dired-subdir-alist))))
+      (if pos
+          (progn (goto-char pos)
+                 (or no-skip  (skip-chars-forward "^\n\r"))
+                 (point))
+        (if no-error-if-not-found
+            nil                         ; Return nil if not found
+          (error "%s directory" (if (> arg 0) "Last" "First"))))))
 
-;;;###autoload
-(defun diredp-prev-subdir (arg &optional no-error-if-not-found no-skip)
+  (defun diredp-prev-subdir (arg &optional no-error-if-not-found no-skip)
                                         ; Bound to `C-M-p', menu `Dir' > `Navigate' > `Prev Subdir'
-  "Go to the Nth previous subdirectory, regardless of level.
+    "Go to the Nth previous subdirectory, regardless of level.
 When called interactively and not on a subdir line, go to this subdir's line.
 Otherwise, this is a mirror image of `diredp-next-subdir'."
-  ;;(interactive "^p")
-  (interactive
-   (list (if current-prefix-arg
-             (let ((narg  (prefix-numeric-value current-prefix-arg)))
-               (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
-               narg)                    ; Equivalent to "^p"
-           ;; If on subdir start already then do not stay there.
-           (if (dired-get-subdir) 1 0))))
-  (diredp-next-subdir (- arg) no-error-if-not-found no-skip))
+    ;;(interactive "^p")
+    (interactive
+     (list (if current-prefix-arg
+               (let ((narg  (prefix-numeric-value current-prefix-arg)))
+                 (when (and (boundp 'shift-select-mode)  shift-select-mode) (handle-shift-selection)) ; Emacs 23+
+                 narg)                  ; Equivalent to "^p"
+             ;; If on subdir start already then do not stay there.
+             (if (dired-get-subdir) 1 0))))
+    (diredp-next-subdir (- arg) no-error-if-not-found no-skip))
+
+  )
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -14280,7 +14450,7 @@ The string doesn't include the file name, and it ends with a newline."
         (if follow-symlink-p
             (process-file "file" nil t t "-L" "--" file)
           (process-file "file" nil t t "--" file))
-        (when (bolp) (backward-delete-char 1))
+        (when (bolp) (delete-char -1))
         (filter-buffer-substring (point-min)
                                  (save-excursion (goto-char (point-min))
                                                  (search-forward (concat file ": ") (line-end-position)))
@@ -14530,7 +14700,7 @@ refer at all to the underlying file system.  Contrast this with
                  (re-search-forward
                   (if (< emacs-major-version 20)
                       "\\(Jan\\|Feb\\|Mar\\|Apr\\|May\\|Jun\\|Jul\\|Aug\\|Sep\\|Oct\\|Nov\\|Dec\\)"
-                    dired-move-to-filename-regexp))
+                    directory-listing-before-filename-regexp))
                  (goto-char (match-beginning 1))
                  (forward-char -1)
                  (setq size  (string-to-number (buffer-substring (save-excursion (backward-word 1)
