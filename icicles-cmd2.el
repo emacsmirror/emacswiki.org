@@ -3,12 +3,12 @@
 ;; Filename: icicles-cmd2.el
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Feb 17 11:20:12 2025 (-0800)
-;;           By: dradams
-;;     Update #: 7489
+;; Last-Updated: Sun Jul 26 16:59:11 2026 (-0700)
+;;           By: drew0
+;;     Update #: 7494
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5250,13 +5250,22 @@ FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
                     ;; Save and restore these, because we might read input from \?.
                     (icicle-last-completion-command  icicle-last-completion-command)
                     (icicle-last-input               icicle-last-input))
-                (replace-match-maybe-edit
-                 (if (consp compiled)
-                     ;; `replace-count' is free here, bound in `icicle-search'.
-                     (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
-                   compiled)
-                 fixedcase icicle-search-replace-literally-flag nil (match-data)
-                 nil)) ; BACKWARD parameter is required for Emacs 24 (only) - see bug #18388.
+                (if (>= emacs-major-version 24)
+                    (replace-match-maybe-edit
+                     (if (consp compiled)
+                         ;; `replace-count' is free here, bound in `icicle-search'.
+                         (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                       compiled)
+                     fixedcase icicle-search-replace-literally-flag nil (match-data)
+                     ;; BACKWARD parameter is required for Emacs 24.  It's optional for Emacs > 24 - see bug #18388.
+                     nil)
+                  (replace-match-maybe-edit
+                   (if (consp compiled)
+                       ;; `replace-count' is free here, bound in `icicle-search'.
+                       (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                     compiled)
+                   ;; BACKWARD parameter is not _allowed_ in Emacs 22-23 - see bug #18388..
+                   fixedcase icicle-search-replace-literally-flag nil (match-data))))
             (wrong-number-of-arguments
              (condition-case icicle-search-replace-match3
                  (replace-match-maybe-edit
