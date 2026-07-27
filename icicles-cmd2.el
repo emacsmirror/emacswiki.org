@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jul 26 16:59:11 2026 (-0700)
+;; Last-Updated: Sun Jul 26 17:33:42 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 7494
+;;     Update #: 7497
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -466,9 +466,10 @@
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar imenu-after-jump-hook)          ; In `imenu.el' (Emacs 22+)
-(defvar package-alist)                  ; In `package.el' (Emacs 25+)
-(defvar package-archive-contents)       ; In `package.el' (Emacs 25+)
-(defvar package--builtins)              ; In `package.el' (Emacs 25+)
+(defvar package-alist)                  ; In `package.el' (Emacs 24+)
+(defvar package-archive-contents)       ; In `package.el' (Emacs 24+)
+(defvar package--builtins)              ; In `package.el' (Emacs 24+)
+(defvar package--initialized)           ; In `package.el' (Emacs 24+)
 (defvar replace-count)                  ; In `replace.el'
 (defvar woman-expanded-directory-path)  ; In `woman.el'
 (defvar woman-manpath)                  ; In `woman.el'
