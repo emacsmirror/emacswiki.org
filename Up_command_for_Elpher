@@ -16,27 +16,21 @@ one to go up.
 	    (local-set-key (kbd "b") 'elpher-back)
 	    (local-set-key (kbd "l") 'elpher-back)))
 
-(defun elpher-node-up (node)
-  "Does the node have a selector that looks like a path?"
-  (let* ((address (elpher-node-address node))
-	 (selector (elpher-address-selector address))
-	 (up (file-name-directory (directory-file-name selector))))
-    (when (not (string= up selector))
-      (elpher-make-node (concat "Up from " (elpher-node-display-string elpher-current-node))
-			(elpher-make-address ?1
-					     up
-					     (elpher-address-host address)
-					     (elpher-address-port address)
-					     (elpher-address-use-tls-p address))
-			elpher-current-node))))
-
 (defun elpher-up ()
-  "Go up in a gopher site."
+  "Visit parent page."
   (interactive)
-  (let ((up (elpher-node-up elpher-current-node)))
-    (if up
-	(elpher-visit-node up)
-      (error "No way up"))))
+  (let* ((address (elpher-page-address elpher-current-page))
+        (fname (url-filename address)))
+    (if (elpher-address-about-p address)
+        (error "Command invalid for %s" (elpher-page-display-string elpher-current-page)))
+    (if (or (member fname '("/" ""))
+            (and (elpher-address-gopher-p address)
+                 (= (length (elpher-gopher-address-selector address)) 0)))
+        (error "Already at root directory of current server")
+      (let ((address-copy (elpher-address-from-url
+                           (elpher-address-to-url address))))
+        (setf (url-filename address-copy) (file-name-directory (directory-file-name fname)))
+        (elpher-go (elpher-address-to-url address-copy))))))
 }}}
 
 ----
