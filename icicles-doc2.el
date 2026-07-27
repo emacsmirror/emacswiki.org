@@ -4040,7 +4040,7 @@
 ;;  your minibuffer input.  The available styles are defined by
 ;;  non-option variable `completion-styles-alist'.  They include
 ;;  `basic', which was the original vanilla completion behavior;
-;;  `partial-completion'; `initials'; `substring' (for Emacs 24 and
+;;  `partial-completion'; `initials' and `substring' (for Emacs 24 and
 ;;  later); `flex' (for Emacs 27 and later); and `shorthand' (for
 ;;  Emacs 28 and later).  They also include `emacs21' and `emacs22',
 ;;  for the vanilla completion behavior from those Emacs releases.
