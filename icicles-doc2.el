@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul 26 16:29:19 2026 (-0700)
+;; Last-Updated: Mon Jul 27 15:29:49 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 30088
+;;     Update #: 30089
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4041,9 +4041,10 @@
 ;;  non-option variable `completion-styles-alist'.  They include
 ;;  `basic', which was the original vanilla completion behavior;
 ;;  `partial-completion'; `initials'; and (for Emacs 24 and later)
-;;  `substring'.  They also include `emacs21' and `emacs22', for the
-;;  vanilla completion behavior from those Emacs releases.  See the
-;;  Emacs doc for an explanation of completion styles.
+;;  `substring', `flex' (for Emacs 27 and later), and `shorthand' (for
+;;  Emacs 28 and later).  They also include `emacs21' and `emacs22',
+;;  for the vanilla completion behavior from those Emacs releases.
+;;  See the Emacs doc for an explanation of completion styles.
 ;;
 ;;  In vanilla Emacs there is only one set of completion styles that
 ;;  is ever in effect, defined by option `completion-styles'.  It is a
