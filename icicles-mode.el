@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Jul 26 16:12:51 2026 (-0700)
+;; Last-Updated: Sun Jul 26 17:37:48 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10300
+;;     Update #: 10301
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -265,6 +265,7 @@
 (defvar ibuffer-mode-operate-map)       ; In `ibuffer.el'.
 (defvar icicle-crm-local-completion-map) ; In `icicles-fn.el' after load `crm.el'.
 (defvar icicle-crm-local-must-match-map) ; In `icicles-fn.el' after load `crm.el'.
+(defvar icicle-dired-recursive-marked-menu-map) ; Here.
 (defvar icicle-kmacro-ring-max)         ; In `icicles-opt.el' for Emacs 22+.
 (defvar icicle-ORIG-crm-local-completion-map) ; In `icicles-fn.el' after load `crm.el'.
 (defvar icicle-ORIG-crm-local-must-match-map) ; In `icicles-fn.el' after load `crm.el'.
