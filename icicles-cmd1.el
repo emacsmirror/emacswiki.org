@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Feb 17 11:56:04 2025 (-0800)
-;;           By: dradams
-;;     Update #: 27666
+;; Last-Updated: Sun Jul 26 17:29:11 2026 (-0700)
+;;           By: drew0
+;;     Update #: 27676
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -10494,7 +10494,7 @@ Unicode chars, then customize option `icicle-zap-to-char-candidates'."
     (interactive
      (list (prefix-numeric-value current-prefix-arg)
            (icicle-read-char-maybe-completing "Zap to char: "
-                                              (and (functionp icicle-zap-to-char-candidates)
+                                              (and (functionp 'icicle-zap-to-char-candidates)
                                                    (funcall icicle-zap-to-char-candidates)))))
     (unless names (setq names  (or (icicle-char-cands-from-charlist)  (icicle-ucs-names))))
     (with-no-warnings                   ; Avoid "obsolete" warning for `translation-table-for-input'.
