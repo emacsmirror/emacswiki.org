@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jul 26 16:06:17 2026 (-0700)
+;; Last-Updated: Sun Jul 26 16:59:51 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 11962
+;;     Update #: 11965
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1225,6 +1225,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2026/06/22 drew0
+;;     icicle-search-replace-match: Workaround for bug #18388:
+;;       BACKWARD arg for replace-match-maybe-edit needed for Emacs 24, not allowed for 22-23.
 ;; 2025/02/17 dadams
 ;;     Added cookie    -*- lexical-binding:nil -*-
 ;; 2022/06/25 dadams
@@ -2356,6 +2359,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2025/06/22 dadams
+;;     icicle-face-bold-p: INHERIT arg to face-bold-p is for Emacs 23+, not 22+.
 ;; 2025/02/17 dadams
 ;;     Added cookie    -*- lexical-binding:nil -*-
 ;;     icicle-read-from-minibuffer: Increased max-specpdl-size for the duration, to avoid possible
