@@ -3,8 +3,8 @@
 ;; Filename: icicles-cmd1.el
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2025, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Last-Updated: Mon Feb 17 11:56:04 2025 (-0800)
 ;;           By: dradams
@@ -5426,20 +5426,29 @@ If you also use library `Bookmark+', then:
    according to their type.  You can customize the highlighting faces:
 
   `bmkp-bad-bookmark'              - possibly bad bookmark
+  `bmkp-bookmark-file'             - bookmark file
   `bmkp-bookmark-list'             - bookmark list
   `bmkp-buffer'                    - buffer
   `bmkp-desktop'                   - desktop
+  `bmkp-file-handler'              - bookmark with `file-handler'
   `bmkp-function'                  - function bookmark
   `bmkp-gnus'                      - Gnus article
+  `bmkp-icicles-search-hits'       - Icicles search hits
   `bmkp-info'                      - Info node
+  `bmkp-kmacro-list'               - keyboard macro list
   `bmkp-local-directory'           - local directory
   `bmkp-local-file-with-region'    - local file with a region
   `bmkp-local-file-without-region' - local file without a region
   `bmkp-man'                       - `man' page
+  `bmkp-no-jump'                   - unjumpable from bookmark list
+  `bmkp-no-local'                  - no such local file
   `bmkp-non-file'                  - non-file (no current buffer)
   `bmkp-remote-file'               - remote-file
   `bmkp-sequence'                  - sequence bookmark
+  `bmkp-snippet'                   - snippet for `kill-ring'
+  `bmkp-su-or-sudo'                - remote accessed by `su' or `sudo'
   `bmkp-url'                       - URL
+  `bmkp-variable-list'             - variable list
 
  * In `*Completions*', if option `icicle-show-multi-completion-flag'
    is non-nil, then each completion candidate is a multi-completion:
