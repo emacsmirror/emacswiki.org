@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  1 15:09:38 2026 (-0700)
+;; Last-Updated: Sun Aug  2 14:36:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14362
+;;     Update #: 14374
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1077,11 +1077,10 @@
  
 ;;; Change Log:
 ;;
-;; 2026/08/01 drew0
+;; 2026/08/02 drew0
 ;;     diredp-mark-if:
 ;;       Act on just the region, if dired-mark--region-use-p (Emacs 28+).
-;;       Let-bind macro args SINGULAR and PLURAL to make-symbol vars TMP-*, and for beg/end bounds.
-;;       
+;;       Let-bind make-symbol vars TMP-* for macro args SINGULAR and PLURAL, and for BEG/END bounds.
 ;;       Renamed macro arg PREDICATE to PREDICATE-SEXP, and described it.
 ;;       Mention in doc string: (1) region behavior, (2) that nil SINGULAR means show no messages.
 ;;     diredp-mark-sexp-recursive:
@@ -3632,43 +3631,47 @@ Return nil if no files matched PREDICATE-SEXP.
 Otherwise return a cons (CHANGED . MATCHED), where:
  CHANGED is the number of markings that were changed by the operation.
  MATCHED is the number of files that matched PREDICATE-SEXP."
-  `(let ((TMP-singular       (set (make-symbol "singular") ,singular))
-         (TMP-plural         (set (make-symbol "plural") ,plural))
-         (TMP-beg            (set (make-symbol "beg") (or (and  (fboundp 'dired-mark--region-beginning)
-                                                                (dired-mark--region-beginning))
-                                                          (point-min))))
-         (TMP-end            (set (make-symbol "end") (or (and  (fboundp 'dired-mark--region-end)
-                                                                (dired-mark--region-end))
-                                                          (point-max))))
-         (inhibit-read-only  t)
-         (use-region-p       (and (fboundp 'dired-mark--region-use-p)  (dired-mark--region-use-p)))
-         changed matched)
-     (save-excursion
-       (setq matched  0
-             changed  0)
-       (when TMP-singular (message "%s %s%s%s..."
-                                   (cond ((eq dired-marker-char ?\040)            "Unmarking")
-                                         ((eq dired-del-marker dired-marker-char) "Flagging")
-                                         (t                                       "Marking"))
-                                   (or TMP-plural  (concat TMP-singular "s"))
-                                   (if (eq dired-del-marker dired-marker-char) " for deletion" "")
-                                   (if use-region-p "use-region-p" "")))
-       (goto-char TMP-beg)
-       (while (< (point) TMP-end)
-         (when ,predicate-sexp
-           (setq matched  (1+ matched))
-           (unless (= (following-char) dired-marker-char)
-             (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
-         (forward-line 1))
-       (when TMP-singular (message "%s %s%s%s newly %s%s%s"
-                                   matched
-                                   (if (= matched 1) TMP-singular (or TMP-plural  (concat TMP-singular "s")))
-                                   (if (not (= matched changed)) " matched, " "")
-                                   (if (not (= matched changed)) changed "")
-                                   (if (eq dired-marker-char ?\040) "un" "")
-                                   (if (eq dired-marker-char dired-del-marker) "flagged" "marked")
-                                   (if use-region-p " in region" ""))))
-     (and (> matched 0)  (cons changed matched))))
+  (let ((TMP-singular  (make-symbol "singular"))
+        (TMP-plural    (make-symbol "plural"))
+        (TMP-beg       (make-symbol "beg"))
+        (TMP-end       (make-symbol "end")))
+    `(let ((inhibit-read-only  t)
+           (use-region-p       (and (fboundp 'dired-mark--region-use-p)  (dired-mark--region-use-p)))
+           (,TMP-singular      ,singular)
+           (,TMP-plural        ,plural)
+           (,TMP-beg           (or (and  (fboundp 'dired-mark--region-beginning)
+                                         (dired-mark--region-beginning))
+                                   (point-min)))
+           (,TMP-end           (or (and  (fboundp 'dired-mark--region-end)
+                                         (dired-mark--region-end))
+                                   (point-max)))
+           changed matched)
+       (save-excursion
+         (setq matched  0
+               changed  0)
+         (when ,TMP-singular (message "%s %s%s%s..."
+                                      (cond ((eq dired-marker-char ?\040)            "Unmarking")
+                                            ((eq dired-del-marker dired-marker-char) "Flagging")
+                                            (t                                       "Marking"))
+                                      (or ,TMP-plural  (concat ,TMP-singular "s"))
+                                      (if (eq dired-del-marker dired-marker-char) " for deletion" "")
+                                      (if use-region-p "use-region-p" "")))
+         (goto-char ,TMP-beg)
+         (while (< (point) ,TMP-end)
+           (when ,predicate-sexp
+             (setq matched  (1+ matched))
+             (unless (= (following-char) dired-marker-char)
+               (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
+           (forward-line 1))
+         (when ,TMP-singular (message "%s %s%s%s newly %s%s%s"
+                                      matched
+                                      (if (= matched 1) ,TMP-singular (or ,TMP-plural  (concat ,TMP-singular "s")))
+                                      (if (not (= matched changed)) " matched, " "")
+                                      (if (not (= matched changed)) changed "")
+                                      (if (eq dired-marker-char ?\040) "un" "")
+                                      (if (eq dired-marker-char dired-del-marker) "flagged" "marked")
+                                      (if use-region-p " in region" ""))))
+       (and (> matched 0)  (cons changed matched)))))
 
 
 ;; Just a helper function for `dired-map-over-marks'.
