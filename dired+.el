@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  2 14:36:16 2026 (-0700)
+;; Last-Updated: Sun Aug  2 15:04:01 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14374
+;;     Update #: 14386
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1088,6 +1088,7 @@
 ;;       Renamed macro arg PREDICATE to PREDICATE-SEXP.
 ;;       Moved let-binding of POS to cond branch where it's used.
 ;;     diredp-(next|prev)-nondir-line: Use arg OPOINT (wasn't used).
+;;     diredp-string-replace: Test (fboundp 'string-replace) during macro expansion.
 ;; 2026/07/26 drew0
 ;;     diredp-do-query-replace-regexp-recursive: copy-paste typo.
 ;; 2026/07/25 drew0
@@ -2761,9 +2762,9 @@ of that nature."
 
 (defmacro diredp-string-replace (from-string to-string in-string)
   "`string-replace', usable also with older Emacs versions."
-  `(if (fboundp 'string-replace)
-      (string-replace ,from-string ,to-string ,in-string)
-    (replace-regexp-in-string (regexp-quote ,from-string) ,to-string ,in-string  nil t)))
+  (if (fboundp 'string-replace)
+      `(string-replace ,from-string ,to-string ,in-string)
+    `(replace-regexp-in-string (regexp-quote ,from-string) ,to-string ,in-string  nil t)))
 
 
 ;; Quiet the byte-compiler.
