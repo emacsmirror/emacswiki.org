@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul 23 14:50:57 2026 (-0700)
+;; Last-Updated: Sun Aug  2 16:14:37 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17398
+;;     Update #: 17406
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2866,6 +2866,12 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2026/08/02 drew0
+;;     bmkp-define(-next+prev)-cycle-command(s): Let-bind make-symbol var TMP-* for local var STARTOVR.
+;;     bmkp-define-show-only-command: Let-bind make-symbol vars TMP-* for local vars ORIG-*.
+;;     bmkp-define-sort-command: Let-bind make-symbol var TMP-* for local var CURRENT-BMK.
+;;     bmkp-define-file-sort-predicate: Let-bind make-symbol vars TMP-* for local vars A1 and A2.
+;;     bmkp-with-bookmark-dir: Let-bind make-symbol var TMP-* for local var LOC.
 ;; 2026/07/23 drew0
 ;;     bmkp-define-sort-command: Typo.
 ;; 2026/07/15 drew0
@@ -2943,6 +2949,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/08/02 drew0
+;;     Version 2026.08.02
 ;; 2026/07/23 drew0
 ;;     Version 2026.07.23
 ;;     bookmark-bmenu-buffer is now a defvar, not defconst, per Emacs 28+.
