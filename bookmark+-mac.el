@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Jul 23 13:45:20 2026 (-0700)
+;; Last-Updated: Sun Aug  2 16:09:11 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 261
+;;     Update #: 295
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -241,11 +241,12 @@ predicate."
 (defmacro bmkp-define-cycle-command (type &optional otherp)
   "Define a cycling command for bookmarks of type TYPE.
 Non-nil OTHERP means define a command that cycles in another window."
-  `(defun ,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
-    (increment &optional startoverp)
-    ,(if otherp
-         (format "Same as `bmkp-cycle-%s', but use other window." type)
-         (format "Cycle through %s bookmarks by INCREMENT (default: 1).
+  (let ((TMP-startovr  (make-symbol "startovr")))
+    `(defun ,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
+         (increment &optional startoverp)
+       ,(if otherp
+            (format "Same as `bmkp-cycle-%s', but use other window." type)
+          (format "Cycle through %s bookmarks by INCREMENT (default: 1).
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
 Interactively, the prefix arg determines INCREMENT:
  Plain `C-u': 1
@@ -256,69 +257,72 @@ Plain `C-u' also means start over at first bookmark.
 In Lisp code:
  Non-nil STARTOVERP means reset `bmkp-current-nav-bookmark' to the
  first bookmark in the navlist." type))
-    (interactive (let ((startovr  (consp current-prefix-arg)))
-                   (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
-                         startovr)))
-    (let ((bmkp-nav-alist  (bmkp-sort-omit (,(intern (format "bmkp-%s-alist-only" type))))))
-      (bmkp-cycle increment ,otherp startoverp))))
+       (interactive (let ((,TMP-startovr  (consp current-prefix-arg)))
+                      (list (if ,TMP-startovr 1 (prefix-numeric-value current-prefix-arg))
+                            ,TMP-startovr)))
+       (let ((bmkp-nav-alist  (bmkp-sort-omit (,(intern (format "bmkp-%s-alist-only" type))))))
+         (bmkp-cycle increment ,otherp startoverp)))))
 
 ;;;###autoload (autoload 'bmkp-define-next+prev-cycle-commands "bookmark+")
 (defmacro bmkp-define-next+prev-cycle-commands (type &optional otherp)
   "Define `next' and `previous' commands for bookmarks of type TYPE.
 Non-nil OTHERP means define a command that cycles in another window."
-  `(progn
-    ;; `next' command.
-    (defun ,(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))
-        (n &optional startoverp)
-      ,(if otherp
-           (format "Same as `bmkp-next-%s-bookmark', but use other window." type)
-           (format "Jump to the Nth-next %s bookmark.
+  (let ((TMP-startovr  (make-symbol "startovr")))
+    `(progn
+       ;; `next' command.
+       (defun ,(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))
+           (n &optional startoverp)
+         ,(if otherp
+              (format "Same as `bmkp-next-%s-bookmark', but use other window." type)
+            (format "Jump to the Nth-next %s bookmark.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one.
 See also `bmkp-cycle-%s'." type type))
-      (interactive (let ((startovr  (consp current-prefix-arg)))
-                     (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
-      (,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" ""))) n startoverp))
+         (interactive (let ((,TMP-startovr  (consp current-prefix-arg)))
+                        (list (if ,TMP-startovr 1 (prefix-numeric-value current-prefix-arg))
+                              ,TMP-startovr)))
+         (,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" ""))) n startoverp))
 
-    ;; `previous' command.
-    (defun ,(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" "")))
-        (n &optional startoverp)
-      ,(if otherp
-           (format "Same as `bmkp-previous-%s-bookmark', but use other window." type)
-           (format "Jump to the Nth-previous %s bookmark.
+       ;; `previous' command.
+       (defun ,(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" "")))
+           (n &optional startoverp)
+         ,(if otherp
+              (format "Same as `bmkp-previous-%s-bookmark', but use other window." type)
+            (format "Jump to the Nth-previous %s bookmark.
 See `bmkp-next-%s-bookmark'." type type))
-      (interactive (let ((startovr  (consp current-prefix-arg)))
-                     (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
-      (,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
-        (- n) startoverp))
+         (interactive (let ((,TMP-startovr  (consp current-prefix-arg)))
+                        (list (if ,TMP-startovr 1 (prefix-numeric-value current-prefix-arg))
+                              ,TMP-startovr)))
+         (,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
+          (- n) startoverp))
 
-    ;; `next' repeating command.
-    (defun ,(intern (format "bmkp-next-%s-bookmark%s-repeat"
-                            type
-                            (if otherp "-other-window" "")))
-        ()
-      ,(if otherp
-           (format "Same as `bmkp-next-%s-bookmark-repeat', but use other window." type)
-           (format "Jump to the next %s bookmark.
+       ;; `next' repeating command.
+       (defun ,(intern (format "bmkp-next-%s-bookmark%s-repeat"
+                               type
+                               (if otherp "-other-window" "")))
+           ()
+         ,(if otherp
+              (format "Same as `bmkp-next-%s-bookmark-repeat', but use other window." type)
+            (format "Jump to the next %s bookmark.
 This is a repeatable version of `bmkp-next-%s-bookmark'." type type))
-      (interactive)
-      (require 'repeat)
-      (bmkp-repeat-command
-       ',(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))))
+         (interactive)
+         (require 'repeat)
+         (bmkp-repeat-command
+          ',(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))))
 
-    ;; `previous repeating command.
-    (defun ,(intern (format "bmkp-previous-%s-bookmark%s-repeat"
-                            type
-                            (if otherp "-other-window" "")))
-        ()
-      ,(if otherp
-           (format "Same as `bmkp-previous-%s-bookmark-repeat', but use other window." type)
-           (format "Jump to the previous %s bookmark.
+       ;; `previous repeating command.
+       (defun ,(intern (format "bmkp-previous-%s-bookmark%s-repeat"
+                               type
+                               (if otherp "-other-window" "")))
+           ()
+         ,(if otherp
+              (format "Same as `bmkp-previous-%s-bookmark-repeat', but use other window." type)
+            (format "Jump to the previous %s bookmark.
 See `bmkp-next-%s-bookmark-repeat'." type type))
-      (interactive)
-      (require 'repeat)
-      (bmkp-repeat-command
-       ',(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" "")))))))
+         (interactive)
+         (require 'repeat)
+         (bmkp-repeat-command
+          ',(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" ""))))))))
 
 ;; We don't bother making this hygienic.  Presumably only the Bookmark+ code will call it.
 ;;;###autoload (autoload 'bmkp-define-show-only-command "bookmark+")
@@ -363,30 +367,34 @@ their values before the command was invoked."
          (type-strg   (bmkp-replace-regexp-in-string "\\(-alist-only\\)" "" type-strg))
          (title-typ   (or title-type  (capitalize (bmkp-replace-regexp-in-string "-" " " type-strg))))
          (command     (intern (format "bmkp-bmenu-show-only-%s-bookmarks" type-strg))))
-    `(progn
-       (defun ,command ()
-         ,(concat doc-string "
+    (let ((TMP-orig-filter-fn     (make-symbol "orig-filter-fn"))
+          (TMP-orig-title         (make-symbol "orig-title"))
+          (TMP-orig-latest-alist  (make-symbol "orig-latest-alist")))
+      `(progn
+         (defun ,command ()
+           ,(concat doc-string "
 
 If you use this command outside of buffer `*Bookmark List*' then it
 first jumps to that buffer.")
-         (interactive)
-         (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))          
-         (let ((orig-filter-fn      bmkp-bmenu-filter-function)
-               (orig-title          bmkp-bmenu-title)
-               (orig-latest-alist   bmkp-latest-bookmark-alist))
-           (condition-case err
-               (progn (setq bmkp-bmenu-filter-function  ',filter-fn
-                            bmkp-bmenu-title            ,(format "%s Bookmarks" title-typ))
-                      (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-                        (setq bmkp-latest-bookmark-alist  bookmark-alist)
-                        (bookmark-bmenu-list 'filteredp))
-                      (when (interactive-p)
-                        (bmkp-msg-about-sort-order (bmkp-current-sort-order)
-                                                   ,(format "Only %s bookmarks are shown" title-typ))))
-             (error (progn (setq bmkp-bmenu-filter-function  orig-filter-fn
-                                 bmkp-bmenu-title            orig-title
-                                 bmkp-latest-bookmark-alist  orig-latest-alist)
-                           (error "%s" (error-message-string err))))))))))
+           (interactive)
+           (unless (derived-mode-p 'bookmark-bmenu-mode) (bmkp-jump-to-list))          
+           (let ((,TMP-orig-filter-fn     bmkp-bmenu-filter-function)
+                 (,TMP-orig-title         bmkp-bmenu-title)
+                 (,TMP-orig-latest-alist  bmkp-latest-bookmark-alist))
+             (condition-case err
+                 (progn (setq bmkp-bmenu-filter-function  ',filter-fn
+                              bmkp-bmenu-title            ,(format "%s Bookmarks" title-typ))
+                        (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+                          (setq bmkp-latest-bookmark-alist  bookmark-alist)
+                          (bookmark-bmenu-list 'filteredp))
+                        (when (interactive-p)
+                          (bmkp-msg-about-sort-order
+                           (bmkp-current-sort-order)
+                           ,(format "Only %s bookmarks are shown" title-typ))))
+               (error (progn (setq bmkp-bmenu-filter-function  ,TMP-orig-filter-fn
+                                   bmkp-bmenu-title            ,TMP-orig-title
+                                   bmkp-latest-bookmark-alist  ,TMP-orig-latest-alist)
+                             (error "%s" (error-message-string err)))))))))))
 
 ;;;###autoload (autoload 'bmkp-define-sort-command "bookmark+")
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
@@ -408,38 +416,39 @@ DOC-STRING is the doc string of the new command."
   (unless (stringp sort-order) (setq sort-order  (symbol-name sort-order)))
   (let ((command  (intern (concat "bmkp-bmenu-sort-" (bmkp-replace-regexp-in-string
                                                       "\\s-+" "-" sort-order)))))
-    `(progn
-      (setq bmkp-sort-orders-alist  (bmkp-assoc-delete-all ,sort-order (copy-sequence
-                                                                        bmkp-sort-orders-alist)))
-      (setq bmkp-sort-orders-alist  (cons (cons ,sort-order ',comparer) bmkp-sort-orders-alist))
-      (defun ,command ()
-        ,(concat doc-string "\n\nRepeating the command cycles: normal sort, reversed \
+    (let ((TMP-current-bmk  (make-symbol "current-bmk")))
+      `(progn
+         (setq bmkp-sort-orders-alist  (bmkp-assoc-delete-all ,sort-order (copy-sequence
+                                                                           bmkp-sort-orders-alist))
+               bmkp-sort-orders-alist  (cons (cons ,sort-order ',comparer) bmkp-sort-orders-alist))
+         (defun ,command ()
+           ,(concat doc-string "\n\nRepeating the command cycles: normal sort, reversed \
 sort, unsorted.")
-        (interactive)
-        (bmkp-bmenu-barf-if-not-in-menu-list)
-        (cond (;; Not this sort order - make it this sort order.
-               (not (equal bmkp-sort-comparer ',comparer))
-               (setq bmkp-sort-comparer   ',comparer
-                     bmkp-reverse-sort-p  nil))
-              (;; Not this sort order reversed - make it reversed.
-               (not bmkp-reverse-sort-p)
-               (setq bmkp-reverse-sort-p  t))
-              (t;; This sort order reversed.  Change to unsorted.
-               (setq bmkp-sort-comparer   nil)))
-        (message "Sorting...")
-        (bookmark-bmenu-ensure-position)
-        (let ((current-bmk  (bookmark-bmenu-bookmark)))
-          (bookmark-bmenu-surreptitiously-rebuild-list)
-          (when current-bmk             ; Should be non-nil, but play safe.
-            (bmkp-bmenu-goto-bookmark-named current-bmk))) ; Put cursor back on right line.
-        (when (interactive-p)
-          (bmkp-msg-about-sort-order
-           ,sort-order
-           nil
-           (cond ((and (not bmkp-reverse-sort-p)
-                       (equal bmkp-sort-comparer ',comparer)) "(Repeat: reverse)")
-                 ((equal bmkp-sort-comparer ',comparer)       "(Repeat: unsorted)")
-                 (t                                           "(Repeat: sort)"))))))))
+           (interactive)
+           (bmkp-bmenu-barf-if-not-in-menu-list)
+           (cond (;; Not this sort order - make it this sort order.
+                  (not (equal bmkp-sort-comparer ',comparer))
+                  (setq bmkp-sort-comparer   ',comparer
+                        bmkp-reverse-sort-p  nil))
+                 (;; Not this sort order reversed - make it reversed.
+                  (not bmkp-reverse-sort-p)
+                  (setq bmkp-reverse-sort-p  t))
+                 (t ;; This sort order reversed.  Change to unsorted.
+                  (setq bmkp-sort-comparer   nil)))
+           (message "Sorting...")
+           (bookmark-bmenu-ensure-position)
+           (let ((,TMP-current-bmk  (bookmark-bmenu-bookmark)))
+             (bookmark-bmenu-surreptitiously-rebuild-list)
+             (when ,TMP-current-bmk ; Should be non-nil, but play safe.
+               (bmkp-bmenu-goto-bookmark-named ,TMP-current-bmk))) ; Put cursor back on right line.
+           (when (interactive-p)
+             (bmkp-msg-about-sort-order
+              ,sort-order
+              nil
+              (cond ((and (not bmkp-reverse-sort-p)
+                          (equal bmkp-sort-comparer ',comparer)) "(Repeat: reverse)")
+                    ((equal bmkp-sort-comparer ',comparer)       "(Repeat: unsorted)")
+                    (t                                           "(Repeat: sort)")))))))))
 
 ;;;###autoload (autoload 'bmkp-define-file-sort-predicate "bookmark+")
 (defmacro bmkp-define-file-sort-predicate (att-nb)
@@ -460,69 +469,71 @@ A bookmark that has file attributes sorts before a bookmark that does
 not.  A file bookmark sorts before a non-file bookmark.  Only local
 files are tested for attributes - remote-file bookmarks are treated
 here like non-file bookmarks."
-  `(defun ,(intern (format "bmkp-file-attribute-%d-cp" att-nb)) (b1 b2)
-    ,(format "Sort file bookmarks by attribute %d.
+  (let ((TMP-a1  (make-symbol "a1"))
+        (TMP-a2  (make-symbol "a2")))
+    `(defun ,(intern (format "bmkp-file-attribute-%d-cp" att-nb)) (b1 b2)
+       ,(format "Sort file bookmarks by attribute %d.
 Sort bookmarks with file attributes before those without attributes
 Sort file bookmarks before non-file bookmarks.
 Treat remote file bookmarks like non-file bookmarks.
 
 B1 and B2 are full bookmarks (records) or bookmark names.
 If either is a record then it need not belong to `bookmark-alist'."
-             att-nb)
-    (setq b1  (bmkp-get-bookmark b1))
-    (setq b2  (bmkp-get-bookmark b2))
-    (let (a1 a2)
-      (cond (;; Both are file bookmarks.
-             (and (bmkp-file-bookmark-p b1) (bmkp-file-bookmark-p b2))
-             (setq a1  (file-attributes (bookmark-get-filename b1))
-                   a2  (file-attributes (bookmark-get-filename b2)))
-             (cond (;; Both have attributes.
-                    (and a1 a2)
-                    (setq a1  (nth ,att-nb a1)
-                          a2  (nth ,att-nb a2))
-                    ;; Convert times and maybe inode number to floats.
-                    ;; The inode conversion is kludgy, but is probably OK in practice.
-                    (when (consp a1) (setq a1  (bmkp-float-time a1)))
-                    (when (consp a2) (setq a2  (bmkp-float-time a2)))
-                    (cond (;; (1) links, (2) maybe uid, (3) maybe gid, (4, 5, 6) times
-                           ;; (7) size, (10) inode, (11) device.
-                           (numberp a1)
-                           (cond ((< a1 a2)  '(t))
-                                 ((> a1 a2)  '(nil))
-                                 (t          nil)))
-                          ((= 0 ,att-nb) ; (0) file (nil) < symlink (string) < dir (t)
-                           (cond ((and a2 (not a1))               '(t)) ; file vs (symlink or dir)
-                                 ((and a1 (not a2))               '(nil))
-                                 ((and (eq t a2) (not (eq t a1))) '(t)) ; symlink vs dir
-                                 ((and (eq t a1) (not (eq t a2))) '(t))
-                                 ((and (stringp a1) (stringp a2))
-                                  (if (string< a1 a2) '(t) '(nil)))
-                                 (t                               nil)))
-                          ((stringp a1) ; (2, 3) string uid/gid, (8) modes
-                           (cond ((string< a1 a2)  '(t))
-                                 ((string< a2 a1)  '(nil))
-                                 (t                nil)))
-                          ((eq ,att-nb 9) ; (9) gid would change if re-created. nil < t
-                           (cond ((and a2 (not a1))  '(t))
-                                 ((and a1 (not a2))  '(nil))
-                                 (t                  nil)))))
-                   (;; First has attributes, but not second.
-                    a1
-                    '(t))
-                   (;; Second has attributes, but not first.
-                    a2
-                    '(nil))
-                   (;; Neither has attributes.
-                    t
-                    nil)))
-            (;; First is a file, second is not.
-             (bmkp-local-file-bookmark-p b1)
-             '(t))
-            (;; Second is a file, first is not.
-             (bmkp-local-file-bookmark-p b2)
-             '(nil))
-            (t;; Neither is a file.
-             nil)))))
+                att-nb)
+       (setq b1  (bmkp-get-bookmark b1))
+       (setq b2  (bmkp-get-bookmark b2))
+       (let (,TMP-a1 ,TMP-a2)
+         (cond (;; Both are file bookmarks.
+                (and (bmkp-file-bookmark-p b1)  (bmkp-file-bookmark-p b2))
+                (setq ,TMP-a1  (file-attributes (bookmark-get-filename b1))
+                      ,TMP-a2  (file-attributes (bookmark-get-filename b2)))
+                (cond (;; Both have attributes.
+                       (and ,TMP-a1 ,TMP-a2)
+                       (setq ,TMP-a1  (nth ,att-nb ,TMP-a1)
+                             ,TMP-a2  (nth ,att-nb ,TMP-a2))
+                       ;; Convert times and maybe inode number to floats.
+                       ;; The inode conversion is kludgy, but is probably OK in practice.
+                       (when (consp ,TMP-a1) (setq ,TMP-a1  (bmkp-float-time ,TMP-a1)))
+                       (when (consp ,TMP-a2) (setq ,TMP-a2  (bmkp-float-time ,TMP-a2)))
+                       (cond (;; (1) links, (2) maybe uid, (3) maybe gid, (4, 5, 6) times
+                              ;; (7) size, (10) inode, (11) device.
+                              (numberp ,TMP-a1)
+                              (cond ((< ,TMP-a1 ,TMP-a2)  '(t))
+                                    ((> ,TMP-a1 ,TMP-a2)  '(nil))
+                                    (t          nil)))
+                             ((= 0 ,att-nb) ; (0) file (nil) < symlink (string) < dir (t)
+                              (cond ((and ,TMP-a2  (not ,TMP-a1))     '(t)) ; file vs (symlink or dir)
+                                    ((and ,TMP-a1  (not ,TMP-a2))               '(nil))
+                                    ((and (eq t ,TMP-a2)  (not (eq t ,TMP-a1))) '(t)) ; symlink vs dir
+                                    ((and (eq t ,TMP-a1)  (not (eq t ,TMP-a2))) '(t))
+                                    ((and (stringp ,TMP-a1)  (stringp ,TMP-a2))
+                                     (if (string< ,TMP-a1 ,TMP-a2) '(t) '(nil)))
+                                    (t                                          nil)))
+                             ((stringp ,TMP-a1) ; (2, 3) string uid/gid, (8) modes
+                              (cond ((string< ,TMP-a1 ,TMP-a2)  '(t))
+                                    ((string< ,TMP-a2 ,TMP-a1)  '(nil))
+                                    (t                nil)))
+                             ((eq ,att-nb 9) ; (9) gid would change if re-created. nil < t
+                              (cond ((and ,TMP-a2  (not ,TMP-a1))  '(t))
+                                    ((and ,TMP-a1  (not ,TMP-a2))  '(nil))
+                                    (t                  nil)))))
+                      (;; First has attributes, but not second.
+                       ,TMP-a1
+                       '(t))
+                      (;; Second has attributes, but not first.
+                       ,TMP-a2
+                       '(nil))
+                      (;; Neither has attributes.
+                       t
+                       nil)))
+               (;; First is a file, second is not.
+                (bmkp-local-file-bookmark-p b1)
+                '(t))
+               (;; Second is a file, first is not.
+                (bmkp-local-file-bookmark-p b2)
+                '(nil))
+               (t ;; Neither is a file.
+                nil))))))
 
 ;;; This is also defined in `bookmark+-1.el'.  It is used here to produce the code for
 ;;; `bmkp-define-history-variables' and `bmkp-define-sort-command'.
@@ -613,8 +624,8 @@ by \"Save Options\" in Custom buffers.")
                `,setting-sexp
                `(progn
 		 (custom-load-symbol ',variable)
-		 (let ((set (or (get ',variable 'custom-set) 'set-default))
-		       (get (or (get ',variable 'custom-get) 'default-value)))
+		 (let ((set (or (get ',variable 'custom-set)  'set-default))
+		       (get (or (get ',variable 'custom-get)  'default-value)))
 		   (funcall set ',variable (not (funcall get ',variable))))))
           (message ,message "enabled globally")
         (message ,message "disabled globally"))
@@ -625,19 +636,23 @@ by \"Save Options\" in Custom buffers.")
         (customize-mark-as-set ',variable)))
     '(menu-item ,item-name ,command
       :help ,help
-      :button (:toggle . (and (default-boundp ',variable) (default-value ',variable)))
+      :button (:toggle . (and (default-boundp ',variable)  (default-value ',variable)))
       ,@keywords)))
 
 ;;; Not used currently.  Provided so you can use it in your own code, if appropriate.
 ;;;###autoload (autoload 'bmkp-with-bookmark-dir "bookmark+")
 (defmacro bmkp-with-bookmark-dir (bookmark &rest body)
-  "Evaluate BODY forms with BOOKMARK location as `default-directory'.
+  "Evaluate BODY with BOOKMARK location as `default-directory'.
 If BOOKMARK has no location then use nil as `default-directory'."
-  `(let* ((loc                (bookmark-location ,bookmark))
-          (default-directory  (and (stringp loc)  (not (member loc (list bmkp-non-file-filename
-                                                                    "-- Unknown location --")))
-                               (if (file-directory-p loc) loc (file-name-directory loc)))))
-    ,@body))
+  (let ((TMP-loc  (make-symbol "loc")))
+    `(let* ((,TMP-loc           (bookmark-location ,bookmark))
+            (default-directory  (and (stringp ,TMP-loc)
+                                     (not (member ,TMP-loc (list bmkp-non-file-filename
+                                                                 "-- Unknown location --")))
+                                     (if (file-directory-p ,TMP-loc)
+                                         ,TMP-loc
+                                       (file-name-directory ,TMP-loc)))))
+       ,@body)))
 
 ;; These are needed because Emacs 29 removed `lexical-let[*]'.
 ;;
@@ -655,7 +670,7 @@ If BOOKMARK has no location then use nil as `default-directory'."
            (or (not (boundp 'lexical-binding)) ; Emacs <  24.something
                (not lexical-binding)))         ; Emacs >= 24.something
       `(lexical-let* ,@all)
-    `(let* ,@all)))
+    `(let* ,@all)))                     ; Emacs 29+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
