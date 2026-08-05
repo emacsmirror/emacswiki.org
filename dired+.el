@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  2 15:04:01 2026 (-0700)
+;; Last-Updated: Wed Aug  5 09:20:36 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14386
+;;     Update #: 14493
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -777,6 +777,7 @@
 ;;    `diredp-unmark-autofiles', `diredp-unmark-files-tagged-all',
 ;;    `diredp-unmark-files-tagged-none',
 ;;    `diredp-unmark-files-tagged-not-all',
+;;    `diredp-unmark-files-tagged-regexp',
 ;;    `diredp-unmark-files-tagged-some', `diredp-unmark-region-files',
 ;;    `diredp-untag-this-file', `diredp-upcase-recursive',
 ;;    `diredp-up-directory', `diredp-up-directory-reuse-dir-buffer',
@@ -1077,6 +1078,19 @@
  
 ;;; Change Log:
 ;;
+;; 2026/09/05 drew0
+;;     diredp-mark-if, diredp-mark-recursive-1, diredp-flag-auto-save-files-recursive,
+;;       diredp-mark-files-containing-regexp-recursive,  diredp-mark/unmark-autofiles,
+;;       diredp-mark-(autofiles|executables|directories|symlinks)-recursive,
+;;       diredp-mark-files-tagged-(regexp|all/none|some/not-all), diredp-flag-region-files-for-deletion,
+;;       diredp-unmark-files-tagged-(regexp|all/none|some/not-all), diredp-(un)mark-region-files(-with-char),
+;;       dired-mark-(files(-containing)-regexp|symlinks|directories|executables),
+;;       dired-flag-auto-save-files, dired-mark-sexp:
+;;         Added optional arg NO-MSGP.
+;;     diredp-mark-recursive-1: Include arg PLURAL in call to diredp-mark-if.
+;;     diredp-mark-sexp-recursive:
+;;       Bind var PRED-STRG to format sexp, so eval just once.
+;;       Change optional arg MSGP to NO-MSGP (opposite value).
 ;; 2026/08/02 drew0
 ;;     diredp-mark-if:
 ;;       Act on just the region, if dired-mark--region-use-p (Emacs 28+).
@@ -3609,7 +3623,7 @@ regardless of the language."))
 ;; 1. Value returned and message indicate both the number matched and the number changed.
 ;; 2. Added optional arg PLURAL, for irregular plurals (e.g. "directories").
 ;;
-(defmacro diredp-mark-if (predicate-sexp singular &optional plural)
+(defmacro diredp-mark-if (predicate-sexp singular &optional plural no-msgp)
   "Mark files for PREDICATE-SEXP, according to `dired-marker-char'.
 PREDICATE-SEXP is a Lisp sexp that's evaluated on each line, with
  point at beginning of line.  A non-nil return value marks the line.
@@ -3623,6 +3637,8 @@ Optional arg PLURAL is a plural noun phrase for the type of files
 If PLURAL is nil then a string SINGULAR should end with a noun that
  can be pluralized by adding `s'.
 
+Non-nil NO-MSGP means don't call `message'.
+
 Emacs 28 or later:
  In Transient Mark mode, if the mark is active, operate on the
  contents of the region if `dired-mark-region' is non-nil.
@@ -3634,12 +3650,14 @@ Otherwise return a cons (CHANGED . MATCHED), where:
  MATCHED is the number of files that matched PREDICATE-SEXP."
   (let ((TMP-singular  (make-symbol "singular"))
         (TMP-plural    (make-symbol "plural"))
+        (TMP-no-msgp   (make-symbol "no-msgp"))
         (TMP-beg       (make-symbol "beg"))
         (TMP-end       (make-symbol "end")))
     `(let ((inhibit-read-only  t)
            (use-region-p       (and (fboundp 'dired-mark--region-use-p)  (dired-mark--region-use-p)))
            (,TMP-singular      ,singular)
            (,TMP-plural        ,plural)
+           (,TMP-no-msgp       ,no-msgp)
            (,TMP-beg           (or (and  (fboundp 'dired-mark--region-beginning)
                                          (dired-mark--region-beginning))
                                    (point-min)))
@@ -3650,13 +3668,14 @@ Otherwise return a cons (CHANGED . MATCHED), where:
        (save-excursion
          (setq matched  0
                changed  0)
-         (when ,TMP-singular (message "%s %s%s%s..."
-                                      (cond ((eq dired-marker-char ?\040)            "Unmarking")
-                                            ((eq dired-del-marker dired-marker-char) "Flagging")
-                                            (t                                       "Marking"))
-                                      (or ,TMP-plural  (concat ,TMP-singular "s"))
-                                      (if (eq dired-del-marker dired-marker-char) " for deletion" "")
-                                      (if use-region-p "use-region-p" "")))
+         (when ,(and TMP-singular  (not TMP-no-msgp))
+           (message "%s %s%s%s..."
+                    (cond ((eq dired-marker-char ?\040)            "Unmarking")
+                          ((eq dired-del-marker dired-marker-char) "Flagging")
+                          (t                                       "Marking"))
+                    (or ,TMP-plural  (concat ,TMP-singular "s"))
+                    (if (eq dired-del-marker dired-marker-char) " for deletion" "")
+                    (if use-region-p "use-region-p" "")))
          (goto-char ,TMP-beg)
          (while (< (point) ,TMP-end)
            (when ,predicate-sexp
@@ -3664,14 +3683,15 @@ Otherwise return a cons (CHANGED . MATCHED), where:
              (unless (= (following-char) dired-marker-char)
                (delete-char 1) (insert dired-marker-char) (setq changed  (1+ changed))))
            (forward-line 1))
-         (when ,TMP-singular (message "%s %s%s%s newly %s%s%s"
-                                      matched
-                                      (if (= matched 1) ,TMP-singular (or ,TMP-plural  (concat ,TMP-singular "s")))
-                                      (if (not (= matched changed)) " matched, " "")
-                                      (if (not (= matched changed)) changed "")
-                                      (if (eq dired-marker-char ?\040) "un" "")
-                                      (if (eq dired-marker-char dired-del-marker) "flagged" "marked")
-                                      (if use-region-p " in region" ""))))
+         (when ,(and TMP-singular  (not TMP-no-msgp))
+           (message "%s %s%s%s newly %s%s%s"
+                    matched
+                    (if (= matched 1) ,TMP-singular (or ,TMP-plural  (concat ,TMP-singular "s")))
+                    (if (not (= matched changed)) " matched, " "")
+                    (if (not (= matched changed)) changed "")
+                    (if (eq dired-marker-char ?\040) "un" "")
+                    (if (eq dired-marker-char dired-del-marker) "flagged" "marked")
+                    (if use-region-p " in region" ""))))
        (and (> matched 0)  (cons changed matched)))))
 
 
@@ -7983,7 +8003,7 @@ When called from Lisp:
   (let ((files  (diredp-get-files ignore-marks-p predicate))) (diredp-list-files files nil nil nil details)))
 
 ;;;###autoload
-(defun diredp-flag-auto-save-files-recursive (&optional arg details)
+(defun diredp-flag-auto-save-files-recursive (&optional arg details no-msgp)
   ;; Bound to `M-+ #', menu `Marks' > `Here and Below' > `Flag Auto-Save Files...'
   "Flag all auto-save files for deletion, including in marked subdirs.
 A non-negative prefix arg means to unmark (unflag) them instead.
@@ -7992,11 +8012,12 @@ A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, flag all in this directory and all
 descendant directories.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-mark-recursive-1'."
-  (interactive (list current-prefix-arg diredp-list-file-attributes))
+When called from Lisp:
+ DETAILS and NO-MSGP are passed to `diredp-mark-recursive-1'."
+  (interactive (list current-prefix-arg diredp-list-file-attributes nil))
   (let ((dired-marker-char  dired-del-marker))
-    (diredp-mark-recursive-1 arg "auto-save files" "auto-save file" '(diredp-looking-at-p "^.* #.+#$") details)))
+    (diredp-mark-recursive-1 arg "auto-save files" "auto-save file"
+                             '(diredp-looking-at-p "^.* #.+#$") details no-msgp)))
 
 (when (fboundp 'char-displayable-p)     ; Emacs 22+
 
@@ -8302,7 +8323,7 @@ When called from Lisp, optional arg DETAILS is passed to
   (setq diredp-last-copied-filenames  (car kill-ring-yank-pointer)))
 
 ;;;###autoload
-(defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p details)
+(defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p details no-msgp)
   ;; Bound to `M-+ % m', menu `Regexp' > `Here and Below' > `Mark Named (Absolute)...'
   "Mark all files matching REGEXP, including those in marked subdirs.
 Like `dired-mark-files-regexp' but act recursively on marked subdirs.
@@ -8329,21 +8350,24 @@ REGEXP is added to `regexp-search-ring', for regexp search.
 Note: If there is more than one Dired buffer for a given subdirectory
 then only the first such is used.
 
-When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
+When called from Lisp:
+ DETAILS is passed to `diredp-get-subdirs'.
+ NO-MSGP non-nil means don't display messages."
   (interactive (let* ((numarg   (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
                       (unmark   (and numarg  (>= numarg 0)))
                       (ignorep  (and numarg  (<= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " files (regexp): "))
                        (and unmark  ?\040)
                        ignorep
-                       diredp-list-file-attributes)))
+                       diredp-list-file-attributes
+                       nil)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
         (sdirs              (diredp-get-subdirs ignore-marks-p nil details))
         (matched            0)
         (changed            0)
         dbufs chg.mtch)
-    (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
+    (unless no-msgp (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking")))
     (dolist (dir  (cons default-directory sdirs))
       (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
@@ -8351,19 +8375,18 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                                (not (eolp)) ; Empty line
                                                (let ((fn  (dired-get-filename nil 'NO-ERROR)))
                                                  (and fn  (diredp-string-match-p regexp fn))))
-                                          "file")
+                                          "file" nil no-msgp)
                 changed   (+ changed (or (car chg.mtch)  0))
                 matched   (+ matched (or (cdr chg.mtch)  0))))))
-    (message "%s file%s%s%s newly %s"
-             matched
-             (dired-plural-s matched)
-             (if (not (= matched changed)) " matched, " "")
-             (if (not (= matched changed)) changed "")
-             (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+    (unless no-msgp (message "%s file%s%s%s newly %s"
+                             matched
+                             (dired-plural-s matched)
+                             (if (not (= matched changed)) " matched, " "")
+                             (if (not (= matched changed)) changed "")
+                             (if (eq ?\040 dired-marker-char) "unmarked" "marked")))))
 
 ;;;###autoload
-(defun diredp-mark-files-containing-regexp-recursive (regexp
-                                                      &optional marker-char ignore-marks-p details)
+(defun diredp-mark-files-containing-regexp-recursive (regexp &optional marker-char ignore-marks-p details no-msgp)
                                         ; Bound to `M-+ % g', menu `Regexp' > `Here and Below' > `Mark Containing...'
   "Mark files with contents containing a REGEXP match, including in marked subdirs.
 Like `dired-mark-files-containing-regexp' but act recursively on
@@ -8385,22 +8408,24 @@ nil, this looks in the buffer without revisiting the file, so the
 results might be inconsistent with the file on disk if its contents
 have changed since it was last visited.
 
-When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
-
+When called from Lisp:
+ DETAILS is passed to `diredp-get-subdirs'.
+ NO-MSGP non-nil means don't display messages."
   (interactive (let* ((numarg   (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
                       (unmark   (and numarg  (>= numarg 0)))
                       (ignorep  (and numarg  (<= numarg 0))))
                  (list (diredp-read-regexp (concat (if unmark "UNmark" "Mark") " files containing (regexp): "))
                        (and unmark  ?\040)
                        ignorep
-                       diredp-list-file-attributes)))
+                       diredp-list-file-attributes
+                       nil)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
         (sdirs              (diredp-get-subdirs ignore-marks-p nil details))
         (matched            0)
         (changed            0)
         dbufs chg.mtch)
-    (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
+    (unless no-msgp (message "%s files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking")))
     (dolist (dir  (cons default-directory sdirs))
       (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
@@ -8413,7 +8438,7 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                              (file-readable-p fname)
                              (not (file-directory-p fname))
                              (let ((prebuf  (get-file-buffer fname)))
-                               (message "Checking %s" fname)
+                               (unless no-msgp (message "Checking %s" fname))
                                ;; For now, do it inside Emacs.  Grep might be better if there are lots of files.
                                (if (and prebuf  (or (not (boundp 'dired-always-read-filesystem))
                                                     (not dired-always-read-filesystem))) ; Emacs 26+
@@ -8423,15 +8448,15 @@ When called from Lisp, DETAILS is passed to `diredp-get-subdirs'."
                                    (insert-file-contents fname)
                                    (goto-char (point-min))
                                    (re-search-forward regexp nil t)))))))
-                 "file")
+                 "file" nil no-msgp)
                 changed   (+ changed (or (car chg.mtch)  0))
                 matched   (+ matched (or (cdr chg.mtch)  0))))))
-    (message "%s file%s%s%s newly %s"
-             matched
-             (dired-plural-s matched)
-             (if (not (= matched changed)) " matched, " "")
-             (if (not (= matched changed)) changed "")
-             (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+    (unless no-msgp (message "%s file%s%s%s newly %s"
+                             matched
+                             (dired-plural-s matched)
+                             (if (not (= matched changed)) " matched, " "")
+                             (if (not (= matched changed)) changed "")
+                             (if (eq ?\040 dired-marker-char) "unmarked" "marked")))))
 
 (defun diredp-mark-extension-recursive (extension &optional arg details)
                                         ; Bound to `M-+ * .', menu `Marks' > `Here and Below' > `Extension...'
@@ -8499,7 +8524,7 @@ function `read-from-minibuffer'."
   ;;
   (defalias 'diredp-mark-if-sexp-recursive 'dired-mark-sexp-recursive)
   ;;
-  (defun diredp-mark-sexp-recursive (predicate-sexp &optional arg details msgp)
+  (defun diredp-mark-sexp-recursive (predicate-sexp &optional arg details no-msgp)
                                         ; Bound to `M-+ M-(', `M-+ * (', menu `Marks' > `Here and Below' > `If...'
     "Mark files here and below for which PREDICATE-SEXP returns non-nil.
 Like `dired-mark-sexp', but act recursively on subdirs.
@@ -8549,7 +8574,7 @@ refer at all to the underlying file system.  Contrast this with
 When called from Lisp:
  ARG behaves as `current-prefix-arg'.
  DETAILS is passed to `diredp-get-subdirs'.
- MSGP non-nil displays messages."
+ NO-MSGP non-nil means don't display messages."
 
     ;; Using `sym' = "", instead of nil, for non-linked files avoids the trap of
     ;; (string-match "foo" sym) into which a user would soon fall.
@@ -8561,8 +8586,8 @@ When called from Lisp:
             (list (diredp-read-expression (format "%s if (Lisp expr): " (if current-prefix-arg "UNmark" "Mark")))
                   current-prefix-arg
                   diredp-list-file-attributes
-                  t)))
-    (when msgp (message "%s" predicate-sexp))
+                  nil)))
+    (unless no-msgp (message "%s" predicate-sexp))
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (unmark             (and numarg  (>= numarg 0)))
            (ignorep            (and numarg  (<= numarg 0)))
@@ -8571,6 +8596,7 @@ When called from Lisp:
            (blks               ())
            (matched            0)
            (changed            0)
+           (pred-strg          (format "%s file" predicate-sexp)) ; Do this once, not each time in loop. 
            dbufs chg.mtch mode nlink uid gid size time name sym)
       (dolist (dir  (cons default-directory (diredp-get-subdirs ignorep nil details)))
         (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
@@ -8690,18 +8716,18 @@ When called from Lisp:
                                 (time  . ,time)
                                 (name  . ,name)
                                 (sym   . ,sym))))))
-                   (format "'%s file" predicate-sexp)))
+                   pred-strg nil no-msgp))
             (setq changed   (+ changed (or (car chg.mtch)  0))
                   matched   (+ matched (or (cdr chg.mtch)  0))))))
-      (when msgp (message "%s file%s%s%s newly %s" matched (dired-plural-s matched)
-                          (if (not (= matched changed)) " matched, " "")
-                          (if (not (= matched changed)) changed "")
-                          (if (eq ?\040 dired-marker-char) "unmarked" "marked")))))
+      (unless no-msgp (message "%s file%s%s%s newly %s" matched (dired-plural-s matched)
+                               (if (not (= matched changed)) " matched, " "")
+                               (if (not (= matched changed)) changed "")
+                               (if (eq ?\040 dired-marker-char) "unmarked" "marked")))))
 
   )
 
 ;;;###autoload
-(defun diredp-mark-autofiles-recursive (&optional arg details)
+(defun diredp-mark-autofiles-recursive (&optional arg details no-msgp)
                                         ; Bound to `M-+ * B', menu `Marks' > `Here and Below' > `Autofiles'
   "Mark all autofiles, including in marked subdirs.
 Autofiles are files that have an autofile bookmark.
@@ -8711,8 +8737,8 @@ A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, mark all in this directory and all
 descendant directories.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-mark-recursive-1'."
+When called from Lisp:
+ DETAILS and NO-MSGP are passed to `diredp-mark-recursive-1'."
   (interactive (list current-prefix-arg diredp-list-file-attributes))
   (diredp-ensure-bookmark+)
   (diredp-ensure-mode)
@@ -8720,10 +8746,11 @@ When called from Lisp, optional arg DETAILS is passed to
                            '(and (not (diredp-looking-at-p dired-re-dot))  (not (eolp))
                              (let ((fname  (dired-get-filename nil 'NO-ERROR)))
                                (and fname  (bmkp-get-autofile-bookmark fname))))
-                           details))
+                           details
+                           no-msgp))
 
 ;;;###autoload
-(defun diredp-mark-executables-recursive (&optional arg details)
+(defun diredp-mark-executables-recursive (&optional arg details no-msgp)
                                         ; Bound to `M-+ * *', menu `Marks' > `Here and Below' > `Executables'
   "Mark all executable files, including in marked subdirs.
 The files included are those that are marked in the current Dired
@@ -8736,13 +8763,14 @@ A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, mark all in this directory and all
 descendant directories.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-mark-recursive-1'."
+When called from Lisp:
+ DETAILS and NO-MSGP are passed to `diredp-mark-recursive-1'."
   (interactive (list current-prefix-arg diredp-list-file-attributes))
-  (diredp-mark-recursive-1 arg "executable files" "executable file" '(diredp-looking-at-p dired-re-exe) details))
+  (diredp-mark-recursive-1 arg "executable files" "executable file"
+                           '(diredp-looking-at-p dired-re-exe) details no-msgp))
 
 ;;;###autoload
-(defun diredp-mark-directories-recursive (&optional arg details)
+(defun diredp-mark-directories-recursive (&optional arg details no-msgp)
                                         ; Bound to `M-+ * /', menu `Marks' > `Here and Below' > `Directories'
   "Mark all directories except `.' and `..', including in marked subdirs.
 The directories included are those that are marked in the current
@@ -8755,14 +8783,15 @@ A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, mark all in this directory and all
 descendant directories.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-mark-recursive-1'."
+When called from Lisp:
+ DETAILS and NO-MSGP are passed to `diredp-mark-recursive-1'."
   (interactive (list current-prefix-arg diredp-list-file-attributes))
-  (diredp-mark-recursive-1 arg "directories" "directory" '(and (diredp-looking-at-p dired-re-dir)
-                                                           (not (diredp-looking-at-p dired-re-dot)))
-                           details))
+  (diredp-mark-recursive-1 arg "directories" "directory"
+                           '(and (diredp-looking-at-p dired-re-dir)  (not (diredp-looking-at-p dired-re-dot)))
+                           details
+                           no-msgp))
 ;;;###autoload
-(defun diredp-mark-symlinks-recursive (&optional arg details)
+(defun diredp-mark-symlinks-recursive (&optional arg details no-msgp)
                                         ; Bound to `M-+ * @', menu `Marks' > `Here and Below' > `Symbolic Links'
   "Mark all symbolic links, including in marked subdirs.
 The symlinks included are those that are marked in the current Dired
@@ -8775,12 +8804,12 @@ A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, mark all in this directory and all
 descendant directories.
 
-When called from Lisp, optional arg DETAILS is passed to
-`diredp-get-subdirs'."
+When called from Lisp:
+ DETAILS and NO-MSGP are passed to `diredp-mark-recursive-1'."
   (interactive (list current-prefix-arg diredp-list-file-attributes))
-  (diredp-mark-recursive-1 arg "symlinks" "symbolic link" '(diredp-looking-at-p dired-re-sym) details))
+  (diredp-mark-recursive-1 arg "symlinks" "symbolic link" '(diredp-looking-at-p dired-re-sym) details no-msgp))
 
-(defun diredp-mark-recursive-1 (arg plural singular predicate-sexp details)
+(defun diredp-mark-recursive-1 (arg plural singular predicate-sexp details &optional no-msgp)
   "Helper for `diredp-mark-*-recursive' commands."
   (let* ((numarg             (and arg  (prefix-numeric-value arg)))
          (unmark             (and numarg  (>= numarg 0)))
@@ -8790,19 +8819,19 @@ When called from Lisp, optional arg DETAILS is passed to
          (changed            0)
          (matched            0)
          dbufs chg.mtch)
-    (message "%s %s..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") plural)
+    (unless no-msgp (message "%s %s..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") plural))
     (dolist (dir  (cons default-directory sdirs))
       (when (setq dbufs  (dired-buffers-for-dir dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car dbufs)
-          (setq chg.mtch  (diredp-mark-if (eval predicate-sexp) singular)
+          (setq chg.mtch  (diredp-mark-if (eval predicate-sexp) singular plural no-msgp)
                 changed   (+ changed (or (car chg.mtch)  0))
                 matched   (+ matched (or (cdr chg.mtch)  0))))))
-    (message "%s %s%s%s newly %s"
-             matched
-             (if (= 1 matched) singular plural)
-             (if (not (= matched changed)) " matched, " "")
-             (if (not (= matched changed)) changed "")
-             (if (eq ?\040 dired-marker-char) "unmarked" "marked"))))
+    (unless no-msgp (message "%s %s%s%s newly %s"
+                             matched
+                             (if (= 1 matched) singular plural)
+                             (if (not (= matched changed)) " matched, " "")
+                             (if (not (= matched changed)) changed "")
+                             (if (eq ?\040 dired-marker-char) "unmarked" "marked")))))
 
 ;;;###autoload
 (defun diredp-capitalize-recursive (&optional ignore-marks-p details)
@@ -9814,12 +9843,13 @@ Optional argument UNMARK-P is the prefix arg."
                                    "\\)$")
                            (and unmark-p  ?\040)))
 
-(defun diredp-mark-files-tagged-all/none (tags &optional none-p unmarkp prefix)
+(defun diredp-mark-files-tagged-all/none (tags &optional none-p unmarkp prefix no-msgp)
   "Mark or unmark files tagged with all or none of TAGS.
 TAGS is a list of strings, the tag names.
 NONEP non-nil means mark/unmark files that have none of the TAGS.
 UNMARKP non-nil means unmark; nil means mark.
 PREFIX non-nil is the prefix of the autofile bookmarks to check.
+NO-MSGP is passed to `diredp-mark-if'.
 
 As a special case, if TAGS is empty, then mark or unmark the files
 that have any tags at all, or if NONEP is non-nil then mark or unmark
@@ -9839,14 +9869,17 @@ those that have no tags at all."
                            (if (null tags)
                                (if none-p (not btgs) btgs)
                              allp)))
-                    (if none-p "no-tags-matching file" "all-tags-matching file"))))
+                    (if none-p "no-tags-matching file" "all-tags-matching file")
+                    nil
+                    no-msgp)))
 
-(defun diredp-mark-files-tagged-some/not-all (tags &optional notallp unmarkp prefix)
+(defun diredp-mark-files-tagged-some/not-all (tags &optional notallp unmarkp prefix no-msgp)
   "Mark or unmark files tagged with any or not all of TAGS.
 TAGS is a list of strings, the tag names.
 NOTALLP non-nil means mark/unmark files that do not have all TAGS.
 UNMARKP non-nil means unmark; nil means mark.
 PREFIX non-nil is the prefix of the autofile bookmarks to check.
+NO-MSGP is passed to `diredp-mark-if'.
 
 As a special case, if TAGS is empty, then mark or unmark the files
 that have any tags at all, or if NOTALLP is non-nil then mark or
@@ -9865,7 +9898,9 @@ unmark those that have no tags at all."
                                                             (throw 'diredp-m-f-t-sna t)))
                                                         nil))))
                            (if (null tags) (if notallp (not btgs) btgs) allp)))
-                    (if notallp "some-tags-not-matching file" "some-tags-matching file"))))
+                    (if notallp "some-tags-not-matching file" "some-tags-matching file")
+                    nil
+                    no-msgp)))
 
 ;;;###autoload
 (defun diredp-mark-files-tagged-all (tags &optional none-p prefix)
@@ -9932,15 +9967,18 @@ You need library `bookmark+.el' to use this command."
   (diredp-mark-files-tagged-some/not-all tags (not somep) nil prefix))
 
 ;;;###autoload
-(defun diredp-mark-files-tagged-regexp (regexp &optional notp prefix)
+(defun diredp-mark-files-tagged-regexp (regexp &optional notp prefix no-msgp)
                                         ; `T m %', menu `Marks' > `Tagged' > `Mark Tagged Matching Regexp...'
   "Mark files that have at least one tag that matches REGEXP.
 With a prefix arg, mark all that are tagged but have no matching tags.
-You need library `bookmark+.el' to use this command."
+You need library `bookmark+.el' to use this command.
+
+When called from Lisp, NO-MSGP is passed to `diredp-mark-if'."
   (interactive (list (read-string "Regexp: ")
                      current-prefix-arg
                      (and diredp-prompt-for-bookmark-prefix-flag
-                          (read-string "Prefix for autofile bookmark names: "))))
+                          (read-string "Prefix for autofile bookmark names: "))
+                     nil))
   (diredp-ensure-bookmark+)
   (diredp-ensure-mode)
   (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))  (not (eolp))
@@ -9954,14 +9992,18 @@ You need library `bookmark+.el' to use this command."
                                                                          (bmkp-tag-name tag)))
                                                                     btgs))))
                          (and btgs  (if notp (not anyp) anyp))))
-                  "some-tag-matching-regexp file"))
+                  "some-tag-matching-regexp file"
+                  nil
+                  no-msgp))
 
 ;;;###autoload
-(defun diredp-unmark-files-tagged-regexp (regexp &optional notp prefix)
+(defun diredp-unmark-files-tagged-regexp (regexp &optional notp prefix no-msgp)
                                         ; `T u %', menu `Marks' > `Tagged' > `Unmark Tagged Matching Regexp...'
   "Unmark files that have at least one tag that matches REGEXP.
 With a prefix arg, unmark all that are tagged but have no matching tags.
-You need library `bookmark+.el' to use this command."
+You need library `bookmark+.el' to use this command.
+
+When called from Lisp, NO-MSGP is passed to `diredp-mark-if'."
   (interactive (list (read-string "Regexp: ")
                      current-prefix-arg
                      (and diredp-prompt-for-bookmark-prefix-flag
@@ -9979,7 +10021,9 @@ You need library `bookmark+.el' to use this command."
                                                                           (bmkp-tag-name tag)))
                                                                      btgs))))
                            (and btgs  (if notp (not anyp) anyp))))
-                    "some-tag-matching-regexp file")))
+                    "some-tag-matching-regexp file"
+                    nil
+                    no-msgp)))
 
 ;;;###autoload
 (defun diredp-unmark-files-tagged-all (tags &optional none-p prefix)
@@ -10434,13 +10478,14 @@ You need library `bookmark+.el' to use this command."
   (diredp-mark/unmark-autofiles t))
 
 ;;;###autoload
-(defun diredp-mark/unmark-autofiles (&optional unmarkp)
-  "Mark all autofiles, or unmark if UNMARKP is non-nil."
+(defun diredp-mark/unmark-autofiles (&optional unmarkp no-msgp)
+  "Mark all autofiles, or unmark if UNMARKP is non-nil.
+When called from Lisp, NO-MSGP is passed to `diredp-mark-if'."
   (let ((dired-marker-char  (if unmarkp ?\040 dired-marker-char)))
     (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))  (not (eolp))
                          (let ((fname  (dired-get-filename nil 'NO-ERROR)))
                            (and fname  (bmkp-get-autofile-bookmark fname))))
-                    "autofile")))
+                    "autofile" nil no-msgp)))
 
 (when (and (fboundp 'bmkp-get-autofile-bookmark) ; Defined in `bookmark+-1.el'.
            (fboundp 'hlt-highlight-region)) ; Defined in `highlight.el'.
@@ -13962,9 +14007,10 @@ If called from Lisp, argument FLIP acts as the prefix arg."
 ;; 1. Prefix arg has more possibilities.
 ;; 2, Added optional arg NAME-FORM, so you can mark/unmark matching different file-name forms.
 ;; 3. Push REGEXP onto `regexp-search-ring'.
+;; 4. Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-files-regexp (regexp &optional marker-char name-form) ; Not bound by default
+(defun dired-mark-files-regexp (regexp &optional marker-char name-form no-msgp) ; Not bound by default
   "Mark all file names matching REGEXP for use in later commands.
 `.' and `..' are never marked or unmarked by this command.
 
@@ -14029,7 +14075,9 @@ When called from Lisp:
    (NAME-FORM differs from the LOCALP arg of `dired-get-filename' in
    that the nil and other non-nil cases are swapped.  This is
    unfortunate, but it is to keep nil NAME-FORM compatible with the
-   vanilla Emacs behavior, where this arg does not exist.)"
+   vanilla Emacs behavior, where this arg does not exist.)
+
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive (let* ((raw      current-prefix-arg)
                       (C-u      (and (consp raw)  (= 4 (car raw))))
                       (C-u-C-u  (and (consp raw)  (= 16 (car raw))))
@@ -14046,7 +14094,8 @@ When called from Lisp:
                                                              (no-dir  "relative names - no dir")
                                                              (t       "absolute names")))))
                        (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
-                       type)))
+                       type
+                       nil)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (diredp-mark-if (and (not (diredp-looking-at-p dired-re-dot))
@@ -14057,15 +14106,15 @@ When called from Lisp:
                                                           (t       nil))
                                                         'NO-ERROR)))
                            (and fn  (diredp-string-match-p regexp fn))))
-                    "file")))
+                    "file" nil no-msgp)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Use `diredp-mark-if', not `dired-mark-if'.
+;; Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-files-containing-regexp (regexp &optional marker-char)
+(defun dired-mark-files-containing-regexp (regexp &optional marker-char no-msgp)
   ;; Menu `Marks' > `Mark' > `Mark Content Matching Regexp...', menu `Regexp' > `Mark Containing...'
   "Mark files with contents containing a REGEXP match.
 A prefix argument means unmark them instead.
@@ -14074,7 +14123,11 @@ A prefix argument means unmark them instead.
 If a file is visited in a buffer and `dired-always-read-filesystem' is
 nil, this looks in the buffer without revisiting the file, so the
 results might be inconsistent with the file on disk if its contents
-have changed since it was last visited."
+have changed since it was last visited.
+
+When called from Lisp:
+ Non-nil MARKER-CHAR is the marker character, for `dired-marker-char'.
+ Non-nil NO-MSGP means don't call `message'."
   (interactive
    (list (diredp-read-regexp (concat (if current-prefix-arg "Unmark" "Mark") " files containing (regexp): ")
                              nil 'dired-regexp-history)
@@ -14085,7 +14138,7 @@ have changed since it was last visited."
                          (let ((fname  (dired-get-filename nil 'NO-ERROR)))
                            (when (and fname  (file-readable-p fname)  (not (file-directory-p fname)))
                              (let ((prebuf  (get-file-buffer fname)))
-                               (message "Checking %s" fname)
+                               (unless no-msgp (message "Checking %s" fname))
                                ;; For now, do it inside Emacs.  Grep might be better if there are lots of files.
                                (if (and prebuf  (or (not (boundp 'dired-always-read-filesystem))
                                                     (not dired-always-read-filesystem))) ; Emacs 26+
@@ -14095,57 +14148,69 @@ have changed since it was last visited."
                                    (insert-file-contents fname)
                                    (goto-char (point-min))
                                    (re-search-forward regexp nil t)))))))
-                    "file")))
+                    "file" nil no-msgp)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Use `diredp-mark-if', not `dired-mark-if'.
+;; Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-symlinks (unflag-p) ; Menu `Marks' > `Mark' > `Mark Symlinks'
+(defun dired-mark-symlinks (unflag-p &optional no-msgp) ; Menu `Marks' > `Mark' > `Mark Symlinks'
   "Mark all symbolic links.
-With prefix argument, unmark or unflag all those files."
+With a prefix argument, unmark or unflag all those files.
+When called from Lisp:
+ UNFLAG-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((dired-marker-char  (if unflag-p ?\040 dired-marker-char)))
-    (diredp-mark-if (diredp-looking-at-p dired-re-sym) "symbolic link")))
+    (diredp-mark-if (diredp-looking-at-p dired-re-sym) "symbolic link" nil no-msgp)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Use `diredp-mark-if', not `dired-mark-if'.
+;; Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-directories (unflag-p) ; Menu `Marks' > `Mark' > `Mark Directories'
-  "Mark all directory file lines except `.' and `..'.
-With prefix argument, unmark or unflag the files instead."
+(defun dired-mark-directories (unflag-p &optional no-msgp) ; Menu `Marks' > `Mark' > `Mark Directories'
+  "Mark all directory lines except `.' and `..'.
+With a prefix argument, unmark or unflag the directories instead.
+When called from Lisp:
+ UNFLAG-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((dired-marker-char  (if unflag-p ?\040 dired-marker-char)))
     (diredp-mark-if (and (diredp-looking-at-p dired-re-dir)  (not (diredp-looking-at-p dired-re-dot)))
-                    "directory" "directories")))
+                    "directory" "directories" no-msgp)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Use `diredp-mark-if', not `dired-mark-if'.
+;; Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-executables (unflag-p) ; Menu `Marks' > `Mark' > `Mark Executables'
+(defun dired-mark-executables (unflag-p &optional no-msgp) ; Menu `Marks' > `Mark' > `Mark Executables'
   "Mark all executable files.
-With prefix argument, unmark or unflag the files instead."
+With a prefix argument, unmark or unflag the files instead.
+When called from Lisp:
+ UNFLAG-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((dired-marker-char  (if unflag-p ?\040 dired-marker-char)))
-    (diredp-mark-if (diredp-looking-at-p dired-re-exe) "executable file")))
+    (diredp-mark-if (diredp-looking-at-p dired-re-exe) "executable file" nil no-msgp)))
 
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Use `diredp-mark-if', not `dired-mark-if'.
+;; Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-flag-auto-save-files (&optional unflag-p) ; Menu `Marks' > `Mark' > `Flag Auto-save Files'
+(defun dired-flag-auto-save-files (&optional unflag-p no-msgp) ; Menu `Marks' > `Mark' > `Flag Auto-save Files'
   "Flag for deletion files whose names suggest they are auto save files.
-A prefix argument says to unmark or unflag the files instead."
+With a prefix argument, unmark or unflag the files instead.
+When called from Lisp:
+ UNFLAG-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((dired-marker-char  (if unflag-p ?\040 dired-del-marker)))
     (diredp-mark-if
@@ -14159,7 +14224,9 @@ A prefix argument says to unmark or unflag the files instead."
           (not (diredp-looking-at-p dired-re-dir))
           (let ((fname  (dired-get-filename t 'NO-ERROR)))
             (and fname  (auto-save-file-name-p (file-name-nondirectory fname)))))
-     "auto-save file")))
+     "auto-save file"
+     nil
+     no-msgp)))
 
 ;;;###autoload
 (defun diredp-capitalize (&optional arg) ; Bound to `% c', menu `Multiple' > `Rename' > `Capitalize'
@@ -14626,9 +14693,10 @@ When called from Lisp, optional arg DETAILS is passed to
 ;; 1. Variable (symbol) `s' -> `blks'.
 ;; 2. Fixes to remove leading space from `uid' and allow `.' in `gid'.
 ;; 3. Cleaned up doc string and code a bit.
+;; 4. Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-sexp (predicate &optional unmark-p) ; Bound to `M-(', `* (', menu `Marks' > `Mark' > `Mark If...'
+(defun dired-mark-sexp (predicate &optional unmark-p no-msgp) ; Bound to `M-(', `* (', menu `Marks' > `Mark' > `Mark If...'
   "Mark files for which PREDICATE returns non-nil.
 With a prefix arg, unmark or unflag those files instead.
 
@@ -14666,12 +14734,16 @@ present for some values of `ls-lisp-emulation'.
 
 This function operates only on the Dired buffer content.  It does not
 refer at all to the underlying file system.  Contrast this with
-`find-dired', which might be preferable for the task at hand."
+`find-dired', which might be preferable for the task at hand.
+
+When called from Lisp:
+ Non-nil UNMARK-P acts like `current-prefix-arg'.
+ Non-nil NO-MSGP means don't call `message'."
   ;; Using `sym' = "", instead of nil, for non-linked files avoids the trap of
   ;; (string-match "foo" sym) into which a user would soon fall.
   ;; Use `equal' instead of `=' in the example, as it works on integers and strings.
   (interactive "xMark if (vars: inode,blks,mode,nlink,uid,gid,size,time,name,sym): \nP")
-  (message "%s" predicate)
+  (unless no-msgp (message "%s" predicate))
   (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char))
         (inode              nil)
         (blks               ())
@@ -14774,7 +14846,9 @@ refer at all to the underlying file system.  Contrast this with
                   (time  . ,time)
                   (name  . ,name)
                   (sym   . ,sym))))))
-     (format "'%s file" predicate))))
+     (format "'%s file" predicate)
+     nil
+     no-msgp)))
 
 (defun diredp-this-file-marked-p (&optional mark-char)
   "Return non-nil if the file on this line is marked.
@@ -14848,10 +14922,13 @@ With numeric prefix arg N, mark the next N lines."
   (let ((dired-marker-char  char)) (dired-mark arg)))
 
 ;;;###autoload
-(defun diredp-mark-region-files-with-char (char &optional unmark-p)
+(defun diredp-mark-region-files-with-char (char &optional unmark-p no-msgp)
   ;; Menu `Marks' > `Mark' > `Mark Region with Char...'
   "Mark lines in active region with CHAR.
-With non-nil prefix arg, unmark CHAR instead."
+With a prefix arg, unmark CHAR instead.
+When called from Lisp:
+ UNMARK-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   ;; Need workaround for Emacs < 28 - see Emacs bug #46243.
   ;;(interactive "cMark region with char: \nP")
   (interactive
@@ -14864,12 +14941,16 @@ With non-nil prefix arg, unmark CHAR instead."
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
           end  (save-excursion (goto-char end) (when (and (bolp) (> end beg)) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
-      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-unmarked-p)) "region file"))))
+      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-unmarked-p))
+                      "region file" nil no-msgp))))
 
 ;;;###autoload
-(defun diredp-mark-region-files (&optional unmark-p) ; Menu `Marks' > `Mark' > `Mark Region...'
+(defun diredp-mark-region-files (&optional unmark-p no-msgp) ; Menu `Marks' > `Mark' > `Mark Region...'
   "Mark all of the files in the current region (if it is active).
-With non-nil prefix arg, unmark them instead."
+With a prefix arg, unmark them instead.
+When called from Lisp:
+ UNMARK-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
@@ -14877,12 +14958,16 @@ With non-nil prefix arg, unmark them instead."
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
           end  (save-excursion (goto-char end) (when (and (bolp) (> end beg)) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
-      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-unmarked-p)) "region file"))))
+      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-unmarked-p))
+                      "region file" nil no-msgp))))
 
 ;;;###autoload
-(defun diredp-unmark-region-files (&optional mark-p) ; Menu `Marks' > `Mark' > `Unmark Region...'
+(defun diredp-unmark-region-files (&optional mark-p no-msgp) ; Menu `Marks' > `Mark' > `Unmark Region...'
   "Unmark all of the files in the current region (if it is active).
-With non-nil prefix arg, mark them instead."
+With a prefix arg, mark them instead.
+When called from Lisp:
+ MARK-P acts like `current-prefix-arg'.
+ NO-MSGP is passed to `diredp-mark-if'."
   (interactive "P")
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
@@ -14890,11 +14975,13 @@ With non-nil prefix arg, mark them instead."
     (setq beg  (save-excursion (goto-char beg) (line-beginning-position))
           end  (save-excursion (goto-char end) (when (and (bolp) (> end beg)) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  (if mark-p dired-marker-char ?\040)))
-      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-marked-p)) "region file"))))
+      (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-marked-p))
+                      "region file" nil no-msgp))))
 
 ;;;###autoload
-(defun diredp-flag-region-files-for-deletion () ; Menu `Marks' > `Flag' > `Flag Region'
-  "Flag all of the files in the current region (if it is active) for deletion."
+(defun diredp-flag-region-files-for-deletion (&optional no-msgp) ; Menu `Marks' > `Flag' > `Flag Region'
+  "Flag all of the files in the current region (if active) for deletion.
+When called from Lisp, NO-MSGP is passed to `diredp-mark-if'."
   (interactive)
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
@@ -14903,7 +14990,7 @@ With non-nil prefix arg, mark them instead."
           end  (save-excursion (goto-char end) (when (and (bolp) (> end beg)) (backward-char)) (line-end-position)))
     (let ((dired-marker-char  dired-del-marker))
       (diredp-mark-if (and (<= (point) end)  (>= (point) beg)  (diredp-this-file-unmarked-p ?\D))
-                      "region file"))))
+                      "region file" nil no-msgp))))
 
 ;;;###autoload
 (defun diredp-toggle-marks-in-region (beg end) ; Not bound by default
