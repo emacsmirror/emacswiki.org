@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jul 23 14:05:24 2026 (-0700)
+;; Last-Updated: Thu Aug  6 16:39:45 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4858
+;;     Update #: 4859
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -20,18 +20,15 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
-;;   `crosshairs', `eieio', `eieio-core', `eieio-loaddefs',
-;;   `epg-config', `fit-frame', `font-lock', `font-lock+',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `eieio',
+;;   `eieio-core', `eieio-loaddefs', `epg-config', `fit-frame',
 ;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `hl-line', `hl-line+',
-;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `naked', `package', `password-cache',
-;;   `pp', `pp+', `radix-tree', `rect', `replace', `second-sel',
-;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
+;;   `help-macro', `help-macro+', `help-mode', `info', `info+',
+;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
+;;   `rect', `second-sel', `seq', `strings', `tabulated-list',
 ;;   `thingatpt', `thingatpt+', `url-handlers', `url-parse',
-;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+'.
+;;   `url-vars', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -4709,7 +4706,7 @@ Unlike `bookmark-bmenu-select', this command:
                                                    (bookmark-bmenu-bookmark)))))
     (unless bmk (error "No bookmark here"))
     (bookmark-handle-bookmark bmk)
-    ;; Probably do not want this.  Users can use `jump-fn' tag if need be.
+    ;; Probably do not want to run the hook.  Users can use `bmkp-jump' tag if need be.
     ;; (let ((orig-buff  (current-buffer))) ; Used by `crosshairs-highlight'.
     ;;   (run-hooks 'bookmark-after-jump-hook))
     (let ((jump-fn  (bmkp-get-tag-value bmk "bmkp-jump")))
