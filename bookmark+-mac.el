@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Aug  2 16:09:11 2026 (-0700)
+;; Last-Updated: Thu Aug  6 17:41:24 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 295
+;;     Update #: 297
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -245,7 +245,7 @@ Non-nil OTHERP means define a command that cycles in another window."
     `(defun ,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
          (increment &optional startoverp)
        ,(if otherp
-            (format "Same as `bmkp-cycle-%s', but use other window." type)
+            (format "`bmkp-cycle-%s', but use other window." type)
           (format "Cycle through %s bookmarks by INCREMENT (default: 1).
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
 Interactively, the prefix arg determines INCREMENT:
@@ -273,7 +273,7 @@ Non-nil OTHERP means define a command that cycles in another window."
        (defun ,(intern (format "bmkp-next-%s-bookmark%s" type (if otherp "-other-window" "")))
            (n &optional startoverp)
          ,(if otherp
-              (format "Same as `bmkp-next-%s-bookmark', but use other window." type)
+              (format "`bmkp-next-%s-bookmark', but use other window." type)
             (format "Jump to the Nth-next %s bookmark.
 N defaults to 1, meaning the next one.
 Plain `C-u' means start over at the first one.
@@ -287,7 +287,7 @@ See also `bmkp-cycle-%s'." type type))
        (defun ,(intern (format "bmkp-previous-%s-bookmark%s" type (if otherp "-other-window" "")))
            (n &optional startoverp)
          ,(if otherp
-              (format "Same as `bmkp-previous-%s-bookmark', but use other window." type)
+              (format "`bmkp-previous-%s-bookmark', but use other window." type)
             (format "Jump to the Nth-previous %s bookmark.
 See `bmkp-next-%s-bookmark'." type type))
          (interactive (let ((,TMP-startovr  (consp current-prefix-arg)))
@@ -302,7 +302,7 @@ See `bmkp-next-%s-bookmark'." type type))
                                (if otherp "-other-window" "")))
            ()
          ,(if otherp
-              (format "Same as `bmkp-next-%s-bookmark-repeat', but use other window." type)
+              (format "`bmkp-next-%s-bookmark-repeat', but use other window." type)
             (format "Jump to the next %s bookmark.
 This is a repeatable version of `bmkp-next-%s-bookmark'." type type))
          (interactive)
@@ -316,7 +316,7 @@ This is a repeatable version of `bmkp-next-%s-bookmark'." type type))
                                (if otherp "-other-window" "")))
            ()
          ,(if otherp
-              (format "Same as `bmkp-previous-%s-bookmark-repeat', but use other window." type)
+              (format "`bmkp-previous-%s-bookmark-repeat', but use other window." type)
             (format "Jump to the previous %s bookmark.
 See `bmkp-next-%s-bookmark-repeat'." type type))
          (interactive)
