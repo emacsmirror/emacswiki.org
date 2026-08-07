@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Aug  6 16:39:45 2026 (-0700)
+;; Last-Updated: Thu Aug  6 17:06:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4859
+;;     Update #: 4862
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2377,32 +2377,32 @@ for confirmation when deleting marked (not flagged) bookmarks."
 ;;
 ;; `bmkp-bmenu-show-only-annotated-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-annotated-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the annotated bookmarks.\
+(bmkp-define-show-only-command "Display (only) the annotated bookmarks.\n
 These bookmarks satisfy predicate `bmkp-annotated-bookmark-p'."
                                bmkp-annotated-alist-only)                                     ; `a S'
 ;; `bmkp-bmenu-show-only-autonamed-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-autonamed-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the autonamed bookmarks.\
+(bmkp-define-show-only-command "Display (only) the autonamed bookmarks.\n
 These bookmarks satisfy predicate `bmkp-autonamed-bookmark-p'."
                                bmkp-autonamed-alist-only)                                     ; `# S'
 ;; `bmkp-bmenu-show-only-autonamed-this-buffer-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-autonamed-this-buffer-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the autonamed bookmarks for this buffer.\
+(bmkp-define-show-only-command "Display (only) the autonamed bookmarks for this buffer.\n
 These bookmarks satisfy predicate `bmkp-autonamed-this-buffer-bookmark-p'."
                                bmkp-autonamed-this-buffer-alist-only)                         ; Not bound
 ;; `bmkp-bmenu-show-only-bookmark-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-bookmark-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the bookmark-file bookmarks.\
+(bmkp-define-show-only-command "Display (only) the bookmark-file bookmarks.\n
 These bookmarks satisfy predicate `bmkp-bookmark-file-bookmark-p'."
                                bmkp-bookmark-file-alist-only)                                 ; `Y S'
 ;; `bmkp-bmenu-show-only-bookmark-list-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-bookmark-list-bookmarks "bookmark+")
-(bmkp-define-show-only-command  "Display (only) the bookmark-list bookmarks.\
+(bmkp-define-show-only-command  "Display (only) the bookmark-list bookmarks.\n
 These bookmarks satisfy predicate `bmkp-bookmark-list-bookmark-p'."
                                bmkp-bookmark-list-alist-only)                                 ; `Z S'
 ;; `bmkp-bmenu-show-only-buffer-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-buffer-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the buffer bookmarks.\
+(bmkp-define-show-only-command "Display (only) the buffer bookmarks.\n
 These bookmarks satisfy predicate `bmkp-buffer-bookmark-p'."
                                bmkp-buffer-alist-only)                                        ; Not bound
 
@@ -2411,183 +2411,183 @@ These bookmarks satisfy predicate `bmkp-buffer-bookmark-p'."
 (bmkp-make-obsolete
  'bmkp-bmenu-show-only-non-file-bookmarks 'bmkp-bmenu-show-only-buffer-no-file-bookmarks "2026")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-buffer-no-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the buffer (no file) bookmarks.\
+(bmkp-define-show-only-command "Display (only) the buffer (no file) bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-buffer-bookmark-no-file-p'."
                                bmkp-buffer-no-file-alist-only)                                ; `B S'
 
 ;; `bmkp-bmenu-show-only-desktop-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-desktop-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the desktop bookmarks.\
+(bmkp-define-show-only-command "Display (only) the desktop bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-desktop-bookmark-p'."
                                bmkp-desktop-alist-only)                                       ; `K S'
 ;; `bmkp-bmenu-show-only-dired-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-dired-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the Dired bookmarks.\
+(bmkp-define-show-only-command "Display (only) the Dired bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-dired-bookmark-p'."
                                bmkp-dired-alist-only)                                         ; `M-d M-s'
 ;; `bmkp-bmenu-show-only-eww-bookmarks' (Emacs 25+),
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-eww-bookmarks "bookmark+")
 (when (> emacs-major-version 24)        ; Emacs 25+
-  (bmkp-define-show-only-command "Display (only) the EWW URL bookmarks.\
+  (bmkp-define-show-only-command "Display (only) the EWW URL bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-eww-bookmark-p'."
                                  bmkp-eww-alist-only))                                        ; `W E S'
 ;; `bmkp-bmenu-show-only-function-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-function-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the function bookmarks.\
+(bmkp-define-show-only-command "Display (only) the function bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-function-bookmark-p'."
                                bmkp-function-alist-only)                                      ; `Q S'
 ;; `bmkp-bmenu-show-only-gnus-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-gnus-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the gnus bookmarks.\
+(bmkp-define-show-only-command "Display (only) the gnus bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-gnus-bookmark-p'."
                                bmkp-gnus-alist-only)                                          ; `G S'
 ;; `bmkp-bmenu-show-only-icicles-search-hits-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-icicles-search-hits-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the Icicles search-hits bookmarks.\
+(bmkp-define-show-only-command "Display (only) the Icicles search-hits bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-icicles-search-hits-bookmark-p'."
                                bmkp-icicles-search-hits-alist-only)                           ; `i S'
 ;; `bmkp-bmenu-show-only-image-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-image-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the image-file bookmarks.\
+(bmkp-define-show-only-command "Display (only) the image-file bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-image-bookmark-p'."
                                bmkp-image-alist-only)                                         ; `M-I M-S'
 ;; `bmkp-bmenu-show-only-info-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-info-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the Info bookmarks.\
+(bmkp-define-show-only-command "Display (only) the Info bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-info-bookmark-p'."
                                bmkp-info-alist-only)                                          ; `I S'
 ;; `bmkp-bmenu-show-only-local-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-local-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the local file and directory bookmarks.\
+(bmkp-define-show-only-command "Display (only) the local file and directory bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-local-file-bookmark-p'."
                                bmkp-local-file-alist-only)                                    ; Not bound
 ;; `bmkp-bmenu-show-only-local-non-dir-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-local-non-dir-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the local non-directory file bookmarks.\
+(bmkp-define-show-only-command "Display (only) the local non-directory file bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-local-non-dir-file-bookmark-p'."
                                bmkp-local-non-dir-file-alist-only)                            ; Not bound
 ;; `bmkp-bmenu-show-only-man-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-man-bookmarks "bookmark+")
-(bmkp-define-show-only-command"Display (only) the `man' page bookmarks.\
+(bmkp-define-show-only-command"Display (only) the `man' page bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-man-bookmark-p'."
                                bmkp-man-alist-only)                                           ; `M S'
 ;; `bmkp-bmenu-show-only-non-annotated-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-annotated-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the non-annotated bookmarks.\
+(bmkp-define-show-only-command "Display (only) the non-annotated bookmarks.\n
 
 These bookmarks do NOT satisfy predicate `bmkp-annotated-bookmark-p'."
                                bmkp-non-annotated-alist-only)                                 ; `a ~ S'
 ;; `bmkp-bmenu-show-only-non-autofile-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-autofile-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the non-autofile bookmarks.\
+(bmkp-define-show-only-command "Display (only) the non-autofile bookmarks.\n
 
 These bookmarks do NOT satisfy predicate `bmkp-autofile-bookmark-p'."
                                bmkp-non-autofile-alist-only)                                  ; `A ~ S'
 ;; `bmkp-bmenu-show-only-non-autonamed-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-autonamed-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the non-autonamed bookmarks.\
+(bmkp-define-show-only-command "Display (only) the non-autonamed bookmarks.\n
 
 These bookmarks do NOT satisfy predicate `bmkp-autonamed-bookmark-p'."
                                bmkp-non-autonamed-alist-only)                                 ; `@ ~ S'
 ;; `bmkp-bmenu-show-only-non-dir-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-dir-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the non-directory file bookmarks.\
+(bmkp-define-show-only-command "Display (only) the non-directory file bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-non-dir-file-bookmark-p'."
                                bmkp-non-dir-file-alist-only)                                  ; Not bound
 ;; `bmkp-bmenu-show-only-non-invokable-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-invokable-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the non-invokable bookmarks.\
+(bmkp-define-show-only-command "Display (only) the non-invokable bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-non-invokable-bookmark-p'."
                                bmkp-non-invokable-alist-only)                                 ; `N S'
 ;; `bmkp-bmenu-show-only-orphaned-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-orphaned-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the orphaned file and directory bookmarks.\
+(bmkp-define-show-only-command "Display (only) the orphaned file and directory bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-orphaned-file-bookmark-p'."
                                bmkp-orphaned-file-alist-only)                                 ; Not bound
 ;; `bmkp-bmenu-show-only-orphaned-local-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-orphaned-local-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the orphaned local file and directory bookmarks.\
+(bmkp-define-show-only-command "Display (only) the orphaned local file and directory bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-orphaned-local-file-bookmark-p'."
                                bmkp-orphaned-local-file-alist-only)                           ; `O S'
 ;; `bmkp-bmenu-show-only-orphaned-remote-file-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-orphaned-remote-file-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the orphaned remote file and directory bookmarks.\
+(bmkp-define-show-only-command "Display (only) the orphaned remote file and directory bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-orphaned-remote-file-bookmark-p'."
                                bmkp-orphaned-remote-file-alist-only)                          ; Not bound
 ;; `bmkp-bmenu-show-only-region-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-region-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the bookmarks that record a region.\
+(bmkp-define-show-only-command "Display (only) the bookmarks that record a region.\n
 
 These bookmarks satisfy predicate `bmkp-region-bookmark-p'."
                                bmkp-region-alist-only)                                        ; `R S'
 ;; `bmkp-bmenu-show-only-sequence-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-sequence-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the sequence bookmarks.\
+(bmkp-define-show-only-command "Display (only) the sequence bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-sequence-bookmark-p'."
                                bmkp-sequence-alist-only)                                      ; `$ S'
 ;; `bmkp-bmenu-show-only-snippet-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-snippet-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the snippet bookmarks.\
+(bmkp-define-show-only-command "Display (only) the snippet bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-snippet-bookmark-p'."
                                bmkp-snippet-alist-only)                                       ; `w S'
 ;; `bmkp-bmenu-show-only-tagged-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-tagged-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the bookmarks that have tags.\
+(bmkp-define-show-only-command "Display (only) the bookmarks that have tags.\n
 
 These bookmarks satisfy predicate `bmkp-get-tags'."
                                bmkp-tagged-alist-only)                                        ; `T S'
 ;; `bmkp-bmenu-show-only-temporary-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-temporary-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the temporary bookmarks.\
+(bmkp-define-show-only-command "Display (only) the temporary bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-temporary-bookmark-p'."
                                bmkp-temporary-alist-only)                                     ; `X S'
 ;; `bmkp-bmenu-show-only-untagged-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-untagged-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the untagged bookmarks (they do not have tags).\
+(bmkp-define-show-only-command "Display (only) the untagged bookmarks (they do not have tags).\n
 
 These bookmarks do NOT satisfy predicate `bmkp-get-tags'."
                                bmkp-untagged-alist-only)                                      ; T ~ S
 ;; `bmkp-bmenu-show-only-url-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-url-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the url bookmarks.\
+(bmkp-define-show-only-command "Display (only) the url bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-url-bookmark-p'."
                                bmkp-url-alist-only)                                           ; `M-u M-s'
 ;; `bmkp-bmenu-show-only-url-browse-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-url-browse-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the bookmarks that use function `browse-url' to jump.\
+(bmkp-define-show-only-command "Display (only) the bookmarks that use function `browse-url' to jump.\n
 
 These bookmarks satisfy predicate `bmkp-url-browse-bookmark-p'."
                                bmkp-url-browse-alist-only)                                    ; Not bound
 ;; `bmkp-bmenu-show-only-variable-list-bookmarks',
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-variable-list-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the variable-list bookmarks.\
+(bmkp-define-show-only-command "Display (only) the variable-list bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-variable-list-bookmark-p'."
                                bmkp-variable-list-alist-only)                                 ; `V S'
 ;; `bmkp-bmenu-show-only-w3m-bookmarks'
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-w3m-bookmarks "bookmark+")
-(bmkp-define-show-only-command "Display (only) the W3M URL bookmarks.\
+(bmkp-define-show-only-command "Display (only) the W3M URL bookmarks.\n
 
 These bookmarks satisfy predicate `bmkp-w3m-bookmark-p'."
                                bmkp-w3m-alist-only)                                           ; `W 3 S'
@@ -4814,12 +4814,12 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                     (if bmkp-bmenu-state-file "yes" "no")))
 
            ;; Add markings legend.
-           (let ((mm   "  >")
-                 (DD   "  D")
-                 (tt   "  t")
-                 (aa   "  a")
-                 (XX   "  X")
-                 (mod  "  *"))
+           (let ((mm   (copy-sequence "  >"))
+                 (DD   (copy-sequence "  D"))
+                 (tt   (copy-sequence "  t"))
+                 (aa   (copy-sequence "  a"))
+                 (XX   (copy-sequence "  X"))
+                 (mod  (copy-sequence "  *")))
              (put-text-property 2 3 'face 'bmkp->-mark mm)
              (put-text-property 2 3 'face 'bmkp-D-mark DD)
              (put-text-property 2 3 'face 'bmkp-t-mark tt)
@@ -4836,30 +4836,32 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
              (insert "\n\n"))
 
            ;; Add face legend.
-           (let ((gnus             "Gnus\n")
-                 (no-jump          "Bookmarks you cannot jump to from `*Bookmark List*'\n")
-                 (info             "Info node\n")
-                 (man              "Man page\n")
-                 (url              "URL\n")
-                 (local-no-region  "Local file with no region\n")
-                 (local-w-region   "Local file with a region\n")
-                 (no-file          "No such local file\n")
-                 (buffer           "Buffer (existing)\n")
-                 (no-buf           "No such buffer now\n")
-                 (bad              "User-defined or maybe invalid\n")
-                 (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
-                 (sudo             "Remote accessed by `su' or `sudo'\n")
-                 (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
-                 (file-handler     "Bookmark with entry `file-handler'\n")
-                 (bookmark-list    "*Bookmark List*\n")
-                 (bookmark-file    "Bookmark file\n")
-                 (snippet          "Snippet\n")
-                 (desktop          "Desktop\n")
-                 (sequence         "Sequence\n")
-                 (variable-list    "Variable list\n")
-                 (function         "Function\n")
-                 (kmacro-list      "Keyboard macro list\n")
-                 (search-hits      "Icicles search hits\n"))
+           (let ((gnus             (copy-sequence "Gnus\n"))
+                 (no-jump          (copy-sequence "Bookmarks you cannot jump to from `*Bookmark List*'\n"))
+                 (info             (copy-sequence "Info node\n"))
+                 (man              (copy-sequence "Man page\n"))
+                 (url              (copy-sequence "URL\n"))
+                 (local-no-region  (copy-sequence "Local file with no region\n"))
+                 (local-w-region   (copy-sequence "Local file with a region\n"))
+                 (no-file          (copy-sequence "No such local file\n"))
+                 (buffer           (copy-sequence "Buffer (existing)\n"))
+                 (no-buf           (copy-sequence "No such buffer now\n"))
+                 (bad              (copy-sequence "User-defined or maybe invalid\n"))
+                 (remote           (copy-sequence "Remote file/directory or Dired buffer \
+(could have wildcards)\n"))
+                 (sudo             (copy-sequence "Remote accessed by `su' or `sudo'\n"))
+                 (local-dir        (copy-sequence "Local directory or Dired buffer \
+(could have wildcards)\n"))
+                 (file-handler     (copy-sequence "Bookmark with entry `file-handler'\n"))
+                 (bookmark-list    (copy-sequence "*Bookmark List*\n"))
+                 (bookmark-file    (copy-sequence "Bookmark file\n"))
+                 (snippet          (copy-sequence "Snippet\n"))
+                 (desktop          (copy-sequence "Desktop\n"))
+                 (sequence         (copy-sequence "Sequence\n"))
+                 (variable-list    (copy-sequence "Variable list\n"))
+                 (function         (copy-sequence "Function\n"))
+                 (kmacro-list      (copy-sequence "Keyboard macro list\n"))
+                 (search-hits      (copy-sequence "Icicles search hits\n")))
              (put-text-property 0 (1- (length gnus))          'face 'bmkp-gnus               gnus)
              (put-text-property 0 (1- (length info))          'face 'bmkp-info               info)
              (put-text-property 0 (1- (length man))           'face 'bmkp-man                man)
