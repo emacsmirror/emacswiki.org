@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul 23 14:13:54 2026 (-0700)
+;; Last-Updated: Thu Aug  6 14:53:15 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15553
+;;     Update #: 15575
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1292,21 +1292,17 @@
 ;;  Tags that have the prefix "bmkp-" are reserved - do not name your
 ;;  own tags using this prefix.
 ;;
-;;  Currently, "bmkp-jump" is the only predefined bookmark tag.  You
-;;  can give this tag a value that is a function - it is called
-;;  whenever the tagged bookmark is visited.  Any Lisp-readable
-;;  function value is allowed: a symbol or a lambda expression.
+;;  Currently, "bmkp-jump" is the only predefined bookmark tag. You
+;;  can use it to give an individual bookmark its own, extra,
+;;  after-jump behavior.  The tag should have a value that's a
+;;  function: a function symbol or a lambda expression.  The function is
+;;  called whenever the bookmark is visited (jumped to), just after
+;;  running standard hook `bookmark-after-jump-hook'.
 ;;
 ;;  For example, to display `Hello!' when a bookmark is visited you
 ;;  can use this:
 ;;
 ;;    T v bmkp-jump RET (lambda () (message "Hello!"))
-;;
-;;  The function that is the value of a "bmkp-jump" tag is called just
-;;  after the the standard hook `bookmark-after-jump-hook' is invoked.
-;;  You can use this tag to invoke functions that are specific to
-;;  individual bookmarks; bookmarks can thus have their own, extra
-;;  jump functions.
 ;;
 ;;
 ;;(@* "Hierarchical Structures of Bookmarks?")
