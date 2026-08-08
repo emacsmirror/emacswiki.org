@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2026.08.02
-;; Last-Updated: Sun Aug  2 16:11:30 2026 (-0700)
+;; Version: 2026.08.08
+;; Last-Updated: Sat Aug  8 12:27:50 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15128
+;;     Update #: 15129
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -21,15 +21,18 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `eieio',
-;;   `eieio-core', `eieio-loaddefs', `epg-config', `fit-frame',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `fit-frame', `font-lock', `font-lock+',
 ;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `info', `info+',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
-;;   `rect', `second-sel', `seq', `strings', `tabulated-list',
+;;   `help-macro', `help-macro+', `help-mode', `hl-line', `hl-line+',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `package', `password-cache',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
 ;;   `thingatpt', `thingatpt+', `url-handlers', `url-parse',
-;;   `url-vars', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -181,7 +184,7 @@
 
 
 ;;;###autoload (autoload 'bmkp-version-number "bookmark+")
-(defconst bmkp-version-number "2026.08.02")
+(defconst bmkp-version-number "2026.08.08")
 
 ;;;###autoload (autoload 'bmkp-version "bookmark+")
 (defun bmkp-version ()
