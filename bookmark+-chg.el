@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug  2 16:14:37 2026 (-0700)
+;; Last-Updated: Sat Aug  8 15:42:50 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17406
+;;     Update #: 17442
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,21 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/08 drew0
+;;     bookmark--jump-via:
+;;       After handler, invoke bmkp-jump-display-function, as vanilla does.  Handlers that don't want
+;;         to automatically use it must now set bmkp-jump-display-function to nil.
+;;       Rewrote doc string, to list the jump-processing steps and mention throwing to catch.
+;;     bmkp-jump-(bookmark-(file|list)|dired|eww|function|desktop|icicle-search-hits
+;;       |(kmacro|variable)-list|sequence|snippet|url-browse): Reset bmkp-jump-display-function to nil.
+;;     Handlers that invoke bookmark-default-handler: Mention this in their doc strings.
+;;     bookmark-jump doc string:
+;;       Say DISPLAY-FUNCTION is passed the buffer that's current after handler, and say how handler can
+;;       use bmkp-jump-display-function, including to prevent automatic display.
+;;     bmkp-modified-more-recently-cp: Typo: bmkp-get-last-modified -> bookmark-get-last-modified.
+;;     Corrected command names in autoload cookies for *-next|previous-*-bookmark*.
+;;     bmkp-bookmark-description: If no annotation, say that.
+;;     bmkp-jump-display-function doc string: Say handler can set it to nil to prevent display.
 ;; 2026/07/23 drew0
 ;;     Added: bmkp-modified-more-recently-cp.  Mention in bmkp-this-file/buffer-cycle-sort-comparer doc.
 ;;     bookmark-alist doc string:
@@ -1672,6 +1687,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/08/07 drew0
+;;     Added bmkp-make-obsolete (it's also in bookmark+-1.el).
+;; 2026/08/06 drew0
+;;     bmkp-bmenu-mode-status-help: Use copy-sequence on strings for put-text-property.
+;;     Corrected newlines in doc doc strings passed to macro bmkp-define-show-only-command.
 ;; 2026/07/23 drew0
 ;;     Added: bmkp-bmenu-sort-by-modification-recency.  Bound to s m.
 ;;     bookmark-bmenu-mode: Updated doc string to include bmkp-bmenu-sort-by-modification-recency.
@@ -2501,6 +2521,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-doc.el'")
 ;;
+;; 2026/08/08 drew0
+;;     Updated for recent changes, in particular the new definition of bookmark--jump-via.
 ;; 2026/06/30 drew0
 ;;     Filtering Bookmarks (Hiding and Showing): Say that in bmenu key ( does the same as key M-t.
 ;; 2026/06/28 drew0
@@ -2949,6 +2971,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/08/08 drew0
+;;     Version 2026.08.08
 ;; 2026/08/02 drew0
 ;;     Version 2026.08.02
 ;; 2026/07/23 drew0
