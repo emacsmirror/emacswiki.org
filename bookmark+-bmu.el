@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Aug  6 17:06:16 2026 (-0700)
+;; Last-Updated: Fri Aug  7 11:03:59 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4862
+;;     Update #: 4865
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -20,15 +20,18 @@
 ;;   `apropos', `apropos+', `auth-source', `avoid', `backquote',
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
 ;;   `bookmark+-key', `bookmark+-lit', `button', `bytecomp', `cconv',
-;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `eieio',
-;;   `eieio-core', `eieio-loaddefs', `epg-config', `fit-frame',
+;;   `cl-generic', `cl-lib', `cl-macs', `cmds-menu', `col-highlight',
+;;   `crosshairs', `eieio', `eieio-core', `eieio-loaddefs',
+;;   `epg-config', `fit-frame', `font-lock', `font-lock+',
 ;;   `frame-fns', `gv', `help+', `help-fns', `help-fns+',
-;;   `help-macro', `help-macro+', `help-mode', `info', `info+',
-;;   `macroexp', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `package', `password-cache', `pp', `pp+', `radix-tree',
-;;   `rect', `second-sel', `seq', `strings', `tabulated-list',
+;;   `help-macro', `help-macro+', `help-mode', `hl-line', `hl-line+',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `naked', `package', `password-cache',
+;;   `pp', `pp+', `radix-tree', `rect', `replace', `second-sel',
+;;   `seq', `strings', `syntax', `tabulated-list', `text-mode',
 ;;   `thingatpt', `thingatpt+', `url-handlers', `url-parse',
-;;   `url-vars', `w32browser-dlgopen', `wid-edit', `wid-edit+'.
+;;   `url-vars', `vline', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -418,6 +421,14 @@
 ;;
 (defalias 'bmkp-bookmark-data-from-record 'bookmark-get-bookmark-record)
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
+
+;; 3. Emacs 23 made an incompatible change to require all args.
+;;
+(defun bmkp-make-obsolete (obsolete-name current-name &optional when)
+  "Same as `make-obsolete', but usable also for Emacs prior to Emacs 23."
+  (if (< emacs-major-version 23)
+      (make-obsolete obsolete-name current-name)
+    (make-obsolete obsolete-name current-name when)))
 
 
 (eval-when-compile
