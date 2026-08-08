@@ -1649,7 +1649,7 @@ bookmark-list display.
 [:EditingBookmarks]
 == Editing Bookmarks ==
 
-In vanilla Emacs, you can edit the annotation associated with a bookmark.  And you can rename a bookmark.  But that is all.
+In vanilla Emacs, you can edit the annotation associated with a bookmark.  And you can rename a bookmark.  But that's all.
 There is no easy way to really edit a bookmark.
 
 With '''Bookmark+''':
@@ -1670,13 +1670,13 @@ All of the editing power of Emacs is available.
 
 * You can use '''`##T e##'''' in the bookmark list (or '''`C-x x t e'''' elsewhere), to edit a bookmark's tags.
 
-For all but the first of these, you are placed in a separate
-editing buffer.  Use '''`C-c C-c'''' when you are done editing, to save your changes.  (To cancel, just kill the buffer: `C-x k'.)
+For all except the first of these, you're placed in a separate
+editing buffer.  Use '''`C-c C-c'''' when you're done editing, to save your changes.  (To cancel, just kill the buffer: `C-x k'.)
 
 You can also ''clone'' (duplicate) a bookmark, using '''`M-n'''', and then
 edit any parts of it (e.g. using `e').  By default, the clone has
 the same name, but with '''##"<2>"##''' appended.  With a prefix arg you are
-prompted for the name.  Outside of the bookmark list you can use
+prompted for the name.  Outside of the bookmark list, you can use
 '''`C-x x 2'''' to clone a bookmark.
 
 There are many more keys and commands for editing bookmark tags.
@@ -1685,7 +1685,7 @@ to others, either replacing the original tags ('''`C-x x t C-y'''') or
 adding to them ('''`C-x x t q'''').  You can be prompted for some tags
 to ''add'' ('''`##T +##'''') or ''remove'' ('''`##T -##'''') from a bookmark.  You can ''delete''
 a tag from all bookmarks ('''`##T d##'''').  You can ''rename'' a tag everywhere
-('''`##T r##'''').  And you can set a tag's ''value''.
+('''`##T r##'''').  And you can set a tag's ''value'' (see [[#TagsAsAttributes|Bookmark Tags Can Have Values]] for info about tag values).
 
 As usual, all such commands are also available on the '''Bookmark+'''
 menus.  The menus provide quick reminders of the available keys,
