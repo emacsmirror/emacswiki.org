@@ -356,8 +356,8 @@ name.)
      activation is not supported for Gnus bookmarks.)
 
 : You can define your own region handler for bookmarks that
-record regions.  (This is in addition to being able to define
-bookmark handlers.)  Use [[option]] '''`bmkp-handle-region-function''''
+record regions.  (This is in addition to being able to
+[[#BookmarkHandlers|define bookmark handlers]].)  Use [[option]] '''`bmkp-handle-region-function''''
 for this.  As one example, command
 '''`bmkp-region-jump-narrow-indirect-other-window'''' binds the
 option to a function that narrows the targeted region in a
@@ -1820,6 +1820,103 @@ tags and annotation are preserved when you update a bookmark.
 
 
 
+[:bookmark handler]
+[:BookmarkHandlers]
+== Bookmark Handlers ==
+
+(For general use of bookmarks you can skip reading this section.
+It's mainly for users who create new types of bookmarks.)
+
+A **bookmark handler** is a function that defines a given type of
+bookmark; it does the main type-specific work of "jumping" to a
+bookmark.  The handler is stored in a bookmark record as the value
+of property `handler'.  If a bookmark has no such property then
+the ''default handler'', '''`##bookmark-default-handler##'''', is used.
+
+For many kinds of bookmark the handler first does some
+type-specific things, then it invokes `bookmark-default-handler'
+to set up a buffer for the bookmark destination and position the
+cursor at the destination.
+
+For example, here's the definition of the handler for Info
+bookmarks (from vanilla library `info.el'), `Info-bookmark-jump':
+
+ (defun Info-bookmark-jump (bmk)
+   (let* (...) ; Get a buffer for the Info node, as `buf', using
+               ; the Info bookmark's `filename' and `info-node'
+               ; properties.
+
+     ;; Use `bookmark-default-handler' to move to appropriate
+     ;; location within the Info node.
+     (bookmark-default-handler
+      `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bmk)))))
+
+(By convention, bookmark handler functions have names ending with ##<type>-jump## or ##<type>-bookmark-jump##.)
+
+The type-specific work for handling an Info bookmark is to create
+an Info bookmark record (with an empty bookmark name, "").  The
+handler passes that record to `bookmark-default-handler' to finish
+the job of providing a place to jump to.
+
+When you define the handler for a type of bookmark of your own
+invention, your handler will often do just that: create an
+appropriate type-specific bookmark record, and pass it to
+`bookmark-default-handler'.
+
+''Jumping'' to a bookmark invokes the handler for its type.  Then, for
+most types, jumping ''displays the buffer'' set up by the handler, and
+it maybe takes you there (makes that buffer current).  But for
+some kinds of bookmark there's ''no destination to display'' - such
+bookmarks exist just to perform some other kind of action.
+
+A jump command for a given type of bookmark can specify the
+function to use for displaying the destination buffer.  If it
+doesn't, then `pop-to-buffer-same-window' displays it by default.
+
+This display-by-default behavior is historical/legacy (''In The
+Beginning''... there were only simple file bookmarks), but it's also
+because there are many kinds of bookmark that do have a
+destination to display.
+
+Unfortunately, for many kinds of bookmarks this design isn't
+appropriate.  It supposes that (1) the bookmark has a ''destination
+to display'', (2) the ''display function is independent'' from the
+handler's execution and can be known before calling it, and (3)
+the the ''display function should always be called'' after the handler
+is finished, to display whatever buffer is then current.  It
+simplistically ''separates the handler'' definition and behavior ''from
+display'' of whatever buffer the handler makes current.
+
+Given this, how can you prevent such default display when it makes
+no sense, i.e., for a destination-less bookmark type?  Or how to
+let a handler invoke the display function at any time(s) it
+chooses, instead of just having it invoked it automatically after
+the handler finishes?  Or how to let a handler examine the display
+function and do different things depending on what the function
+is?
+
+You can do this with **Bookmark+**, but not with vanilla Emacs
+bookmarking.  When you define a new type of bookmark, you define
+its record (data), including its handler function.  ''To inhibit
+automatic display'' after the handler finishes, just set variable
+`bmkp-jump-display-function' to `nil' in the handler.
+
+My ''recommendation for those defining bookmark handlers'' is this:
+'''Have the handler itself perform any display that's needed, and then set `bmkp-jump-display-function' to `nil'.'''  Since
+the predetermined display function is available to the handler as
+the value of variable `bmkp-jump-display-function', the handler
+can do anything it wants with that function - anything or nothing,
+as it sees fit.
+
+(With **Bookmark+**, a handler can also `throw' to a `catch', to
+prevent function `bookmark--jump-via' from doing anything after it
+invokes the handler.)
+
+
+
+
+
+
 
 
 
@@ -3189,7 +3286,7 @@ bookmarks that have at least one of those tags.
 
 If that were a set of files that you used often, then you would name the set by giving the files a new tag.
 
-The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to avoid redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using bookmark handlers) and associated manipulations.
+The point is that bookmarks, and bookmark tags in particular, let you define and manipulate sets of Emacs objects. It doesn't matter how you define such a set: regexp matching (marking, filtering), by object type, by tag combinations... Sets need not be named to act on them, but you can provide them with persistent names (tags) to avoid redefining them over and over. Manipulation of bookmarked objects includes visiting, searching, and query-replacing. And you can define your own bookmark types (using [[#BookmarkHandlers|bookmark handlers]]) and associated manipulations.
 
 
 
