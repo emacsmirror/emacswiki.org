@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug  6 14:53:15 2026 (-0700)
+;; Last-Updated: Sat Aug  8 13:59:08 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15575
+;;     Update #: 15782
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -129,10 +129,11 @@
 ;;    (@> "Bookmark Tags")
 ;;      (@> "Bookmark Tags Can Have Values")
 ;;      (@> "Hierarchical Structures of Bookmarks?")
+;;    (@> "Editing Bookmarks")
+;;    (@> "Bookmark Records: What A Bookmark Looks Like")
+;;    (@> "Bookmark Handlers")
 ;;    (@> "Function, Sequence, Variable-List,... Bookmarks")
 ;;      (@> "Little Persistent Named Nothings")
-;;    (@> "Editing Bookmarks")
-;;      (@> "Bookmark Records: What A Bookmark Looks Like")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
@@ -441,9 +442,9 @@
 ;;       to `C-x j :'.  It prompts you for the bookmark type, then
 ;;       offers only bookmarks of that type as completion candidates.
 ;;
-;;  * Define your own new bookmark types.
+;;  * Define your own bookmark types.
 ;;
-;;    Just as for vanilla Emacs, you can easily define your own
+;;    Just as for vanilla Emacs, you can easily define your own new
 ;;    bookmark types, by defining a function to create its record,
 ;;    using function `bookmark-make-record', or by binding variable
 ;;    `bookmark-make-record-function' for a given context.
@@ -1365,21 +1366,286 @@
 ;;  And remember that tags can be more than just names.  They give you
 ;;  the full power of Lisp values - do with them whatever you like.
  
+;;(@* "Editing Bookmarks")
+;;  ** Editing Bookmarks **
+;;
+;;  In vanilla Emacs, you can edit the annotation associated with a
+;;  bookmark.  And you can rename a bookmark.  But that's all.  There
+;;  is no easy way to really edit a bookmark.
+;;
+;;  With Bookmark+:
+;;
+;;  * You can use `r' in the bookmark-list display (or `C-x x r'
+;;    elsewhere) to edit the name and the target file name (bookmarked
+;;    location) of a bookmark.  You are prompted for the new names.
+;;
+;;  * You can use `e' in the bookmark-list display (or `C-x x E'
+;;    elsewhere) to edit a complete bookmark - all of its information.
+;;    You edit the internal Lisp sexp that represents the bookmark
+;;    record.  This is the same internal definition that you see when
+;;    you use `C-u C-h RET' in the bookmark list.
+;;
+;;  * You can use `E' in the bookmark-list display to edit the
+;;    bookmark records of all of the marked bookmarks.  Again, this
+;;    means editing their internal Lisp sexps.  In particular, this
+;;    gives you an easy way to edit tags across multiple bookmarks.
+;;    All of the editing power of Emacs is available.
+;;
+;;  * You can use `T e' in the bookmark list (or `C-x x t e'
+;;    elsewhere), to edit a bookmark's tags.
+;;
+;;  For all except the first of these, you're placed in a separate
+;;  editing buffer.  Use `C-c C-c' when you're done editing, to save
+;;  your changes.  (To cancel, just kill the buffer: `C-x k'.)
+;;
+;;  You can also clone (duplicate) a bookmark, using `M-n', and then
+;;  edit any parts of it (e.g. using `e').  By default, the clone has
+;;  the same name, but with "<2>" appended.  With a prefix arg you are
+;;  prompted for the name.  Outside of the bookmark list, you can use
+;;  `C-x x 2' to clone a bookmark.
+;;
+;;  There are many more keys and commands for editing bookmark tags.
+;;  You can copy tags (`C-x x t c') from one bookmark and paste them
+;;  to others, either replacing the original tags (`C-x x t C-y') or
+;;  adding to them (`C-x x t q').  You can be prompted for some tags
+;;  to add (`T +') or remove (`T -') from a bookmark.  You can delete
+;;  a tag from all bookmarks (`T d').  You can rename a tag everywhere
+;;  (`T r').  And you can set a tag's value  (see
+;;  (@> "Bookmark Tags Can Have Values") for info about tag values).
+;;
+;;  As usual, all such commands are also available on the Bookmark+
+;;  menus.  The menus provide quick reminders of the available keys,
+;;  as does the help from `?' in the bookmark-list display.
+ 
+;;(@* "Bookmark Records: What A Bookmark Looks Like")
+;;  ** Bookmark Records: What A Bookmark Looks Like **
+;;
+;;  It's worth dispelling some of the mystery about what a bookmark is
+;;  by mentioning what it looks like.  This can help when you edit a
+;;  bookmark record.  The first thing to say is that the basic
+;;  structure of a bookmark record is described in the doc string of
+;;  variable `bookmark-alist' - but I repeat some of that info here.
+;;
+;;  A bookmark record is a list whose first element is a string, the
+;;  bookmark name.  The other list elements are the bookmark
+;;  properties (aka "entries"): key+value pairs that define the
+;;  bookmark data.  Each such pair is a cons cell.
+;;
+;;  The car of a property is its name (a Lisp symbol).  The cdr is its
+;;  value.  What the value can be depends on the property - in general
+;;  it can be any Lisp value (number, string, list, symbol, etc.).  A
+;;  property with a null cdr behaves the same as one with no such
+;;  property.  For example, having the empty property `(tags)' is the
+;;  same as having no `tags' property at all.
+;;
+;;  There's nothing more to it: properties can be anything you like;
+;;  you just need to have some code that recognizes them and does
+;;  something with them.
+;;
+;;  The properties you use most (maybe always) are predefined: vanilla
+;;  Emacs (library `bookmark.el') or Bookmark+ recognizes and uses
+;;  them.  The most important and most typical property is this:
+;;  `(filename . "/some/file/name.txt")', that is, a cons whose car is
+;;  the symbol `filename' and whose cdr is the name (a string) of the
+;;  bookmarked file.
+;;
+;;  With that in mind, you can see that renaming a bookmark just means
+;;  changing the string that is its car.  And relocating a file
+;;  bookmark means just changing its `filename' property - e.g., from
+;;  `(filename . "/home/foo.el")' to `(filename . "/some/other.xml")'.
+;;
+;;  If you already have a bookmark file (typically `~/.emacs.bmk',
+;;  `~/.emacs.el', or `~/.emacs.d/init.el'), then take a look at the
+;;  bookmark records in it.  In addition to `filename', a typical
+;;  bookmark has these properties: `position', `front-context-string',
+;;  and `rear-context-string'.  You can guess what they are - if not,
+;;  see the doc string of variable `bookmark-alist'.
+;;
+;;  A Bookmark+ bookmark typically has some additional properties that
+;;  you can also guess.  Properties `last-visited' and `visits' are
+;;  updated automatically each time you access/use the bookmark.
+;;
+;;  Many bookmarks have a `handler' property whose value is a function
+;;  that "jumps" to the bookmark "location"/"destination".  I put
+;;  those terms in quotes here because a handler is really just any
+;;  Lisp function - it can do anything you like, and a bookmark need
+;;  not have any associated location/destination.
+;;
+;;  Some Bookmark+ bookmarks, including autofile bookmarks, just jump
+;;  to a file.  The position in the file is unimportant, and in this
+;;  case "jumping" doesn't necessarily mean visiting the file with
+;;  Emacs.  In effect, such a bookmark is just a wrapper around the
+;;  file, letting you get the advantages of other Bookmark+ features,
+;;  such as tags, for a file.  Such bookmarks (which you can create
+;;  using `C-x x c a' or `C-x x c f') contain a `file-handler'
+;;  property instead of a `handler' property.  The difference between
+;;  the two is that the `file-handler' value is a function (Lisp
+;;  function or shell command) to be applied to the file, not to the
+;;  bookmark.
+;;
+;;  Remember: A bookmark is just a persistent bit of information,
+;;  typically meta-information about a file and a position in that
+;;  file.
+;;
+;;  I'm mentioning all of this to make the point that you can't really
+;;  hurt anything if you edit a bookmark record and you mess things
+;;  up.  The worst you can do is mess up all of your bookmarks by
+;;  making the file unreadable as Lisp data.  (It's always a good idea
+;;  to back up your bookmark file from time to time.)
+;;
+;;  And if, after editing, each bookmark record is a cons with a
+;;  string car (the bookmark name), then your bookmarks are generally
+;;  OK, even if you might have ruined the details of one or two of
+;;  them.  For example, suppose you somehow mistakenly delete the `a'
+;;  in the property name "filename".  No big deal - that bookmark no
+;;  longer has a recognizable target location, but the other bookmarks
+;;  are still OK.
+;;
+;;  Aside from `filename', perhaps the most important property for
+;;  Bookmark+ users is `tags'.  Its value (the cdr) is a list of
+;;  strings or conses: the bookmark's tags.  When you create a tag,
+;;  it's typically just a string (the tag name) - e.g. "blue".  But if
+;;  you give the tag a value as well, it becomes a cons with the name
+;;  as car and the value as cdr - e.g. `("blue" . 42)' or `("blue"
+;;  moonbeam 42)'.  (In the latter case the cdr is the list `(moonbeam
+;;  42)'.)  Here's an example of a `tags' property with two tags,
+;;  "hegel" and "darwin": `(tags "hegel" ("blue" . honeypot)
+;;  "darwin")'.  Most of the time you will use just strings as tags.
+;;  See also (@> "Bookmark Tags Can Have Values").
+;;
+;;  When you edit a bookmark record, try not to change any properties
+;;  that you're not familiar with.  And make sure that when you're
+;;  done you have a proper Lisp list (open parens closed etc.).
+;;
+;;  If you've never played with Lisp before, don't panic.  If you see
+;;  dots surrounded by whitespace (` . '), be aware that they're
+;;  important.  The whitespace is needed, but the amount of it isn't
+;;  important.
+;;
+;;  Such a dot just separates the car of a cons from its cdr.  (What's
+;;  a cons?  Just a car together with a cdr!)  If the cdr is a list,
+;;  then we typically drop the dot and that list's parens: We write
+;;  `(b)' instead of `(b . ())' and `(a b)' instead of `(a . (b))' or
+;;  `(a . (b . ()))'.
+;;
+;;  Finally, remember that when you update an existing bookmark by
+;;  setting it again (e.g., you use `C-x r m' and provide the name of
+;;  an existing bookmark), the previously existing properties are
+;;  generally lost.  Some are automatically updated.  Any that were
+;;  provided by default by the bookmark handler are replaced, and any
+;;  that you might have added (e.g. by editing) before updating are
+;;  lost.  The only exceptions to this are the properties listed in
+;;  option `bmkp-properties-to-keep', which by default means
+;;  properties `tags' and `annotation'.  Any existing tags and
+;;  annotation are preserved when you update a bookmark.
+ 
+;;(@* "Bookmark Handlers")
+;;  ** Bookmark Handlers **
+;;
+;;  (For general use of bookmarks you can skip reading this section.
+;;  It's mainly for users who create new types of bookmarks.)
+;;
+;;  A bookmark handler is a function that defines a given type of
+;;  bookmark; it does the main type-specific work of "jumping" to a
+;;  bookmark.  The handler is stored in a bookmark record as the value
+;;  of property `handler'.  If a bookmark has no such property then
+;;  the default handler, `bookmark-default-handler', is used.
+;;
+;;  For many kinds of bookmark the handler first does some
+;;  type-specific things, then it invokes `bookmark-default-handler'
+;;  to set up a buffer for the bookmark destination and position the
+;;  cursor at the destination.
+;;
+;;  For example, here's the definition of the handler for Info
+;;  bookmarks (from vanilla library `info.el'), `Info-bookmark-jump':
+;;
+;;  (defun Info-bookmark-jump (bmk)
+;;    (let* (...) ; Get a buffer for the Info node, as `buf', using
+;;                ; the Info bookmark's `filename' and `info-node'
+;;                ; properties.
+;;
+;;      ;; Use `bookmark-default-handler' to move to appropriate
+;;      ;; location within the Info node.
+;;      (bookmark-default-handler
+;;       `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bmk)))))
+;;
+;;  (By convention, bookmark handler functions have names ending with
+;;  <type>-jump or <type>-bookmark-jump.)
+;;
+;;  The type-specific work for handling an Info bookmark is to create
+;;  an Info bookmark record (with an empty bookmark name, "").  The
+;;  handler passes that record to `bookmark-default-handler' to finish
+;;  the job of providing a place to jump to.
+;;
+;;  When you define the handler for a type of bookmark of your own
+;;  invention, your handler will often do just that: create an
+;;  appropriate type-specific bookmark record, and pass it to
+;;  `bookmark-default-handler'.
+;;
+;;  Jumping to a bookmark invokes the handler for its type.  Then, for
+;;  most types, jumping displays the buffer set up by the handler, and
+;;  it maybe takes you there (makes that buffer current).  But for
+;;  some kinds of bookmark there's no destination to display - such
+;;  bookmarks exist just to perform some other kind of action.
+;;
+;;  A jump command for a given type of bookmark can specify the
+;;  function to use for displaying the destination buffer.  If it
+;;  doesn't, then `pop-to-buffer-same-window' displays it by default.
+;;
+;;  This display-by-default behavior is historical/legacy (In The
+;;  Beginning... there were only simple file bookmarks), but it's also
+;;  because there are many kinds of bookmark that do have a
+;;  destination to display.
+;;
+;;  Unfortunately, for many kinds of bookmarks this design isn't
+;;  appropriate.  It supposes that (1) the bookmark has a destination
+;;  to display, (2) the display function is independent from the
+;;  handler's execution and can be known before calling it, and (3)
+;;  the the display function should always be called after the handler
+;;  is finished, to display whatever buffer is then current.  It
+;;  simplistically separates the handler definition and behavior from
+;;  display of whatever buffer the handler makes current.
+;;
+;;  Given this, how can you prevent such default display when it makes
+;;  no sense, i.e., for a destination-less bookmark type?  Or how to
+;;  let a handler invoke the display function at any time(s) it
+;;  chooses, instead of just having it invoked it automatically after
+;;  the handler finishes?  Or how to let a handler examine the display
+;;  function and do different things depending on what the function
+;;  is?
+;;
+;;  You can do this with Bookmark+, but not with vanilla Emacs
+;;  bookmarking.  When you define a new type of bookmark, you define
+;;  its record (data), including its handler function.  To inhibit
+;;  automatic display after the handler finishes, just set variable
+;;  `bmkp-jump-display-function' to `nil' in the handler.
+;;
+;;  My recommendation for those defining bookmark handlers is this:
+;;  Have the handler itself perform any display that's needed, and
+;;  then set `bmkp-jump-display-function' to `nil'.  Since the
+;;  predetermined display function is available to the handler as the
+;;  value of variable `bmkp-jump-display-function', the handler can do
+;;  anything it wants with that function - anything or nothing, as it
+;;  sees fit.
+;;
+;;  (With Bookmark+, a handler can also `throw' to a `catch', to
+;;  prevent function `bookmark--jump-via' from doing anything after it
+;;  invokes the handler.)
+ 
 ;;(@* "Function, Sequence, Variable-List,... Bookmarks")
 ;;  ** Function, Sequence, Variable-List,... Bookmarks **
 ;;
 ;;  Bookmarks are typically thought of only as recorded locations.
 ;;  Invoking a bookmark, called "jumping" to it, traditionally means
 ;;  just visiting its location.  Bookmark+ looks at bookmarks in a
-;;  more general way than that.  A bookmark is a shortcut of some kind
-;;  - nothing more.  It is typically persistent, but it need not be
+;;  more general way.  A bookmark is a shortcut of some kind - nothing
+;;  more.  It's typically persistent, but it need not be
 ;;  (see (@> "Temporary Bookmarks")).
 ;;
 ;;  A given type of bookmark is defined by its handler function, which
-;;  can do anything you like.  We've already seen the examples of
-;;  region bookmarks, which restore the active region, and Dired
-;;  bookmarks, which restore Dired markings, switches, inserted
-;;  subdirectories, and hidden (sub)directories.
+;;  can do anything you like. For example, region bookmarks restore
+;;  the active region, and Dired bookmarks restore Dired markings,
+;;  switches, inserted subdirectories, and hidden (sub)directories.
 ;;
 ;;  A "function bookmark" simply invokes some function - any function.
 ;;  You can, for instance, define a window or frame configuration and
@@ -1389,8 +1655,8 @@
 ;;
 ;;  Function bookmarks might not seem too interesting, since there are
 ;;  other ways to invoke functions in Emacs.  But the other features
-;;  of Bookmark+ combine with this feature.  You can, for instance,
-;;  tag function bookmarks.
+;;  of Bookmark+ combine with this one.  You can, for instance, tag
+;;  function bookmarks.
 ;;
 ;;  And you can combine them, invoking the functions sequentially.
 ;;  This is a particular case of using a "sequence bookmark", which
@@ -1551,177 +1817,6 @@
 ;;  it outside the context of Icicles searching.  For this reason,
 ;;  these bookmarks are also shown with face `bmkp-no-jump' in the
 ;;  bookmark-list display.
- 
-;;(@* "Editing Bookmarks")
-;;  ** Editing Bookmarks **
-;;
-;;  In vanilla Emacs, you can edit the annotation associated with a
-;;  bookmark.  And you can rename a bookmark.  But that is all.  There
-;;  is no easy way to really edit a bookmark.
-;;
-;;  With Bookmark+:
-;;
-;;  * You can use `r' in the bookmark-list display (or `C-x x r'
-;;    elsewhere) to edit the name and the target file name (bookmarked
-;;    location) of a bookmark.  You are prompted for the new names.
-;;
-;;  * You can use `e' in the bookmark-list display (or `C-x x E'
-;;    elsewhere) to edit a complete bookmark - all of its information.
-;;    You edit the internal Lisp sexp that represents the bookmark
-;;    record.  This is the same internal definition that you see when
-;;    you use `C-u C-h RET' in the bookmark list.
-;;
-;;  * You can use `E' in the bookmark-list display to edit the
-;;    bookmark records of all of the marked bookmarks.  Again, this
-;;    means editing their internal Lisp sexps.  In particular, this
-;;    gives you an easy way to edit tags across multiple bookmarks.
-;;    All of the editing power of Emacs is available.
-;;
-;;  * You can use `T e' in the bookmark list (or `C-x x t e'
-;;    elsewhere), to edit a bookmark's tags.
-;;
-;;  For all but the first of these, you are placed in a separate
-;;  editing buffer.  Use `C-c C-c' when you are done editing, to save
-;;  your changes.  (To cancel, just kill the buffer: `C-x k'.)
-;;
-;;  You can also clone (duplicate) a bookmark, using `M-n', and then
-;;  edit any parts of it (e.g. using `e').  By default, the clone has
-;;  the same name, but with "<2>" appended.  With a prefix arg you are
-;;  prompted for the name.  Outside of the bookmark list you can use
-;;  `C-x x 2' to clone a bookmark.
-;;
-;;  There are many more keys and commands for editing bookmark tags.
-;;  You can copy tags (`C-x x t c') from one bookmark and paste them
-;;  to others, either replacing the original tags (`C-x x t C-y') or
-;;  adding to them (`C-x x t q').  You can be prompted for some tags
-;;  to add (`T +') or remove (`T -') from a bookmark.  You can delete
-;;  a tag from all bookmarks (`T d').  You can rename a tag everywhere
-;;  (`T r').  And you can set a tag's value.
-;;
-;;  As usual, all such commands are also available on the Bookmark+
-;;  menus.  The menus provide quick reminders of the available keys,
-;;  as does the help from `?' in the bookmark-list display.
-;;
-;;
-;;(@* "Bookmark Records: What A Bookmark Looks Like")
-;;  *** Bookmark Records: What A Bookmark Looks Like ***
-;;
-;;  It's worth dispelling some of the mystery about what a bookmark is
-;;  by mentioning what it looks like.  This can help when you edit a
-;;  bookmark record.  The first thing to mention is that the basic
-;;  structure of a bookmark record is described in the doc string of
-;;  variable `bookmark-alist' - but I'll repeat some of that info
-;;  here.
-;;
-;;  A bookmark record is nothing more than a list whose first element
-;;  is a string, the bookmark name.  The other list elements are
-;;  properties: key+value pairs that define the bookmark data.  Each
-;;  such pair is a cons: a nonempty list or a dotted list.
-;;
-;;  The car of the property is its name (a Lisp symbol).  The cdr is
-;;  its value.  What the value can be depends on the property - in
-;;  general it can be any Lisp value (number, string, list, symbol,
-;;  etc.).  A property with a null cdr means the same thing as having
-;;  no such property present.  For example, having the empty property
-;;  `(tags)' is the same as having no `tags' property at all.
-;;
-;;  There is nothing more to it: properties can be anything you like,
-;;  provided you provide some code to recognize them and do something
-;;  with them.
-;;
-;;  Of course, the types of properties you use most (maybe always) are
-;;  predefined, and the vanilla `bookmark.el' code and the Bookmark+
-;;  code recognize and use them.  The most important and most typical
-;;  property is this: `(filename . "/some/file/name.txt")', that is, a
-;;  cons whose car is the symbol `filename' and whose cdr is the name
-;;  (a string) of the bookmarked file.
-;;
-;;  With that in mind, you can see that renaming a bookmark just means
-;;  changing the string that is its car.  And relocating a bookmark
-;;  just means changing the string that is its `filename' - e.g., from
-;;  `(filename . "/home/foo.el")' to `(filename . "/some/other.xml")'.
-;;
-;;  If you already have a bookmark file, typically `~/.emacs.bmk',
-;;  take a look at the bookmark records in it.  A typical bookmark
-;;  also has these properties, in addition to `filename': `position',
-;;  `front-context-string', and `rear-context-string'.  You can guess
-;;  what they are - if not, see the doc string of `bookmark-alist'.
-;;
-;;  A Bookmark+ bookmark typically has some additional properties that
-;;  you can also guess.  Properties `time' and `visits' are updated
-;;  automatically each time you access the bookmark.
-;;
-;;  Some bookmarks have a `handler' property whose value is a function
-;;  that "jumps" to the bookmark "location".  I put those two terms in
-;;  quotes here because a handler is really just any function - it can
-;;  do anything you like, and there need not be any associated
-;;  location.
-;;
-;;  Some Bookmark+ bookmarks, including autofile bookmarks, just
-;;  "jump" to a file.  The position in the file is unimportant, and
-;;  "jumping" does not necessarily mean visiting the file with Emacs.
-;;  In effect, such bookmarks are just wrappers around the file,
-;;  letting you get the advantage of Bookmark+ features (tags etc.)
-;;  for a file.  Such bookmarks, which you can create using `C-x x c
-;;  a' or `C-x x c f', contain a `file-handler' property instead of a
-;;  `handler' property.  The difference between the two is that the
-;;  `file-handler' value is a function (Lisp function or shell
-;;  command) to be applied to the file, not to the bookmark.
-;;
-;;  Remember: A bookmark is just a persistent bit of information,
-;;  typically meta-information about a file and a position in that
-;;  file.
-;;
-;;  I'm mentioning all of this to make the point that you cannot
-;;  really hurt anything if you edit a bookmark record and you mess
-;;  things up.  The worst you can do is mess up all of your bookmarks
-;;  by making the file unreadable as Lisp data.  (It's always a good
-;;  idea to back up your bookmark file from time to time.)
-;;
-;;  And if each bookmark record after you edit it is a cons with a
-;;  string car then your bookmarks are generally OK, even if you might
-;;  have ruined the details of one or two of them.  Suppose you
-;;  somehow mistakenly delete the `a' in a `filename' property, for
-;;  instance.  No big deal - that bookmark no longer has a
-;;  recognizable target location, but the other bookmarks are still
-;;  OK.
-;;
-;;  The most important property for Bookmark+ users (aside from
-;;  `filename') is probably `tags'.  Its value (the cdr) is a list of
-;;  strings or conses - the bookmark's tags.  When you create a tag,
-;;  it is typically a string (just its name) - e.g. "blue".  If you
-;;  then give it a value as well, it becomes a cons with that string
-;;  (the name) as car and the value as cdr - e.g. `("blue" . 42)' or
-;;  `("blue" moonbeam 42)' - here the cdr is the list `(moonbeam 42)'.
-;;  Here is an example of a `tags' property: `(tags "hegel" ("blue"
-;;  . honeypot) "darwin")'.  Most of the time you will use strings as
-;;  tags.  See also (@> "Bookmark Tags Can Have Values").
-;;
-;;  When you edit bookmark records, just try to stay away from
-;;  changing any properties that you are not familiar with.  And make
-;;  sure that when you're done you have a proper Lisp list (open
-;;  parens closed etc.).  If you've never played with Lisp before, do
-;;  not panic.
-;;
-;;  Be aware if you see dots (`.') that they are important, and they
-;;  must be surrounded by whitespace: ` . '.  The amount of whitespace
-;;  never matters in Lisp (except inside a string etc.).
-;;
-;;  Such a dot just separates the car of a cons from its cdr.  (What's
-;;  a cons?  Just a car with a cdr!)  If the cdr is a list then we
-;;  typically drop the dot and the list's parens: We write `(b)'
-;;  instead of `(b . ())' and `(a b)' instead of `(a . (b))' or `(a
-;;  . (b . ()))'.
-;;
-;;  Finally, remember that when you set an existing bookmark again,
-;;  e.g., you use `C-x r m' and provide the name of an existing
-;;  bookmark, the existing properties are generally lost.  Some are
-;;  automatically updated.  Any that you might have added by editing
-;;  are lost, and any that are provided by default by the bookmark
-;;  handler are replaced.  The only exceptions to this are the
-;;  properties listed in option `bmkp-properties-to-keep', which by
-;;  default means properties `tags' and `annotation'.  Any existing
-;;  tags and annotation are preserved when you update a bookmark.
  
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
 ;;  ** Bookmark-List Views - Saving and Restoring State **
