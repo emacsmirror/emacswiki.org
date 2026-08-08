@@ -1702,61 +1702,61 @@ as does the help from '''`##?##'''' in the bookmark-list display.
 
 It's worth dispelling some of the mystery about what a bookmark is
 by mentioning what it looks like.  This can help when you edit a
-bookmark record.  The first thing to mention is that the basic
+bookmark record.  The first thing to say is that the basic
 structure of a bookmark record is described in the doc string of
-variable `bookmark-alist' -- but I'll repeat some of that info
+variable `bookmark-alist' -- but I repeat some of that info
 here.
 
-A '''bookmark record''' is nothing more than a list whose first element
-is a string, the bookmark '''name'''.  The other list elements are '''properties''': key+value pairs that define the bookmark data.  Each
-such pair is a [[cons]]: a nonempty list or a dotted list.
+A '''bookmark record''' is a list whose first element
+is a string, the bookmark '''name'''.  The other list elements are the bookmark '''properties''' (aka "entries"): key+value pairs that define the bookmark data.  Each
+such pair is a [[cons]] cell.
 
-The [[car]] of the property is its name (a Lisp [[symbol]]).  The [[cdr]] is
+The [[car]] of a property is its name (a Lisp [[symbol]]).  The [[cdr]] is
 its value.  What the value can be depends on the property -- in
 general it can be any Lisp value (number, string, list, symbol,
-etc.).  A property with a null cdr means the same thing as
-having no such property present.  For example, having the empty
+etc.).  A property with a null cdr behaves the same as
+one with no such property.  For example, having the empty
 property `##(tags)##' is the same as having no `tags' property at
 all.
 
-There is nothing more to it: properties can be anything you like,
-provided you provide some code to recognize them and do something
-with them.
+There's nothing more to it: properties can be anything you like; you just need to have some code that recognizes them and does something with them.
 
-Of course, the types of properties you use most (maybe always) are
-predefined, and the vanilla ##bookmark.el## code and the '''Bookmark+'''
-code recognize and use them.  The most important and most typical
+The properties you use most (maybe always) are
+predefined: vanilla Emacs (library ##bookmark.el##) or
+'''Bookmark+'''
+recognizes and uses them.  The most important and most typical
 property is this: `##(filename . "/some/file/name.txt")##', that is,
 a cons whose car is the symbol '''`filename'''' and whose cdr is the
 name (a string) of the bookmarked file.
 
-With that in mind, you can see that ''renaming'' a bookmark just means
-changing the string that is its car.  And ''relocating'' a bookmark
-just means changing the string that is its `filename' -- e.g., from
+With that in mind, you can see that ''renaming'' a bookmark means just
+changing its filename.  And ''relocating'' a file bookmark
+means just changing its `filename' property -- e.g., from
 `##(filename . "/home/foo.el")##' to `##(filename . "/some/other.xml")##'.
 
-If you already have a bookmark file, typically `##~/.emacs.bmk##',
-take a look at the bookmark records in it.  A typical bookmark
-also has these properties, in addition to `filename': '''`position'''',
+If you already have a bookmark file (typically `##~/.emacs.bmk##',
+`##~/.emacs.el##', or `##~/.emacs.d/init.el##'),
+then take a look at the bookmark records in it.  In addition to `filename', a typical bookmark
+has these properties: '''`position'''',
 '''`front-context-string'''', and '''`rear-context-string''''.  You can guess
-what they are -- if not, see the doc string of `bookmark-alist'.
+what they are -- if not, see the doc string of variable '''`bookmark-alist''''.
 
 A '''Bookmark+''' bookmark typically has some additional properties that
-you can also guess.  Properties '''`time'''' and '''`visits'''' are updated
-automatically each time you access the bookmark.
+you can also guess.  Properties '''`last-visited'''' and '''`visits'''' are updated
+automatically each time you access/use the bookmark.
 
-Some bookmarks have a '''`handler'''' property whose value is a
-function that "jumps" to the bookmark "location".  I put those two
-terms in quotes here because a handler is really just ''any'' function
--- it can do anything you like, and there need not be any
-associated location.
+Many bookmarks have a '''`handler'''' property whose value is a
+function that "jumps" to the bookmark "location"/"destination".  I put those 
+terms in quotes here because a handler is really just ''any'' Lisp function
+-- it can do anything you like, and a bookmark need not have any
+associated location/destination.
 
 Some '''Bookmark+''' bookmarks, including [[#AutofileBookmarks|autofile]] bookmarks, just
-"jump" to a ''file''.  The position in the file is unimportant, and
-"jumping" does not necessarily mean visiting the file with Emacs.
-In effect, such bookmarks are just wrappers around the file,
-letting you get the advantage of '''Bookmark+''' features (tags etc.)
-for a file.  Such bookmarks, which you can create using `C-x x c a' or `C-x x c f', contain a '''`file-handler'''' property instead of a
+jump to a ''file''.  The position in the file is unimportant, and in this case
+"jumping" doesn't necessarily mean visiting the file with Emacs.
+In effect, such a bookmark is just a wrapper around the file,
+letting you get the advantages of other '''Bookmark+''' features, such as tags,
+for a file.  Such bookmarks (which you can create using `C-x x c a' or `C-x x c f') contain a '''`file-handler'''' property instead of a
 `handler' property.  The difference between the two is that the
 `file-handler' value is a function (Lisp function or shell
 command) to be applied to the file, not to the bookmark.
@@ -1772,45 +1772,44 @@ things up.  The worst you can do is mess up all of your bookmarks
 by making the file unreadable as Lisp data.  (It's always a good
 idea to back up your bookmark file from time to time.)
 
-And if each bookmark record after you edit it is a cons with a
-string car then your bookmarks are generally OK, even if you might
-have ruined the details of one or two of them.  Suppose you
-somehow mistakenly delete the `a' in a `filename' property, for
-instance.  No big deal -- that bookmark no longer has a
+And if, after editing, each bookmark record is a cons with a
+string car (the bookmark name), then your bookmarks are generally OK, even if you might
+have ruined the details of one or two of them.  For example, suppose you somehow mistakenly delete the `a' in the property name `filename'.  No big deal -- that bookmark no longer has a
 recognizable target location, but the other bookmarks are still
 OK.
 
-The most important property for '''Bookmark+''' users (aside from `filename') is probably
-'''`tags''''.  Its value (the cdr) is a list of strings or conses -- the
-bookmark's tags.  When you create a tag, it is typically a string
-(just its name) -- e.g. ##"blue"##.  If you then give it a value as
-well, it becomes a cons with that string (the name) as car and the
-value as cdr -- e.g. `##("blue" . 42)##' or `##("blue" moonbeam 42)##'  -- here the cdr is the list `##(moonbeam 42)##'.  Here is an example of a
-`tags' property: `##(tags "hegel" ("blue" . honeypot) "darwin")##'.
-Most of the time you will use strings as tags.  See also
+Aside from `filename', perhaps the most important property for '''Bookmark+''' users is
+'''`tags''''.  Its value (the cdr) is a list of strings or conses: the
+bookmark's tags.  When you create a tag, it's typically just a string
+(the tag name) -- e.g. ##"blue"##.  But if you then give the tag a value as
+well, it becomes a cons with the name as car and the
+value as cdr -- e.g. `##("blue" . 42)##' or `##("blue" moonbeam 42)##'. (In the latter case the cdr is the list `##(moonbeam 42)##'.)  Here's an example of a
+`tags' property with two tags,
+##"hegel"## and ##"darwin"##: `##(tags "hegel" ("blue" . honeypot) "darwin")##'.
+Most of the time you will use just strings as tags.  See also
 [[#TagsAsAttributes|Bookmark Tags Can Have Values]].
 
-When you edit bookmark records, just try to stay away from
-changing any properties that you are not familiar with.  And make
+When you edit a bookmark record, try not to 
+change any properties that you're not familiar with.  And make
 sure that when you're done you have a proper Lisp list (open
-parens closed etc.).  If you've never played with Lisp before, do
-not panic.
+parens closed etc.).
 
-Be aware if you see dots ('''`##.##'''') that they are important, and they
-must be surrounded by whitespace: '''`## . ##''''.  The amount of whitespace
-never matters in Lisp (except inside a string etc.).
+If you've never played with Lisp before, don't panic.
+If you see dots surrounded by whitespace ('''`## . ##''''), be aware that they're
+important.  The whitespace is needed, but the amount of it isn't
+important.
 
 Such a dot just separates the car of a cons from its cdr.  (What's
-a [[cons]]?  Just a [[car]] with a [[cdr]]!)  If the cdr is a list then we
-typically drop the dot and the list's parens: We write `##(b)##'
+a [[cons]]?  Just a [[car]] together with a [[cdr]]!)  If the cdr is a list then we
+typically drop the dot and that list's parens: We write `##(b)##'
 instead of `##(b . ())##' and `##(a b)##' instead of `##(a . (b))##' or `##(a . (b . ()))##'.
 
-Finally, remember that when you set an existing bookmark again,
-e.g., you use `C-x r m' and provide the name of an existing
-bookmark, the existing properties are generally lost.  Some are
-automatically updated.  Any that you might have added by editing
-are lost, and any that are provided by default by the bookmark
-handler are replaced.  The only exceptions to this are the
+Finally, remember that when you update an existing bookmark by setting it again
+(e.g., you use `C-x r m' and provide the name of an existing
+bookmark), the previously existing properties are generally lost.  Some are
+automatically updated.  Any that you were provided by default by the bookmark handler are replaced, and any
+that you might have added (e.g. by editing) before updating are lost.
+The only exceptions to this are the
 properties listed in [[option]] '''`bmkp-properties-to-keep'''', which by
 default means properties `tags' and `annotation'.  Any existing
 tags and annotation are preserved when you update a bookmark.
