@@ -1572,133 +1572,6 @@ the full power of Lisp values - do with them whatever you like.
 
 
 
-[:FunctionSequenceVarlistBookmarks]
-== Function, Sequence, Variable-List,... Bookmarks ==
-
-Bookmarks are typically thought of only as recorded locations.
-Invoking a bookmark, called "jumping" to it, traditionally means
-just visiting its location.  '''Bookmark+''' looks at bookmarks in a
-more general way than that.  A bookmark is a shortcut of some
-kind -- nothing more.  It is typically persistent, but it need not be
-(see [[#TemporaryBookmarks|Temporary Bookmarks]]).
-
-A given type of bookmark is defined by its handler function,
-which can do anything you like.  We've already seen the
-examples of region bookmarks, which restore the [[active region]], and
-[[Dired]] bookmarks, which restore Dired markings, switches,
-inserted subdirectories, and hidden (sub)directories.
-
-[:functionBookmark]
-[:windowConfig]
-[:frameConfig]
-A '''function bookmark''' simply invokes some function --- any function.
-You can, for instance, define a window or frame configuration and
-record the configuration as a bookmark.  Then jump to the bookmark to switch
-contexts.  (You can also bookmark a [[DeskTop|desktop]] and jump to that.)
-
-Function bookmarks might not seem too interesting, since there are other ways to invoke functions in Emacs.  But the other features
-of '''Bookmark+''' combine with this feature.  You can, for instance,
-tag function bookmarks.
-
-And you can combine them, invoking the functions sequentially.
-This is a particular case of using a '''sequence bookmark''',
-which simply records a sequence of bookmarks.  The bookmarks in a
-sequence can be of any kind, including other sequence bookmarks.
-
-Command '''`bmkp-make-function-bookmark'''' ('''`C-x x c F'''') creates a function
-bookmark --- you give it a function symbol or a lambda expression.
-
-A function bookmark can invoke a ''keyboard macro'' instead of a
-function.  With a [[prefix argument]], `bmkp-make-function-bookmark'
-creates a function bookmark from the last keyboard macro.  Jumping
-to the bookmark executes the keyboard macro.  A bookmark is thus one
-way to make a keyboard macro persistent.
-
-If you provide a prefix argument to the bookmark jump command or
-key that invokes a function bookmark, it is passed along to the
-function.  If the bookmark invokes a keyboard macro then the
-prefix argument determines how many times the macro is invoked.
-
-The most general way to create or update a sequence bookmark is
-using command '''`bmkp-set-sequence-bookmark'''' ('''`C-x x c s'''').  You are
-prompted for the sequence bookmark name and the names of the
-bookmarks that form its sequence and are thus invoked by it
-sequentially.
-
-If the sequence bookmark already exists then a prefix argument
-determines whether the bookmarks you name are ''added'' to the
-existing sequence or ''replace'' it, and if added, whether before or
-after the bookmarks already in the sequence.
-
-Command '''`bmkp-wrap-bookmark-with-last-kbd-macro'''' ('''`C-x x c C-k'''')
-returns a sequence bookmark that invokes a bookmark you name and
-then invokes the last keyboard macro.  You are prompted for the
-names of both bookmarks.  If the sequence bookmark does not yet
-exist then it is created.  (The bookmark to be added to the
-sequence need not exist yet, and it is not created by adding its
-name to the sequence.)
-
-If you enter the same name for the sequence bookmark and the
-bookmark to wrap with the keyboard macro, then the macro is simply
-added to that (sequence) bookmark.
-
-For example, if you enter `my-seq' for both of the
-`bmkp-wrap-bookmark-with-last-kbd-macro' prompts, then the last
-keyboard macro is added to sequence bookmark `my-seq'. Bookmark
-`my-seq' need not exist yet, in which case it is created, with the
-keyboard macro as its only member bookmark.
-
-If the bookmark to add to the sequence is itself a different
-(existing) sequence bookmark, then its member bookmarks are added
-to the sequence being updated (or created), either before or after
-its existing members, according to the prefix arg (which is passed to `bmkp-set-sequence-bookmark').
-
-Command '''`bmkp-bmenu-make-sequence-from-marked'''' creates a
-sequence from the marked bookmarks in the [[#BookmarkListDisplay|bookmark-list display]], in their
-current order.
-
-If you use library '''[[Dired+]]''' then you can use command
-'''`diredp-do-bookmark-dirs-recursive'''' to create a Dired
-bookmark for the current Dired buffer and each of its marked
-subdirectories.  Each of those subdirectories is handled
-similarly, and so on, recursively.  This command also creates a sequence
-bookmark that includes all of these Dired bookmarks, so that it
-represents a tree (hierarchy) of Dired buffers that are opened
-together.    This
-provides an alternative to inserting all of the relevant
-subdirectories into the same Dired buffer.  With a [[prefix argument]], all of the descendent Dired
-buffers are included, whether or not they are marked.
-
-You can also create a function bookmark directly from a keyboard
-macro, using command '''`bmkp-set-kmacro-bookmark''''.  And you can save
-the current set of keyboard macros as a bookmark, using command
-'''`bmkp-set-kmacro-list-bookmark'''' - jumping to it restores all of the macros.
-
-
-A '''variable-list''' bookmark saves and restores the values of a set of
-variables.  Command '''`bmkp-set-variable-list-bookmark'''' prompts you
-for the variables to include in the list and then sets the
-bookmark.  Command `bmkp-jump-variable-list' ('''`C-x j v'''') restores
-the recorded variable values for the bookmark's buffer.  You can
-also create variable-list bookmarks non-interactively, using function
-`bmkp-create-variable-list-bookmark'.
-
-
-[:zones.el]
-If you use library <tt>[[zones.el]]</tt> (see [[Zones]] and MultipleNarrowings), then you can move among multiple
-restrictions (narrowings) in a buffer.  The restrictions are
-stored in buffer-local variable `zz-izones'.  Command '''`bmkp-set-izones-bookmark'''' bookmarks this value
-for the current buffer.  Jumping to such a bookmark restores the
-saved ring/stack of restrictions.
-
-
-
-
-
-
-
-
-
 [:LittlePersistentNamedNothings]
 === Little Persistent Named Nothings ===
 
@@ -1824,9 +1697,8 @@ as does the help from '''`##?##'''' in the bookmark-list display.
 
 
 
-
 [:BookmarkRecords]
-=== Bookmark Records: What A Bookmark Looks Like ===
+== Bookmark Records: What A Bookmark Looks Like ==
 
 It's worth dispelling some of the mystery about what a bookmark is
 by mentioning what it looks like.  This can help when you edit a
@@ -1942,6 +1814,134 @@ handler are replaced.  The only exceptions to this are the
 properties listed in [[option]] '''`bmkp-properties-to-keep'''', which by
 default means properties `tags' and `annotation'.  Any existing
 tags and annotation are preserved when you update a bookmark.
+
+
+
+
+
+
+
+
+
+[:FunctionSequenceVarlistBookmarks]
+== Function, Sequence, Variable-List,... Bookmarks ==
+
+Bookmarks are typically thought of only as recorded locations.
+Invoking a bookmark, called "jumping" to it, traditionally means
+just visiting its location.  '''Bookmark+''' looks at bookmarks in a
+more general way than that.  A bookmark is a shortcut of some
+kind -- nothing more.  It is typically persistent, but it need not be
+(see [[#TemporaryBookmarks|Temporary Bookmarks]]).
+
+A given type of bookmark is defined by its handler function,
+which can do anything you like.  We've already seen the
+examples of region bookmarks, which restore the [[active region]], and
+[[Dired]] bookmarks, which restore Dired markings, switches,
+inserted subdirectories, and hidden (sub)directories.
+
+[:functionBookmark]
+[:windowConfig]
+[:frameConfig]
+A '''function bookmark''' simply invokes some function --- any function.
+You can, for instance, define a window or frame configuration and
+record the configuration as a bookmark.  Then jump to the bookmark to switch
+contexts.  (You can also bookmark a [[DeskTop|desktop]] and jump to that.)
+
+Function bookmarks might not seem too interesting, since there are other ways to invoke functions in Emacs.  But the other features
+of '''Bookmark+''' combine with this feature.  You can, for instance,
+tag function bookmarks.
+
+And you can combine them, invoking the functions sequentially.
+This is a particular case of using a '''sequence bookmark''',
+which simply records a sequence of bookmarks.  The bookmarks in a
+sequence can be of any kind, including other sequence bookmarks.
+
+Command '''`bmkp-make-function-bookmark'''' ('''`C-x x c F'''') creates a function
+bookmark --- you give it a function symbol or a lambda expression.
+
+A function bookmark can invoke a ''keyboard macro'' instead of a
+function.  With a [[prefix argument]], `bmkp-make-function-bookmark'
+creates a function bookmark from the last keyboard macro.  Jumping
+to the bookmark executes the keyboard macro.  A bookmark is thus one
+way to make a keyboard macro persistent.
+
+If you provide a prefix argument to the bookmark jump command or
+key that invokes a function bookmark, it is passed along to the
+function.  If the bookmark invokes a keyboard macro then the
+prefix argument determines how many times the macro is invoked.
+
+The most general way to create or update a sequence bookmark is
+using command '''`bmkp-set-sequence-bookmark'''' ('''`C-x x c s'''').  You are
+prompted for the sequence bookmark name and the names of the
+bookmarks that form its sequence and are thus invoked by it
+sequentially.
+
+If the sequence bookmark already exists then a prefix argument
+determines whether the bookmarks you name are ''added'' to the
+existing sequence or ''replace'' it, and if added, whether before or
+after the bookmarks already in the sequence.
+
+Command '''`bmkp-wrap-bookmark-with-last-kbd-macro'''' ('''`C-x x c C-k'''')
+returns a sequence bookmark that invokes a bookmark you name and
+then invokes the last keyboard macro.  You are prompted for the
+names of both bookmarks.  If the sequence bookmark does not yet
+exist then it is created.  (The bookmark to be added to the
+sequence need not exist yet, and it is not created by adding its
+name to the sequence.)
+
+If you enter the same name for the sequence bookmark and the
+bookmark to wrap with the keyboard macro, then the macro is simply
+added to that (sequence) bookmark.
+
+For example, if you enter `my-seq' for both of the
+`bmkp-wrap-bookmark-with-last-kbd-macro' prompts, then the last
+keyboard macro is added to sequence bookmark `my-seq'. Bookmark
+`my-seq' need not exist yet, in which case it is created, with the
+keyboard macro as its only member bookmark.
+
+If the bookmark to add to the sequence is itself a different
+(existing) sequence bookmark, then its member bookmarks are added
+to the sequence being updated (or created), either before or after
+its existing members, according to the prefix arg (which is passed to `bmkp-set-sequence-bookmark').
+
+Command '''`bmkp-bmenu-make-sequence-from-marked'''' creates a
+sequence from the marked bookmarks in the [[#BookmarkListDisplay|bookmark-list display]], in their
+current order.
+
+If you use library '''[[Dired+]]''' then you can use command
+'''`diredp-do-bookmark-dirs-recursive'''' to create a Dired
+bookmark for the current Dired buffer and each of its marked
+subdirectories.  Each of those subdirectories is handled
+similarly, and so on, recursively.  This command also creates a sequence
+bookmark that includes all of these Dired bookmarks, so that it
+represents a tree (hierarchy) of Dired buffers that are opened
+together.    This
+provides an alternative to inserting all of the relevant
+subdirectories into the same Dired buffer.  With a [[prefix argument]], all of the descendent Dired
+buffers are included, whether or not they are marked.
+
+You can also create a function bookmark directly from a keyboard
+macro, using command '''`bmkp-set-kmacro-bookmark''''.  And you can save
+the current set of keyboard macros as a bookmark, using command
+'''`bmkp-set-kmacro-list-bookmark'''' - jumping to it restores all of the macros.
+
+
+A '''variable-list''' bookmark saves and restores the values of a set of
+variables.  Command '''`bmkp-set-variable-list-bookmark'''' prompts you
+for the variables to include in the list and then sets the
+bookmark.  Command `bmkp-jump-variable-list' ('''`C-x j v'''') restores
+the recorded variable values for the bookmark's buffer.  You can
+also create variable-list bookmarks non-interactively, using function
+`bmkp-create-variable-list-bookmark'.
+
+
+[:zones.el]
+If you use library <tt>[[zones.el]]</tt> (see [[Zones]] and MultipleNarrowings), then you can move among multiple
+restrictions (narrowings) in a buffer.  The restrictions are
+stored in buffer-local variable `zz-izones'.  Command '''`bmkp-set-izones-bookmark'''' bookmarks this value
+for the current buffer.  Jumping to such a bookmark restores the
+saved ring/stack of restrictions.
+
 
 
 
