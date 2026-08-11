@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Aug  6 17:41:24 2026 (-0700)
+;; Last-Updated: Sun Aug  9 15:09:43 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 297
+;;     Update #: 304
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -418,6 +418,8 @@ DOC-STRING is the doc string of the new command."
                                                       "\\s-+" "-" sort-order)))))
     (let ((TMP-current-bmk  (make-symbol "current-bmk")))
       `(progn
+         ;; `bmkp-assoc-delete-all' is defined in `bookmark+-bmu.el', which is where
+         ;; `bmkp-define-sort-command' is used.
          (setq bmkp-sort-orders-alist  (bmkp-assoc-delete-all ,sort-order (copy-sequence
                                                                            bmkp-sort-orders-alist))
                bmkp-sort-orders-alist  (cons (cons ,sort-order ',comparer) bmkp-sort-orders-alist))
