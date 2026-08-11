@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Aug  7 11:03:59 2026 (-0700)
+;; Last-Updated: Tue Aug 11 13:29:38 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4865
+;;     Update #: 4874
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -451,18 +451,21 @@
       (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
     (if (string-match regexp string) (replace-match rep nil nil string) string))) ; Emacs 20
 
-(defun bmkp-assoc-delete-all (key alist)
-  "Delete from ALIST all elements whose car is `equal' to KEY.
+;; This is used in expansion of macro `bmkp-define-sort-command', defined in `bookmark+-mac.el'.
+(if (fboundp 'assoc-delete-all)         ; Emacs 26+
+    (defalias 'bmkp-assoc-delete-all 'assoc-delete-all)
+  (defun bmkp-assoc-delete-all (key alist) ; Same as Emacs 26+ `assoc-delete-all' from `subr.el'.
+    "Delete from ALIST all elements whose car is `equal' to KEY.
 Return the modified alist.
 Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist)) (equal (car (car alist)) key))  (setq alist  (cdr alist)))
-  (let ((tail  alist)
-        tail-cdr)
-    (while (setq tail-cdr  (cdr tail))
-      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
-          (setcdr tail (cdr tail-cdr))
-        (setq tail  tail-cdr))))
-  alist)
+    (while (and (consp (car alist)) (equal (caar alist) key))  (setq alist  (cdr alist)))
+    (let ((tail  alist)
+          tail-cdr)
+      (while (setq tail-cdr  (cdr tail))
+        (if (and (consp (car tail-cdr))  (equal (caar tail-cdr) key))
+            (setcdr tail (cdr tail-cdr))
+          (setq tail  tail-cdr))))
+    alist))
 
 
 ;; (eval-when-compile (require 'bookmark+-1))
