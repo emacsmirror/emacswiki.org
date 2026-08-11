@@ -3,14 +3,14 @@
 ;; Filename: help-fns+.el
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2023, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
+;; Copyright (C) 2007-2026, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 15 10:29:40 2023 (-0800)
-;;           By: dradams
-;;     Update #: 2591
+;; Last-Updated: Mon Aug 10 18:50:06 2026 (-0700)
+;;           By: drew0
+;;     Update #: 2611
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,7 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `auth-source', `backquote', `button', `bytecomp', `cconv',
+;;   `cl-generic', `cl-lib', `cl-macs', `eieio', `eieio-core',
+;;   `eieio-loaddefs', `epg-config', `gv', `help-fns', `help-mode',
+;;   `info', `macroexp', `naked', `package', `password-cache',
+;;   `radix-tree', `seq', `tabulated-list', `url-handlers',
+;;   `url-parse', `url-vars', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,6 +121,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2026/08/10 drew0
+;;     Wrapped all calls to pp in (let ((print-circle t))...).
+;; 2023/09/27 dadams
+;;     help-var-is-of-type-p: case -> cl-case.
 ;; 2023/01/15 dadams
 ;;     describe-keymap: Evaluate keymap var in original buffer, not in *Help* - it could be buffer-local.
 ;; 2022/11/03 dadams
@@ -450,10 +459,9 @@
 
 (require 'package nil t) ;; describe-package
 
-(eval-when-compile (require 'cl)) ;; case
-
 (unless (require 'cl-lib nil t) ;; gentemp - Emacs 24+
-  (require 'cl))                ;; Emacs < 24
+  (require 'cl)                ;; Emacs < 24
+  (defalias 'cl-case 'case))
 
 
 ;; Quiet the byte-compiler.
@@ -1950,7 +1958,8 @@ it is displayed along with the global value."
                 (with-current-buffer standard-output
                   (setq val-start-pos  (point))
                   (princ "value is ") (terpri)
-                  (let ((from  (point)))
+                  (let ((from          (point))
+                        (print-circle  t))
                     (pp val)
                     ;; Hyperlinks in variable's value are quite frequently inappropriate
                     ;; e.g `C-h v <RET> features <RET>'
@@ -1969,7 +1978,8 @@ it is displayed along with the global value."
                       ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
                       ;; We should probably print it raw once and check it's a sensible size before
                       ;; prettyprinting.  -- fx
-                      (let ((from  (point)))
+                      (let ((from          (point))
+                            (print-circle  t))
                         (pp val)
                         ;; See previous comment for this function.
                         ;; (help-xref-on-pp from (point))
@@ -2151,8 +2161,9 @@ it is displayed along with the global value."
                 (with-current-buffer standard-output
                   (setq val-start-pos  (point))
                   (princ "value is ")
-                  (let ((from  (point)))
-                    (terpri)
+                  (terpri)
+                  (let ((from          (point))
+                        (print-circle  t))
                     (pp val)
                     (if (< (point) (+ 68 (line-beginning-position 0)))
                         (delete-region from (1+ from))
@@ -2172,7 +2183,8 @@ it is displayed along with the global value."
                       ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
                       ;; We should probably print it raw once and check it's a sensible size before
                       ;; prettyprinting.  -- fx
-                      (let ((from  (point)))
+                      (let ((from          (point))
+                            (print-circle  t))
                         (pp val)
                         ;; See previous comment for this function.
                         ;; (help-xref-on-pp from (point))
@@ -2385,10 +2397,11 @@ the global value."
                                   (and (stringp val)  (string-match-p "[\n]" val)))
                         (terpri))
                       ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
-                      ;; (let ((opoint  (point)))
+                      ;; (let ((opoint  (point))
+                      ;;       (print-circle  t))
                       ;;   (pp val)
                       ;;   (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
-                      (pp val)
+                      (let ((print-circle  t)) (pp val))
                       (when (stringp val) (terpri))
                       (put-text-property from (point) 'face 'describe-variable-value)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
@@ -2407,9 +2420,10 @@ the global value."
                           (terpri))
                         ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
                         ;; (let ((opoint  (point)))
+                        ;;       (print-circle  t))
                         ;;   (pp origval)
                         ;;   (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
-                        (pp origval)
+                        (let ((print-circle  t)) (pp origval))
                         (put-text-property from (point) 'face 'describe-variable-value)
                         (when (< (point) (+ from 20)) (delete-region (1- from) from) (terpri)))))))
               (terpri)
@@ -2434,7 +2448,8 @@ the global value."
                         (princ ":") (terpri) (terpri)
                         ;; Fixme: `pp' can be slow for a very large expression.  We should maybe print it raw once
                         ;; and check whether it is a sensible size, before prettyprinting.  -- fx
-                        (let ((opoint  (point)))
+                        (let ((opoint        (point))
+                              (print-circle  t))
                           (pp global-val)
                           ;; Can't fill value, as that breaks values (e.g. strings) where whitespace is significant.
                           ;; (save-excursion (fill-region-as-paragraph opoint (point) nil t t))
@@ -2667,7 +2682,7 @@ anything else (default): `inherit'
 
 VARIABLE's current value cannot satisfy a regexp type: it is
 impossible to know which concrete types a value must match."
-  (case mode
+  (cl-case mode
     ((nil inherit)     (help-var-inherits-type-p variable types))
     (inherit-or-value  (or (help-var-inherits-type-p variable types)
                            (help-var-val-satisfies-type-p variable types)))
@@ -2959,20 +2974,20 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
             (with-help-window (help-buffer)
               (when bmk
                 (if internal-form-p
-                    (let* ((bname     (bookmark-name-from-full-record bmk))
-                           (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s" bname
-                                              (make-string (+ 11 (length bname)) ?-)
-                                              (pp-to-string bmk))))
+                    (let* ((bname         (bookmark-name-from-full-record bmk))
+                           (bmk-defn      (format "Bookmark `%s'\n%s\n\n%s" bname
+                                                  (make-string (+ 11 (length bname)) ?-)
+                                                  (let ((print-circle  t)) (pp-to-string bmk)))))
                       (princ bmk-defn) (terpri) (terpri))
                   (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
               (princ help-text))
           (with-output-to-temp-buffer "*Help*"
             (when bmk
               (if internal-form-p
-                  (let* ((bname     (bookmark-name-from-full-record bmk))
-                         (bmk-defn  (format "Bookmark `%s'\n%s\n\n%s" bname
-                                            (make-string (+ 11 (length bname)) ?-)
-                                            (pp-to-string bmk))))
+                  (let* ((bname         (bookmark-name-from-full-record bmk))
+                         (bmk-defn      (format "Bookmark `%s'\n%s\n\n%s" bname
+                                                (make-string (+ 11 (length bname)) ?-)
+                                                (let ((print-circle  t)) (pp-to-string bmk)))))
                     (princ bmk-defn) (terpri) (terpri))
                 (princ (bmkp-bookmark-description bmk 'NO-IMAGE)) (terpri) (terpri)))
             (princ help-text)))
