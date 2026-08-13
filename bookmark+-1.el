@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Aug  8 12:08:36 2026 (-0700)
+;; Last-Updated: Thu Aug 13 13:54:09 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10214
+;;     Update #: 10367
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -135,8 +135,8 @@
 ;;    `bmkp-cycle-bookmark-list',
 ;;    `bmkp-cycle-bookmark-list-other-window', `bmkp-cycle-desktop',
 ;;    `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
-;;    `bmkp-cycle-eww', `bmkp-cycle-eww-other-window',
-;;    `bmkp-cycle-file', `bmkp-cycle-file-other-window',
+;;    `bmkp-cycle-eww' (Emacs 25+), `bmkp-cycle-eww-other-window'
+;;    (Emacs 25+), `bmkp-cycle-file', `bmkp-cycle-file-other-window',
 ;;    `bmkp-cycle-gnus', `bmkp-cycle-gnus-other-window',
 ;;    `bmkp-cycle-info', `bmkp-cycle-info-other-window',
 ;;    `bmkp-cycle-lighted', `bmkp-cycle-lighted-other-window',
@@ -247,10 +247,11 @@
 ;;    `bmkp-next-desktop-bookmark-repeat', `bmkp-next-dired-bookmark',
 ;;    `bmkp-next-dired-bookmark-other-window',
 ;;    `bmkp-next-dired-bookmark-other-window-repeat',
-;;    `bmkp-next-dired-bookmark-repeat', `bmkp-next-eww-bookmark',
-;;    `bmkp-next-eww-bookmark-other-window',
-;;    `bmkp-next-eww-bookmark-other-window-repeat',
-;;    `bmkp-next-eww-bookmark-repeat', `bmkp-next-file-bookmark',
+;;    `bmkp-next-dired-bookmark-repeat', `bmkp-next-eww-bookmark'
+;;    (Emacs 25+), `bmkp-next-eww-bookmark-other-window' (Emacs 25+),
+;;    `bmkp-next-eww-bookmark-other-window-repeat' (Emacs 25+),
+;;    `bmkp-next-eww-bookmark-repeat' (Emacs 25+),
+;;    `bmkp-next-file-bookmark',
 ;;    `bmkp-next-file-bookmark-other-window',
 ;;    `bmkp-next-file-bookmark-other-window-repeat',
 ;;    `bmkp-next-file-bookmark-repeat', `bmkp-next-gnus-bookmark',
@@ -269,7 +270,8 @@
 ;;    `bmkp-next-local-file-bookmark-repeat',
 ;;    `bmkp-next-man-bookmark', `bmkp-next-man-bookmark-other-window',
 ;;    `bmkp-next-man-bookmark-other-window-repeat',
-;;    `bmkp-next-man-bookmark-repeat', `bmkp-next-buffer-no-file-bookmark',
+;;    `bmkp-next-man-bookmark-repeat',
+;;    `bmkp-next-buffer-no-file-bookmark',
 ;;    `bmkp-next-buffer-no-file-bookmark-other-window',
 ;;    `bmkp-next-buffer-no-file-bookmark-other-window-repeat',
 ;;    `bmkp-next-buffer-no-file-bookmark-repeat',
@@ -332,10 +334,10 @@
 ;;    `bmkp-previous-dired-bookmark-other-window',
 ;;    `bmkp-previous-dired-bookmark-other-window-repeat',
 ;;    `bmkp-previous-dired-bookmark-repeat',
-;;    `bmkp-previous-eww-bookmark',
-;;    `bmkp-previous-eww-bookmark-other-window',
-;;    `bmkp-previous-eww-bookmark-other-window-repeat',
-;;    `bmkp-previous-eww-bookmark-repeat',
+;;    `bmkp-previous-eww-bookmark' (Emacs 25+),
+;;    `bmkp-previous-eww-bookmark-other-window' (Emacs 25+),
+;;    `bmkp-previous-eww-bookmark-other-window-repeat' (Emacs 25+),
+;;    `bmkp-previous-eww-bookmark-repeat' (Emacs 25+),
 ;;    `bmkp-previous-file-bookmark',
 ;;    `bmkp-previous-file-bookmark-other-window',
 ;;    `bmkp-previous-file-bookmark-other-window-repeat',
@@ -2398,9 +2400,8 @@ bookmark file.  Saving the file depends on `bookmark-save-flag'."
   (bookmark-maybe-load-default-file)
   (let ((bname  (copy-sequence bookmark-name))
         bmk)
-    (unless (featurep 'xemacs)
-      ;; XEmacs's `set-text-properties' does not work on free-standing strings, apparently.
-      (set-text-properties 0 (length bname) () bname))
+    ;; XEmacs's `set-text-properties' does not work on free-standing strings, apparently.
+    (unless (featurep 'xemacs) (set-text-properties 0 (length bname) () bname))
     (if (or no-overwrite  (not (setq bmk  (bmkp-get-bookmark-in-alist bname 'NOERROR))))
         (push (setq bmk  (cons bname data)) bookmark-alist) ; Add new bookmark.
       (bookmark-set-name bmk bname)     ; Overwrite existing bookmark.
@@ -2614,7 +2615,9 @@ candidate."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;; 1. Handles also regions and non-file buffers.
-;; 2. Do not use NO-CONTEXT or POSN if < Emacs 24.
+;; 2. Additional properties:
+;;      buffer-name, created, front-context-region-string, last-visited, rear-context-region-string, visits.
+;; 3. Don't use NO-CONTEXT or POSN if < Emacs 24.
 ;;
 (defun bookmark-make-record-default (&optional no-file no-context position visits no-region)
   "Return the record describing the location of a new bookmark.
@@ -2668,14 +2671,14 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Unless non-nil arg DO-NOT-PROPERTIZE-P, put full bookmark record on bookmark name (inside record),
-;; as property `bmkp-full-record'.
+;; Added arg PROPERTIZE-P.
 ;;
-(defun bookmark-alist-from-buffer (&optional do-not-propertize-p)
+(defun bookmark-alist-from-buffer (&optional propertize-p)
   "Read and return a bookmark list from the current buffer.
-Unless optional arg DO-NOT-PROPERTIZE-P is non-nil, put the full
-bookmark record on the bookmark name (in the record), as a text
-property.  Point is irrelevant and unaffected."
+Non-nil optional arg PROPERTIZE-P means put the full bookmark record
+on the bookmark name (in the record), as a text property.
+
+Point is irrelevant and unaffected."
   (let ((bmks  (save-excursion
                  (goto-char (point-min))
                  (if (search-forward bookmark-end-of-version-stamp-marker nil t)
@@ -2694,10 +2697,7 @@ property.  Point is irrelevant and unaffected."
                                               (error-message-string err)))))
                      ;; Else no hope of getting information here.
                      (error "Buffer is not in bookmark-list format"))))))
-    ;; Put full bookmark on bookmark names as property `bmkp-full-record'.
-    ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
-    ;; If property needs to be stripped, that will be done when saving.
-    (unless do-not-propertize-p
+    (when propertize-p
       (let (bname)
         (dolist (bmk  bmks)
           (setq bname  (bmkp-bookmark-name-from-record bmk))
@@ -2814,8 +2814,8 @@ From Lisp code:
           (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
           (setq bookmark-current-buffer  (current-buffer)))
         (let* ((record   (bookmark-make-record))
-               (defname  (cond ((and (eq major-mode 'eww-mode)
-                                     (fboundp 'bmkp-make-eww-record) ; Emacs 25+
+               (defname  (cond ((and (eq major-mode 'eww-mode) ; Emacs 25+
+                                     (fboundp 'bmkp-make-eww-record)
                                      (bmkp-eww-title)))
                                ((eq major-mode 'w3m-mode) w3m-current-title)
                                ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
@@ -3311,9 +3311,6 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
                          (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
                (signal 'bookmark-error-no-filename (list 'stringp file))))
            (set-buffer (or buf  bufname))
-           (when bmkp-jump-display-function
-             (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
-             (raise-frame))
            (goto-char (if pos (min pos (point-max)) (point-max)))
            (when (and pos  (> pos (point-max))) (error "Bookmark position is beyond buffer end"))
            ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
@@ -3682,7 +3679,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                     coding-system-for-write))
         (print-length             nil)
         (print-level              nil)
-        (rem-all-p                (or (not (> emacs-major-version 20)) ; Cannot: (not (boundp 'print-circle)).
+        (rem-all-props            (or (<= emacs-major-version 20) ; Cannot: (not (boundp 'print-circle)).
                                       (not bmkp-propertize-bookmark-names-flag)))
         (existing-buf             (get-file-buffer file))
         (emacs-lisp-mode-hook     nil) ; Avoid inserting automatic file header if existing empty file, so
@@ -3715,7 +3712,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
         (unless (bmkp-temporary-bookmark-p bmk)
           (setq bname  (bookmark-name-from-full-record bmk)
                 fname  (bookmark-get-filename bmk))
-          (cond (rem-all-p ; Remove text properties from bookmark name and file name.
+          (cond (rem-all-props ; Remove text properties from bookmark name and file name.
                  (set-text-properties 0 (length bname) () bname)
                  (when fname (set-text-properties 0 (length fname) () fname)))
                 (t ; Remove property `face' and any Icicles internal properties.
@@ -3738,7 +3735,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
           (let ((print-circle         bmkp-propertize-bookmark-names-flag)
                 (print-gensym         bmkp-propertize-bookmark-names-flag)
                 (pp-default-function  #'pp-28)) ; Emacs 30.1 redefined `pp' and added `pp-default-function'.
-            (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
+            (if (not (and rem-all-props  (bmkp-sequence-bookmark-p bmk)))
                 (pp bmk (current-buffer))
               ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
               (insert "(\"" (let ((seqbname  (copy-sequence (bookmark-name-from-full-record bmk))))
@@ -3847,25 +3844,29 @@ Return non-nil if the bookmark was renamed, nil otherwise."
 ;;
 ;;  1. Prefix arg means OVERWRITE.
 ;;  2. Return the list of bookmarks read from FILE.
-;;  3. Use `bmkp-read-bookmark-file-name', not `read-file-name', and use different default.
-;;  4. If OVERWRITE is non-nil:
+;;  3. Propertize bookmarks read, if `bmkp-propertize-bookmark-names-flag' is non-nil.
+;;  4. Use `bmkp-read-bookmark-file-name', not `read-file-name', and use different default.
+;;  5. If OVERWRITE is non-nil:
 ;;     * Update `bmkp-last-bookmark-file' to `bmkp-current-bookmark-file'.
 ;;     * Update `bmkp-current-bookmark-file' to FILE.
 ;;     * Reset bmenu stuff: `bmkp-bmenu-marked-bookmarks', `bmkp-modified-bookmarks',
 ;;       `bmkp-flagged-bookmarks', `bmkp-bmenu-omitted-bookmarks', `bmkp-bmenu-filter-function'.
 ;;     * If `bmkp-last-as-first-bookmark-file', then update it to FILE and save it to disk.
-;;  5. If the bookmark-file buffer already existed, do not kill it after loading.
-;;  6. Set `bmkp-bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
-;;  7. Update `bmkp-sorted-alist' (it's a cache).
-;;  8. Final msg says whether overwritten.
-;;  9. Run `bmkp-read-bookmark-file-hook' after reading the bookmark file.
-;; 10. Call `bmkp-bmenu-refresh-menu-list' at end, if interactive.
-;; 11. Don't support optional 4th arg DEFAULT (Emacs 27+).
+;;  6. If the bookmark-file buffer already existed, do not kill it after loading.
+;;  7. Set `bmkp-bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
+;;  8. Update `bmkp-sorted-alist' (it's a cache).
+;;  9. Final msg says whether overwritten.
+;; 10. Run `bmkp-read-bookmark-file-hook' after reading the bookmark file.
+;; 11. Call `bmkp-bmenu-refresh-menu-list' at end, if interactive.
+;; 12. Don't support optional 4th arg DEFAULT (Emacs 27+).
 ;;
 ;;;###autoload (autoload 'bookmark-load "bookmark+")
 (defun bookmark-load (file &optional overwrite batchp &rest _IGNORED) ; Bound to `C-x x l'
   "Load bookmarks from FILE (which must be in the standard format).
 Return the list of bookmarks read from FILE.
+Propertize bookmark names with full bookmark data, if
+`bmkp-propertize-bookmark-names-flag' is non-nil.
+
 Without a prefix argument (argument OVERWRITE is nil), add the newly
 loaded bookmarks to those already current.  They are saved to the
 current bookmark file when bookmarks are saved.
@@ -3946,7 +3947,7 @@ bookmark files that were created using the bookmark functions."
     (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
       (goto-char (point-min))
       (bookmark-maybe-upgrade-file-format)
-      (setq blist  (bookmark-alist-from-buffer))
+      (setq blist  (bookmark-alist-from-buffer bmkp-propertize-bookmark-names-flag))
       (unless (listp blist) (error "Invalid bookmark list in `%s'" file))
       (cond (overwrite
              (setq bmkp-last-bookmark-file            (abbreviate-file-name bmkp-current-bookmark-file)
@@ -4280,7 +4281,7 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-dired-wildcards-bookmark-p bookmark-alist))
 
-(when (fboundp 'bmkp-eww-bookmark-p)    ; Emacs 25+
+(when (> emacs-major-version 24)        ; Emacs 25+
 
   (defun bmkp-eww-alist-only ()
     "`bookmark-alist', filtered to retain only EWW bookmarks.
@@ -6095,7 +6096,9 @@ non-nil, require confirmation if the file already exists."
   file)
 
 (defun bmkp-write-alist-bookmarks-to-file (alist file)
-  "Write bookmarks in ALIST to FILE."
+  "Write bookmarks in ALIST to FILE.
+Propertize bookmark names with full bookmark data, if
+`bmkp-propertize-bookmark-names-flag' is non-nil."
   (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (let ((bookmark-save-flag                 nil) ; Inhibit auto-saving for the duration.
         (bookmark-alist                     bookmark-alist)
@@ -6110,7 +6113,7 @@ non-nil, require confirmation if the file already exists."
             (bookmark-insert-file-format-version-stamp coding-system-for-write)
           (bookmark-insert-file-format-version-stamp))
         (insert "(\n)"))
-      (let ((blist  (bookmark-alist-from-buffer)))
+      (let ((blist  (bookmark-alist-from-buffer bmkp-propertize-bookmark-names-flag)))
         (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
         (setq bookmark-alist  blist)    ; Bookmarks in FILE
         (setq imported  (bookmark-import-new-list alist nil 'RETURN-BMKS))
@@ -6524,8 +6527,8 @@ message."
   (when msg-p (message "UN-omitting ALL omitted bookmarks..."))
   (let ((count  0))
     (dolist (bmk-name  bmkp-bmenu-omitted-bookmarks)
-      (setq bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list
-                                           bmk-name bmkp-bmenu-omitted-bookmarks)
+      (setq bmkp-bmenu-omitted-bookmarks  (bmkp-delete-bookmark-name-from-list bmk-name
+                                                                               bmkp-bmenu-omitted-bookmarks)
             count                         (1+ count)))
     (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
     (when msg-p (message "UN-omitted %d bookmarks" count)))
@@ -6752,23 +6755,22 @@ Non-nil NAMES-ONLY-P means return a list of only the tag names.
 Otherwise, return an alist of the full tags."
   (setq file  (expand-file-name file))
   (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
+  (unless (file-readable-p file) (error "Unreadable bookmark file `%s'" file))
   (let ((bookmark-save-flag  nil)       ; Just to play safe.
         (bmk-alist           ())
         (tags                ())
         bmk-tags)
-    (if (not (file-readable-p file))
-        (message "Cannot read bookmark file `%s'" file)
-      (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
-        (goto-char (point-min))
-        (condition-case nil ; Check whether it's a valid bookmark file.
-            (progn (bookmark-maybe-upgrade-file-format)
-                   (unless (listp (setq bmk-alist  (bookmark-alist-from-buffer))) (error "")))
-          (error (message "Not a valid bookmark file: `%s'" file))))
-      (dolist (bmk  bmk-alist)
-        (setq bmk-tags  (bmkp-get-tags bmk))
-        (dolist (tag  bmk-tags)
-          (let ((tg  (if names-only-p (bmkp-tag-name tag) (bmkp-full-tag tag))))
-            (unless (member tg tags) (setq tags  (cons tg tags)))))))
+    (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+      (goto-char (point-min))
+      (condition-case nil  ; Check whether it's a valid bookmark file.
+          (progn (bookmark-maybe-upgrade-file-format)
+                 (unless (listp (setq bmk-alist  (bookmark-alist-from-buffer))) (error "")))
+        (error (error "Not a valid bookmark file: `%s'" file))))
+    (dolist (bmk  bmk-alist)
+      (setq bmk-tags  (bmkp-get-tags bmk))
+      (dolist (tag  bmk-tags)
+        (let ((tg  (if names-only-p (bmkp-tag-name tag) (bmkp-full-tag tag))))
+          (unless (member tg tags) (setq tags  (cons tg tags))))))
     tags))
 
 (defun bmkp-tag-name (tag)
@@ -7544,22 +7546,33 @@ Does not change the original STRING."
     strg))
 
 ;; For a name propertized with `bmkp-full-record', this is similar to `bmkp-assoc-delete-all'.
-(defun bmkp-delete-bookmark-name-from-list (delname bnames)
-  "Delete names that represent the same bookmark as DELNAME from BNAMES.
-This means that they are `string=' and they either have no property
-`bmkp-full-record' or that property has the same value.
-Return the modified list BNAMES."
-  ;; $$$$$$ Can we change `equal' to `eq' everywhere here?
+(defun bmkp-delete-bookmark-name-from-list (delname bookmark-names)
+  "Delete names that are the same as DELNAME from list BOOKMARK-NAMES.
+If `bmkp-propertize-bookmark-names-flag' is nil or DELNAME doesn't
+have property `bmkp-full-record', then this is the same as `delete'.
+
+Otherwise, to be deleted a name must be `string=' to DELNAME, and it's
+`bmkp-full-record' property must either `equal' DELNAME's
+`bmkp-full-record' value or be nil (or absent).
+
+Return the modified list BOOKMARK-NAMES.
+
+An error is raised if DELNAME or any name in BOOKMARK-NAMES is not a
+string."
   (let ((delprop  (get-text-property 0 'bmkp-full-record delname))
         bmkprop)
-    (if (not delprop)
-        (setq bnames  (delete delname bnames)) ; Unpropertized - just use `delete'.
+    (if (or (not delprop)  (not bmkp-propertize-bookmark-names-flag))
+        (setq bookmark-names  (delete delname bookmark-names)) ; Unpropertized - just use `delete'.
       ;; Propertized.  Delete names that are `string=' and have the same property value or none.
-      (while (and bnames  (string= delname (car bnames)) ; Delete those at list beginning.
-                  (or (not (setq bmkprop  (get-text-property 0 'bmkp-full-record (car bnames))))
+
+      ;; Delete occurrences at list beginning.
+      (while (and bookmark-names
+                  (string= delname (car bookmark-names))
+                  (or (not (setq bmkprop  (get-text-property 0 'bmkp-full-record (car bookmark-names))))
                       (equal delprop bmkprop)))
-        (setq bnames  (cdr bnames)))
-      (let ((tail  bnames)              ; Delete those not at list beginning.
+        (setq bookmark-names  (cdr bookmark-names)))
+      ;; Delete occurrences not at list beginning.
+      (let ((tail  bookmark-names)
             tail-cdr)
         (while (setq tail-cdr  (cdr tail))
           (if (and (car tail-cdr)
@@ -7568,36 +7581,58 @@ Return the modified list BNAMES."
                        (equal delprop bmkprop)))
               (setcdr tail  (cdr tail-cdr))
             (setq tail  tail-cdr))))
-      bnames)))
+      bookmark-names)))
 
-(defun bmkp-bookmark-name-member (name names)
-  "Like `member', but tests also bookmark NAME's `bmkp-full-record' property.
-Return the tail of NAMES whose car is NAME with the property match.
-If NAME has no `bmkp-full-record' property then this is just `member'.
-If NAME has property `bmkp-full-record', then test whether both:
- a. NAME is a member of NAMES and
- b. NAME has the same `bmkp-full-record' value as an element of NAMES."
-  ;; $$$$$$ Can we change `equal' to `eq' here?
-  (let ((prop  (get-text-property 0 'bmkp-full-record name)))
-    (if (or (null name)  (not prop))
-        (member name names)             ; Unpropertized - just use `member'.
-      (while (and names  (not (and (stringp (car names))
-                                   (string= name (car names)) ; = `bmkp-names-same-bookmark-p'.
-                                   ;; If unpropertized in NAMES, then assume it's the one.
-                                   (or (not (get-text-property 0 'bmkp-full-record (car names)))
-                                       (equal prop (get-text-property 0 'bmkp-full-record (car names)))))))
-        (setq names  (cdr names)))
-      names)))
+(defun bmkp-bookmark-name-member (name1 names)
+  "Return non-nil if NAME1 is in list NAMES.
+If (1) `bmkp-propertize-bookmark-names-flag' is nil, (2) NAME1 is not
+ a string, or (3) NAME1 doesn't have property `bmkp-full-record', then
+ this is the same as `member': NAME1 is compared with names in NAMES
+ using `equal'.
+
+Else return nil if (1) no NAME2 in NAMES is equal to NAME1 or (2) no
+ equal NAME2 with property `bmkp-full-record' has the same property
+ value as NAME1.
+
+A non-nil value returned is the tail of NAMES such that its car,
+NAME2, is `equal' to NAME1, and NAME2 either doesn't have property
+`bmkp-full-record' or its property has the same value as for NAME1.
+
+The value of property `bmkp-full-record' is checked only for the first
+char of a name.
+
+NOTE: This test is looser than `bmkp-names-same-bookmark-p', which
+requires matching names to both be strings and have equal
+`bmkp-full-record' property values."
+  (if (or (not (stringp name1))  (not bmkp-propertize-bookmark-names-flag))
+      (member name1 names)
+    (let ((prop1  (get-text-property 0 'bmkp-full-record name1))
+          (prop2  nil))
+      (if (not prop1)
+          (member name1 names)
+        (while (and names
+                    (not (and (equal name1 (car names))
+                              ;; If (car NAMES) is unpropertized, then consider it a match.
+                              (and (setq prop2  (get-text-property 0 'bmkp-full-record (car names)))
+                                   (not (equal prop1 (get-text-property 0 'bmkp-full-record (car names))))))))
+          (setq names  (cdr names)))
+        names))))
 
 (defun bmkp-names-same-bookmark-p (name1 name2)
-  "Return non-nil if the two strings name the same bookmark.
-The strings are `string=' and their `bmkp-full-record' property values
-for the first character are `equal'."
+  "Return non-nil if strings NAME1 and NAME2 name the same bookmark.
+For this to return non-nil:
 
-  ;; $$$$$$ Can we change `equal' to `eq' here?
+ * The strings must be `string='.
+
+ * In addition, if `bmkp-propertize-bookmark-names-flag' is non-nil
+   then the `bmkp-full-record' property values for their first
+   character must be `equal'.
+
+An error is raised if either NAME1 or NAME2 is not a string."
   (and (string= name1 name2)
-       (equal (get-text-property 0 'bmkp-full-record name1)
-              (get-text-property 0 'bmkp-full-record name2))))
+       (or (not bmkp-propertize-bookmark-names-flag)
+           (equal (get-text-property 0 'bmkp-full-record name1) ; $$$$$$ Can we change `equal' to `eq' here?
+                  (get-text-property 0 'bmkp-full-record name2)))))
 
 (defun bmkp-read-buffers ()
 "Read names of buffers associated with bookmarks.
@@ -7852,11 +7887,10 @@ the return value any elements with keys in the list."
                                          sort-fn))))
     new-alist))
 
-(defun bmkp-remove-omitted (alist &optional omit)
+(defun bmkp-remove-omitted (alist omit)
   "Copy of bookmark ALIST without bookmarks whose names are in list OMIT.
-Name comparison is done using `bmkp-bookmark-name-member'.
-If optional arg OMIT is non-nil, then omit from the return value any
-elements with keys in list OMIT."
+Membership of a bookmark name in OMIT is tested using
+`bmkp-bookmark-name-member'."
   (let ((new  ()))
     (dolist (ii  alist)  (unless (bmkp-bookmark-name-member (car ii) omit)  (push ii new)))
     (nreverse new)))
@@ -9659,8 +9693,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
                                          (and buf  (format "Buffer:\t\t\t%s\n" buf))))
                    (file             (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
                                              (let ((dir  (file-name-directory (expand-file-name file))))
-                                               (and dir  (format "Directory:\t\t%s\n" dir)))))
-                   (t                "Unknown\n"))
+                                               (and dir  (format "Directory:\t\t%s\n" dir))))))
              (unless no-position-p
                (if (bmkp-region-bookmark-p bookmark)
                    (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
@@ -10008,8 +10041,6 @@ name, recorded position, and the context strings for the position."
       (signal 'file-error `("Jumping to bookmark" ,(format "Cannot access file `%s' or buffer `%s'"
                                                            file bufname)))))
   (set-buffer (or buf  bufname))
-  (when bmkp-jump-display-function
-    (save-current-buffer (funcall bmkp-jump-display-function (current-buffer))))
   (setq deactivate-mark  t)
   (raise-frame)
   (when pos (goto-char pos))
@@ -11467,21 +11498,23 @@ without subdir positions (markers)."
   "Jump to Dired bookmark BOOKMARK.
 Handler function for record returned by `bmkp-make-dired-record'.
 \(That's the value of `bmkp-make-dired-record' in a Dired buffer.)
-BOOKMARK is a bookmark name or a bookmark record.
-
-This handler doesn't use any display function."
-  (setq bmkp-jump-display-function  nil) ; Reset, so jumping doesn't automatically use it."
+BOOKMARK is a bookmark name or a bookmark record."
   (let ((dir          (bookmark-prop-get bookmark 'dired-directory))
         (mark-alist   (bookmark-prop-get bookmark 'dired-marked))
         (switches     (bookmark-prop-get bookmark 'dired-switches))
         (subdirs      (bookmark-prop-get bookmark 'dired-subdirs))
         (hidden-dirs  (bookmark-prop-get bookmark 'dired-hidden-dirs)))
-    (cl-case bmkp-jump-display-function
-      ((nil bmkp--pop-to-buffer-same-window display-buffer)
-       (dired dir switches))
-      ((bmkp-select-buffer-other-window pop-to-buffer switch-to-buffer-other-window)
-       (dired-other-window dir switches))
-      (t (dired dir switches)))
+    ;; Replaced with just `member' check.
+    ;;     (cl-case bmkp-jump-display-function
+    ;;       ((nil bmkp--pop-to-buffer-same-window display-buffer)
+    ;;        (dired dir switches))
+    ;;       ((bmkp-select-buffer-other-window pop-to-buffer switch-to-buffer-other-window)
+    ;;        (dired-other-window dir switches))
+    ;;       (t (dired dir switches)))
+    (if (member bmkp-jump-display-function
+                '(bmkp-select-buffer-other-window pop-to-buffer switch-to-buffer-other-window))
+        (dired-other-window dir switches)
+      (dired dir switches))
     (let ((inhibit-read-only  t))
       (dired-insert-old-subdirs subdirs)
       ;; Handle old Bookmark+ format, which just recorded `*' marks.  Property `dired-marked'
@@ -11492,7 +11525,8 @@ This handler doesn't use any display function."
         (dired-mark-remembered mark-alist)) ; New format
       (save-excursion
         (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
-    (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos)))))
+    (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos))))
+  (setq bmkp-jump-display-function  nil)) ; Reset, so jumping doesn't automatically use it."
 
 ;;;###autoload (autoload 'bmkp-bookmark-all-dired-buffers "bookmark+")
 (defun bmkp-bookmark-all-dired-buffers (sequence &optional msgp)
