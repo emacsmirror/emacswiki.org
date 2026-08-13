@@ -4489,7 +4489,8 @@ You might never want to highlight a bookmark, or you might want to
 highlight most or even all bookmarks, or your use of highlighting
 might fall somewhere between.  It depends on what kind of
 bookmarks you have and how you use them.  '''Bookmark+''' lets you
-choose.  By default, no bookmarks are highlighted.
+choose.  By default, all bookmarks in the current buffer are
+highlighted when you jump to or set a bookmark.
 
 
 
@@ -4509,8 +4510,10 @@ non-autonamed bookmarks.  Bookmark highlighting uses a '''style''' and a
 * `##Line Beginning##'      -- Highlight first character on line
 * `##Left Fringe##'         -- Highlight only the left fringe
 * `##Left Fringe + Line##'  -- Highlight the left fringe and the line
+* `##Left Fringe + Position##'  -- Highlight the left fringe and the position
 * `##Right Fringe##'        -- Highlight only the right fringe
 * `##Right Fringe + Line##' -- Highlight the right fringe and the line
+* `##Right Fringe + Position##' -- Highlight the right fringe and the position
 
 You can customize the default styles and faces to use for
 autonamed and non-autonamed bookmarks.  You can also customize the
@@ -4526,6 +4529,9 @@ fringe bitmaps to use.
 * `bmkp-light-style-non-autonamed-region' (option)
 * `bmkp-light-left-fringe-bitmap'         (option)
 * `bmkp-light-right-fringe-bitmap' (option)
+
+For Emacs 29+, `bookmark-fringe-mark' is the default for the
+fringe bitmaps.  For older releases, the default is a triangle.
 
 Note: A region, position, or line highlight acts more or less like an Emacs
 marker: it moves with the surrounding text.  As you edit the text
