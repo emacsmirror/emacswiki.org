@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
-;; Copyright (C) 2010-2023, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2026, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Jul 17 16:01:48 2026 (-0400)
+;; Last-Updated: Thu Aug 13 08:40:57 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1105
+;;     Update #: 1118
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -334,7 +334,7 @@ is `point'."
   :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-auto-light-when-jump "bookmark+")
-(defcustom bmkp-auto-light-when-jump nil
+(defcustom bmkp-auto-light-when-jump 'all-in-buffer
   "*Which bookmarks to automatically highlight when jumped to.
 NOTE: The values that specify highlighting in the current buffer
 highlight bookmarks in the buffer that is current after jumping.  If
@@ -358,7 +358,7 @@ will be the buffer before jumping."
   "Last value of `bmkp-auto-light-when-jump'.")
 
 ;;;###autoload (autoload 'bmkp-auto-light-when-set "bookmark+")
-(defcustom bmkp-auto-light-when-set nil
+(defcustom bmkp-auto-light-when-set 'all-in-buffer
   "*Which bookmarks to automatically highlight when set."
   :type '(choice
           (const :tag "Autonamed bookmark"                 autonamed-bookmark)
@@ -384,18 +384,35 @@ As an idea, `isearch' uses 1000 and 1001."
 
 ;; Not used for Emacs 20-21 or Emacs built without fringe support.
 (when (and (fboundp 'fringe-columns)  (boundp 'fringe-bitmaps))
-  (defcustom bmkp-light-left-fringe-bitmap 'left-triangle
+
+  (when (boundp 'bookmark-fringe-mark)  ; Emacs 29+
+    (define-fringe-bitmap 'bmkp-bookmark-fringe-right [#b01000010
+                                                       #b01100110
+                                                       #b01111110
+                                                       #b01111110
+                                                       #b01111110
+                                                       #b01111110
+                                                       #b01111110
+                                                       #b01111110]))
+
+  (defcustom bmkp-light-left-fringe-bitmap (if (boundp 'bookmark-fringe-mark) ; Emacs 29+
+                                               'bookmark-fringe-mark
+                                             'left-triangle)
     "*Symbol for the left fringe bitmap to use to highlight a bookmark.
 This option is not used for Emacs versions before Emacs 22."
     :type (cons 'choice (mapcar (lambda (bb) (list 'const bb)) fringe-bitmaps))
     :group 'bookmark-plus)
 
   ;; Not used for Emacs 20-21 or Emacs built without fringe support.
-  (defcustom bmkp-light-right-fringe-bitmap 'right-triangle
-    "*Symbol for the right fringe bitmap to use to highlight a bookmark.
+  (defcustom bmkp-light-right-fringe-bitmap (if (boundp 'bookmark-fringe-mark) ; Emacs 29+
+                                               'bmkp-bookmark-fringe-right
+                                             'right-triangle)
+"*Symbol for the right fringe bitmap to use to highlight a bookmark.
 This option is not used for Emacs versions before Emacs 22."
     :type (cons 'choice (mapcar (lambda (bb) (list 'const bb)) fringe-bitmaps))
-    :group 'bookmark-plus))
+    :group 'bookmark-plus)
+
+  )
 
 ;; Must be before any options that use it.
 (defvar bmkp-light-styles-alist (append '(("Region"              . region)
