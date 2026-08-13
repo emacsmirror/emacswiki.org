@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Aug  8 15:42:50 2026 (-0700)
+;; Last-Updated: Thu Aug 13 14:29:03 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17442
+;;     Update #: 17488
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,28 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/13 drew0
+;;     bookmark-default-handler, bmkp-goto-position:
+;;       Don't invoke bookmark-default-handler (and raise-frame, for bookmark-default-handler).
+;;     bmkp-jump-dired: Moved (setq bmkp-jump-display-function  nil) to end.
+;;                      Replaced cl-case (not needed) with just member.
+;; 2026/08/12 drew0
+;;     bookmark-alist-from-buffer:
+;;       Change optional arg from DO-NOT-PROPERTIZE-P to PROPERTIZE-P (by default, don't propertize).
+;;     bookmark-load, bmkp-write-alist-bookmarks-to-file:
+;;       Propertize bookmark name, if bmkp-propertize-bookmark-names-flag is non-nil.
+;;     bmkp-tags-in-bookmark-file: Error, not message, if unreadable or invalid file.
+;;     bmkp-delete-bookmark-name-from-list:
+;;       If nil bmkp-propertize-bookmark-names-flag or DELNAME is unpropertized, then use delete.
+;;     bmkp-bookmark-name-member:
+;;       If nil bmkp-propertize-bookmark-names-flag or NAME1 isn't a propertized string, use member.
+;;       Return nil if there's no NAME2 equal to NAME1 and propertized the same.
+;;     bmkp-names-same-bookmark-p: If nil bmkp-propertize-bookmark-names-flag then don't check property.
+;;     bmkp-remove-omitted: Arg OMIT is no longer optional (no reason for it to be).
+;;     bmkp-bookmark-description: When no type-specific info don't print Unknown after type name.
+;; 2026/08/11 drew0
+;;     Changed guard for bmkp-eww-alist-only defun from (fboundp 'bmkp-eww-bookmark-p) to Emacs
+;;       version #, so can keep defs in alphabetic order.
 ;; 2026/08/08 drew0
 ;;     bookmark--jump-via:
 ;;       After handler, invoke bmkp-jump-display-function, as vanilla does.  Handlers that don't want
@@ -2747,6 +2769,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2026/08/13 drew0
+;;     Added bmkp-bookmark-fringe-right (Emacs 29+).
+;;     bmkp-light-styles-alist: Added values point+lfringe, point+rfringe.
+;;     bmkp-auto-light-when-(set|jump): Change default to all-in-buffer.
+;;     bmkp-light-*-fringe-bitmap:
+;;       Use bookmark-fringe-mark and bmkp-bookmark-fringe-right as default (Emacs 29+).
 ;; 2026/07/17 drew0
 ;;     Added: bmkp-bmenu-show-only-this-buffer-lighted-bookmarks.
 ;;     bmkp-bmenu-show-only-lighted-bookmarks:
@@ -2971,6 +2999,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/08/12 drew0
+;;     Version 2026.08.13
 ;; 2026/08/08 drew0
 ;;     Version 2026.08.08
 ;; 2026/08/02 drew0
