@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Aug  8 13:59:08 2026 (-0700)
+;; Last-Updated: Thu Aug 13 14:18:31 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15782
+;;     Update #: 15789
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3986,7 +3986,8 @@
 ;;  highlight most or even all bookmarks, or your use of highlighting
 ;;  might fall somewhere between.  It depends on what kind of
 ;;  bookmarks you have and how you use them.  Bookmark+ lets you
-;;  choose.  By default, no bookmarks are highlighted.
+;;  choose.  By default, all bookmarks in the current buffer are
+;;  highlighted when you jump to or set a bookmark.
  
 ;;(@* "Defining How to Highlight")
 ;;  ** Defining How to Highlight **
@@ -3995,14 +3996,16 @@
 ;;  non-autonamed bookmarks.  Bookmark highlighting uses a style and a
 ;;  face.  The available styles are these:
 ;;
-;;  * Region              - Highlight the region, if a region bookmark
-;;  * Line                - Highlight line of the bookmark position
-;;  * Position            - Highlight character at bookmark position
-;;  * Line Beginning      - Highlight first character on line
-;;  * Left Fringe         - Highlight only the left fringe
-;;  * Left Fringe + Line  - Highlight the left fringe and the line
-;;  * Right Fringe        - Highlight only the right fringe
-;;  * Right Fringe + Line - Highlight the right fringe and the line
+;;  * Region                 - Highlight region, if region bookmark
+;;  * Line                   - Highlight line of the bookmark position
+;;  * Position               - Highlight character at bookmark position
+;;  * Line Beginning         - Highlight first character on line
+;;  * Left Fringe             - Highlight only the left fringe
+;;  * Left Fringe + Line      - Highlight left fringe and line
+;;  * Left Fringe + Position  - Highlight left fringe and position
+;;  * Right Fringe            - Highlight only the right fringe
+;;  * Right Fringe + Line     - Highlight right fringe and position
+;;  * Right Fringe + Position - Highlight right fringe and position
 ;;
 ;;  You can customize the default styles and faces to use for
 ;;  autonamed and non-autonamed bookmarks.  You can also customize the
@@ -4018,6 +4021,9 @@
 ;;  * `bmkp-light-style-non-autonamed-region' (option)
 ;;  * `bmkp-light-left-fringe-bitmap'         (option)
 ;;  * `bmkp-light-right-fringe-bitmap'        (option)
+;;
+;;  For Emacs 29+, `bookmark-fringe-mark' is the default for the
+;;  fringe bitmaps.  For older releases, the default is a triangle.
 ;;
 ;;  Note: A region, position, or line highlight acts more or less like
 ;;  an Emacs marker: it moves with the surrounding text.  As you edit
