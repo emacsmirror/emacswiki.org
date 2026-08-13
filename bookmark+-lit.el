@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2010-2026, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Aug 13 08:40:57 2026 (-0700)
+;; Last-Updated: Thu Aug 13 09:03:48 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 1118
+;;     Update #: 1120
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -134,6 +134,10 @@
 ;;    `bmkp-light-autonamed', `bmkp-light-fringe-autonamed' (Emacs
 ;;    22+), `bmkp-light-fringe-non-autonamed' (Emacs 22+),
 ;;    `bmkp-light-mark', `bmkp-light-non-autonamed'.
+;;
+;;  Fringe bitmap defined here:
+;;
+;;    `bmkp-bookmark-fringe-right' (Emacs 29+)
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -421,10 +425,12 @@ This option is not used for Emacs versions before Emacs 22."
                                           ("Line"                . line)
                                           ("None"                . none))
                                         (and (fboundp 'fringe-columns)
-                                             '(("Left Fringe"         . lfringe)
-                                               ("Right Fringe"        . rfringe)
-                                               ("Left Fringe + Line"  . line+lfringe)
-                                               ("Right Fringe + Line" . line+rfringe))))
+                                             '(("Left Fringe"             . lfringe)
+                                               ("Right Fringe"            . rfringe)
+                                               ("Left Fringe + Line"      . line+lfringe)
+                                               ("Right Fringe + Line"     . line+rfringe)
+                                               ("Left Fringe + Position"  . point+lfringe)
+                                               ("Right Fringe + Position" . point+rfringe))))
   "Alist of highlighting styles.  Key: string description.  Value: symbol.")
 
 ;; Must be before options that use it.
