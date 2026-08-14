@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jul 26 17:29:11 2026 (-0700)
+;; Last-Updated: Fri Aug 14 08:04:07 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 27676
+;;     Update #: 27680
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -833,15 +833,15 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 ;; REPLACE ORIGINAL `pp-eval-expression' defined in `pp.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; This is essentially the same as `pp-eval-expression' defined in `pp+.el', except that it
-;; uses `icicle-read-expression-map', `icicle-pp-eval-expression-print-length', and
-;; `icicle-pp-eval-expression-print-level'.
+;; This is essentially the same as `pp-eval-expression' defined in `pp+.el', except that it uses
+;; `icicle-read-expression-map', `icicle-pp-eval-expression-print-circle', `icicle-pp-eval-expression-print-length',
+;; and `icicle-pp-eval-expression-print-level'.
 ;;
 ;; 1. Read with completion, using `icicle-read-expression-map'.
 ;; 2. Progress message added.
 ;; 3. Added optional arg and insertion behavior.
-;; 4. Respect `icicle-pp-eval-expression-print-length', `icicle-pp-eval-expression-print-level',
-;;    and `eval-expression-debug-on-error'.
+;; 4. Respect `icicle-pp-eval-expression-print-circle', `icicle-pp-eval-expression-print-length',
+;;    `icicle-pp-eval-expression-print-level', and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
 ;; 6. Return result of evaluation (it is also the car of variable `values').
 ;;
@@ -857,6 +857,7 @@ With no prefix arg:
  Otherwise, show the value in buffer `*Pp Eval Output*'.
 
 This command respects user options
+`icicle-pp-eval-expression-print-circle',
 `icicle-pp-eval-expression-print-length',
 `icicle-pp-eval-expression-print-level', and
 `eval-expression-debug-on-error'.
@@ -888,7 +889,8 @@ customize option `icicle-top-level-key-bindings'."
       ;; If evaled code has changed the value of `debug-on-error', propagate that change to the global binding.
       (unless (eq old-value new-value)
         (setq debug-on-error  new-value))))
-  (let ((print-length     icicle-pp-eval-expression-print-length)
+  (let ((print-circle     icicle-pp-eval-expression-print-circle)
+        (print-length     icicle-pp-eval-expression-print-length)
         (print-level      icicle-pp-eval-expression-print-level)
         (deactivate-mark  nil))
     (cond (insert-value
