@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 13 14:29:03 2026 (-0700)
+;; Last-Updated: Fri Aug 14 15:46:58 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17488
+;;     Update #: 17507
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/14 drew0
+;;     bmkp-make-dired-record: Abbreviate dir names.
+;;     Renamed bmkp-bookmark-creation-cp to bmkp-bookmark-created-more-recently-cp.  Added alias.
 ;; 2026/08/13 drew0
 ;;     bookmark-default-handler, bmkp-goto-position:
 ;;       Don't invoke bookmark-default-handler (and raise-frame, for bookmark-default-handler).
@@ -1709,6 +1712,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/08/14 drew0
+;;     Renamed *-bmenu-sort-by-creation-time to *-bmenu-sort-by-creation-recency.  Alias.  Bind to s c.
+;;       Updated bmkp-bmenu-sort-menu for it.
 ;; 2026/08/07 drew0
 ;;     Added bmkp-make-obsolete (it's also in bookmark+-1.el).
 ;; 2026/08/06 drew0
@@ -2769,6 +2775,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2026/08/14 drew0
+;;     Added: bmkp-bookmarks-lighted-this-line, bmkp-lighted-this-line-jump-to-list,
+;;            bmkp-choose-bookmark-lighted-this-line.
+;;     Renamed: bmkp-lighted-here-jump-to-list to bmkp-lighted-at-point-jump-to-list.  Aliased.
 ;; 2026/08/13 drew0
 ;;     Added bmkp-bookmark-fringe-right (Emacs 29+).
 ;;     bmkp-light-styles-alist: Added values point+lfringe, point+rfringe.
