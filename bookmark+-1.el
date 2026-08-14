@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 14 14:43:00 2026 (-0700)
+;; Last-Updated: Fri Aug 14 15:43:15 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10374
+;;     Update #: 10380
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -511,8 +511,8 @@
 ;;    `bmkp-autonamed-bookmark-p',
 ;;    `bmkp-autonamed-this-buffer-alist-only',
 ;;    `bmkp-autonamed-this-buffer-bookmark-p',
-;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-data-from-record',
-;;    `bmkp-bookmark-description', `bmkp-bookmark-file-alist-only',
+;;    `bmkp-bookmark-data-from-record', `bmkp-bookmark-description',
+;;    `bmkp-bookmark-file-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-name-member',
@@ -523,7 +523,8 @@
 ;;    `bmkp-completing-read-1', `bmkp-completing-read-bookmarks',
 ;;    `bmkp-completing-read-buffer-name',
 ;;    `bmkp-completing-read-file-name', `bmkp-completing-read-lax',
-;;    `bmkp-cp-not', `bmkp-create-variable-list-bookmark',
+;;    `bmkp-cp-not', `bmkp-created-more-recently-cp',
+;;    `bmkp-create-variable-list-bookmark',
 ;;    `bmkp-current-bookmark-list-state', `bmkp-current-sort-order',
 ;;    `bmkp-cycle-1', `bmkp-default-bookmark-file',
 ;;    `bmkp-default-bookmark-name', `bmkp-default-handler-for-file',
@@ -1664,9 +1665,12 @@ use either \\[customize] or command `bmkp-temporary-bookmarking-mode'."
 (defcustom bmkp-this-file/buffer-cycle-sort-comparer '((bmkp-position-cp))
   "*`bmkp-sort-comparer' value for cycling this-file/buffer bookmarks.
 Use bookmarks for the currently visited file or (non-file) buffer.
-Some values you might want to use: ((bmkp-position-cp)),
- ((bmkp-bookmark-creation-cp)), ((bmkp-modified-more-recently-cp)),
- ((bmkp-visited-more-recently-cp)), ((bmkp-visited-more-often-cp)).
+Some values you might want to use:
+ ((bmkp-position-cp))
+ ((bmkp-created-more-recently-cp))
+ ((bmkp-modified-more-recently-cp))
+ ((bmkp-visited-more-recently-cp))
+ ((bmkp-visited-more-often-cp))
 See `bmkp-sort-comparer'."
   :type '(choice
           (const    :tag "None (do not sort)" nil)
@@ -8178,7 +8182,9 @@ If either is a record then it need not belong to `bookmark-alist'."
           (v2                '(nil))
           (t                 nil))))
 
-(defun bmkp-bookmark-creation-cp (b1 b2)
+;; Keep the alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-bookmark-creation-cp 'bmkp-created-more-recently-cp)
+(defun bmkp-created-more-recently-cp (b1 b2)
   "True if bookmark B1 was created more recently than B2.
 Return nil if incomparable as described.
 
