@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 13 13:54:09 2026 (-0700)
+;; Last-Updated: Fri Aug 14 14:43:00 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10367
+;;     Update #: 10374
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -11466,16 +11466,23 @@ This handler invokes `bookmark-default-handler' at the end."
   "Create and return a Dired bookmark record."
   (let ((hidden-dirs  (save-excursion (dired-remember-hidden))))
     (unwind-protect
-        (let ((dir         (expand-file-name (if (consp dired-directory)
-                                                 (file-name-directory (car dired-directory))
-                                               dired-directory)))
+        (let ((dir         (abbreviate-file-name (expand-file-name (if (consp dired-directory)
+                                                                       (file-name-directory (car dired-directory))
+                                                                     dired-directory))))
               (subdirs     (bmkp-dired-subdirs))
+              (dired-dir   (if (consp dired-directory)
+                               (cons (abbreviate-file-name (car dired-directory))
+                                     (cdr dired-directory))
+                             (abbreviate-file-name dired-directory)))
               (mark-alist  (dired-remember-marks (point-min) (point-max))))
           `(,dir
             ,@(bookmark-make-record-default 'NO-FILE)
-            (filename . ,dir) (dired-directory . ,dired-directory)
-            (dired-marked . ,mark-alist) (dired-switches . ,dired-actual-switches)
-            (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
+            (filename . ,dir)
+            (dired-directory . ,dired-dir)
+            (dired-marked . ,mark-alist)
+            (dired-switches . ,dired-actual-switches)
+            (dired-subdirs . ,subdirs)
+            (dired-hidden-dirs . ,hidden-dirs)
             (handler . bmkp-jump-dired)))
       (save-excursion                 ; Hide subdirs that were hidden.
         (dolist (dir  hidden-dirs)  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
