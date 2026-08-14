@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 1996-2026, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jul 26 16:11:41 2026 (-0700)
+;; Last-Updated: Fri Aug 14 08:08:07 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 6250
+;;     Update #: 6256
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -188,6 +188,7 @@
 ;;    `icicle-network-drive-means-remote-flag',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag' (Emacs 23+),
+;;    `icicle-pp-eval-expression-print-circle',
 ;;    `icicle-pp-eval-expression-print-length',
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
@@ -2344,7 +2345,7 @@ This can be useful to make `*Completions*' more visible.
 Possible values are `right', `left', and nil (do not move)."
   :type '(choice
           (const :tag "Move to right edge"  right)
-          (const :tag "Move to right edge"  left)
+          (const :tag "Move to left edge"   left)
           (const :tag "Do not move"         nil))
   :group 'Icicles-Completions-Display)
 
@@ -3894,6 +3895,11 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
 \(`M-i M-i' during completion) to toggle an option value."
     :type 'boolean :group 'Icicles-Miscellaneous))
 
+(defcustom icicle-pp-eval-expression-print-circle nil
+  "*Value for `print-circle' while printing value in `pp-eval-expression'.
+Non-nil means print recursive structures using #N= and #N# syntax."
+  :type 'boolean :group 'Icicles-Miscellaneous :group 'pp :group 'lisp)
+
 (defcustom icicle-pp-eval-expression-print-length nil
   "*Value for `print-length' while printing value in `pp-eval-expression'.
 A value of nil means no limit.
@@ -3904,7 +3910,7 @@ change the option value incrementally."
   :type '(choice
           (const :tag "No Limit" nil)
           (integer :value 5000))
-  :group 'Icicles-Miscellaneous)
+  :group 'Icicles-Miscellaneous :group 'pp :group 'lisp)
 
 (defcustom icicle-pp-eval-expression-print-level nil
   "*Value for `print-level' while printing value in `pp-eval-expression'.
@@ -3916,7 +3922,7 @@ change the option value incrementally."
   :type '(choice
           (const :tag "No Limit" nil)
           (integer :value 8))
-  :group 'Icicles-Miscellaneous)
+  :group 'Icicles-Miscellaneous :group 'pp :group 'lisp)
 
 (defcustom icicle-prefix-complete-keys '([?\t]  [tab]  [(control ?i)]) ; `C-i' is `TAB'.
   "*Key sequences to use for `icicle-prefix-complete'.
@@ -4349,8 +4355,9 @@ Annotations are available only in some contexts, and only for some
 candidates.  They are highlighted using face `icicle-annotation'.
 
 You can toggle this option from the minibuffer using `\\<minibuffer-local-completion-map>\
-\\[icicle-toggle-annotation]'.  You can also use multi-command `icicle-toggle-option'
-anytime (`M-i M-i' during completion) to toggle the option value."
+\\[icicle-toggle-annotation]'.
+You can also use multi-command `icicle-toggle-option' anytime
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-show-Completions-help-flag t
