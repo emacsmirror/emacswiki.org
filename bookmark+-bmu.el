@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Aug 11 13:29:38 2026 (-0700)
+;; Last-Updated: Fri Aug 14 15:28:40 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4874
+;;     Update #: 4888
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -232,7 +232,7 @@
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-recency',
 ;;    `bmkp-bmenu-sort-by-bookmark-type',
-;;    `bmkp-bmenu-sort-by-creation-time',
+;;    `bmkp-bmenu-sort-by-creation-recency',
 ;;    `bmkp-bmenu-sort-by-file-name',
 ;;    `bmkp-bmenu-sort-by-Gnus-thread',
 ;;    `bmkp-bmenu-sort-by-Info-node-name',
@@ -470,10 +470,10 @@ Elements of ALIST that are not conses are ignored."
 
 ;; (eval-when-compile (require 'bookmark+-1))
 
-;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
-;; bmkp-bookmark-description, bmkp-bookmark-file-bookmark-p,
-;; bmkp-bookmark-list-bookmark-p, bmkp-buffer-last-access-cp,
-;; bmkp-completing-read-buffer-name, bmkp-completing-read-file-name,
+;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-description,
+;; bmkp-bookmark-file-bookmark-p, bmkp-bookmark-list-bookmark-p,
+;; bmkp-buffer-last-access-cp, bmkp-completing-read-buffer-name,
+;; bmkp-completing-read-file-name, bmkp-created-more-recently-cp,
 ;; bmkp-current-bookmark-file, bmkp-current-sort-order,
 ;; bmkp-describe-bookmark, bmkp-describe-bookmark-internals,
 ;; bmkp-desktop-bookmark-p, bmkp-edit-bookmark-name-and-location,
@@ -491,11 +491,11 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-local-file-updated-more-recently-cp,
 ;; bmkp-set-sequence-bookmark, bmkp-man-bookmark-p,
 ;; bmkp-marked-bookmark-p, bmkp-marked-bookmarks-only, bmkp-marked-cp,
-;; bmkp-msg-about-sort-order, bmkp-non-file-filename,
-;; bmkp-read-tag-completing, bmkp-read-tags-completing,
-;; bmkp-refresh-menu-list, bmkp-region-bookmark-p,
-;; bmkp-remove-all-tags, bmkp-remove-if, bmkp-remove-tags,
-;; bmkp-repeat-command, bmkp-reverse-multi-sort-p,
+;; bmkp-modified-more-recently-cp, bmkp-msg-about-sort-order,
+;; bmkp-non-file-filename, bmkp-read-tag-completing,
+;; bmkp-read-tags-completing, bmkp-refresh-menu-list,
+;; bmkp-region-bookmark-p, bmkp-remove-all-tags, bmkp-remove-if,
+;; bmkp-remove-tags, bmkp-repeat-command, bmkp-reverse-multi-sort-p,
 ;; bmkp-reverse-sort-p, bmkp-root-or-sudo-logged-p, bmkp-same-file-p,
 ;; bmkp-save-menu-list-state, bmkp-sequence-bookmark-p,
 ;; bmkp-set-tag-value, bmkp-set-tag-value-for-bookmarks,
@@ -1871,7 +1871,7 @@ to cycle)
 `\\[bmkp-bmenu-sort-tagged-before-untagged]'\t- Sort tagged (`t') bookmarks first
 `\\[bmkp-bmenu-sort-annotated-before-unannotated]'\t- Sort annotated (`a') bookmarks first
 
-`\\[bmkp-bmenu-sort-by-creation-time]'\t- Sort by bookmark creation time
+`\\[bmkp-bmenu-sort-by-creation-recency]'\t- Sort by bookmark creation time
 `\\[bmkp-bmenu-sort-by-last-buffer-or-file-access]'\t- Sort by last buffer or file \
 access
 `\\[bmkp-bmenu-sort-by-bookmark-visit-recency]'\t- Sort by bookmark visit recency
@@ -5925,10 +5925,10 @@ Otherwise alphabetize by bookmark name.")
 Otherwise alphabetize by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s 0' (zero) in bookmark list
- "by creation time"                     ; `bmkp-bmenu-sort-by-creation-time'
- ((bmkp-bookmark-creation-cp) bmkp-alpha-p)
+ "by creation recency"                     ; `bmkp-bmenu-sort-by-creation-recency'
+ ((bmkp-created-more-recently-cp) bmkp-alpha-p)
  "Sort bookmarks by the time of their creation.
-When one or both of the bookmarks does not have a `created' entry),
+When one or both of the bookmarks don't have a `created' entry,
 compare them by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s a' in bookmark list
@@ -6288,9 +6288,10 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "s"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
 (define-key bookmark-bmenu-mode-map "s*"                   'bmkp-bmenu-sort-modified-before-unmodified)
-(define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
+(define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-recency)
 (define-key bookmark-bmenu-mode-map "sa"                   'bmkp-bmenu-sort-annotated-before-unannotated)
 (define-key bookmark-bmenu-mode-map "sb"                   'bmkp-bmenu-sort-by-last-buffer-or-file-access)
+(define-key bookmark-bmenu-mode-map "sc"                   'bmkp-bmenu-sort-by-creation-recency)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
 (define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-last-local-file-access)
 (define-key bookmark-bmenu-mode-map "sfk"                  'bmkp-bmenu-sort-by-local-file-type)
@@ -6867,10 +6868,10 @@ are marked or ALLP is non-nil."
     :help "Sort Info bookmarks by manual (file) name, then position (order in book)"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-local-file-update]
   '(menu-item "By Last Local File Update" bmkp-bmenu-sort-by-last-local-file-update
-    :help "Sort bookmarks by last local file update time"))
+    :help "Sort bookmarks by local file update recency"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-buffer-or-file-access]
   '(menu-item "By Last Buffer/File Access" bmkp-bmenu-sort-by-last-buffer-or-file-access
-    :help "Sort bookmarks by time of last buffer access or local-file access"))
+    :help "Sort bookmarks by recency of buffer access or local-file access"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-local-file-size]
   '(menu-item "By Local File Size" bmkp-bmenu-sort-by-local-file-size
     :help "Sort bookmarks by local file size"))
@@ -6885,12 +6886,12 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-name]
   '(menu-item "By Bookmark Name" bmkp-bmenu-sort-by-bookmark-name
     :help "Sort bookmarks by bookmark name, respecting `case-fold-search'"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-creation-time]
-  '(menu-item "By Creation Time" bmkp-bmenu-sort-by-creation-time
-    :help "Sort bookmarks by the time of their creation"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-creation-recency]
+  '(menu-item "By Creation Recency" bmkp-bmenu-sort-by-creation-recency
+    :help "Sort bookmarks (ascending) by the time of their creation"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-recency]
   '(menu-item "By Last Bookmark Access" bmkp-bmenu-sort-by-bookmark-visit-recency
-    :help "Sort bookmarks by the time of their last visit as bookmarks"))
+    :help "Sort bookmarks by their visit/use recency"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-frequency]
   '(menu-item "By Bookmark Use" bmkp-bmenu-sort-by-bookmark-visit-frequency
     :help "Sort bookmarks by the number of times they were visited as bookmarks"))
