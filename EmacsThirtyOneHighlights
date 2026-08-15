@@ -112,6 +112,12 @@ Emacs now has a database of package hints that it can use to suggest installing 
 
 This feature was implemented by PhilipKaludercic.
 
+== SpeedBar without a separate Frame ==
+
+The new `speedbar-window-mode' minor mode displays the SpeedBar functionality (a tree of files along with identifiers in these files) within a frame in the same window.
+
+This change was contributed by VincenzoPupillo.
+
 == Elisp Changes ==
 
 === Functions moved out of cl-lib ===
