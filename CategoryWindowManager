@@ -5,6 +5,7 @@ Emacs can be used as a window manager much like xmonad, ratpoison, i3 and countl
 * [[EXWM]] (X11)
 * [[EWM]] (wayland)
 * [[reka]] (wayland)
+* [[rau]] (wayland)
 
 == Tips & Tricks ==
 
