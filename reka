@@ -22,7 +22,6 @@ basically you call (reka-push-intercept-prefix "s-d") for example, and then s-d 
 == Reka users and configs ==
 
 * tazjin (reka author), https://code.tvl.fyi/tree/users/tazjin
-* thk, https://github.com/thkoch2001/general-config
 
 ----
 [[CategoryWindowManager]]
