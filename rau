@@ -1,0 +1,6 @@
+Rau is a fork of [[reka]], replacing Rust and libwayland with an elisp implementation of the Wayland communication.
+
+https://github.com/thkoch2001/rau
+
+----
+[[CategoryWindowManager]]
