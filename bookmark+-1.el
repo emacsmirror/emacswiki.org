@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 14 15:43:15 2026 (-0700)
+;; Last-Updated: Mon Aug 17 12:11:42 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10380
+;;     Update #: 10383
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5140,15 +5140,11 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
 You are prompted for the name of a bookmark here, with completion."
   (interactive
    (let ((alist  (bmkp-this-file/buffer-alist-only)))
-     (list (bookmark-completing-read (format "%s annotation for bookmark"
-                                             (if current-prefix-arg "Add or edit" "Edit"))
+     (list (bookmark-completing-read "Add/edit annotation for bookmark"
                                      (or (and (fboundp 'bmkp-bookmarks-lighted-at-point)
                                               (bmkp-bookmarks-lighted-at-point))
                                          (bmkp-default-bookmark-name alist))
-                                     alist
-                                     nil
-                                     nil
-                                     (not current-prefix-arg)))))
+                                     alist nil nil 'USE-NIL-ALIST-P))))
   (bookmark-edit-annotation bookmark))
 
 ;;;###autoload (autoload 'bmkp-annotate-all-bookmarks-this-file/buffer "bookmark+")
