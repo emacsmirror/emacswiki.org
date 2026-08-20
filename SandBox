@@ -1111,4 +1111,18 @@ This is a test
 
 ----
 
+Ways to comment this source code, perhaps...
+
+Semicolon? ; no, semicolon is defines a, er, definition
+
+HTML method? <!-- no -->
+
+C, C++? // no
+
+Change the font color to match the background like this:
+
+[color=white]This doesn't appear: Emacs is great![/color]
+
+----
+
 CategoryEmacsWikiSite
