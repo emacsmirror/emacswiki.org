@@ -589,6 +589,9 @@ highlighting property: Value `font-lock-face' means that the
 highlighting is controlled by font-lock.  Value `face' means that
 `font-lock' does not recognize the highlighting.
 
+[: font-lock+.el]
+[: FontLockPlus]
+
 Second, for the case where the option value is `face', if you also
 use library '''<tt>[[font-lock+.el]]</tt>''' then there is no interference by
 font-lock -- the highlighting is independent of font-lock.  Library
