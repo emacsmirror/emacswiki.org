@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Aug  9 15:09:43 2026 (-0700)
+;; Last-Updated: Thu Aug 20 14:23:57 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 304
+;;     Update #: 307
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -104,7 +104,8 @@
 ;;    `bmkp-define-show-only-command', `bmkp-define-sort-command',
 ;;    `bmkp-define-type-from-hander', `bmkp-lexlet', `bmkp-lexlet*',
 ;;    `bmkp-make-plain-predicate', `bmkp-menu-bar-make-toggle',
-;;    `bmkp-with-bookmark-dir', `bmkp-with-help-window',
+;;    `bmkp-user-error', `bmkp-with-bookmark-dir',
+;;    `bmkp-with-help-window',
 ;;    `bmkp-with-output-to-plain-temp-buffer',
 ;;    `with-buffer-modified-unmodified'.
 ;;
@@ -188,6 +189,12 @@
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+;; Needed for Emacs < 24.
+;;
+;;;###autoload (autoload 'bmkp-user-error "bookmark+")
+(defmacro bmkp-user-error (&rest args)
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
 
 ;; Same as what's defined in vanilla `bookmark.el'.
 ;;;###autoload (autoload 'with-buffer-modified-unmodified "bookmark+")
