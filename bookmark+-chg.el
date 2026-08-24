@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug 24 15:14:07 2026 (-0700)
+;; Last-Updated: Mon Aug 24 15:18:42 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17539
+;;     Update #: 17540
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -3021,6 +3021,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/08/24 drew0
+;;     Version 2026.08.24
 ;; 2026/08/17 drew0
 ;;     Version 2026.08.17
 ;; 2026/08/13 drew0
