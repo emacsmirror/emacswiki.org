@@ -1,7 +1,6 @@
-Emacs 31 has not yet been released, nor is a date known.  Nevertheless, you can build it locally today, test it and if you find issues report these as EmacsBugs.
+Emacs 31.1 has been been released on 2026-08-24, see https://lists.gnu.org/archive/html/emacs-devel/2026-08/msg00760.html.
 
-
-This page aims to motivate testing Emacs, by highlighting the upcoming features, instead of having a low-effort blog post circulate around the internet. As such, please contribute comments (see HowToEdit if you are not familiar with Emacs Wiki). Just remember: Add context, motivate and attribute!
+Please contribute if you think an interesting feature is missing from this page (see HowToEdit if you are not familiar with Emacs Wiki). Just remember: Add context, motivate and attribute!
 
 Consult the NEWS file on the “master” branch for an authoritative and exhaustive listing of changes: https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS?h=master.
 
