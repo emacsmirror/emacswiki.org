@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug 17 15:39:46 2026 (-0700)
+;; Last-Updated: Mon Aug 24 15:14:07 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17521
+;;     Update #: 17539
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,16 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/24 drew0
+;;     Added vanilla bookmark-update-last-modified, for Emacs < 29.
+;;     bookmark-(edit-annotation-confirm|make-record-default|relocate|rename),
+;;       bmkp-modified-more-recently-cp: Use bookmark-update-last-modified unconditionally.
+;;     bmkp-jump-to-bookmark-linked-at: Include position in error msg.
+;;     bmkp-autofile-some-tags-regexp-jump(-other-window): Typo in guard condition for error.
+;; 2026/08/20 drew0
+;;     Use bmkp-user-error in place of error where appropriate.
+;; 2026/08/18 drew0
+;;     Added bmkp-bookmarks-in-region.
 ;; 2026/08/17 drew0
 ;;     bmkp-annotate-bookmark-this-file/buffer: Corrected doc & code: there's no prefix arg behavior.
 ;; 2026/08/14 drew0
@@ -1714,6 +1724,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/08/20 drew0
+;;     Use bmkp-user-error in place of error where appropriate.
 ;; 2026/08/14 drew0
 ;;     Renamed *-bmenu-sort-by-creation-time to *-bmenu-sort-by-creation-recency.  Alias.  Bind to s c.
 ;;       Updated bmkp-bmenu-sort-menu for it.
@@ -2924,6 +2936,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2026/08/20 drew0
+;;     Added macro bmkp-user-error.
 ;; 2026/08/02 drew0
 ;;     bmkp-define(-next+prev)-cycle-command(s): Let-bind make-symbol var TMP-* for local var STARTOVR.
 ;;     bmkp-define-show-only-command: Let-bind make-symbol vars TMP-* for local vars ORIG-*.
