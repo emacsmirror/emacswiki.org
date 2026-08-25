@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Aug 14 15:28:40 2026 (-0700)
+;; Last-Updated: Tue Aug 25 14:59:22 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4888
+;;     Update #: 4896
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3552,7 +3552,7 @@ confirm moving to new, empty file if no existing file."
   (when (and (not (file-readable-p file))
              (not batchp)
              (not (y-or-n-p (format "Move to NEW, EMPTY bookmark file `%s'? " file))))
-    (error "OK - canceled"))
+    (bmkp-user-error "OK - canceled"))
   (bmkp-bmenu-copy-marked-to-bookmark-file file duplicates-ok include-omitted-p 'MOVE 'BATCH))
 
 ;;;###autoload (autoload 'bmkp-bmenu-copy-marked-to-bookmark-file "bookmark+")
@@ -3599,7 +3599,7 @@ Non-interactively:
   (when (and (not (file-readable-p file))
              (not batchp)
              (not (y-or-n-p (format "Copy to NEW, EMPTY bookmark file `%s'? " file))))
-    (error "OK - canceled"))
+    (bmkp-user-error "OK - canceled"))
   (let ((bookmark-save-flag  nil)       ; Inhibit auto-saving for the duration.
         imported)
     (let ((marked-bmks                        (bmkp-sort-omit
@@ -3675,7 +3675,7 @@ confirm moving to new, empty file if no existing file."
              (not (file-directory-p file))
              (not batchp)
              (not (y-or-n-p (format "File `%s' already exists.  Overwrite? " file))))
-    (error "OK - canceled"))
+    (bmkp-user-error "OK - canceled"))
   (bmkp-empty-file file)
   (bmkp-bmenu-copy-marked-to-bookmark-file file nil include-omitted-p nil 'BATCH)
   (when create-b-f-bookmark-p (bmkp-set-bookmark-file-bookmark file)))
@@ -3739,12 +3739,12 @@ first jumps to that buffer."
               (and (> bookmark-alist-modification-count 0)
                    (condition-case err
                        (yes-or-no-p "Save current bookmarks? (`C-g': cancel load too) ")
-                     (quit  (error "OK - canceled"))
+                     (quit  (bmkp-user-error "OK - canceled"))
                      (error (error (error-message-string err))))))
       (bookmark-save))
     (when (or (not msg-p)
               (yes-or-no-p "Load the marked bookmark-file bookmarks? ")
-              (error "OK - canceled"))
+              (bmkp-user-error "OK - canceled"))
       (when bookmark-save-flag          ; Turn off autosaving.
         (bmkp-toggle-saving-bookmark-file) ; No MSG-P arg - issue message below.
         (when bookmark-save-flag  (setq bookmark-save-flag  nil)) ; Be sure it's off.
@@ -4221,7 +4221,7 @@ Non-interactively, non-nil MSG-P means display messages."
            
      (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all all omt))
        (setq tgs  (bmkp-set-union tgs (bmkp-get-tags bmk))))
-     (unless tgs (error "No tags to remove"))
+     (unless tgs (bmkp-user-error "No tags to remove"))
      (list (bmkp-read-tags-completing tgs t) all omt 'MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked    (if allp
@@ -5022,7 +5022,7 @@ Use the command at any time to restore them."
          (_IGNORE  (when (fboundp fn)
                      (if (y-or-n-p (format "`%s' already defined.  Redfine? " fn))
                          (fmakunbound fn)
-                       (error "OK, canceled"))))  
+                       (bmkp-user-error "OK, canceled"))))  
          (def      `(defun ,fn ()
                       (interactive)
                       (setq
@@ -5089,7 +5089,7 @@ the omit list and the sort & filter information."
          (_IGNORE  (when (fboundp fn)
                      (if (y-or-n-p (format "`%s' already defined.  Redfine? " fn))
                          (fmakunbound fn)
-                       (error "OK, canceled"))))
+                       (bmkp-user-error "OK, canceled"))))
          (def      `(defun ,fn ()
                       (interactive)
                       ;; Use `copy-sequence' here, to avoid circular references when
@@ -5615,7 +5615,7 @@ the same name."
 (defun bmkp-bmenu-barf-if-not-in-menu-list ()
   "Raise an error if current buffer is not `*Bookmark List*'."
   (unless (derived-mode-p 'bookmark-bmenu-mode)
-    (error "You can only use this command in buffer `*Bookmark List*'")))
+    (bmkp-user-error "You can only use this command in buffer `*Bookmark List*'")))
 
 (defun bmkp-face-prop (value)
   "Return a list with elements `face' or `font-lock-face' and VALUE.
@@ -5924,13 +5924,6 @@ Otherwise alphabetize by bookmark name.")
  "Sort bookmarks by putting marked before unmarked.
 Otherwise alphabetize by bookmark name.")
 
-(bmkp-define-sort-command               ; Bound to `s 0' (zero) in bookmark list
- "by creation recency"                     ; `bmkp-bmenu-sort-by-creation-recency'
- ((bmkp-created-more-recently-cp) bmkp-alpha-p)
- "Sort bookmarks by the time of their creation.
-When one or both of the bookmarks don't have a `created' entry,
-compare them by bookmark name.")
-
 (bmkp-define-sort-command               ; Bound to `s a' in bookmark list
  "annotated before unannotated" ; `bmkp-bmenu-sort-annotated-before-unannotated'
  ((bmkp-annotated-cp) bmkp-alpha-p)
@@ -5947,6 +5940,13 @@ recently or not accessed.  Sort a bookmark to an existing buffer
 before a local file bookmark.  When two bookmarks are not comparable
 by such critera, sort them by bookmark name.  (In particular, sort
 remote-file bookmarks by bookmark name.")
+
+(bmkp-define-sort-command               ; Bound to `s c' and `s 0' (zero) in bookmark list
+ "by creation recency"                  ; `bmkp-bmenu-sort-by-creation-recency'
+ ((bmkp-created-more-recently-cp) bmkp-alpha-p)
+ "Sort bookmarks by the time of their creation.
+When one or both of the bookmarks don't have a `created' entry,
+compare them by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s m' in bookmark list
  "by modification recency"     ; `bmkp-bmenu-sort-by-modification-recency'
@@ -6866,12 +6866,6 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Info-position]
   '(menu-item "By Info Book Order" bmkp-bmenu-sort-by-Info-position
     :help "Sort Info bookmarks by manual (file) name, then position (order in book)"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-local-file-update]
-  '(menu-item "By Last Local File Update" bmkp-bmenu-sort-by-last-local-file-update
-    :help "Sort bookmarks by local file update recency"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-buffer-or-file-access]
-  '(menu-item "By Last Buffer/File Access" bmkp-bmenu-sort-by-last-buffer-or-file-access
-    :help "Sort bookmarks by recency of buffer access or local-file access"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-local-file-size]
   '(menu-item "By Local File Size" bmkp-bmenu-sort-by-local-file-size
     :help "Sort bookmarks by local file size"))
@@ -6886,14 +6880,23 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-name]
   '(menu-item "By Bookmark Name" bmkp-bmenu-sort-by-bookmark-name
     :help "Sort bookmarks by bookmark name, respecting `case-fold-search'"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-local-file-update]
+  '(menu-item "By Local File Update Recency" bmkp-bmenu-sort-by-last-local-file-update
+    :help "Sort bookmarks by local file update recency (most recent first)"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-buffer-or-file-access]
+  '(menu-item "By Buffer/File Access Recency" bmkp-bmenu-sort-by-last-buffer-or-file-access
+    :help "Sort bookmarks by recency of buffer access or file access"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-modification-recency]
+  '(menu-item "By Modification Recency" bmkp-bmenu-sort-by-modification-recency
+    :help "Sort bookmarks their modification recency (most recent first)"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-creation-recency]
   '(menu-item "By Creation Recency" bmkp-bmenu-sort-by-creation-recency
-    :help "Sort bookmarks (ascending) by the time of their creation"))
+    :help "Sort bookmarks their creation recency (most recent first)"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-recency]
-  '(menu-item "By Last Bookmark Access" bmkp-bmenu-sort-by-bookmark-visit-recency
-    :help "Sort bookmarks by their visit/use recency"))
+  '(menu-item "By Visit/Use Recency" bmkp-bmenu-sort-by-bookmark-visit-recency
+    :help "Sort bookmarks by their visit recency (last visited first)"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-frequency]
-  '(menu-item "By Bookmark Use" bmkp-bmenu-sort-by-bookmark-visit-frequency
+  '(menu-item "By Bookmark Visits/Use" bmkp-bmenu-sort-by-bookmark-visit-frequency
     :help "Sort bookmarks by the number of times they were visited as bookmarks"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-marked-before-unmarked]
   '(menu-item "Marked Before Unmarked" bmkp-bmenu-sort-marked-before-unmarked
