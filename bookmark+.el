@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2026.08.24
-;; Last-Updated: Mon Aug 24 15:17:17 2026 (-0700)
+;; Version: 2026.08.25
+;; Last-Updated: Tue Aug 25 15:22:03 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 15133
+;;     Update #: 15134
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -184,7 +184,7 @@
 
 
 ;;;###autoload (autoload 'bmkp-version-number "bookmark+")
-(defconst bmkp-version-number "2026.08.24")
+(defconst bmkp-version-number "2026.08.25")
 
 ;;;###autoload (autoload 'bmkp-version "bookmark+")
 (defun bmkp-version ()
