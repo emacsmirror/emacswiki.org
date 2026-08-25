@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug 24 18:45:47 2026 (-0700)
+;; Last-Updated: Tue Aug 25 15:24:29 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17541
+;;     Update #: 17546
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/25 drew0
+;;     Added vanilla bookmark-get-last-modified, for Emacs < 29.
+;;     bmkp-has-tag-p: Added missing nil TEST value for assoc-default.
 ;; 2026/08/24 drew0
 ;;     Added vanilla bookmark-update-last-modified, for Emacs < 29.
 ;;     bookmark-make-record-default: Use different cons cells for created, last-(visited|modified).
@@ -1725,6 +1728,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/08/25 drew0
+;;     bmkp-bmenu-sort-menu: Added bmkp-bmenu-sort-by-modification-recency.
+;;                           Retitled menu items: *-(visit|creation)-recency, *-visit-frequency.
 ;; 2026/08/20 drew0
 ;;     Use bmkp-user-error in place of error where appropriate.
 ;; 2026/08/14 drew0
@@ -3022,6 +3028,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2026/08/25 drew0
+;;     Version 2026.08.25
 ;; 2026/08/24 drew0
 ;;     Version 2026.08.24
 ;; 2026/08/17 drew0
