@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Aug 24 18:44:21 2026 (-0700)
+;; Last-Updated: Tue Aug 25 15:07:56 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10444
+;;     Update #: 10449
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2097,6 +2097,12 @@ the state of buffer `*Bookmark List*' at the time it is created:
  
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
+
+(unless (fboundp 'bookmark-get-last-modified) ; < Emacs 29
+  (defun bookmark-get-last-modified (bookmark)
+    "Return the `last-modified' entry for BOOKMARK, or nil if none.
+BOOKMARK is a bookmark name or a bookmark record."
+    (bookmark-prop-get bookmark 'last-modified)))
 
 (unless (fboundp 'bookmark-update-last-modified) ; < Emacs 29
   (defun bookmark-update-last-modified (bookmark)
@@ -6654,7 +6660,7 @@ tag that has a (Lisp) value:
   to `equal'."
 
   (if (atom tag)
-      (assoc-default tag (bmkp-get-tags bookmark) t)
+      (assoc-default tag (bmkp-get-tags bookmark) nil t)
     ;; Use `equal' as the default here, as that's the more typical use
     ;; case.  (The default for `cl-member' is `eql'.)"
     (cl-member tag (bmkp-get-tags bookmark) :test (or test-fn  #'equal))))
