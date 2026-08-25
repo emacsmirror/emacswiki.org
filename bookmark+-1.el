@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Aug 24 14:50:39 2026 (-0700)
+;; Last-Updated: Mon Aug 24 18:44:21 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10441
+;;     Update #: 10444
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2648,6 +2648,8 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
   (let* ((dired-p  (and (boundp 'dired-buffers)  (car (rassq (current-buffer) dired-buffers))))
          (buf      (buffer-name))
          (ctime    (current-time))
+         (mtime    (current-time))      ; Don't use `ctime', so we get a different cons cell.
+         (vtime    (current-time))      ; Don't use `ctime', so we get a different cons cell.
 
          ;; Begin `let*' dependencies.
          (regionp  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
@@ -2671,9 +2673,9 @@ Non-nil NO-REGION means do not include the region end, `end-position'."
       ,@(unless no-context `((front-context-region-string . ,fcrs)))
       ,@(unless no-context `((rear-context-region-string  . ,ecrs)))
       (visits   . ,(or visits  0))
-      ,@(and visits  `((last-visited . ,ctime)))
+      ,@(and visits  `((last-visited . ,vtime)))
       (created  . ,ctime)
-      (last-modified . ,ctime)
+      (last-modified . ,mtime)
       (position . ,beg)
       ,@(when (and regionp  (not no-region)) `((end-position . ,end))))))
 
