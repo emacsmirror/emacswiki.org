@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug 24 15:18:42 2026 (-0700)
+;; Last-Updated: Mon Aug 24 18:45:47 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17540
+;;     Update #: 17541
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,6 +148,7 @@
 ;;
 ;; 2026/08/24 drew0
 ;;     Added vanilla bookmark-update-last-modified, for Emacs < 29.
+;;     bookmark-make-record-default: Use different cons cells for created, last-(visited|modified).
 ;;     bookmark-(edit-annotation-confirm|make-record-default|relocate|rename),
 ;;       bmkp-modified-more-recently-cp: Use bookmark-update-last-modified unconditionally.
 ;;     bmkp-jump-to-bookmark-linked-at: Include position in error msg.
