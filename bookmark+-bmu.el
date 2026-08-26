@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Aug 25 14:59:22 2026 (-0700)
+;; Last-Updated: Wed Aug 26 14:07:06 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4896
+;;     Update #: 4897
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7033,13 +7033,13 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-autofile-bookmarks]
   '(menu-item "Non-Autofiles" bmkp-bmenu-show-only-non-autofile-bookmarks
     :help "Display (only) the non-autofile bookmarks"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autofile-bookmarks]
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-autofile-bookmarks]
   '(menu-item "Autofiles" bmkp-bmenu-show-only-autofile-bookmarks
     :help "Display (only) the autofile bookmarks: those named the same as their files"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-annotated-bookmarks]
   '(menu-item "Non-Annotated" bmkp-bmenu-show-only-non-annotated-bookmarks
     :help "Display (only) the non-annotated bookmarks"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-annotated-bookmarks]
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-annotated-bookmarks]
   '(menu-item "Annotated" bmkp-bmenu-show-only-annotated-bookmarks
     :help "Display (only) the annotated bookmark"))
 
