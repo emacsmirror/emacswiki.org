@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Aug 26 14:25:41 2026 (-0700)
+;; Last-Updated: Wed Aug 26 14:40:35 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4903
+;;     Update #: 4909
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -6973,6 +6973,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-menu [type] (cons "Only Bookmarks of Type" bmkp-bmenu-show-types-menu))
 
 (define-key bmkp-bmenu-show-types-menu [show-types-sep1] '("--")) ; --------------
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-variable-list-bookmarks]
+  '(menu-item "Variable Lists" bmkp-bmenu-show-only-variable-list-bookmarks
+    :help "Display (only) the variable-list bookmarks"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-w3m-bookmarks]
   '(menu-item "W3M URLs" bmkp-bmenu-show-only-w3m-bookmarks
     :help "Display (only) the W3M URL bookmarks"))
@@ -6986,18 +6989,15 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-man-bookmarks]
   '(menu-item "UNIX Manual Pages" bmkp-bmenu-show-only-man-bookmarks
     :help "Display (only) the `man' page bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-temporary-bookmarks]
+  '(menu-item "Temporaries" bmkp-bmenu-show-only-temporary-bookmarks
+    :help "Display (only) the temporary bookmarks (`X')"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-untagged-bookmarks]
   '(menu-item "Untagged" bmkp-bmenu-show-only-untagged-bookmarks
     :help "Display (only) the bookmarks that do not have tags"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-tagged-bookmarks]
   '(menu-item "Tagged" bmkp-bmenu-show-only-tagged-bookmarks
     :help "Display (only) the bookmarks that have tags"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-variable-list-bookmarks]
-  '(menu-item "Variable Lists" bmkp-bmenu-show-only-variable-list-bookmarks
-    :help "Display (only) the variable-list bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-function-bookmarks]
-  '(menu-item "Functions" bmkp-bmenu-show-only-function-bookmarks
-    :help "Display (only) the function bookmarks"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-snippet-bookmarks]
   '(menu-item "Snippets" bmkp-bmenu-show-only-snippet-bookmarks
     :help "Display (only) the snippet bookmarks"))
@@ -7007,6 +7007,21 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-orphaned-local-file-bookmarks]
   '(menu-item "Orphaned Local Files" bmkp-bmenu-show-only-orphaned-local-file-bookmarks
     :help "Display (only) orphaned local-file bookmarks (`C-u': show remote also)"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-invokable-bookmarks]
+  '(menu-item "Non-Invokable" bmkp-bmenu-show-only-non-invokable-bookmarks
+    :help "Display (only) the non-invokable bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-dir-file-bookmarks]
+  '(menu-item "Non-Directory Files" bmkp-bmenu-show-only-non-dir-file-bookmarks
+    :help "Display (only) the bookmarks for files (not also directories)"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-info-bookmarks]
+  '(menu-item "Info Nodes" bmkp-bmenu-show-only-info-bookmarks
+    :help "Display (only) the Info bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-image-bookmarks]
+  '(menu-item "Image Files" bmkp-bmenu-show-only-image-bookmarks
+    :help "Display (only) image-file bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-icicles-search-hits-bookmarks]
+  '(menu-item "Icicles Search-Hits" bmkp-bmenu-show-only-icicles-search-hits-bookmarks
+    :help "Display (only) Icicles search-hits bookmarks"))
 (when (featurep 'bookmark+-lit)
   (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-this-buffer-lighted-bookmarks]
     '(menu-item "Highlighted Here" bmkp-bmenu-show-only-this-buffer-lighted-bookmarks
@@ -7014,15 +7029,30 @@ are marked or ALLP is non-nil."
   (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-lighted-bookmarks]
     '(menu-item "Highlighted" bmkp-bmenu-show-only-lighted-bookmarks
       :help "Display (only) highlighted bookmarks")))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-temporary-bookmarks]
-  '(menu-item "Temporaries" bmkp-bmenu-show-only-temporary-bookmarks
-    :help "Display (only) the temporary bookmarks (`X')"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-invokable-bookmarks]
-  '(menu-item "Non-Invokable" bmkp-bmenu-show-only-non-invokable-bookmarks
-    :help "Display (only) the non-invokable bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-dir-file-bookmarks]
-  '(menu-item "Non-Directory Files" bmkp-bmenu-show-only-non-dir-file-bookmarks
-    :help "Display (only) the bookmarks for files (not also directories)"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-gnus-bookmarks]
+  '(menu-item "Gnus Messages" bmkp-bmenu-show-only-gnus-bookmarks
+    :help "Display (only) the Gnus bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-function-bookmarks]
+  '(menu-item "Functions" bmkp-bmenu-show-only-function-bookmarks
+    :help "Display (only) the function bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-file-bookmarks]
+  '(menu-item "Files" bmkp-bmenu-show-only-file-bookmarks
+    :help "Display (only) the file and directory bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-dired-bookmarks]
+  '(menu-item "Dired Buffers" bmkp-bmenu-show-only-dired-bookmarks
+    :help "Display (only) the Dired bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-desktop-bookmarks]
+  '(menu-item "Desktops" bmkp-bmenu-show-only-desktop-bookmarks
+    :help "Display (only) the desktop bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-buffer-no-file-bookmarks]
+  '(menu-item "Buffers (No File)" bmkp-bmenu-show-only-buffer-no-file-bookmarks
+    :help "Display (only) the non-file bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-bookmark-list-bookmarks]
+  '(menu-item "Bookmark Lists" bmkp-bmenu-show-only-bookmark-list-bookmarks
+    :help "Display (only) the bookmark-list bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-bookmark-file-bookmarks]
+  '(menu-item "Bookmark Files" bmkp-bmenu-show-only-bookmark-file-bookmarks
+    :help "Display (only) the bookmark-file bookmarks"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-autonamed-bookmarks]
   '(menu-item "Non-AutoNamed" bmkp-bmenu-show-only-non-autonamed-bookmarks
     :help "Display (only) the non-autonamed bookmarks"))
@@ -7041,39 +7071,6 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-annotated-bookmarks]
   '(menu-item "Annotated" bmkp-bmenu-show-only-annotated-bookmarks
     :help "Display (only) the annotated bookmark"))
-
-
-
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-buffer-no-file-bookmarks]
-  '(menu-item "Buffers (No File)" bmkp-bmenu-show-only-buffer-no-file-bookmarks
-    :help "Display (only) the non-file bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-image-bookmarks]
-  '(menu-item "Image Files" bmkp-bmenu-show-only-image-bookmarks
-    :help "Display (only) image-file bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-icicles-search-hits-bookmarks]
-  '(menu-item "Icicles Search-Hits" bmkp-bmenu-show-only-icicles-search-hits-bookmarks
-    :help "Display (only) Icicles search-hits bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-info-bookmarks]
-  '(menu-item "Info Nodes" bmkp-bmenu-show-only-info-bookmarks
-    :help "Display (only) the Info bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-gnus-bookmarks]
-  '(menu-item "Gnus Messages" bmkp-bmenu-show-only-gnus-bookmarks
-    :help "Display (only) the Gnus bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-file-bookmarks]
-  '(menu-item "Files" bmkp-bmenu-show-only-file-bookmarks
-    :help "Display (only) the file and directory bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-dired-bookmarks]
-  '(menu-item "Dired Buffers" bmkp-bmenu-show-only-dired-bookmarks
-    :help "Display (only) the Dired bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-desktop-bookmarks]
-  '(menu-item "Desktops" bmkp-bmenu-show-only-desktop-bookmarks
-    :help "Display (only) the desktop bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-bookmark-list-bookmarks]
-  '(menu-item "Bookmark Lists" bmkp-bmenu-show-only-bookmark-list-bookmarks
-    :help "Display (only) the bookmark-list bookmarks"))
-(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-bookmark-file-bookmarks]
-  '(menu-item "Bookmark Files" bmkp-bmenu-show-only-bookmark-file-bookmarks
-    :help "Display (only) the bookmark-file bookmarks"))
 
 
 ;;; `Omit' submenu ---------------------------------------------------
