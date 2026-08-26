@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 25 15:24:29 2026 (-0700)
+;; Last-Updated: Wed Aug 26 14:09:46 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17546
+;;     Update #: 17547
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1728,6 +1728,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/08/26 drew0
+;;     Typo: Annotated & Autofiles items: bmkp-bmenu-show-menu -> bmkp-bmenu-show-types-menu.
 ;; 2026/08/25 drew0
 ;;     bmkp-bmenu-sort-menu: Added bmkp-bmenu-sort-by-modification-recency.
 ;;                           Retitled menu items: *-(visit|creation)-recency, *-visit-frequency.
