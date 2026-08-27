@@ -69,7 +69,7 @@ This feature was added by PhilipKaludercic.
 
 The variable line-spacing can be set to a cons cell to specify the space above and below the line. Before Emacs 31 line-spacing only supported additional space below the line.
 
-This feature was added by AlexanderKaminski und DanielMendler.
+This feature was added by AlexanderKaminski and DanielMendler.
 
 == Eager displaying and updating default completion UI ==
 
