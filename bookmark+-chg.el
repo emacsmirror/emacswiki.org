@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 26 14:28:34 2026 (-0700)
+;; Last-Updated: Fri Aug 28 16:00:29 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17549
+;;     Update #: 17556
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2026/08/28 drew0
+;;     bmkp-bookmark-description: Added last-modified description.
+;;                                Added last-bmenu-title for bookmark-list bookmark.
+;;     bookmark-insert-location: Improved doc string.
+;;     bookmark-alist doc string: Updated to include last-modified.
 ;; 2026/08/25 drew0
 ;;     Added vanilla bookmark-get-last-modified, for Emacs < 29.
 ;;     bmkp-has-tag-p: Added missing nil TEST value for assoc-default.
@@ -1730,6 +1735,7 @@
 ;;
 ;; 2026/08/26 drew0
 ;;     Typo: Annotated & Autofiles items: bmkp-bmenu-show-menu -> bmkp-bmenu-show-types-menu.
+;;     bmkp-bmenu-show-types-menu: Reordered items.
 ;;     bmkp-bmenu-propertize-item: Put missing mouse-face on bmkp-no-local.
 ;; 2026/08/25 drew0
 ;;     bmkp-bmenu-sort-menu: Added bmkp-bmenu-sort-by-modification-recency.
