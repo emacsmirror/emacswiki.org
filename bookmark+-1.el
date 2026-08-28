@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 25 15:07:56 2026 (-0700)
+;; Last-Updated: Fri Aug 28 15:09:25 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10449
+;;     Update #: 10470
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -761,8 +761,9 @@
 ;;    `bookmark-get-bookmark-record' (Emacs 20-22),
 ;;    `bookmark-get-handler' (Emacs 20-22),
 ;;    `bookmark-handle-bookmark', `bookmark-import-new-list',
-;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location',
-;;    `bookmark-make-record', `bookmark-make-record-default',
+;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location'
+;;    (Emacs 22+), `bookmark-make-record',
+;;    `bookmark-make-record-default',
 ;;    `bookmark-maybe-load-default-file', `bookmark-maybe-rename',
 ;;    `bookmark-prop-get' (Emacs 20-22), `bookmark-prop-set',
 ;;    `bookmark-show-annotation' (command here),
@@ -3408,9 +3409,8 @@ is not nil then insert that."
 ;;
 ;;;###autoload (autoload 'bookmark-insert-location "bookmark+")
 (defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x x I' (original: `C-x x f')
-  "Insert file or buffer name for the bookmark named BOOKMARK-NAME.
-If a file is bookmarked, insert the recorded file name.
-If a non-file buffer is bookmarked, insert the recorded buffer name.
+  "Insert location (destination) for the bookmark named BOOKMARK-NAME.'
+See function `bookmark-location' for what text is inserted.
 
 Optional arg NO-HISTORY means do not record BOOKMARK-NAME in
 `bookmark-history'.
@@ -3444,15 +3444,15 @@ up in `bookmark-alist'.
 
 If BOOKMARK records a `location' entry, then use that.
 
-Otherwise, look for buffer and file names.  If only one of those is
+Otherwise, look for file and buffer names.  If only one of those is
 recorded then use that.
 
-If both buffer and file name are recorded then respect option
+If both file and buffer name are recorded then respect option
 `bmkp-bmenu-show-file-not-buffer-flag': If non-nil then use the file
 name, otherwise use the buffer name.
 
-If no `location', buffer, or file name is recorded then use \"--
-Unknown location --\"."
+If no `location', file, or buffer name is recorded then use
+\"-- Unknown location --\"."
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
@@ -5414,7 +5414,8 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
                                         (save-excursion (goto-char (point-min))  (read (current-buffer)))
                                       (error (throw 'bmkp-edit-bookmark-records-send
                                                     (error-message-string err)))))
-            (unless orig-bmks (bmkp-user-error "No marked bookmarks now - edits must correspond to currently marked"))
+            (unless orig-bmks
+              (bmkp-user-error "No marked bookmarks now - edits must correspond to currently marked"))
             (cond ((not (listp edited-bookmarks))
                    (throw 'bmkp-edit-bookmark-records-send "Not a list of bookmarks"))
                   ((not (= (length edited-bookmarks) bmkp-edit-bookmark-records-number))
@@ -5622,7 +5623,8 @@ DO NOT MODIFY the header comment lines, which begin with `;;'."
              (bmkp-user-error "No such bookmark: `%s'" bname))
            (goto-char (point-min))
            (setq tags  (read (current-buffer)))
-           (unless (listp tags) (bmkp-user-error "Tags sexp is not a list of strings or an alist with string keys"))
+           (unless (listp tags)
+             (bmkp-user-error "Tags sexp is not a list of strings or an alist with string keys"))
            (bookmark-prop-set bmk 'tags tags)
            (setq bname  (bmkp-bookmark-name-from-record bmk))
            (bmkp-record-visit bmk batchp)
@@ -8147,9 +8149,9 @@ If either is a record then it need not belong to `bookmark-alist'."
            (cond ((time-less-p v2 v1)  '(t))
                  ((time-less-p v1 v2)  '(nil))
                  (t                    nil)))
-          (v1                '(t))
-          (v2                '(nil))
-          (t                 nil))))
+          (v1                          '(t))
+          (v2                          '(nil))
+          (t                           nil))))
 
 (defun bmkp-tagged-cp (b1 b2)
   "True if bookmark B1 is tagged and bookmark B2 is not.
@@ -8214,10 +8216,10 @@ If either is a record then it need not belong to `bookmark-alist'."
     (cond ((and v1 v2)
            (cond ((time-less-p v2 v1)  '(t))
                  ((time-less-p v1 v2)  '(nil))
-                 (t          nil)))
-          (v1                '(t))
-          (v2                '(nil))
-          (t                 nil))))
+                 (t                    nil)))
+          (v1                          '(t))
+          (v2                          '(nil))
+          (t                           nil))))
 
 ;; Keep the alias for a while, in case someone has it referenced in a state file.
 (defalias 'bmkp-bookmark-creation-cp 'bmkp-created-more-recently-cp)
@@ -8434,9 +8436,9 @@ If either is a record then it need not belong to `bookmark-alist'."
                  (t                     ; Compare positions.
                   (setq i1  (bookmark-get-position b1)
                         i2  (bookmark-get-position b2))
-                  (cond ((or (not i1)  (not i2)) '(t)) ; Fallback if no `position' entry.
-                        ((<= i1 i2)              '(t))
-                        ((< i2 i1)               '(nil))))))
+                  (cond ((or (not i1)  (not i2))        '(t)) ; Fallback if no `position' entry.
+                        ((<= i1 i2)                     '(t))
+                        ((< i2 i1)                      '(nil))))))
           (i1                                           '(t))
           (i2                                           '(nil))
           (t                                            nil))))
@@ -8545,9 +8547,9 @@ If either is a record then it need not belong to `bookmark-alist'."
     (and buf1 buf2 (equal buf1 buf2)
          (let ((i1  (bookmark-get-position b1))
                (i2  (bookmark-get-position b2)))
-           (cond ((or (not i1)  (not i2)) '(t)) ; Fallback if no `position' entry.
-                 ((<= i1 i2)              '(t))
-                 ((< i2 i1)               '(nil)))))))
+           (cond ((or (not i1)  (not i2))  '(t)) ; Fallback if no `position' entry.
+                 ((<= i1 i2)               '(t))
+                 ((< i2 i1)                '(nil)))))))
 
 (defun bmkp-alpha-cp (b1 b2)
   "True if bookmark B1's name sorts alphabetically before B2's.
@@ -9595,9 +9597,10 @@ the file is an image file then the description includes the following:
          (location         (bookmark-prop-get bookmark 'location))
          (start            (bookmark-get-position bookmark))
          (end              (bmkp-get-end-position bookmark))
-         (created          (bookmark-prop-get bookmark 'created))
          (last-visited     (bmkp-get-visit-time bookmark))
          (visits           (bmkp-get-visits-count bookmark))
+         (created          (bookmark-prop-get bookmark 'created))
+         (last-modified    (bookmark-get-last-modified bookmark))
          (tags             (mapcar #'bmkp-tag-name (bmkp-get-tags bookmark)))
          (sequence-p       (bmkp-sequence-bookmark-p bookmark))
          (function-p       (bmkp-function-bookmark-p bookmark))
@@ -9607,6 +9610,7 @@ the file is an image file then the description includes the following:
          (no-position-p    (or (not start)  sequence-p  function-p  variable-list-p  kmacro-p  search-hits-p))
          (non-invokable-p  (bmkp-non-invokable-bookmark-p bookmark))
          (desktop-p        (bmkp-desktop-bookmark-p bookmark))
+         (bookmark-list-p  (bmkp-bookmark-list-bookmark-p bookmark))
          (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark))
          (snippet-p        (bmkp-snippet-bookmark-p bookmark))
          (dired-p          (bmkp-dired-bookmark-p bookmark))
@@ -9623,7 +9627,7 @@ the file is an image file then the description includes the following:
                 (sequence-p                                   "Sequence")
                 (function-p                                   "Function")
                 (variable-list-p                              "Variable-list")
-                ((bmkp-bookmark-list-bookmark-p bookmark)     "Bookmark-list")
+                (bookmark-list-p                              "Bookmark-list")
                 ((bmkp-snippet-bookmark-p bookmark)           "Snippet for `kill-ring'")
                 ((bmkp-desktop-bookmark-p bookmark)           "Desktop")
                 ((bmkp-bookmark-file-bookmark-p bookmark)     "Bookmark-file")
@@ -9678,6 +9682,11 @@ the file is an image file then the description includes the following:
                                              (pp-to-string (bookmark-prop-get bookmark 'kmacros))))
                    (variable-list-p  (format "Variable list:\n%s\n"
                                              (pp-to-string (bookmark-prop-get bookmark 'variables))))
+                   (bookmark-list-p  (let ((title  (cdr (assq 'last-bmenu-title
+                                                              (bookmark-prop-get bookmark 'bookmark-list)))))
+                                       (if (not title)
+                                           ""
+                                         (format "Title:\t\t\t%s\n" title))))
                    (search-hits-p    (format "Icicles search hits:\n%s\n\n"
                                              (mapconcat (lambda (hit)
                                                           (let ((hit-copy  (copy-sequence hit)))
@@ -9741,10 +9750,11 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
                (if (bmkp-region-bookmark-p bookmark)
                    (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
                  (format "Position:\t\t%d\n" start)))
-             (and visits       (format "Visits:\t\t\t%d\n" visits))
-             (and last-visited (format "Last visit:\t\t%s\n" (format-time-string "%c" last-visited)))
-             (and created      (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
-             (and tags         (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
+             (and visits (format "Visits:\t\t\t%d\n" visits))
+             (and last-visited  (format "Last visit:\t\t%s\n" (format-time-string "%c" last-visited)))
+             (and last-modified  (format "Last modification:\t\t%s\n" (format-time-string "%c" modified)))
+             (and created  (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
+             (and tags  (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
              (if annot (format "\nAnnotation:\n%s\n" annot) "(No annotation)\n")
              (and snippet-p  (format "\nSnippet:\n%s\n" (bookmark-prop-get bookmark 'text)))
              (and (not no-image)
@@ -11509,9 +11519,10 @@ This handler invokes `bookmark-default-handler' at the end."
   "Create and return a Dired bookmark record."
   (let ((hidden-dirs  (save-excursion (dired-remember-hidden))))
     (unwind-protect
-        (let ((dir         (abbreviate-file-name (expand-file-name (if (consp dired-directory)
-                                                                       (file-name-directory (car dired-directory))
-                                                                     dired-directory))))
+        (let ((dir         (abbreviate-file-name
+                            (expand-file-name (if (consp dired-directory)
+                                                  (file-name-directory (car dired-directory))
+                                                dired-directory))))
               (subdirs     (bmkp-dired-subdirs))
               (dired-dir   (if (consp dired-directory)
                                (cons (abbreviate-file-name (car dired-directory))
