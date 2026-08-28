@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 15:58:41 2026 (-0700)
+;; Last-Updated: Fri Aug 28 16:51:21 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10475
+;;     Update #: 10485
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1940,8 +1940,8 @@ or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
 
  BOOKMARK-NAME is the name you gave to the bookmark when creating it.
  PARAM-ALIST is an alist of bookmark data.  The order of the entries
-  in PARAM-ALIST is not important.  The possible entries are described
-  below.
+  in PARAM-ALIST is not important.  The possible entries, also called
+  bookmark \"properties\", are described below.
 
 Bookmarks created using vanilla Emacs (`bookmark.el') can generally
 contain these PARAM-ALIST entries:
@@ -1971,6 +1971,10 @@ contain these PARAM-ALIST entries:
   for a specific kind of bookmark.  This is the case for Info
   bookmarks, for instance (starting with Emacs 23).
 
+In addition, bookmark jump commands can add additional PARAM-ALIST
+entries.  For example, jumping to an Info bookmark dynamically adds a
+`buffer' entry whose value is the destination Info buffer.
+
 Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
 except for the following differences.
 
@@ -1996,7 +2000,9 @@ except for the following differences.
  applies to bookmarks of all types, not just those with a destination.
 
 3. The buffer name is recorded, using entry `buffer-name'.  It need
-not be associated with a file.
+not be associated with a file.  This is separate from any dynamic use
+of a `buffer' entry, whose value can be an actual buffer, not
+necessarily a buffer name.
 
 4. If no file is associated with the bookmark, then FILENAME is
    `   - no file -'.
@@ -3462,10 +3468,10 @@ If no `location', file, or buffer name is recorded then use
   (or (bookmark-prop-get bookmark 'location)
       (if bmkp-bmenu-show-file-not-buffer-flag
           (or (bookmark-get-filename bookmark)
-              (bmkp-get-buffer-name bookmark) ; Entry `buffer-name'.
-              (bookmark-prop-get bookmark 'buffer)) ; Entry `buffer'.
-        (or (bmkp-get-buffer-name bookmark)
-            (bookmark-prop-get bookmark 'buffer)
+              (bmkp-get-buffer-name bookmark) ; Property `buffer-name'.
+              (buffer-name (bookmark-prop-get bookmark 'buffer))) ; Property `buffer'.
+        (or (bmkp-get-buffer-name bookmark) ; Property `buffer'.
+            (buffer-name (bookmark-prop-get bookmark 'buffer)) ; Property `buffer-name'.
             (bookmark-get-filename bookmark)))
       "-- Unknown location --"))
 
