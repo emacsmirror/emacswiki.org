@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 15:09:25 2026 (-0700)
+;; Last-Updated: Fri Aug 28 15:58:41 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10470
+;;     Update #: 10475
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1943,13 +1943,15 @@ or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
   in PARAM-ALIST is not important.  The possible entries are described
   below.
 
-Bookmarks created using vanilla Emacs (`bookmark.el'):
+Bookmarks created using vanilla Emacs (`bookmark.el') can generally
+contain these PARAM-ALIST entries:
 
  (filename . FILENAME)
  (location . LOCATION)
  (position . POS)
  (front-context-string . STR-AFTER-POS)
  (rear-context-string  . STR-BEFORE-POS)
+ (last-modified . DATE-TIME-LAST-MODIFIED)
  (handler . HANDLER)
  (annotation . ANNOTATION)
 
@@ -1960,6 +1962,8 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
  POS is the bookmarked buffer position (position in the file).
  STR-AFTER-POS is buffer text that immediately follows POS.
  STR-BEFORE-POS is buffer text that immediately precedes POS.
+ DATE-TIME-LAST-MODIFIED is an Emacs Lisp time value of 4 integers
+  (Emacs 29+).
  ANNOTATION is a string that you can provide to identify the bookmark.
   See options `bookmark-use-annotations' and
   `bookmark-automatically-show-annotations'.
@@ -9752,7 +9756,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n%s"
                  (format "Position:\t\t%d\n" start)))
              (and visits (format "Visits:\t\t\t%d\n" visits))
              (and last-visited  (format "Last visit:\t\t%s\n" (format-time-string "%c" last-visited)))
-             (and last-modified  (format "Last modification:\t\t%s\n" (format-time-string "%c" modified)))
+             (and last-modified  (format "Last modification:\t\t%s\n" (format-time-string "%c" last-modified)))
              (and created  (format "Creation:\t\t%s\n" (format-time-string "%c" created)))
              (and tags  (format "Tags:\n \"%s\"\n" (mapconcat #'identity tags "\"\n \"")))
              (if annot (format "\nAnnotation:\n%s\n" annot) "(No annotation)\n")
