@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 28 17:29:55 2026 (-0700)
+;; Last-Updated: Fri Aug 28 19:19:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17561
+;;     Update #: 17568
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -151,8 +151,12 @@
 ;;                                Added last-bmenu-title for bookmark-list bookmark.
 ;;     bookmark-insert-location: Improved doc string.
 ;;     bookmark-alist doc string: Updated to include props last-modified and buffer.
-;;     bookmark-location, bookmark-default-handler, bmkp-goto-position:
-;;       Apply buffer-name to raw buffer returned from prop "buffer".
+;;     bookmark-location, bookmark-default-handler, bmkp-goto-position, bmkp-buffer-names,
+;;       bmkp-jump-(kmacro|variable)-list:
+;;         Apply buffer-name to raw buffer returned from prop "buffer".
+;;     bookmark-handle-bookmark: Test buffer existence with bufferp.
+;;     bmkp-buffer-names: Check for buffer with prop "buffer", not just for prop buffer-name.
+;;     bmkp-info-bookmark-p: Check prop buffer-name with equal, not string=.
 ;; 2026/08/25 drew0
 ;;     Added vanilla bookmark-get-last-modified, for Emacs < 29.
 ;;     bmkp-has-tag-p: Added missing nil TEST value for assoc-default.
