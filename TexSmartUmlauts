@@ -4,19 +4,19 @@
 
 == Download ==
 
-1. Release [http://hub.darcs.net/lyro/tex-smart-umlauts/raw-file/tex-smart-umlauts.el tex-smart-umlauts.el]
+1. Release [https://codeberg.org/fifr/tex-smart-umlauts/raw/branch/main/tex-smart-umlauts.el tex-smart-umlauts.el]
 
 2. From MELPA
 
     M-x package-install RET tex-smart-umlauts RET
 
-3. The [http://hub.darcs.net/lyro/tex-smart-umlauts Darcs repository]. To get the latest development version, clone the repository
+3. The [https://codeberg.org/fifr/tex-smart-umlauts Git repository]. To get the latest development version, clone the repository
 
-    darcs clone http://hub.darcs.net/lyro/tex-smart-umlauts
+    git clone https://codeberg.org/fifr/tex-smart-umlauts.git
 
 == Installation ==
 
-Put [http://hub.darcs.net/lyro/tex-smart-umlauts/raw-file/tex-smart-umlauts.el tex-smart-umlauts.el] in your `load-path' and add the following line to your initialization file (##~/.emacs##)
+Put [https://codeberg.org/fifr/tex-smart-umlauts/raw/branch/main/tex-smart-umlauts.el tex-smart-umlauts.el] in your `load-path' and add the following line to your initialization file (##~/.emacs##)
 
     (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-mode)
 
