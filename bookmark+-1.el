@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 16:51:21 2026 (-0700)
+;; Last-Updated: Fri Aug 28 17:28:17 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10485
+;;     Update #: 10491
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3336,7 +3336,7 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
                (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
              ;; No file found.  If no buffer either, then signal that file doesn't exist.
              (unless (or (and buf  (get-buffer buf))
-                         (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
+                         (and bufname  (get-buffer bufname)  (not (string= (buffer-name buf) bufname))))
                (signal 'bookmark-error-no-filename (list 'stringp file))))
            (set-buffer (or buf  bufname))
            (goto-char (if pos (min pos (point-max)) (point-max)))
@@ -3469,9 +3469,11 @@ If no `location', file, or buffer name is recorded then use
       (if bmkp-bmenu-show-file-not-buffer-flag
           (or (bookmark-get-filename bookmark)
               (bmkp-get-buffer-name bookmark) ; Property `buffer-name'.
-              (buffer-name (bookmark-prop-get bookmark 'buffer))) ; Property `buffer'.
-        (or (bmkp-get-buffer-name bookmark) ; Property `buffer'.
-            (buffer-name (bookmark-prop-get bookmark 'buffer)) ; Property `buffer-name'.
+              (let ((buf  (bookmark-prop-get bookmark 'buffer))) ; Property `buffer'.
+                (if (bufferp buf) (buffer-name buf)  buf)))
+        (or (bmkp-get-buffer-name bookmark) ; Property `buffer-name'.
+            (let ((buf  (bookmark-prop-get bookmark 'buffer))) ; Property `buffer'.
+              (if (bufferp buf) (buffer-name buf)  buf))
             (bookmark-get-filename bookmark)))
       "-- Unknown location --"))
 
@@ -10100,7 +10102,7 @@ name, recorded position, and the context strings for the position."
       (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
     ;; No file found.  See if a non-file buffer exists for this.  If not, raise error.
     (unless (or (and buf  (get-buffer buf))
-                (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
+                (and bufname  (get-buffer bufname)  (not (string= (buffer-name buf) bufname))))
       (signal 'file-error `("Jumping to bookmark" ,(format "Cannot access file `%s' or buffer `%s'"
                                                            file bufname)))))
   (set-buffer (or buf  bufname))
