@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 17:28:17 2026 (-0700)
+;; Last-Updated: Fri Aug 28 19:10:30 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10491
+;;     Update #: 10505
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3258,8 +3258,8 @@ is handled as follows:
                   (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
                   (ding)
                   (cond ((y-or-n-p (if (and (string= file bmkp-non-file-filename)
-                                            (bmkp-get-buffer-name bookmark))
-                                       "Bookmark's buffer does not exist.  Re-create it? "
+                                            (not (bufferp (bmkp-get-buffer-name bookmark))))
+                                       "Bookmark's recorded buffer does not exist.  Re-create it? "
                                      (concat (file-name-nondirectory file) " nonexistent.  Relocate \""
                                              bookmark "\"? ")))
                          (if (string= file bmkp-non-file-filename)
@@ -5699,7 +5699,9 @@ really associated with a buffer."
                  (not (bmkp-sequence-bookmark-p       bmk))
                  (not (bmkp-function-bookmark-p       bmk))
                  (not (bmkp-variable-list-bookmark-p  bmk))
-                 (setq buf  (bmkp-get-buffer-name     bmk)))
+                 (setq buf  (or (bmkp-get-buffer-name bmk) ; Property `buffer-name'.
+                                (let ((bb  (bookmark-prop-get bmk 'buffer))) ; Property `buffer'.
+                                  (if (bufferp bb) (buffer-name buf)  bb)))))
         (unless (member buf bufs) (setq bufs  (cons buf bufs)))))
     bufs))
 
@@ -7143,8 +7145,8 @@ If it is a record then it need not belong to `bookmark-alist'."
 
 (defun bmkp-buffer-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a non-file buffer.
-This is a bookmark with a buffer name.  It either has no `filename'
-entry or that entry is `   - no file -'.
+This is a bookmark with property `buffer-name', and it either has no
+`filename' property or that property value is ` - no file -'.
 
 Argument BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
@@ -7158,8 +7160,8 @@ See also `bmkp-buffer-bookmark-no-file-p'."
 (bmkp-make-obsolete 'bmkp-non-file-bookmark-p 'bmkp-buffer-bookmark-no-file-p "2026")
 (defun bmkp-buffer-bookmark-no-file-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file buffer bookmark.
-This is a bookmark with a buffer name but no handler, and one of the
-following is true:
+This is a bookmark with property `buffer-name' but no handler, and one
+of the following is true:
  * It has no `filename' entry
  * Its `filename' entry is `   - no file -'
  * Its `filename' is a local file name, but there is no such file
@@ -7296,7 +7298,7 @@ BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (or (eq (bookmark-get-handler bookmark) 'Info-bookmark-jump)
       (and (not (bookmark-get-handler bookmark))
-           (or (string= "*info*" (bmkp-get-buffer-name bookmark))
+           (or (equal "*info*" (bmkp-get-buffer-name bookmark)) ; Could be nil, so use `equal'.
                (bookmark-prop-get bookmark 'info-node))))) ; Emacs 20-21 - no `buffer-name' entry.
 
 (defun bmkp-kmacro-list-bookmark-p (bookmark)
@@ -11038,7 +11040,7 @@ This handler doesn't use any display function."
             (kmacro-push-ring (list last-kbd-macro kmacro-counter kmacro-counter-format-start)))
           (kmacro-split-ring-element (pop kmacs))
           (dolist (kmac  kmacs) (kmacro-push-ring kmac))))
-      (message "Keyboard macros restored in buffer `%s': %S" buf (mapcar #'car kbd-macs))
+      (message "Keyboard macros restored in buffer `%s': %S" (buffer-name buf) (mapcar #'car kbd-macs))
       (sit-for 3)))
 
   )
@@ -11088,7 +11090,7 @@ This handler doesn't use any display function."
     (with-current-buffer buf
       (dolist (var+val  vars+vals)
         (set (car var+val)  (cdr var+val))))
-    (message "Variables restored in buffer `%s': %S" buf (mapcar #'car vars+vals))
+    (message "Variables restored in buffer `%s': %S" (buffer-name buf) (mapcar #'car vars+vals))
     (sit-for 3)))
 
 ;; URL browse support
