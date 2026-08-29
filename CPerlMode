@@ -27,9 +27,10 @@ Or the more robust equivalent:
            (setcdr pair 'cperl-mode)))
      (append auto-mode-alist interpreter-mode-alist))
 
-cperl-mode is part of Emacs.  We try hard to keep it up to the changes in Perl itself.  In Emacs 30 all Perl syntax including Perl version 5.40 (released in 2024) is supported.
+cperl-mode is part of Emacs.  We try hard to keep it up to the changes in Perl itself.  In Emacs 31 all Perl syntax including Perl version 5.42 is supported.
 
-The version of cperl-mode.el which comes with Emacs 30 can be used as a drop-in replacement for cperl-mode.el in Emacs version 27 or newer.  It can be retrieved from the Emacs source code repository.
+As of August 2026, cperl-mode is also available from [https://elpa.gnu.org/packages/cperl-mode.html GNU ELPA].
+The current version works with Emacs 26 and newer, and supports Perl 5.44 syntax.
 
 == Starting CPerl Mode ==
 
@@ -42,7 +43,8 @@ CPerlMode comes with documentation built-in and this is a good place to start. T
 == Accessing Perl Documentation with CPerl Mode ==
 
 In order to use perldoc from Emacs, type `M-x cperl-perldoc', hit Return and type the keyword to look up.
-Recommended!
+GNU ELPA also offers [https://elpa.gnu.org/packages/perl-doc.html perl-doc], a package to read Perl documentation
+in Emacs buffers.
 
 Furthermore:
 
