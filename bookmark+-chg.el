@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 28 19:19:16 2026 (-0700)
+;; Last-Updated: Fri Aug 28 19:40:16 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17568
+;;     Update #: 17569
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -150,7 +150,7 @@
 ;;     bmkp-bookmark-description: Added last-modified description.
 ;;                                Added last-bmenu-title for bookmark-list bookmark.
 ;;     bookmark-insert-location: Improved doc string.
-;;     bookmark-alist doc string: Updated to include props last-modified and buffer.
+;;     bookmark-alist doc string: Updated to include props last-modified.
 ;;     bookmark-location, bookmark-default-handler, bmkp-goto-position, bmkp-buffer-names,
 ;;       bmkp-jump-(kmacro|variable)-list:
 ;;         Apply buffer-name to raw buffer returned from prop "buffer".
