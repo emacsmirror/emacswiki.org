@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 19:10:30 2026 (-0700)
+;; Last-Updated: Fri Aug 28 19:33:15 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10505
+;;     Update #: 10507
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1971,10 +1971,6 @@ contain these PARAM-ALIST entries:
   for a specific kind of bookmark.  This is the case for Info
   bookmarks, for instance (starting with Emacs 23).
 
-In addition, bookmark jump commands can add additional PARAM-ALIST
-entries.  For example, jumping to an Info bookmark dynamically adds a
-`buffer' entry whose value is the destination Info buffer.
-
 Bookmarks created using Bookmark+ are the same as for vanilla Emacs,
 except for the following differences.
 
@@ -2000,9 +1996,7 @@ except for the following differences.
  applies to bookmarks of all types, not just those with a destination.
 
 3. The buffer name is recorded, using entry `buffer-name'.  It need
-not be associated with a file.  This is separate from any dynamic use
-of a `buffer' entry, whose value can be an actual buffer, not
-necessarily a buffer name.
+not be associated with a file.
 
 4. If no file is associated with the bookmark, then FILENAME is
    `   - no file -'.
