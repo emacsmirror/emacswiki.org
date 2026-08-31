@@ -489,6 +489,13 @@ The lexical binding warning is very intrusive, as it is now unconditionally gene
 Thanks in advance,
   rdiez
 
+[new:DrewAdams:2026-08-31 02:09 UTC]
+I can't speak for Vinicius, but assuming the code still relies on dynamic binding as the default, you can eliminate the warning by just adding a new comment line at the top of the file, declaring the file to use dynamic binding by default. E.g.:
+
+    ;;;     -*- lexical-binding:nil -*-
+
+-- DrewAdams
+
 [new]
 Nice to see you here and that you are so active :-) -- StefanKamphausen
 
