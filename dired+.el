@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug  5 09:20:36 2026 (-0700)
+;; Last-Updated: Sun Aug 30 19:02:30 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 14493
+;;     Update #: 14506
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -31,14 +31,14 @@
 ;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
 ;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
 ;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
-;;   `info', `info+', `macroexp', `menu-bar', `menu-bar+',
+;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
 ;;   `package', `palette', `password-cache', `pp', `pp+',
-;;   `radix-tree', `rect', `ring', `second-sel', `seq', `strings',
-;;   `syntax', `tabulated-list', `thingatpt', `thingatpt+', `timer',
-;;   `url-handlers', `url-parse', `url-vars', `vline', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `zones'.
+;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
+;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
+;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
+;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1078,7 +1078,9 @@
  
 ;;; Change Log:
 ;;
-;; 2026/09/05 drew0
+;; 2026/08/30 drew0
+;;     dired-copy-file-recursive: Added optional arg DEREFERENCE, per Emacs 28.
+;; 2026/08/05 drew0
 ;;     diredp-mark-if, diredp-mark-recursive-1, diredp-flag-auto-save-files-recursive,
 ;;       diredp-mark-files-containing-regexp-recursive,  diredp-mark/unmark-autofiles,
 ;;       diredp-mark-(autofiles|executables|directories|symlinks)-recursive,
@@ -7109,8 +7111,8 @@ file names containing SPC, ', or \"."
 ;; 3. Put text copied to kill ring in variable `diredp-last-copied-filenames'.
 ;;
 (defun dired-copy-filename-as-kill (&optional arg) ; Bound to `w', menu `Multiple' > `Copy Marked Names'
-  "Copy names of marked (or next ARG) files into the kill ring.
-Multiple file names are separated by the value of variable
+  "Copy names of marked (or next ARG) files and dirs into the kill ring.
+Multiple names are separated by the value of variable
 `diredp-filename-separator'.
 
 When multiple names are copied, those with space or quotes (', \") are
@@ -7180,7 +7182,7 @@ This is the same as using a zero prefix arg with command
 ;;;###autoload
 (defun diredp-yank-files (&optional dir no-confirm-p details)
                                         ; Bound to `C-y', menu `Dir' > `Paste Files from Copied Absolute Names'
-  "Yank (paste) files to the current directory.
+  "Yank (paste) files and directories to the current directory.
 With a non-negative prefix arg you are instead prompted for the target
  directory.
 With a non-positive prefix arg you can see details about the files if
@@ -7188,9 +7190,9 @@ With a non-positive prefix arg you can see details about the files if
  the file names.  The details you see are defined by option
  `diredp-list-file-attributes'.
 
-The absolute names of the files to be yanked are taken from the
-clipboard or, if that's empty, from names you've copied to the kill
-ring using \\<dired-mode-map>\ `M-0 \\[dired-copy-filename-as-kill]' or \
+The absolute names of the files and dirs to be yanked are taken from
+the clipboard or, if that's empty, from names you've copied to the
+kill ring using \\<dired-mode-map>\ `M-0 \\[dired-copy-filename-as-kill]' or \
 \\[diredp-copy-abs-filenames-as-kill].
 
 Those copy-filename commands also:
@@ -7200,9 +7202,9 @@ Those copy-filename commands also:
    `diredp-yank-files' uses the value of that variable, not whatever
    is currently at the head of the kill ring.
 
-\(To copy file names to the clipboard on MS Windows, you can use Windows
-Explorer: Select the file names, then hold `Shift', right-click, and
-choose `Copy as Path' from the menu.)
+\(To copy file or directory names to the clipboard on MS Windows, you
+can use Windows Explorer: Select the file names, then hold `Shift',
+right-click, and choose `Copy as Path' from the menu.)
 
 When called from Lisp:
 
@@ -11767,6 +11769,10 @@ When invoked interactively, raise an error if no files are marked."
 (defun dired-do-query-replace-regexp (from to &optional arg interactivep)
                                         ; Menu `Multiple' > `Search' > `Query Replace Using TAGS Table...'
   "Do `query-replace-regexp' of FROM with TO, on all marked files.
+As each match is found: type `SPC' or `y' to replace the match, `DEL'
+or `n' to skip and go to the next match.  For more directions, type
+\\[help-command].
+
 NOTE: A prefix arg for this command acts differently than for other
 commands, so that you can use it to request word-delimited matches.
 
@@ -11784,7 +11790,7 @@ So for example:
 
 When invoked interactively, raise an error if no files are marked.
 
-If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
+If you exit (\\[keyboard-quit], `RET' or `q'), you can resume the query replace
 with the command \\[fileloop-continue] (\\[tags-loop-continue] for
 Emacs 26 or prior)."
   (interactive (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
@@ -11895,10 +11901,9 @@ REGEXP should use constructs supported by your local `grep' command."
   (defun dired-do-find-regexp-and-replace (from to &optional arg interactivep)
                                         ; Menu `Multiple' > `Search' > `Query Replace Using `find'...'
     "Replace matches of FROM with TO, in all marked files.
-As each match is found, the user must type a character saying
-what to do with it.  Type SPC or `y' to replace the match,
-DEL or `n' to skip and go to the next match.  For more directions,
-type \\[help-command] at that time.
+As each match is found: type `SPC' or `y' to replace the match,
+`DEL' or `n' to skip and go to the next match.  For more directions,
+type \\[help-command].
 
 With no files marked and no prefix arg, use the file under point.
 
@@ -12342,7 +12347,8 @@ Preserves the last-modified date when copying, unless
   ;; 1. Pass also FROM to `dired-handle-overwrite', so `l' lists it too.
   ;; 2. Added missing doc string.
   ;;
-  (defun dired-copy-file-recursive (from to ok-if-already-exists &optional keep-time top recursive)
+  (defun dired-copy-file-recursive (from to ok-if-already-exists &optional keep-time top recursive dereference)
+    ;; Arg DEREFERENCE was added to vanilla Emacs in 28.2.
     "Copy file FROM to location TO, handling directories in FROM recursively.
 Non-nil arg OK-IF-ALREADY-EXISTS is passed to `copy-file' or
  `make-symbolic-link'.
@@ -12360,7 +12366,7 @@ Non-nil optional arg RECURSIVE means recurse on any directories in
           (copy-directory from to keep-time)
         (or top  (dired-handle-overwrite to from))
         (condition-case err
-            (if (stringp (car attrs))   ; It is a symlink
+            (if (and (not dereference)  (stringp (car attrs))) ; It is a symlink
                 (make-symbolic-link (car attrs) to ok-if-already-exists)
               (copy-file from to ok-if-already-exists keep-time))
           (file-date-error
