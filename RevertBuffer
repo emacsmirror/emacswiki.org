@@ -31,6 +31,8 @@ In addition to using invoking `revert-buffer' manually, you can tell Emacs to do
 
 == No confirmation ==
 
+As of GNU Emacs 28.1 there's a `revert-buffer-quick' command, bound to [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html|C-x x g]] by default, that does more or less this.
+
 In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command definition:
 
   (defun revert-buffer-no-confirm ()
