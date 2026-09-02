@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Aug 26 14:40:35 2026 (-0700)
+;; Last-Updated: Wed Sep  2 13:15:51 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 4909
+;;     Update #: 4923
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -229,8 +229,6 @@
 ;;    `bmkp-bmenu-show-this-annotation+move-up',
 ;;    `bmkp-bmenu-sort-annotated-before-unannotated',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
-;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
-;;    `bmkp-bmenu-sort-by-bookmark-visit-recency',
 ;;    `bmkp-bmenu-sort-by-bookmark-type',
 ;;    `bmkp-bmenu-sort-by-creation-recency',
 ;;    `bmkp-bmenu-sort-by-file-name',
@@ -244,6 +242,8 @@
 ;;    `bmkp-bmenu-sort-by-local-file-type',
 ;;    `bmkp-bmenu-sort-by-modification-recency',
 ;;    `bmkp-bmenu-sort-by-url',
+;;    `bmkp-bmenu-sort-by-visit-frequency',
+;;    `bmkp-bmenu-sort-by-visit-recency',
 ;;    `bmkp-bmenu-sort-flagged-before-unflagged',
 ;;    `bmkp-bmenu-sort-marked-before-unmarked',
 ;;    `bmkp-bmenu-sort-modified-before-unmodified',
@@ -846,7 +846,7 @@ https://www.emacswiki.org/emacs/BookmarkPlusImageFileDefaultIcon"
 (defcustom bmkp-bmenu-show-file-not-buffer-flag nil
   "Non-nil means show bookmark file names, not buffer names.
 This applies to the location shown to the right of the bookmark
-name.  (You hide/show this column using \\<bookmark-bmenu-mode-map>\
+name in `*Bookmark List*'.  (You hide/show this column using \\<bookmark-bmenu-mode-map>\
 `\\[bookmark-bmenu-toggle-filenames]'.)
 
 This applies only if a bookmark records no explicit `location' entry
@@ -1874,7 +1874,7 @@ to cycle)
 `\\[bmkp-bmenu-sort-by-creation-recency]'\t- Sort by bookmark creation time
 `\\[bmkp-bmenu-sort-by-last-buffer-or-file-access]'\t- Sort by last buffer or file \
 access
-`\\[bmkp-bmenu-sort-by-bookmark-visit-recency]'\t- Sort by bookmark visit recency
+`\\[bmkp-bmenu-sort-by-visit-recency]'\t- Sort by bookmark visit recency
 `\\[bmkp-bmenu-sort-by-modification-recency]'\t- Sort by bookmark modification recency
 `\\[bmkp-bmenu-sort-by-Gnus-thread]'\t- Sort by Gnus thread: group, article, message
 `\\[bmkp-bmenu-sort-by-Info-node-name]'\t- Sort by Info manual, node, position in node
@@ -1882,7 +1882,7 @@ access
 `\\[bmkp-bmenu-sort-by-bookmark-type]'\t- Sort by bookmark type
 `\\[bmkp-bmenu-sort-by-bookmark-name]'\t- Sort by bookmark name
 `\\[bmkp-bmenu-sort-by-url]'\t- Sort by URL
-`\\[bmkp-bmenu-sort-by-bookmark-visit-frequency]'\t- Sort by bookmark visit frequency
+`\\[bmkp-bmenu-sort-by-visit-frequency]'\t- Sort by bookmark visit frequency
 
 `\\[bmkp-bmenu-sort-by-last-local-file-access]'\t- Sort by last local file access
 `\\[bmkp-bmenu-sort-by-local-file-type]'\t- Sort by local file type: file, symlink, dir
@@ -5469,7 +5469,7 @@ Return the propertized string (the bookmark name)."
                                (bmkp-string-match-p tramp-file-name-regexp filep)
                                (bmkp-string-match-p bmkp-su-or-sudo-regexp filep))))
     ;; Put the full bookmark itself on string `bookmark-name' as property `bmkp-full-record'.
-    ;; Then put that string on the name in the buffer text as property `bmkp-bookmark-name'.
+    ;; Then put that string on buffer text from START to END as property `bmkp-bookmark-name'.
     (put-text-property 0 (length bookmark-name) 'bmkp-full-record bookmark bookmark-name)
     (put-text-property start end 'bmkp-bookmark-name bookmark-name)
     ;; Add faces, mouse face, and tooltips, to characterize the bookmark type.
@@ -5649,12 +5649,17 @@ For each number indication:
  others with the same indicator listed after it, then show `N/M',
  where N is the number indicated through the current line and M is the
  total number indicated."
-    (let* ((bmkp--bmenu-nb->  (count-matches bmkp--bmenu-regexp-> (point-min) (point-max)))
-           (bmkp--bmenu-nb-D  (count-matches bmkp--bmenu-regexp-D (point-min) (point-max)))
-           (bmkp--bmenu-nb-t  (count-matches bmkp--bmenu-regexp-t (point-min) (point-max)))
-           (bmkp--bmenu-nb-X  (count-matches bmkp--bmenu-regexp-X (point-min) (point-max)))
-           (bmkp--bmenu-nb-a  (count-matches bmkp--bmenu-regexp-a (point-min) (point-max)))
-           (bmkp--bmenu-nb-*  (count-matches bmkp--bmenu-regexp-* (point-min) (point-max)))
+    (let* ((beg-bmks  (save-excursion (goto-char 1)
+                                      (forward-line bmkp-bmenu-header-lines)
+                                      (point)))
+           (bmkp--bmenu-nb->  (count-matches bmkp--bmenu-regexp-> beg-bmks (point-max)))
+           (bmkp--bmenu-nb-D  (count-matches bmkp--bmenu-regexp-D 
+                                             beg-bmks 
+                                             (point-max)))
+           (bmkp--bmenu-nb-t  (count-matches bmkp--bmenu-regexp-t beg-bmks (point-max)))
+           (bmkp--bmenu-nb-X  (count-matches bmkp--bmenu-regexp-X beg-bmks (point-max)))
+           (bmkp--bmenu-nb-a  (count-matches bmkp--bmenu-regexp-a beg-bmks (point-max)))
+           (bmkp--bmenu-nb-*  (count-matches bmkp--bmenu-regexp-* beg-bmks (point-max)))
            (text-sort   (propertize
                          (concat "sorting " (bmkp-sorting-description (bmkp-current-sort-order)))
                          'face 'bmkp-heading))
@@ -5673,7 +5678,7 @@ For each number indication:
                                 (save-excursion
                                   (forward-line 0)
                                   (if (bmkp-looking-at-p (concat regexp ".*"))
-                                      (format "%d/" (1+ (count-matches regexp (point-min) (point))))
+                                      (format "%d/" (1+ (count-matches regexp beg-bmks (point))))
                                     ""))
                                 nb  mk)
                                'face (intern (format "bmkp-%c-mark" mk))))
@@ -5944,39 +5949,39 @@ remote-file bookmarks by bookmark name.")
  "by creation recency"                  ; `bmkp-bmenu-sort-by-creation-recency'
  ((bmkp-created-more-recently-cp) bmkp-alpha-p)
  "Sort bookmarks by the time of their creation.
-When one or both of the bookmarks don't have a `created' entry,
-compare them by bookmark name.")
+If only one of two bookmarks being compared has property `created'
+then it sorts before the other.  If neither has it then compare them
+by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s m' in bookmark list
  "by modification recency"     ; `bmkp-bmenu-sort-by-modification-recency'
  ((bmkp-modified-more-recently-cp) bmkp-alpha-p)
  "Sort bookmarks by how recently (time) they were last modified.
-When two bookmarks are not comparable by modification time, compare
-them by bookmark name.")
+If only one of two bookmarks being compared has property
+`last-modified'.  then it sorts before the other.  If neither has it
+then compare them by bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s r' in bookmark list
- "by bookmark visit recency"            ; `bmkp-bmenu-sort-by-bookmark-visit-recency'
+ "by visit recency"            ; `bmkp-bmenu-sort-by-visit-recency'
  ((bmkp-visited-more-recently-cp) bmkp-alpha-p)
  "Sort bookmarks by how recently they were visited (visit time).
-When two bookmarks are not comparable by visit time, compare them
-by bookmark name.
+If only one of two bookmarks being compared has property
+`last-visited'.  then it sorts before the other.  If neither has it
+then compare them by bookmark name.
 
 \"Visited\" here just means used, in the sense of \"jumped to\"; it
-applies to bookmarks of all types, not just those with a destination.
-The visit time corresponds to bookmark entry `last-visited'.
-")
+applies to bookmarks of all types, not just those with a destination.")
 
 (bmkp-define-sort-command               ; Bound to `s v' in bookmark list
- "by bookmark visit frequency"          ; `bmkp-bmenu-sort-by-bookmark-visit-frequency'
+ "by visit frequency"          ; `bmkp-bmenu-sort-by-visit-frequency'
  ((bmkp-visited-more-often-cp) bmkp-alpha-p)
  "Sort bookmarks by the number of times they were visited.
-When two bookmarks are not comparable by visit frequency, compare them
+If only one of two bookmarks being compared has property `visited'.
+then it sorts before the other.  If neither has it then compare them
 by bookmark name.
 
 \"Visited\" here just means used, in the sense of \"jumped to\"; it
-applies to bookmarks of all types, not just those with a destination.
-The number of visits corresponds to bookmark entry `visits'.
-")
+applies to bookmarks of all types, not just those with a destination.")
 
 (bmkp-define-sort-command               ; Bound to `s n' in bookmark list
  "by bookmark name"                     ; `bmkp-bmenu-sort-by-bookmark-name'
@@ -6303,13 +6308,13 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "sk"                   'bmkp-bmenu-sort-by-bookmark-type)
 (define-key bookmark-bmenu-mode-map "sm"                   'bmkp-bmenu-sort-by-modification-recency)
 (define-key bookmark-bmenu-mode-map "sn"                   'bmkp-bmenu-sort-by-bookmark-name)
-(define-key bookmark-bmenu-mode-map "sr"                   'bmkp-bmenu-sort-by-bookmark-visit-recency)
+(define-key bookmark-bmenu-mode-map "sr"                   'bmkp-bmenu-sort-by-visit-recency)
 (define-key bookmark-bmenu-mode-map "sR"                   'bmkp-reverse-sort-order)
 (define-key bookmark-bmenu-mode-map "s\C-r"                'bmkp-reverse-multi-sort-order)
 (define-key bookmark-bmenu-mode-map "ss"                   'bmkp-bmenu-change-sort-order-repeat)
 (define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-tagged-before-untagged)
 (define-key bookmark-bmenu-mode-map "su"                   'bmkp-bmenu-sort-by-url)
-(define-key bookmark-bmenu-mode-map "sv"                   'bmkp-bmenu-sort-by-bookmark-visit-frequency)
+(define-key bookmark-bmenu-mode-map "sv"                   'bmkp-bmenu-sort-by-visit-frequency)
 
 ;; Not done yet.
 ;; ;; (define-key bookmark-bmenu-mode-map "sw"                    nil) ; For Emacs20
@@ -6891,11 +6896,11 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-creation-recency]
   '(menu-item "By Creation Recency" bmkp-bmenu-sort-by-creation-recency
     :help "Sort bookmarks their creation recency (most recent first)"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-recency]
-  '(menu-item "By Visit/Use Recency" bmkp-bmenu-sort-by-bookmark-visit-recency
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-visit-recency]
+  '(menu-item "By Visit/Use Recency" bmkp-bmenu-sort-by-visit-recency
     :help "Sort bookmarks by their visit recency (last visited first)"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-visit-frequency]
-  '(menu-item "By Bookmark Visits/Use" bmkp-bmenu-sort-by-bookmark-visit-frequency
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-visit-frequency]
+  '(menu-item "By Bookmark Visits/Use" bmkp-bmenu-sort-by-visit-frequency
     :help "Sort bookmarks by the number of times they were visited as bookmarks"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-marked-before-unmarked]
   '(menu-item "Marked Before Unmarked" bmkp-bmenu-sort-marked-before-unmarked
