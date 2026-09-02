@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew" "0000" "0001" "@gm" "ail" ".com")
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 28 19:40:16 2026 (-0700)
+;; Last-Updated: Wed Sep  2 13:30:22 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 17569
+;;     Update #: 17575
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;;
+;; 2026/09/02 drew0
+;;     bmkp-sort-comparer doc string:
+;;       Applied renaming of bmkp-bmenu-sort-by-bookmark-visit-(frequency|recency): Removed "-bookmark".
 ;; 2026/08/28 drew0
 ;;     bmkp-bookmark-description: Added last-modified description.
 ;;                                Added last-bmenu-title for bookmark-list bookmark.
@@ -1739,6 +1743,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2026/09/02 drew0
+;;     bmkp-bmenu-mode-line-string: (BUG) Start regexp search at bol of first bookmark line, not at bob.
+;;     Renamed bmkp-bmenu-sort-by-bookmark-visit-(frequency|recency): Removed "-bookmark".
+;;     Misc doc-string improvements.
 ;; 2026/08/26 drew0
 ;;     Typo: Annotated & Autofiles items: bmkp-bmenu-show-menu -> bmkp-bmenu-show-types-menu.
 ;;     bmkp-bmenu-show-types-menu: Reordered items.
