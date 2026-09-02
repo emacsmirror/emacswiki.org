@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2026, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 28 19:33:15 2026 (-0700)
+;; Last-Updated: Wed Sep  2 13:18:56 2026 (-0700)
 ;;           By: drew0
-;;     Update #: 10507
+;;     Update #: 10510
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1516,7 +1516,7 @@ If nil show only beginning of region."
 This defines the default sort for bookmarks in the bookmark list.
 
 Various sorting commands, such as \\<bookmark-bmenu-mode-map>\
-`\\[bmkp-bmenu-sort-by-bookmark-visit-frequency]', change the value of this
+`\\[bmkp-bmenu-sort-by-visit-frequency]', change the value of this
 option dynamically (but they do not save the changed value).
 
 The value must be one of the following:
@@ -3539,6 +3539,10 @@ candidate."
 (defun bookmark-insert (bookmark-name)  ; Bound to `C-x x i'
   "Insert the text of a bookmarked file.
 BOOKMARK-NAME is the name of the bookmark.
+
+Emacs 31+: Refuse to insert bookmarks if its handler's property
+`bookmark-inhibit', which is a list, contains `insert'.
+
 You may have a problem using this function if the value of variable
 `bookmark-alist' is nil.  If that happens, you need to load in some
 bookmarks.  See function `bookmark-load' for more about this.
@@ -11477,7 +11481,7 @@ This handler invokes `bookmark-default-handler' at the end."
 (defun bmkext-jump-woman (bookmark)     ; Compatibility code.
   "`woman-bookmark-jump' if defined, else `bmkp-jump-woman'."
   (if (fboundp 'woman-bookmark-jump)
-      (woman-bookmark-jump bookmark)    ; Emacs 24
+      (woman-bookmark-jump bookmark)    ; Emacs 24+
     (bmkp-jump-woman bookmark)))
 
 (defun bmkp-jump-woman (bookmark)
@@ -11495,7 +11499,7 @@ This handler invokes `bookmark-default-handler' at the end."
 (defun bmkext-jump-man (bookmark)       ; Compatibility code.
   "`Man-bookmark-jump' if defined, else `bmkp-jump-man'."
   (if (fboundp 'Man-bookmark-jump)
-      (Man-bookmark-jump bookmark)      ; Emacs 24
+      (Man-bookmark-jump bookmark)      ; Emacs 24+
     (bmkp-jump-man bookmark)))
 
 (defun bmkp-jump-man (bookmark)
