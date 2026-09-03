@@ -32,15 +32,11 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [https://github.com/d12frosted/homebrew-emacs-plus Emacs Plus for Homebrew] is installed via homebrew and allows you to download Emacs versions 29, 30, and development.  It includes an injected PATH value from the user shell (based on StevePurcell's exec-path-from-shell library) as well as: unconditional support for gnutls, librsvg, webp, libxml2, little-cms2 and dynamic modules, built with native compilation, and is based on Cocoa.
 
-
 * [https://github.com/jimeh/emacs-builds jimeh's Emacs Builds] offers either build scripts or homebrew installation of stable and development versions of Emacs.  It incorporates many of Emacs Plus' macOS-specific patches, as well as options such as Xwidget-webkit support, native XML and JSON parsing, and dynamic module loading.
-
 
 * [https://emacs-modified.gitlab.io/macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS], AUCTeX, and the R programming language. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
 
-
-* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on GNU Emacs 29.4 (as of 2025-03) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
-
+* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on GNU Emacs 29.4 (as of 2025-03) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port from Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the file: ‘[https://bitbucket.org/mituharu/emacs-mac/src/master/README-mac README-mac]’ in the source tree, for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and [https://ports.macports.org/port/emacs-mac-app/ MacPorts] (as emacs-mac-app), as discussed in the section on [[#package-managers]], below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
 
 * AquamacsEmacs (https://aquamacs.org/) is a convenient distribution based on GNU Emacs 25.3.  Aquamacs comes preconfigured with a large number of packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and Asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.    Aquamacs was created by [DavidReitter] and is currently maintained by Win Treese.
 
@@ -129,6 +125,8 @@ Directions to build and install may be found in the file newly downloaded to ema
 Note: Carbon Emacs has been replaced with Cocoa Emacs in Emacs 23.x. This is why the option --enable-carbon-app is no longer recognised by configure.
 
 
+
+[:package-managers]
 == Installing Emacs with a Package Manager ==
 
 Package managers provide a convenient way to install and maintain/upgrade software.
@@ -238,7 +236,7 @@ It's also possible to build the development version of GNU Emacs with ATSUI -- A
 
 ==== Mitsuharu version in MacPorts ====
 
-To instead use the Yamamoto Mitsuharu version of Emacs (27.1 as of 2020-11) (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
+To instead use the Yamamoto Mitsuharu’s version of Emacs for Mac (based on [GNU Emacs] 29.4 as of 2025-03) (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
 <pre>
 sudo port install emacs-mac-app
