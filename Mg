@@ -1,24 +1,79 @@
-*Mg* (<code>mg</code>) is a lightweight public-domain ErsatzEmacs, dating back to 1986. Mg was originally known as *MicroGNUEmacs*, as it strove to adhere more closely to the default behavior of GnuEmacs than other contemporary [[MicroEmacs]]en, but was renamed at the request of RichardStallman, as it is not part of, nor related to [TheGnuProject the GNU Project].
+*Mg* (<code>mg</code>) is a lightweight public-domain ErsatzEmacs, dating back to 1986.  Mg was originally known as *MicroGNUEmacs*, as it strove to adhere more closely to the default behavior of [[GNU Emacs]] than other contemporary [[MicroEmacs]]en.  However, it was renamed at the request of [[rms]], as it is neither part of, nor related to [TheGnuProject the GNU Project] or GNU Emacs.
 
-== Modern mg ==
 
-Modern versions of <code>mg</code> are maintained as a component of the OpenBSD source tree; the editor is included as standard in OpenBSD “because there shouldn't be any reason to learn more editor types than emacs or vi.”  Similarly, the [https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/mg/README?rev=1.14&content-type=text/x-cvsweb-markup README states] that <code>mg</code> “is compatible with GNU [Emacs] because there shouldn't be any reason to learn more than one Emacs flavor.”  “Compatible,” here refers to <code>mg</code>’s command set, like other Ersatz Emacsen, <code>mg</code> has no extension language such as  [[Elisp]], and is written purely in C.
+== Modern mg as part of OpenBSD ==
 
-Mg is also available in FreeBSD’s ports in a [https://www.freshports.org/editors/mg/ regular], or a statically compiled <tt>[https://www.freshports.org/editors/mg-static/ rescue(8)]</tt> version.
+Modern versions of <code>mg</code> are maintained as part of the OpenBSD source tree; the editor is included as standard in !OpenBSD: “because there shouldn't be any reason to learn more editor types than emacs or vi.”  Similarly, [https://cvsweb.openbsd.org/checkout/src/usr.bin/mg/README?rev=1.14 the README states] that <code>mg</code>: “is compatible with GNU because there shouldn't be any reason to learn more than one Emacs flavor.”  “Compatible,” here refers to <code>mg</code>’s command set, like other ersatz Emacsen, <code>mg</code> has no extension language such as [[Elisp]], and is written purely in C.
 
-Versions of macOS ≥ 10.15 also include <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of GnuEmacs that Apple used to include, starting with Emacs 20.7 in Mac OS X 10.0 (Cheetah), but has now been removed from macOS 10.15 Catalina onwards.
+Mg also has no support for multi-byte character encodings, such as UTF-8, although it can be configured to support 8-bit character sets.
 
-== Portable mg ==
+Mg has support for <code>ctags</code>.
 
-Han Boetes maintains a portable version of <code>mg</code>, which can be compiled on non-BSD systems like GNU/Linux, and is available for download [https://github.com/hboetes/mg from his Github].
+=== Mg version numbering under OpenBSD ===
 
-=== Debian GNU/Linux package ==
+Although one can find versions of source code files in !OpenBSD’s repo going back to the year 2000, <code>mg</code>’s version number has stayed at: “2a” all of this time, despite incremental development carrying on to the present day, more than two decades later.
+
+
+=== Links to OpenBSD’s version ===
+
+You can browse <code>mg</code>’s official sources on:
+   
+* [https://cvsweb.openbsd.org/src/usr.bin/mg?sort=File OpenBSD’s CVSWeb], or
+* at a [https://github.com/openbsd/src/tree/master/usr.bin/mg mirror of those sources on GitHub.]
+
+You can also find the [https://man.openbsd.org/mg man page for mg, online on OpenBSD’s homepage.]
+
+
+== Portable versions of OpenBSD’s mg ==
+
+There are currently two versions of <code>mg</code> that have been modified to be portable to systems other than !OpenBSD.
+
+
+=== Han Boetes’ portable version of mg ===
+
+[https://web.archive.org/web/20220420000045/http://homepage.boetes.org/ Han Boetes] maintains [https://github.com/hboetes/mg a portable version of mg], based on the !OpenBSD version, above, his version can be easily compiled on systems other than !OpenBSD (like GNU/Linux), as it uses [https://libbsd.freedesktop.org/wiki/ libbsd] for compatibility.
+
+Boetes’s version can also be compiled statically, if desired, although not using <code>glibc</code>; an alternative C standard library, such as [https://musl.libc.org/ musl libc] on Alpine Linux, needs to be used.
+
+He keeps the version number from !OpenBSD, but then appends his name and a date string to his releases, at the time of writing (2026-09) this is: “hboetes-20230501.”
+
+
+=== Brian Callahan’s portable version of mg ===
+
+[https://briancallahan.net/ Brian Callahan] (aka ibara) also maintains [https://github.com/ibara/mg a portable version of mg], again based on the upstream !OpenBSD sources.  His version has been tested to compile on a variety of other BSDs, GNU/Linux distros, macOS, and Cygwin.  ([https://github.com/ibara/mg/blob/master/README.md#testing see the Testing section the ‘README.md’ file] in his source tree for details.)
+
+He also keeps the original !OpenBSD version numbers in his version, but then appends “portable” and a version number for his releases to the end of that, at the time of writing (2026-09) this is: “7.3”.
+
+
+== Pre-packaged mg outside of OpenBSD ==
+
+!OpenBSD’s <code>mg</code>, and the two portable versions, above, can be found in the ports and package repositories of other OSes.
+
+
+=== macOS ===
+
+Versions of macOS ≥ 10.15 include !OpenBSD’s <code>mg</code> by default, presumably as a replacement for the old built-in, GPLv2 licenced, tty-only version of [[GNU Emacs]] that Apple used to include, starting with Emacs 20.7 in Mac OS X 10.0 (Cheetah), but which has now been removed from macOS 10.15 Catalina onward.
+
+
+=== mg in FreeBSD’s ports ===
+
+Mg is also available in FreeBSD’s ports in [https://www.freshports.org/editors/mg/ a regular], based on Han Boetes’ port; or a statically compiled <tt>[https://www.freshports.org/editors/mg-static/ rescue(8)]</tt> version, based on Brian Callahan’s.
+
+
+=== mg in NetBSD’s pkgsrc ===
+
+NetBSD has pkgsrc packages of [https://cdn.netbsd.org/pub/pkgsrc/current/pkgsrc/editors/mg/index.html Han Boetes’ mg port], and another [https://cdn.netbsd.org/pub/pkgsrc/current/pkgsrc/editors/mg2a/index.html version of their own], with some cosmetic tweaks for NetBSD.  (These versions may also work on other platforms for which pkgsrc is available.)
+
+
+=== mg Debian GNU/Linux package ===
 
 Han Boetes’s portable version of <code>mg</code>, above, is available [https://packages.debian.org/stable/editors/mg in Debian stable.]
 
-You can also browse <code>mg</code>’s official sources on:
-* [https://cvsweb.openbsd.org/cgi-bin/cvsweb/src/usr.bin/mg/ OpenBSD’s CVSWeb], or
-* in a [https://github.com/openbsd/src/tree/master/usr.bin/mg mirror of those sources on GitHub.]
+
+=== mg Guix package ===
+
+Han Boetes’ <code>mg</code> port is also [https://packages.guix.gnu.org/packages/mg/20260719/ available as a package in Guix].
+
 
 ----
 EmacsImplementations
