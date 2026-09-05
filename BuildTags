@@ -1,111 +1,181 @@
-There are several tools to create a [[tags file]].  The two dominant tools are [[etags]] and ExuberantCtags.  Etags comes with Emacs and ExuberantCtags is separate but available on most systems.  ExuberantCtags is the better choice as it supports more languages and is more robust.
+There are several tools to create a [[tags file]].  The two
+dominant tools are [[etags]] and ExuberantCtags.  Etags comes with
+Emacs and ExuberantCtags is separate but available on most
+systems.  ExuberantCtags is the better choice as it supports more
+languages and is more robust.
 
-ExuberantCtags is no longer being maintained, but a fork, [https://ctags.io/ UniversalCtags] is being actively developed.
+ExuberantCtags is no longer being maintained, but a fork,
+[https://ctags.io/ Universal Ctags] is being actively developed.
 
-== Using UniversalCtags/ExuberantCtags ==
 
-To use ctags with emacs, you must supply the `-e' parameter to instruct ctags to generate an emacs tag file.  The commands below are often sourced into a Makefile and then run with a CompileCommand.
+== Using Universal Ctags/ExuberantCtags ==
 
-  cd /path/to/my/project
-  ctags -e myfile.cpp
+To use ctags with emacs, you must supply the `-e' parameter to
+instruct ctags to generate an emacs tag file.  The commands below
+are often sourced into a Makefile and then run with a
+CompileCommand.
 
-Ctags also has a recursive option, `-R'.  This is the most common (and simple) usage.  To generate tags for all files that ctags recognizes, simply execute this from the terminal:
+{{{
+cd /path/to/my/project
+ctags -e myfile.cpp
+}}}
 
-  cd /path/to/my/project
-  ctags -e -R .
+Ctags also has a recursive option, `-R'.  This is the most common
+(and simple) usage.  To generate tags for all files that ctags
+recognizes, simply execute this from the terminal:
+
+{{{
+cd /path/to/my/project
+ctags -e -R .
+}}}
 
 You can filter it to specific extensions if needed:
 
-  cd /path/to/my/project
-  ctags -e -R *.cpp *.hpp *.h
+{{{
+cd /path/to/my/project
+ctags -e -R *.cpp *.hpp *.h
+}}}
 
-If you use macports on macOS, universal ctags are installed as uctags.
+If you use MacPorts on macOS, Universal Ctags (or universal-ctags)
+are installed as `universal-ctags' -- i. e.
+
+{{{
+sudo port install universal-ctags
+}}}
+
 
 === From within Emacs ===
 
 Put this in your [[init file]]:
 
-  (setq path-to-ctags "/opt/local/bin/ctags") ;; <- your ctags path here
+{{{
+(setq path-to-ctags "/opt/local/bin/ctags") ;; <- your ctags path here
 
-  (defun create-tags (dir-name)
-    "Create tags file."
-    (interactive "DDirectory: ")
-    (shell-command
-     (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
+(defun create-tags (dir-name)
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (shell-command
+   (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
   )
+}}}
 
-Then, once it has been evaluated, you can invoke it via `M-x create-tags'
+Then, once it has been evaluated, you can invoke it via
+<kbd>M-x</kbd> <kbd>create-tags</kbd>
+
 
 == Using etags ==
 
-First, see a list of languages supported by etags by running `etags --help'.
+First, see a list of languages supported by etags by running
+`etags --help'.
 
-To generate tags for certain source files (like *.el files), invoke this:
+To generate tags for certain source files (like
+<code>‘*.el’</code> files), invoke this:
 
-  cd /path/to/my/project
-  etags *.el
+{{{
+cd /path/to/my/project
+etags *.el
+}}}
 
 To recurse through directories, run something like this:
 
-  cd /path/to/my/project
-  find . -type f -iname "*.[ch]" | etags -
+{{{
+cd /path/to/my/project
+find . -type f -iname "*.[ch]" | etags -
+}}}
 
-FYI: If you want to use `xargs' with `etags', you have to use the --append flag (e.g. ##find . -type f -iname "*.[ch]" | xargs etags --append##).  Otherwise, etags will overwrite the tags file for each file it gets from xargs.
+FYI: If you want to use `xargs' with `etags', you have to use the
+`--append' flag (e. g. <code>find . -type f -iname "*.[ch]" |
+xargs etags --append</code>).  Otherwise, etags will overwrite the
+tags file for each file it
+gets from xargs.
+
 
 === From within emacs ===
 
 Put this in your [[init file]]:
 
-  (defun create-tags (dir-name)
-     "Create tags file."
-     (interactive "DDirectory: ")
-     (eshell-command 
-      (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
+{{{
+(defun create-tags (dir-name)
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (eshell-command
+   (format "find %s -type f -name \"*.[ch]\" | etags -" dir-name)))
+}}}
+
 
 === Auto refresh of the tags file ===
 
-  ;;;  Jonas.Jarnestrom<at>ki.ericsson.se A smarter               
-  ;;;  find-tag that automagically reruns etags when it cant find a               
-  ;;;  requested item and then makes a new try to locate it.                      
-  ;;;  Fri Mar 15 09:52:14 2002    
+{{{
+;;;  Jonas.Jarnestrom<at>ki.ericsson.se A smarter
+;;;  find-tag that automagically reruns etags when it cant find a
+;;;  requested item and then makes a new try to locate it.
+;;;  Fri Mar 15 09:52:14 2002
 
-  (defadvice find-tag (around refresh-etags activate)
-   "Rerun etags and reload tags if tag not found and redo find-tag.              
+(defadvice find-tag (around refresh-etags activate)
+  "Rerun etags and reload tags if tag not found and redo find-tag.
    If buffer is modified, ask about save before running etags."
   (let ((extension (file-name-extension (buffer-file-name))))
     (condition-case err
-    ad-do-it
+	ad-do-it
       (error (and (buffer-modified-p)
-          (not (ding))
-          (y-or-n-p "Buffer is modified, save it? ")
-          (save-buffer))
-         (er-refresh-etags extension)
-         ad-do-it))))
+		  (not (ding))
+		  (y-or-n-p "Buffer is modified, save it? ")
+		  (save-buffer))
+	     (er-refresh-etags extension)
+	     ad-do-it))))
 
-  (defun er-refresh-etags (&optional extension)
+(defun er-refresh-etags (&optional extension)
   "Run etags on all peer files in current dir and reload them silently."
   (interactive)
   (shell-command (format "etags *.%s" (or extension "el")))
-  (let ((tags-revert-without-query t))  ; don't query, revert silently          
+  (let ((tags-revert-without-query t))  ; don't query, revert silently
     (visit-tags-table default-directory nil)))
- 
+}}}
+
+
 == Other tips ==
 
-It just works with ExuberantCtags and etags, as both recognize the language based on extension.
+It just works with ExuberantCtags and etags, as both recognize the
+language based on extension.
 
-If you happen to need to use two separate tags programs (like rtags and ctags) to parse all languages used in a project, just append one to the other.
+If you happen to need to use two separate tags programs (like
+rtags and ctags) to parse all languages used in a project, just
+append one to the other.
+
 
 == See also ==
 
-* Lisp:traverselisp.el is able to build tags fast recursively in a directory tree with ` M-x traverse-build-tags-in-project' then just choose extension from prompt.
-* [https://github.com/jixiuf/helm-etags-plus ctags-update.el]  auto or not auto update TAGS in parent directory using exuberant-ctags
-* [http://github.com/mattkeller/etags-update etags-update.el] is a global minor mode that will update your TAGS when you save a file. It can also offer to add a file to your TAGS if it is not already indexed.
-* Lisp:etags-u.el is able to update/remove file from TAGS file, and have minor mode for updating after saving a file. Removes file from TAGS when file is deleted(works with dired too). Uses relative path by default, but that behavior can be changed.
-* RecursiveTags for more tips on generating tags in recursive directories.
+* Lisp:traverselisp.el is able to build tags fast recursively in a
+  directory tree with <kbd>M-x</kbd>
+  <kbd>traverse-build-tags-in-project</kbd> then just choose
+  extension from prompt.
+
+* [https://github.com/jixiuf/helm-etags-plus ctags-update.el] auto
+  or not auto update TAGS in parent directory using
+  exuberant-ctags
+
+* [http://github.com/mattkeller/etags-update etags-update.el] is a
+  global minor mode that will update your TAGS when you save a
+  file.  It can also offer to add a file to your TAGS if it is not
+  already indexed.
+
+* Lisp:etags-u.el is able to update/remove file from TAGS file,
+  and have minor mode for updating after saving a file.  Removes
+  file from TAGS when file is deleted(works with dired too).  Uses
+  relative path by default, but that behavior can be changed.
+
+* RecursiveTags for more tips on generating tags in recursive
+  directories.
+
+
 == More ==
+
 * Lisp:EmacsTags
 * Lisp:EtagsTable
 * Lisp:TagsFile
+
+
 ----
+
 CategoryExternalUtilities
 CategoryNavigation
