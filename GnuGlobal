@@ -1,4 +1,4 @@
-==GNU GLOBAL==
+== GNU GLOBAL ==
 The GNU GLOBAL package is highly recommended for using a single tags file, covering all files in all subdirectories, that lives at the base of a source-code tree.
 
 * http://www.gnu.org/software/global/
@@ -7,7 +7,7 @@ The package comes with gtags.el that integrates it seamlessly into Emacs.
 
 In 2013, [http://elpa.gnu.org/packages GNU ELPA] included a package [http://elpa.gnu.org/packages/ggtags.html ggtags.el] for integrating GNU Global with Emacs, which provides an intuitive UI for navigating between multiple matches along with many other features. Check [https://github.com/leoliu/ggtags the project page] for full feature list.
 
-===Cycling through GNU Global result===
+=== Cycling through GNU Global result ===
 The gtags.el package doesn't cycle through gtags result.  Here's some code for doing it.
 CyclingGTagsResult
 
@@ -15,55 +15,54 @@ CyclingGTagsResult
 
 It's possible to use GNU GLOBAL incremental update feature in after-save-hook in order to keep synchronized the changes you made in source code and gtags database:
 
+{{{
+(defun gtags-root-dir ()
+  "Returns GTAGS root directory or nil if doesn't exist."
+  (with-temp-buffer
+    (if (zerop (call-process "global" nil t nil "-pr"))
+        (buffer-substring (point-min) (1- (point-max)))
+      nil)))
 
-  (defun gtags-root-dir ()
-    "Returns GTAGS root directory or nil if doesn't exist."
-    (with-temp-buffer
-      (if (zerop (call-process "global" nil t nil "-pr"))
-          (buffer-substring (point-min) (1- (point-max)))
-        nil)))
+(defun gtags-update ()
+  "Make GTAGS incremental update"
+  (call-process "global" nil nil nil "-u"))
 
-  (defun gtags-update ()
-    "Make GTAGS incremental update"
-    (call-process "global" nil nil nil "-u"))
+(defun gtags-update-hook ()
+  (when (gtags-root-dir)
+    (gtags-update)))
 
-  (defun gtags-update-hook ()
-    (when (gtags-root-dir)
-      (gtags-update)))
-
-  (add-hook 'after-save-hook #'gtags-update-hook)
+(add-hook 'after-save-hook #'gtags-update-hook)
+}}}
 
 === GNU GLOBAL update for a single file ===
-For projects with a huge amount of files, "global -u" can take a
+For projects with a huge amount of files, <code>"global -u"</code> can take a
 very long time to complete. For changes in a single file, we can 
-update the tags with "gtags --single-update" and do it in the 
+update the tags with <code>"gtags --single-update"</code> and do it in the 
 background: 
 
-    (defun gtags-update-single(filename)  
-      "Update Gtags database for changes in a single file"
-      (interactive)
-      (start-process "update-gtags" "update-gtags" "bash" "-c" (concat "cd " (gtags-root-dir) " ; gtags --single-update " filename )))
+{{{
+(defun gtags-update-single(filename)  
+  "Update Gtags database for changes in a single file"
+  (interactive)
+  (start-process "update-gtags" "update-gtags" "bash" "-c" (concat "cd " (gtags-root-dir) " ; gtags --single-update " filename )))
 
+(defun gtags-update-current-file()
+  (interactive)
+  (defvar filename)
+  (setq filename (replace-regexp-in-string (gtags-root-dir) "." (buffer-file-name (current-buffer))))
+  (gtags-update-single filename)
+  (message "Gtags updated for %s" filename))
 
-    (defun gtags-update-current-file()
-      (interactive)
-      (defvar filename)
-      (setq filename (replace-regexp-in-string (gtags-root-dir) "." (buffer-file-name (current-buffer))))
-      (gtags-update-single filename)
-      (message "Gtags updated for %s" filename))
+(defun gtags-update-hook()
+  "Update GTAGS file incrementally upon saving a file"
+  (when gtags-mode
+    (when (gtags-root-dir)
+      (gtags-update-current-file))))
 
-    (defun gtags-update-hook()
-      "Update GTAGS file incrementally upon saving a file"
-      (when gtags-mode
-        (when (gtags-root-dir)
-          (gtags-update-current-file))))
+(add-hook 'after-save-hook 'gtags-update-hook)
+}}}
 
-    (add-hook 'after-save-hook 'gtags-update-hook)
-
-
-
-===Alternative interface to GNU GLOBAL===
-
+=== Alternative interface to GNU GLOBAL ===
 If, for whatever reasons, you do not feel comfortable with the
 interface gtags.el provides, you might try xgtags.el instead. Since
 its look and feel is more like that of xcscope.el, it differs from
@@ -95,7 +94,6 @@ CEDET (CollectionOfEmacsDevelopmentEnvironmentTools) supports the use of GNU Glo
 * Semantic Database backend, for finding tags by name.
 
 === Yet another interface to GNU GLOBAL===
-
 GNU Global has a cscope-compatibility utility called "gtags-cscope". This tool has an identical interface to cscope, so any cscope interface can be used with it. Look at "xcscope.el", which is on MELPA and in Debian and in Ubuntu. The source is here: https://github.com/dkogan/xcscope.el To use this interface, do (setq cscope-program "gtags-cscope"). This interface has superior support for keeping track of multiple searches, and it's the best of the bunch, I think.
 
 ----
@@ -104,7 +102,6 @@ Comment: would be interesting to see why xcscope.el is the best of the bunch. gg
 ----
 
 === global-tags.el ===
-
 Another related package with a most un-original yet very informative name is [https://launchpad.net/global-tags.el global-tags.el]
 
 Main features are providing an elisp API/library that can be unit tested. Its design is meant to welcome new maintainers through extensibility and maintainability.
@@ -115,7 +112,7 @@ It also includes prefetching commonly used queries as "list/search files" and "l
 
 global-tags.el is currently [https://melpa.org/#/global-tags available in MELPA]
 
-
+----
 CategoryProgrammerUtils
 CategoryExternalUtilities
 CategoryCompletion
