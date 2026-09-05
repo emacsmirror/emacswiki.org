@@ -29,7 +29,6 @@
 
 ;; Example:
 ;; 
-;; (require 'stardict)
 ;; (require 'stardict-frontend)
 ;; (setq dict
 ;;       (stardict-open "~/.stardict/dic/stardict-oxford-gb-2.4.2"
@@ -40,6 +39,8 @@
 ;; M-x stardict-query RET anywords
 
 ;;; Code:
+
+(require 'stardict)
 
 (defun stardict-lookup-base (word)
   "Strip common inflection endings of word."
