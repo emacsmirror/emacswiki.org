@@ -4,7 +4,7 @@
 
 ;; Author: Whisky Basing <basingwhisk@elektrine.com>
 ;; Created: 2026-09-05
-;; Version: 0.1
+;; Version: 0.1.1
 ;; Keywords: stardict
 
 ;; This file is *NOT* part of GNU Emacs
@@ -44,14 +44,14 @@
 
 (defun stardict-lookup-base (word)
   "Strip common inflection endings of word."
-        ;;Identify the common inflected forms of English words, excluding irregular forms. Dictionaries usually include irregular forms.
-  (let* ((y-stem (when (string-match "\\(?:ies\\|ied\\|ier\\|iest\\)\\'" word)
-                   (substring word 0 -3)))
+	;;Identify the common inflected forms of English words, excluding irregular forms. Dictionaries usually include irregular forms.
+  (let* ((y-stem (when (string-match "\\(?:iness\\|ition\\|iest\\|ies\\|ied\\|ier\\|ior\\|ity\\|ily\\)\\'" word)
+                   (substring word 0 (match-beginning 0))))
          (strips (delq nil
                        (mapcar (lambda (suf)
                                  (and (string-match (concat suf "\\'") word)
                                       (substring word 0 (- (length word) (length suf)))))
-                               '("s" "es" "ed" "ing" "er" "est"))))
+                               '("s" "es" "ed" "ing" "er" "or" "est" "ly" "tion" "ness" "ism"))))
          (undoubled (delq nil
                           (mapcar (lambda (s)
                                     (and (> (length s) 2)
@@ -73,7 +73,7 @@
       (dolist (try cands)
         (when (and (> (length try) 1)
                    (stardict-word-exist-p dict try))
-          (throw 'hit (stardict-lookup dict try)))))))
+          (throw 'hit (cons try (stardict-lookup dict try))))))))
 
 
 (defun stardict-query ()
@@ -91,8 +91,9 @@
      (t
       (let ((definition (stardict-lookup-base (downcase word))))
         (if definition
-            (message "%s: %s" word definition)
-          (message "Word '%s' not found in dictionary" word)))))))
+            (message "%s: %s" (car definition) (cdr definition))
+          (message "Word '%s' not found in dictionary" word)
+	 ))))))
 
 (defun stardict-lookup-at-point ()
   "Lookup the word at cursor position and display in minibuffer."
@@ -109,8 +110,10 @@
      (t
       (let ((definition (stardict-lookup-base (downcase word))))
         (if definition
-            (message "%s: %s" word definition)
-      (message "Word '%s' not found in dictionary" word)))))))
+            (message "%s: %s" (car definition) (cdr definition))
+          (message "Definition not found for: %s" word)
+	 )))
+      (message "Word '%s' not found in dictionary" word))))
 
 
 (provide 'stardict-frontend)
