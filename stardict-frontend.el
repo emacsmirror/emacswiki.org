@@ -87,13 +87,13 @@
       (let ((definition (stardict-lookup dict (downcase word))))
         (if definition
             (message "%s: %s" word definition)
-          (message "Definition not found for: %s" word))))
+	  )))
      (t
       (let ((definition (stardict-lookup-base (downcase word))))
         (if definition
             (message "%s: %s" (car definition) (cdr definition))
-          (message "Word '%s' not found in dictionary" word)
-	 ))))))
+          (message "Definition not found for: %s" word)
+	  ))))))
 
 (defun stardict-lookup-at-point ()
   "Lookup the word at cursor position and display in minibuffer."
@@ -106,14 +106,14 @@
       (let ((definition (stardict-lookup dict (downcase word))))
         (if definition
             (message "%s: %s" word definition)
-          (message "Definition not found for: %s" word))))
+	  )))
      (t
       (let ((definition (stardict-lookup-base (downcase word))))
         (if definition
             (message "%s: %s" (car definition) (cdr definition))
           (message "Definition not found for: %s" word)
 	 )))
-      (message "Word '%s' not found in dictionary" word))))
+     )))
 
 
 (provide 'stardict-frontend)
