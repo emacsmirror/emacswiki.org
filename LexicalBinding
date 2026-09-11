@@ -44,7 +44,7 @@ So: files which do not use lexical-binding must now declare this explicitly, as 
 
 For files which are written for only dynamic binding, you can use the following in order to maintain the status quo (i.e. to not have to worry about whether or not other code changes are necessary).
 
-    ;; -*- lexical-binding: nil; -*- 
+ ;; -*- lexical-binding: nil; -*- 
 
 Adding the cookie as -*- lexical-binding: t; -*- is for elisp programmers who understand the difference and are prepared to implement the conversion and fix the bugs (if any; but there definitely can be bugs).
 
