@@ -31,6 +31,7 @@ Note: as of Emacs 24.4, any closures created **before** marking the variable as 
 
 Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
 
+[:WarningFileHasNoLexicalBindingDirective]
 ==Warning: file has no ‘lexical-binding’ directive on its first line==
 
 Emacs 31+ may make noisy load-time complaints about emacs lisp files which do not have a lexical-binding cookie.
