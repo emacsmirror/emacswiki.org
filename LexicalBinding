@@ -31,6 +31,32 @@ Note: as of Emacs 24.4, any closures created **before** marking the variable as 
 
 Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
 
+==Warning: file has no ‘lexical-binding’ directive on its first line==
+
+Emacs 31+ may make noisy load-time complaints about emacs lisp files which do not have a lexical-binding cookie.
+
+The reason is that, in a future release of Emacs, lexical binding is going to become the default, which will be a major change after 40+ years of dynamic binding being the default (and indeed the only option for most of that time).
+
+It's still the case (and will remain the case) that in the absence of a lexical-binding comment, the default binding system will be used for that file. But the default is going to change.
+
+So: files which do not use lexical-binding must now declare this explicitly, as otherwise they would suddenly cease to behave the same way in that future release of Emacs.
+
+For files which are written for only dynamic binding, you can use the following in order to maintain the status quo (i.e. to not have to worry about whether or not other code changes are necessary).
+
+    ;; -*- lexical-binding: nil; -*- 
+
+Adding the cookie as -*- lexical-binding: t; -*- is for elisp programmers who understand the difference and are prepared to implement the conversion and fix the bugs (if any; but there definitely can be bugs).
+
+If you do not understand (in a lot of detail) what it all means, or you simply want to make the warning go away with the minimum of effort, then use the 'nil' version of the cookie.
+
+===Add lexical-binding cookies to lisp files programmatically===
+
+In elisp, you can evaluate the following to set -*- lexical-binding: nil; -*- for the current buffer:
+
+ (add-file-local-variable-prop-line 'lexical-binding nil)
+
+To process files in bulk you can use the LexelShellScript.
+
 ==Debugging closures==
 
 `eval' especially in edebbug is unusable because the `print'ed version of the closures would take half a screen. Is there any way to tell emacs to reduce the printout a closure (e.g. #<closure>)? --LinhDang
