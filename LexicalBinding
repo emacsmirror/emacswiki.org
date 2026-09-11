@@ -46,15 +46,16 @@ For files which are written for only dynamic binding, you can use the following 
 
  ;; -*- lexical-binding: nil; -*- 
 
-Adding the cookie as -*- lexical-binding: t; -*- is for elisp programmers who understand the difference and are prepared to implement the conversion and fix the bugs (if any; but there definitely can be bugs).
+Adding the cookie as ##-*- lexical-binding: t; -*-## is for elisp programmers who understand the difference and are prepared to implement the conversion and fix the bugs (if any; but there definitely can be bugs).
 
-If you do not understand (in a lot of detail) what it all means, or you simply want to make the warning go away with the minimum of effort, then use the 'nil' version of the cookie.
+If you do not understand (in a lot of detail) what it all means, or you simply want to make the warning go away with the minimum of effort, then use the `nil' version of the cookie.
 
 ===Add lexical-binding cookies to lisp files programmatically===
 
-In elisp, you can evaluate the following to set -*- lexical-binding: nil; -*- for the current buffer:
+In elisp, you can evaluate one of the following to set a lexical-binding cookie for the current buffer:
 
- (add-file-local-variable-prop-line 'lexical-binding nil)
+ (add-file-local-variable-prop-line 'lexical-binding nil) ;; to set -*- lexical-binding: nil; -*-
+ (add-file-local-variable-prop-line 'lexical-binding t)   ;; to set -*- lexical-binding: t; -*-
 
 To process files in bulk you can use the LexelShellScript.
 
