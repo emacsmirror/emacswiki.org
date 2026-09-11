@@ -22,6 +22,8 @@ The script outputs the list of the files that it has modified (or at least attem
 
 ==Shell script==
 
+**Note:** This has been tested with GNU utils only.  If you are not using a GNU/Linux OS then there may be incompatibilities.  Test with all due care, using a separate/temp directory.
+
  #!/bin/sh
  # Lexel
  # Version 1.0
