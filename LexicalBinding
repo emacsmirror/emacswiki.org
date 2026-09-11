@@ -18,7 +18,26 @@ For closures on previous versions of Emacs, see FakeClosures.
 => "bar"                                ; without lexical binding, it would have returned "something-else"
 }}}
 
-==Problem with defun in lexically bound contexts. (For Emacs 24 prior to 24.3)==
+==Using lexical binding in elisp libraries==
+
+To enable lexical binding in your elisp library, put a line like this at the top of the file:
+
+{{{
+;; -*- lexical-binding: t -*-
+}}}
+
+This will enable lexical-binding for the code in the file, but <b>note that global variables declared with <code>defvar</code>, <code>defcustom</code> or <code>defconst</code> will be dynamically bound</b> due to the global binding being marked as "special" by those forms.\\
+Note: as of Emacs 24.4, any closures created **before** marking the variable as "special" are unaffected by this effect. It's not clear whether this is intentional. (I could reproduce this in SBCL, but not CLISP. Maybe it's supposed to have undefined behavior.)
+
+Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
+
+==Debugging closures==
+
+`eval' especially in edebbug is unusable because the `print'ed version of the closures would take half a screen. Is there any way to tell emacs to reduce the printout a closure (e.g. #<closure>)? --LinhDang
+
+==Emacs 24 prior to 24.3==
+
+===Problem with defun in lexically bound contexts===
 
 Prior to Emacs 24.3, the <code>defun</code> special form didn't work properly in lexically bound
 contexts (i.e. when the buffer-local variable <code>lexical-binding</code> is not <code>nil</code>).  For example: 
@@ -106,20 +125,5 @@ Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
 that package. --- [[Bernard Hurley]]
 
-== Using lexical binding in elisp libraries ==
-
-To enable lexical binding in your elisp library, put a line like this at the top of the file:
-
-{{{
-;; -*- lexical-binding: t -*-
-}}}
-
-This will enable lexical-binding for the code in the file, but <b>note that global variables declared with <code>defvar</code>, <code>defcustom</code> or <code>defconst</code> will be dynamically bound</b> due to the global binding being marked as "special" by those forms.\\
-Note: as of Emacs 24.4, any closures created **before** marking the variable as "special" are unaffected by this effect. It's not clear whether this is intentional. (I could reproduce this in SBCL, but not CLISP. Maybe it's supposed to have undefined behavior.)
-
-Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
-
-=== Real world issues ===
-One problem with using lexical binding is debugging. `eval' in especially in edebbug is unusable because the `print'ed version of the closures would take half a screen. Is there any way to tell emacs to reduce the printout a closure (e.g. #<closure>)? --LinhDang
 ----
 CategoryCode
