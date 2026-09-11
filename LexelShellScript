@@ -1,4 +1,4 @@
-See LexicalBinding for context.
+See [EmacsWiki:LexicalBinding#WarningFileHasNoLexicalBindingDirective LexicalBinding] for context.
 
 You can use the shell script embedded below (n.b. tested with GNU utils only) to add lexical-binding cookies to *.el files which do not already have one on their first line.  This page assumes that you have saved it as 'lexel' to a directory in your PATH, and have made it executable.
 
