@@ -2,7 +2,7 @@ See LexicalBinding for context.
 
 You can use the shell script embedded below (n.b. tested with GNU utils only) to add lexical-binding cookies to *.el files which do not already have one on their first line.  This page assumes that you have saved it as 'lexel' to a directory in your PATH, and have made it executable.
 
-WARNING: The default behaviour of this script is to run a recursive search for lisp files which lack the cookie, and modify those files.  You should use the --dry-run option until you are sure that the files it will modify are (only) the files that you want it to modify, and you should test it against a copy of the files first.
+*WARNING:* The default behaviour of this script is to run a recursive search for lisp files which lack the cookie, and modify those files.  You should use the ##--dry-run## option until you are sure that the files it will modify are (only) the files that you want it to modify, and you should test it against a copy of the files first.
 
 For help, run:
 
@@ -14,7 +14,7 @@ It will apply recursively from the current directory if no arguments are given, 
 
 Do not do this directly on ~/.emacs.d itself.  That directory should not be in your load-path and so, other than the init file(s) recognised by Emacs, you should not have any lisp files directly in that directory (as Emacs may write *.el files there which are data rather than lisp code, which we will not want to touch here).  You should instead run the script against the specific (sub-)directories where any *.el files should all be lisp code.
 
-(If you do have other lisp files directly in ~/.emacs.d then you can target them explicitly, but you should move them elsewhere -- possibly to the new (info "(emacs)User Lisp Directory") introduced in Emacs 31.)
+(If you do have other lisp files directly in ~/.emacs.d then you can target them explicitly, but you should move them elsewhere -- possibly to the new ##(info "(emacs)User Lisp Directory")## introduced in Emacs 31.)
 
 Take a backup first, of course, and I recommend testing against a copy so you can inspect the results and compare with your original config, before running it against the real directories.
 
