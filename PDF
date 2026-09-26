@@ -1,8 +1,9 @@
 Portable Document Format (PDF) is a digital document format under the ISO 32000 standard. A PDF can contain all possible elements to render a page or several pages, independently of the software or harware used to process it. 
 
 == Reading ==
-* DocViewMode -- Library included in Emacs. Converts document pages into images asynchronously to show them. It is costly and requiers other programs (such as Ghostscript and pdftotext).
-* [[PDFTools]] -- Available in [[MELPA]]. A replacemente of DocView for PDF files. Uses a server to render pages on-demand and stored in memory.
+* DocViewMode -- Library included in Emacs.  Converts document pages into images asynchronously to show them.  It is costly and requiers other programs (such as Ghostscript and pdftotext).
+* [[PDFTools]] -- Available in [[MELPA]].  A replacemente of DocView for PDF files.  Uses a server to render pages on-demand and stored in memory.
+* EmacsReader -- A new document viewer for Emacs, based on [https://mupdf.com/ MuPDF], to replace the above, especially for better PDF performance.  Can also read some other e‑book and document formats.
 
 === Annotations ===
 * [org-noter https://github.com/org-noter/org-noter]  -- Available in [[MELPA]]. Save notes in an external Org files while reading PDF documents.
