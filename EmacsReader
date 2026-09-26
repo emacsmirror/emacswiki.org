@@ -13,9 +13,9 @@ Formats with first-class support include:
 
 * CBZ comic book archives,
 * [[EPUB]] e‑books,
-* FB2 !FictionBook e‑books,
-* Mobipocket (<code>.prc,</code> and <code>.mobi</code>) e‑books,
-* !OpenXPS, also known as XPS – the Open XML Paper Specification, and
+* FB2 (!FictionBook) e‑books,
+* Mobipocket (<code>.prc</code> and <code>.mobi</code>) e‑books,
+* !OpenXPS, also known as XPS (Open XML Paper Specification), and
 * [[PDF]].
 
 Other formats, such as OpenDocument formats can be viewed, but cannot
