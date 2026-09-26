@@ -1,10 +1,15 @@
-PDFTools (also known as pdf-tools, PdfTools or pdftools) is a
-collection of minor-modes centered around a server querying [[PDF]]
-documents for all kinds of information.
+:: ''This page is about the Emacs PDF viewing library'' pdf-tools;
+''for the print buffer/region to PDF tool see:'' PdfTools
+
+PDFTools (also known as pdf-tools) is a collection of minor-modes
+centered around a server querying [[PDF]] documents for all kinds of
+information.
 
 It supports:
-* [https://www.emacswiki.org/emacs/IncrementalSearch|Isearch]ing documents,
-* browsing PDF Outlines via [https://www.emacswiki.org/emacs/ImenuMode|Imenu],
+* [https://www.emacswiki.org/emacs/IncrementalSearch|Isearch]ing
+  documents,
+* browsing PDF Outlines via
+  [https://www.emacswiki.org/emacs/ImenuMode|Imenu],
 * following internal and external links,
 * copying text with the mouse and
 * some other stuff.
@@ -19,13 +24,14 @@ Now pdf-tools is developed at [https://github.com/vedang/pdf-tools
 Vedang Manerikar’s GitHub repo].  There's a homepage at:
 https://pdftools.wiki/
 
-pdf-tools is available in [[MELPA]] and [https://elpa.nongnu.org/nongnu/ Non-GNU ELPA].
+pdf-tools is available in [[MELPA]] and
+[https://elpa.nongnu.org/nongnu/ Non-GNU ELPA].
 
 == See also ==
-
-* PdfToolsPrinting
 * DocViewMode
 * EmacsReader
+* PdfTools -- PeterMao's similarly named package for converting a
+  buffer or region into PDF (from ps-spool !PostScript output)
 
 ----
 MultimediaModes
