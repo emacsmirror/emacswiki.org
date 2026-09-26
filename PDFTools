@@ -1,15 +1,31 @@
-PDFTools is a collection of minor-modes centered around a server
-querying PDF documents for all kinds of informations.
+PDFTools (also known as pdf-tools, PdfTools or pdftools) is a
+collection of minor-modes centered around a server querying [[PDF]]
+documents for all kinds of information.
 
-The code is on github: http://github.com/politza/pdf-tools
-
-It supports
-* Isearching documents,
-* browsing PDF Outlines via Imenu,
+It supports:
+* [https://www.emacswiki.org/emacs/IncrementalSearch|Isearch]ing documents,
+* browsing PDF Outlines via [https://www.emacswiki.org/emacs/ImenuMode|Imenu],
 * following internal and external links,
 * copying text with the mouse and
 * some other stuff.
 
-http://www.hochschule-trier.de/~politza/emacs/pdf-tools.png
+It was originally developed by [https://github.com/politza politza] on
+[https://github.com/politza/pdf-tools GitHub].  There were screenshots
+at politza's university
+homepage.[http://www.hochschule-trier.de/~politza/emacs/pdf-tools.png]
+However he archived that repository in 2022.
 
-This is not spam !
+Now pdf-tools is developed at [https://github.com/vedang/pdf-tools
+Vedang Manerikar’s GitHub repo].  There's a homepage at:
+https://pdftools.wiki/
+
+pdf-tools is available in [[MELPA]] and [https://elpa.nongnu.org/nongnu/ Non-GNU ELPA].
+
+== See also ==
+
+* PdfToolsPrinting
+* DocViewMode
+* EmacsReader
+
+----
+MultimediaModes
