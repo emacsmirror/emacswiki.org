@@ -1,3 +1,5 @@
+: ''This page is about the Emacs print buffer/region to PDF tool'' pdftools; ''for the PDF viewer and library see:'' [[PDFTools]]
+
 == pdftools: "printing" to pdf ==
 
 Sometimes ps-spool-(buffer|region)-(with-faces)? (hereafter,
