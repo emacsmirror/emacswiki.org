@@ -1,1 +1,49 @@
-== emacs-reader Wiki ==
+Emacs Reader (also EmacsReader and emacs-reader) is a document reader
+for [[GNU Emacs]], which supports many different document formats by
+making use of [https://mupdf.com/ the MuPDF library].
+
+Emacs Reader only relies on !MuPDF, and not on DocViewMode,
+[[PDFTools]], or <code>nov.el</code>; as it seeks to be a better
+replacement for all of those, particularly with better performance for
+browsing large PDFs.
+
+== Supported formats ==
+
+Formats with first-class support include:
+
+* CBZ comic book archives,
+* [[EPUB]] e‑books,
+* FB2 !FictionBook e‑books,
+* Mobipocket (<code>.prc,</code> and <code>.mobi</code>) e‑books,
+* !OpenXPS, also known as XPS – the Open XML Paper Specification, and
+* [[PDF]].
+
+Other formats, such as OpenDocument formats can be viewed, but cannot
+then be edited in Emacs, you're better off using e. g. !LibreOffice
+instead.  Similarly, Microsoft Office formats have some limited
+support for viewing in !MuPDF, but again, not editing.
+
+== Installing Emacs Reader ==
+
+Currently (September 2026), Emacs Reader is not (yet) in any [[ELPA]],
+so you have clone the git repo to install it,
+[https://codeberg.org/MonadicSheep/emacs-reader#user-content-outline-container-headline-8
+see instructions in Emacs Reader’s README].
+
+== External links ==
+
+* [https://monadicsheep.org/projects/emacs-reader Emacs Reader’s
+	Homepage], which currently links to,
+* [https://codeberg.org/MonadicSheep/emacs-reader Emacs Reader’s
+	source code repository] on Codeberg.
+* [https://www.phimulambda.org/blog/emacs-dynamic-module.html
+	“Understanding the Dynamic Module System of GNU Emacs”] -- a
+	detailed blogpost by Emacs Reader developer Divyá Ranjan
+	Pattanaik explaining why  Emacs’ Dynamic Module System is
+	used.
+* [https://emacsconf.org/2025/talks/reader/ “An introduction to the
+	Emacs Reader”] -- EmacsConf 2025 presentation by Emacs Reader
+	developer Divyá Ranjan Pattanaik introducing Emacs Reader
+
+----
+MultimediaModes
