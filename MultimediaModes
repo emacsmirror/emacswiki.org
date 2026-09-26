@@ -8,14 +8,14 @@ But see MusicPlayers.
 * EmacsCsound -- Mode for editing Csound files
 * EmacsImageManipulation -- mogrify images with imagemagick
 * EmacsPhotoDatabase -- manage film, negative, and print information (silver-based photography)
-* EmacsReader -- a new Emacs document viewer for PDFs, e‑books, and other formats using [https://mupdf.com/ MuPDF], aims to be better and faster than DocViewMode and PDFTools
+* EmacsReader -- a new Emacs document viewer for PDFs, e‑books, and other formats using [https://mupdf.com/ MuPDF], with faster rendering than !DocViewMode and PDFTools
 * EmacsSuperCollider -- Develop synthetic audio
 * ImageMode -- new in Emacs 22
 ** [http://user42.tuxfamily.org/imagetext/index.html imagetext.el] -- view text comments from PNG etc in ImageMode and AutoImageFileMode
 * JpegMode -- details of jpeg file internals
 * LookMode -- opens a list of files in a temporary, writable buffer.  Allows safe resizing of images with EmacsImageManipulation mode.
 * MusicPlayers -- play CDs and MP3s in your favourite editor
-* [[PDFTools]] -- a PDF viewer that's faster than !DocViewMode that renders pages on-demand using poppler
+* [[PDFTools]] -- a PDF viewer that's faster than !DocViewMode rendering pages on-demand using poppler
 * [[Processing]] -- mode for editing, running, compiling (etc.) Processing <code>.pde</code> files
 * PictureMode -- ASCII art
 * ThumbsMode -- image browsing
