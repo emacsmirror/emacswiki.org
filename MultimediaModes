@@ -1,5 +1,5 @@
-This is a subpage of CategoryModes. It lists multimedia modes to listen to music or view images.
-But see MusicPlayers.
+This is a subpage of CategoryModes.  It lists multimedia modes
+to listen to music or view images.  But see MusicPlayers.
 
 * AbcMode -- The music file format
 * ArtistMode -- ASCII art including with the mouse
@@ -7,9 +7,11 @@ But see MusicPlayers.
 * DocViewMode -- View documents (PDF/PS/DVI) inside Emacs
 * EmacsCsound -- Mode for editing Csound files
 * EmacsImageManipulation -- mogrify images with imagemagick
+* EmacsImageViewer -- A simple image viewer.
 * EmacsPhotoDatabase -- manage film, negative, and print information (silver-based photography)
 * EmacsReader -- a new Emacs document viewer for PDFs, e‑books, and other formats using [https://mupdf.com/ MuPDF], with faster rendering than !DocViewMode and PDFTools
 * EmacsSuperCollider -- Develop synthetic audio
+* [[EMMS]] -- Emacs Multi-Media System, an application to play multimedia files from Emacs using external players
 * ImageMode -- new in Emacs 22
 ** [http://user42.tuxfamily.org/imagetext/index.html imagetext.el] -- view text comments from PNG etc in ImageMode and AutoImageFileMode
 * JpegMode -- details of jpeg file internals
@@ -20,8 +22,6 @@ But see MusicPlayers.
 * PictureMode -- ASCII art
 * ThumbsMode -- image browsing
 * [[Tumme]] -- image browsing
-* EmacsImageViewer -- A simple image viewer.
-* EMMS - Emacs Multi-Media System, an application to play multimedia files from Emacs using external players
 
 ----
 CategoryModes
