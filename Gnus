@@ -24,6 +24,7 @@ This will allow you to download and read (but not upload / reply to) news from #
 * [[GnusTutorial]] -- A lengthy tutorial on Gnus
 * [[Gmane]] -- NNTP interface to GNU mailing lists.
 * EmacsFromGit -- You can get the latest Gnus from Emacs' repository
+* EmacsNewsgroups -- Emacs related newsgroups you could subscribe to with Gnus
 * CategoryGnus -- More about Gnus
 
 == External ==
