@@ -34,13 +34,15 @@ gateways don't work too well, however.  When reporting bugs, for
 example, make sure you use the M-x report-emacs-bug command instead of
 posting to the newsgroup.
 
-One bidirectional gateway is [http://gmane.org Gmane].  Emacs has it's
+One bidirectional gateway is [[Gmane]].  Emacs has it's
 own hierarchy there called <code>gmane.emacs</code>, most of which the
-Emacs-related lists populate.  Its directory is at
-http://dir.gmane.org/index.php?prefix=gmane.emacs.  Some lists have
-been categorized differently though, for instance the [[MH-E]] groups
-are under the <code>gmane.mail</code> hierarchy.  Use the
-[http://gmane.org/find.php] Gmane search facility if need be.
+Emacs-related lists populate.  You can see the groups in the hierarchy
+by going to the admin interface https://admin.gmane.io/ then typing
+<kbd>gmane.emacs</kbd> in the <i>Group</i> field, then clicking
+"Search".  Some lists have been categorized differently though, for
+instance the [[MH-E]] groups are under the <code>gmane.mail</code>
+hierarchy.  Use the [https://admin.gmane.io/ Gmane admin interface] to
+search for groups if need be.
 
 ----
 
