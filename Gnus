@@ -4,17 +4,17 @@ Gnus is a flexible reader for *news*, *mail*, and *feeds*. It is included as of 
 
 == Quickstart ==
 
-Start Gnus with ##M-x gnus##.
+Start Gnus with <kbd>M-x</kbd> <kbd>gnus</kbd>.
 
-You may need to configure Gnus in your InitFile:
+You may need to configure Gnus in your GnusInitFile:
 
 {{{
 (setq
  gnus-select-method '(nntp "news.gmane.io")
  gnus-thread-hide-subtree t
- gnus-newsgroup-maximum-articles 50))
+ gnus-newsgroup-maximum-articles 50)
 
- gnus-secondary-select-methods '((nntp "news.tilde.club")))
+(gnus-secondary-select-methods '((nntp "news.tilde.club")))
 }}}
 
 This will allow you to download and read (but not upload / reply to) news from ##news.gmane.io## and ##news.tilde.club##.
@@ -28,11 +28,9 @@ This will allow you to download and read (but not upload / reply to) news from #
 
 == External ==
 
-* [[http://www.gnus.org Official Website]]
+* [[http://www.gnus.org/ Official Website]]
 * [[https://lars.ingebrigtsen.no/about/ Lars Magne Ingebrigtsen]] -- Gnus' original creator.
 * ##alt.risks.lion## -- Gnus is a great way to sort this high-volume group.
-
-
 
 ----
 CategoryGnus CategoryMail
