@@ -1,8 +1,8 @@
 Host: GeorgeJones
 
-For this month's Emacs carnival I'm asking you to dust off your crystal ball. Where and how will you be using emacs in the next year, two years, five years? Emacs was created in the early days of directly addressable display terminals and seems (to me) to be deeply wedded to the workflow of "you sit down at your terminal/computer and...". The world has gone completely mobile and seems to moving beyond interfaces that serve the needs of the computer such as keyboards and command sequences derived from a line editor written in 1962 to ones that work the way people work: voice, natural language, and maybe AI. A former coworker of mine (well company founder) wrote that "[[https://curious.port111.com/2026/08/22/will-voice-kill-the-keyboard.html][voice will kill the keyboard]]". Is he right? I started out punching cards, using TECO Emacs in 1979 and still think the DEC VT100 was God's gift to keyboards, but I'm more interested in the future.
+For this month's Emacs carnival I'm asking you to dust off your crystal ball.  Where and how will you be using emacs in the next year, two years, five years?  Emacs was created in the early days of directly addressable display terminals and seems (to me) to be deeply wedded to the workflow of "you sit down at your terminal/computer and...".  The world has gone completely mobile and seems to moving beyond interfaces that serve the needs of the computer such as keyboards and command sequences derived from a line editor written in 1962 to ones that work the way people work: voice, natural language, and maybe AI.  A former coworker of mine (well company founder) wrote "[https://curious.port111.com/2026/08/22/will-voice-kill-the-keyboard.html voice will kill the keyboard]".  Is he right?  I started out punching cards, using TECO Emacs in 1979 and still think the DEC VT100 was God's gift to keyboards, but I'm more interested in the future.
 
-So, dust off your crystal ball. When where and how are you using Emacs today? Will it transcend its founding assumptions? Does it need to? My guess is Emacs will retain a niche and will adapt to the future as it always has, one scratch-my-own-itch mod at a time. But I'm curious how others predict Emacs will adapt, at least to the near-term seeable future.
+So, dust off your crystal ball.  When where and how are you using Emacs today?  Will it transcend its founding assumptions? Does it need to?  My guess is Emacs will retain a niche and will adapt to the future as it always has, one scratch-my-own-itch mod at a time.  But I'm curious how others predict Emacs will adapt, at least to the near-term seeable future.
 
 What does your crystal ball (or next pull request) tell you?
 
@@ -15,4 +15,5 @@ Thanks.
 
 * [https://curious.port111.com/2026/08/22/will-voice-kill-the-keyboard.html "Will voice kill the keyboard?"], by GeorgeJones
 
+----
 [[Carnival]]
