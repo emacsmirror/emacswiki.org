@@ -1,3 +1,6 @@
+NOTE: starting with Emacs 31, this is now built-in: use <kbd>C-x w t</kbd> <code>window-layout-transpose</code>.
+
+
 Vertical split shows more of each line, horizontal split shows more lines.  This code toggles between them.
 It only works for frames with exactly two windows.  The top window goes to the left or vice-versa.
 I was motivated by ediff-toggle-split and helped by TransposeWindows.  There may well be better ways to
