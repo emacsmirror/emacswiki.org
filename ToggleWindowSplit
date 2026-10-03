@@ -1,6 +1,5 @@
 NOTE: starting with Emacs 31, this is now built-in: use <kbd>C-x w t</kbd> <code>window-layout-transpose</code>.
 
-
 Vertical split shows more of each line, horizontal split shows more lines.  This code toggles between them.
 It only works for frames with exactly two windows.  The top window goes to the left or vice-versa.
 I was motivated by ediff-toggle-split and helped by TransposeWindows.  There may well be better ways to
@@ -35,7 +34,7 @@ write this.
 (define-key ctl-x-4-map "t" 'toggle-window-split)
 </pre>
 
--JeffDwork
+---JeffDwork
 
 Here's a simpler implementation I wrote before knowing about this wiki page:
 
@@ -58,7 +57,7 @@ Assumes that the frame is only split into two."
 (global-set-key (kbd "C-x 5") 'toggle-frame-split)
 </pre>
 
---Wilfred
+---Wilfred
 
 I wrote a version that works when there're more than 2 windows (besides the minibuffer window):
 
@@ -90,6 +89,9 @@ i.e. change right window to bottom, or change bottom window to right."
                   (split-window-horizontally))
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 </pre>
---BaManzi
+---BaManzi
 
 (Note: This version does not seem to work with Agenda windows, but JeffDwork's version does --mediapathic)
+
+----
+CategoryWindows
