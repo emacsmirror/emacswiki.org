@@ -1,3 +1,4 @@
+[[de:a]]
 ;;; x-migrant.el --- Support for subprocesses handling remote X displays
 
 ;; Copyright (C) 2003 Bryan O'Sullivan
