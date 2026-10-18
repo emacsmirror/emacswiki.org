@@ -121,6 +121,7 @@ Tips and tricks for writing a MajorMode.
 * LiterateEmacsLisp -- Documenting and writing lisp, simultaneously.
 * [http://user42.tuxfamily.org/elisp-docstring-preview/index.html elisp-docstring-preview.el] -- Preview <code>defun</code> etc docstrings
 * Lisp:simple-call-tree+.el -- Explore call tree of code and perform query-replace on individual functions
+* [[The state of agentic coding tools in Emacs (2026)]] -- comparison of current Emacs AI coding tools
 
 [:Installers]
 == Emacs Lisp Installers ==
