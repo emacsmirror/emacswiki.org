@@ -1,6 +1,6 @@
 ;;; popup-kill-ring.el --- interactively insert item from kill-ring
 
-;; Copyright (C) 2010-2024  HAMANO Kiyoto
+;; Copyright (C) 2010-2026  HAMANO Kiyoto
 
 ;; Author: HAMANO Kiyoto <khiker.mail+elisp@gmail.com>
 ;; Keywords: popup, kill-ring, pos-tip
@@ -41,11 +41,6 @@
 ;;   (require 'popup-kill-ring)
 ;;
 ;;   (global-set-key (kbd "M-y") 'popup-kill-ring) ; For example.
-;;
-;; * If you insert a selected item interactively, add following line to
-;;   your .emacs.
-;;
-;;   (setq popup-kill-ring-interactive-insert t)
 
 ;;; Tested:
 ;;
@@ -58,6 +53,10 @@
 ;;
 
 ;;; ChangeLog:
+;;
+;; * 0.2.13 (2026/11/13)
+;;   Drop feature `popup-kill-ring-interactive-insert' to support recent
+;;   Emacs.
 ;;
 ;; * 0.2.12 (2024/05/08)
 ;;   Support Emacs 29. Included a part of changes of following PR (Thank
@@ -156,9 +155,6 @@
 (require 'pos-tip)
 (require 'seq)
 
-(eval-when-compile
-  (require 'cl-lib))
-
 
 ;;; Variables:
 
@@ -206,11 +202,6 @@ See docstring of `pos-tip-show'."
   :type 'face
   :group 'popup-kill-ring)
 
-(defcustom popup-kill-ring-interactive-insert nil
-  "Non-nil means that insert selected item of `popup-menu*' interactively."
-  :type 'boolean
-  :group 'popup-kill-ring)
-
 (defcustom popup-kill-ring-isearch t
   "Non-nil means that passes `t' to `isearch' option of `popup-menu*'"
   :type 'boolean
@@ -229,12 +220,6 @@ Nil means that item does not be truncate."
   :type 'integer
   :group 'popup-kill-ring)
 
-(defcustom popup-kill-ring-interactive-insert-face 'highlight
-  "The face for interactively inserted string when
-`popup-kill-ring-interactive-insert' is `t'."
-  :type 'face
-  :group 'popup-kill-ring)
-
 (defcustom popup-kill-ring-last-used-move-first t
   "Non-nil means that last selected `kill-ring' item comes first of
 `kill-ring'."
@@ -245,7 +230,7 @@ Nil means that item does not be truncate."
 (defvar popup-kill-ring-keymap
   (let ((keymap (make-sparse-keymap)))
     (set-keymap-parent keymap popup-menu-keymap)
-    (define-key keymap (kbd "RET")     'popup-kill-ring-select)
+    (define-key keymap (kbd "RET")     'popup-select)
     (define-key keymap (kbd "C-n")     'popup-kill-ring-next)
     (define-key keymap (kbd "C-p")     'popup-kill-ring-previous)
     (define-key keymap (kbd "<down>")  'popup-kill-ring-next)
@@ -310,12 +295,6 @@ and `pos-tip.el'"
                         (nreverse l))))
              (popup-kill-ring-buffer-point-hash (make-hash-table :test 'equal))
              num item)
-        (when popup-kill-ring-interactive-insert
-          ;; TODO: (nth 0 kill-ring) != (nth 0 kring).
-          ;; The kring discards item that lenght shorter than
-          ;; `popup-kill-ring-item-min-width'.
-          ;; So, The following code should be fixed.
-          (popup-kill-ring-insert-item 0))
         ;; always execute `pos-tip-hide'
         ;; (The case that the item was selected.
         ;;  the case that it was typed `C-g'.)
@@ -338,35 +317,11 @@ and `pos-tip.el'"
                                         (cdr (nthcdr num kill-ring))))
                            (push kill-ring-item kill-ring))
                          (insert kill-ring-item)))))
-          (pos-tip-hide)
-          ;; If `C-g' was typed, clear the inserted string.
-          (when (and popup-kill-ring-interactive-insert
-                     (numberp last-input-event)
-                     (= last-input-event (string-to-char (kbd "C-g"))))
-            (popup-kill-ring-clear-inserted)))))))
+          (pos-tip-hide))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
   (when (display-graphic-p)
     (pos-tip-show str popup-kill-ring-pos-tip-color pos nil 0 nil nil nil 0)))
-
-(defun popup-kill-ring-select ()
-  (interactive)
-  (let* ((m (popup-kill-ring-get-current-popup))
-         (num (popup-cursor m))
-         (lst (popup-list m))
-         (item (popup-item-value-or-self (nth num lst)))
-         (p (gethash (buffer-name) popup-kill-ring-buffer-point-hash)))
-    (when popup-kill-ring-interactive-insert
-      (goto-char (cdr (gethash (buffer-name)
-                               popup-kill-ring-buffer-point-hash)))
-      (when (and p (listp p))
-        ;; After the `popup-isearch', these is the case that diffrence selected
-        ;; item of `popup-menu*' from inserted string to `current-buffer'.
-        (unless (string= (buffer-substring (car p) (cdr p)) item)
-          (delete-region (car p) (cdr p))
-          (cl-return item)))
-      (cl-return))
-    (cl-return item)))
 
 (defun popup-kill-ring-next ()
   (interactive)
@@ -378,8 +333,6 @@ and `pos-tip.el'"
          item)
     (when (>= num len)
       (setq num 0))
-    (when popup-kill-ring-interactive-insert
-      (popup-kill-ring-clear-inserted))
     (setq item (popup-x-to-string (nth num lst)))
     ;; Variable `num' is converted from the index of `popup-menu*'
     ;; to the index of `kill-ring'.
@@ -396,8 +349,6 @@ and `pos-tip.el'"
                       (popup-child-point m offset)))))
       (pos-tip-hide)
       (popup-next m)
-      (when popup-kill-ring-interactive-insert
-        (popup-kill-ring-insert-item num))
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
 
@@ -425,8 +376,6 @@ and `pos-tip.el'"
          (len (length lst))
          (offset (popup-offset m))
          item)
-    (when popup-kill-ring-interactive-insert
-      (popup-kill-ring-clear-inserted))
     (when (< num 0)
       (setq num (1- len)))
     (setq item (popup-x-to-string (nth num lst)))
@@ -445,8 +394,6 @@ and `pos-tip.el'"
                       (popup-child-point m offset)))))
       (pos-tip-hide)
       (popup-previous m)
-      (when popup-kill-ring-interactive-insert
-        (popup-kill-ring-insert-item num))
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
 
@@ -459,30 +406,6 @@ and `pos-tip.el'"
     (erase-buffer)
     (insert item)
     (get-text-property (point-min) 'index)))
-
-(defun popup-kill-ring-insert-item (num)
-    (let* ((item (format "%s" (nth num kill-ring)))
-           (s (point))
-           (e (+ s (length item)))
-           ol)
-      (puthash (buffer-name) (cons s e)
-               popup-kill-ring-buffer-point-hash)
-      (unwind-protect
-          (with-timeout (1.0 (if ol (delete-overlay ol)))
-            (insert item)
-            (recenter)
-            (setq ol (make-overlay s e))
-            (overlay-put ol 'face popup-kill-ring-interactive-insert-face)
-            (sit-for 0.5))
-        (if ol (delete-overlay ol)))))
-
-(defun popup-kill-ring-clear-inserted ()
-  (when popup-kill-ring-interactive-insert
-    (let* ((p (gethash (buffer-name)
-                       popup-kill-ring-buffer-point-hash)))
-      (when (and p (listp p))
-        (delete-region (car p) (cdr p))
-        (goto-char (car p))))))
 
 (defun popup-kill-ring-get-current-popup ()
   (seq-find (lambda (p) (eq (popup-symbol p) 'popup-kill-ring))
