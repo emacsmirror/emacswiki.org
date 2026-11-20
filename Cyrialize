@@ -1,0 +1,11 @@
+I use Emacs. 
+
+You can find out more about me and links to my configuration on my website https://cyrialize.dev/.
+
+I first started using Emacs around 2014-2015. I started with Spacemacs before rolling my own.
+
+The two guides that really jump started my Emacs usage are:
+* https://doc.norang.ca/org-mode.html
+** https://tuhdo.github.io/helm-intro.html
+
+I no longer use Helm, but it still holds a special place in my heart.
