@@ -66,7 +66,7 @@ If you are behind a firewall that requires the use of a proxy, you may need to c
 
 Many packages come with instructions on installation and use. These can be viewed in the package manager by pressing `RET' on the package line.
 
-UsePackage can make it easier for you to organize your package-related configuration. For more information, see its homepage: https://github.com/jwiegley/use-package
+UsePackage can make it easier for you to organize your package-related configuration. For more information, do `M-x info-display-manual RET use-package' or go to https://www.gnu.org/software/emacs/manual/html_mono/use-package.html.
 
 For more inspiration and examples, look into the source of the Emacs starter configurations such as the ones found [[http://ergoemacs.org/misc/list_of_emacs_starter_kits.html here]].  
 
