@@ -16,4 +16,8 @@ Welcome to the wiki. -- DrewAdams
 
 ----
 
+Thank you for the welcome DrewAdams! I've actually been thinking of writing a blog post about [[HighlightLibrary]]. I used to use it quite a bit in an old configuration I had. It helped me untangle gnarly PHP code in a codebase with zero standards and tests. I forgot that this package existed on EmacsWiki - so thanks again for your welcome! Without it I would've spent some more time trying to remember where I used highlight code before. Jumping between highlights is extremely helpful.
+
+----
+
 CategoryHomepage
