@@ -1,12 +1,10 @@
-;;; logr.el Simple logging tool
 ;; -*- lexical-binding: t; -*-
-;; PLEASE NOTE: lexical-binding **MUST** be the first line in this file in order to work correctly.
-;; I placed it as the second line **ONLY** to make EmacsWiki happy in its formatting of this page.
+;;; logr.el Simple logging tool
 ;;
 ;; logr.el
 ;; Author: Jason Meade <jemeade@gmail.com>
-;; Last Edited: 10/05/2025
-;; Version: 1.0.1
+;; Last Edited: 11/23/2026
+;; Version: 1.0.2
 ;;
 ;; Allow users to log tasks
 ;;
@@ -48,12 +46,13 @@
 ;;    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 
-(defvar logr-file "~/.logfile"
-  "Save log entries to file")
+(defcustom logr-file "~/.logfile"
+  "Save log entries to file"
+  :type 'file)
 
 (defun logr ()
   "Usage: M-x logr<ret> Enter your one-line log message<ret>"
-  (interactive
+  (interactive)
    (let* ((log-message (read-from-minibuffer "Log: "))
           (log-entry (format "%s :: %s\n" (logr-time) log-message))
           (log-buffer (find-file-noselect logr-file)))
@@ -63,7 +62,7 @@
        (insert log-entry)
        (save-buffer 0)
        (kill-buffer)))
-     nil)))
+     nil))
 
 (defun logr-time ()
   "Returns current time in MM/DD/YYYY MM:HH format"
