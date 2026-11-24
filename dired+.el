@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 19:02:30 2026 (-0700)
+;; Last-Updated: Mon Nov 23 16:24:23 2026 (-0800)
 ;;           By: drew0
-;;     Update #: 14506
+;;     Update #: 14517
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -18,27 +18,23 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `auth-source', `autofit-frame', `avoid',
-;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
-;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `button',
-;;   `bytecomp', `cconv', `cl-generic', `cl-lib', `cl-macs',
-;;   `cmds-menu', `col-highlight', `crosshairs', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-loaddefs', `dired-x', `doremi',
-;;   `doremi-frm', `easymenu', `eieio', `eieio-core',
+;;   `auth-source', `autofit-frame', `avoid', `backquote',
+;;   `bookmark+', `button', `bytecomp', `cconv', `cl-generic',
+;;   `cl-lib', `cl-macs', `col-highlight', `crosshairs', `custom',
+;;   `dired', `dired+', `dired-aux', `dired-loaddefs', `dired-x',
+;;   `doremi', `doremi-frm', `easymenu', `eieio', `eieio-core',
 ;;   `eieio-loaddefs', `epg-config', `facemenu', `facemenu+',
 ;;   `faces', `faces+', `fit-frame', `font-lock', `font-lock+',
 ;;   `font-lock-menus', `format-spec', `frame-cmds', `frame-fns',
-;;   `gv', `help+', `help-fns', `help-fns+', `help-macro',
-;;   `help-macro+', `help-mode', `hexrgb', `highlight', `hl-line',
-;;   `hl-line+', `image', `image-dired', `image-file', `image-mode',
-;;   `info', `info+', `kmacro', `macroexp', `menu-bar', `menu-bar+',
+;;   `gv', `help-fns', `help-fns+', `help-mode', `hexrgb',
+;;   `highlight', `hl-line', `hl-line+', `image', `image-dired',
+;;   `image-file', `image-mode', `info', `macroexp', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `mwheel', `nadvice', `naked',
-;;   `package', `palette', `password-cache', `pp', `pp+',
-;;   `radix-tree', `rect', `replace', `ring', `second-sel', `seq',
-;;   `strings', `syntax', `tabulated-list', `text-mode', `thingatpt',
-;;   `thingatpt+', `timer', `url-handlers', `url-parse', `url-vars',
-;;   `vline', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `zones'.
+;;   `package', `palette', `password-cache', `radix-tree', `rect',
+;;   `ring', `seq', `strings', `syntax', `tabulated-list',
+;;   `thingatpt', `thingatpt+', `timer', `url-handlers', `url-parse',
+;;   `url-vars', `vline', `w32-browser', `wid-edit', `wid-edit+',
+;;   `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1078,6 +1074,10 @@
  
 ;;; Change Log:
 ;;
+;; 2026/11/23 drew0
+;;     Added: diredp-mouse-1-click-follows-link.
+;;     dired-insert-set-properties: Add follow-link, with value diredp-mouse-1-click-follows-link.
+;;     dired-mode-map: Override vanilla binding of [follow-link] - bind to nil.
 ;; 2026/08/30 drew0
 ;;     dired-copy-file-recursive: Added optional arg DEREFERENCE, per Emacs 28.
 ;; 2026/08/05 drew0
@@ -3412,6 +3412,11 @@ These commands are `dired-do-find-marked-files' and
 the circumstances in which they show the files in separate frames."
   :type '(restricted-sexp :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
   :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-mouse-1-click-follows-link nil
+  "Whether to allow mouse-1 clicks to follow links in Dired."
+  :type 'boolean :group 'Dired-Plus)
 
 (when (fboundp 'file-equal-p)           ; Emacs 24+
   (defcustom diredp-move-file-dirs ()
@@ -10604,12 +10609,12 @@ More generally, ARG is as the second argument of `dired-map-over-marks'."
 Like `diredp-do-bookmark', but invoked using the mouse."
   (interactive "e")
   (diredp-lexlet ((mouse-pos         (event-start event))
-                (dired-no-confirm  t)
-                (prefix            (and diredp-prompt-for-bookmark-prefix-flag
-                                        (read-string "Prefix for bookmark name: "))))
-    (select-window (posn-window mouse-pos))
-    (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil)) nil 'bookmark t))
+                  (dired-no-confirm  t)
+                  (prefix            (and diredp-prompt-for-bookmark-prefix-flag
+                                          (read-string "Prefix for bookmark name: "))))
+                 (select-window (posn-window mouse-pos))
+                 (goto-char (posn-point mouse-pos))
+                 (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil)) nil 'bookmark t))
   (diredp-previous-line 1))
 
 (defun diredp-bookmark (&optional prefix file no-msg-p)
@@ -12859,6 +12864,7 @@ the height of the current window and the value of variable
 ;; 2. Add text property `dired-filename' to only the file name.
 ;; 3. Show image-file preview on mouseover, if `tooltip-mode'
 ;;    and if `diredp-image-preview-in-tooltip'.
+;; 4. Put `follow-link' property on whole line, with value of `diredp-mouse-1-click-follows-link'.
 ;;
 (defun dired-insert-set-properties (beg end)
   "Add various text properties to the lines in the region from BEG to END.
@@ -12872,7 +12878,8 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
         (condition-case nil
             (cond ((dired-move-to-filename)
                    (add-text-properties (line-beginning-position) (line-end-position)
-                                        '(mouse-face highlight help-echo diredp-mouseover-help))
+                                        `(mouse-face highlight help-echo diredp-mouseover-help
+                                                     follow-link ,diredp-mouse-1-click-follows-link))
                    (put-text-property
                     (point) (save-excursion (dired-move-to-end-of-filename) (point))
                     'dired-filename t)
@@ -14702,7 +14709,8 @@ When called from Lisp, optional arg DETAILS is passed to
 ;; 4. Use `diredp-mark-if', not `dired-mark-if'.  Added optional arg NO-MSGP.
 ;;
 ;;;###autoload
-(defun dired-mark-sexp (predicate &optional unmark-p no-msgp) ; Bound to `M-(', `* (', menu `Marks' > `Mark' > `Mark If...'
+(defun dired-mark-sexp (predicate &optional unmark-p no-msgp)
+                                        ; Bound to `M-(', `* (', menu `Marks' > `Mark' > `Mark If...'
   "Mark files for which PREDICATE returns non-nil.
 With a prefix arg, unmark or unflag those files instead.
 
@@ -16394,6 +16402,10 @@ windows there, then delete its window (toggle : show/hide the file)."
       (set-window-buffer fwin (find-file-noselect file)))))
  
 ;;; Key Bindings.
+
+;; Get rid of making `mouse-1-click-follows-link' govern `mouse-2' in Dired.
+;; We use `dired+-mouse-1-click-follows-link' to allow/disallow that.
+(define-key dired-mode-map [follow-link] nil)
 
 
 ;; Menu Bar.
