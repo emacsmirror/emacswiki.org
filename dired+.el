@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2025.08.21
 ;; Package-Requires: ()
-;; Last-Updated: Mon Nov 23 16:24:23 2026 (-0800)
+;; Last-Updated: Mon Nov 23 20:39:26 2026 (-0800)
 ;;           By: drew0
-;;     Update #: 14517
+;;     Update #: 14521
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1075,8 +1075,8 @@
 ;;; Change Log:
 ;;
 ;; 2026/11/23 drew0
-;;     Added: diredp-mouse-1-click-follows-link.
-;;     dired-insert-set-properties: Add follow-link, with value diredp-mouse-1-click-follows-link.
+;;     Added: diredp-mouse-1-follows-link-flag.
+;;     dired-insert-set-properties: Add follow-link, with value diredp-mouse-1-follows-link-flag.
 ;;     dired-mode-map: Override vanilla binding of [follow-link] - bind to nil.
 ;; 2026/08/30 drew0
 ;;     dired-copy-file-recursive: Added optional arg DEREFERENCE, per Emacs 28.
@@ -3414,8 +3414,8 @@ the circumstances in which they show the files in separate frames."
   :group 'Dired-Plus)
 
 ;;;###autoload
-(defcustom diredp-mouse-1-click-follows-link nil
-  "Whether to allow mouse-1 clicks to follow links in Dired."
+(defcustom diredp-mouse-1-follows-link-flag nil
+  "Whether to allow mouse-1 clicks to follow links in Dired buffers."
   :type 'boolean :group 'Dired-Plus)
 
 (when (fboundp 'file-equal-p)           ; Emacs 24+
@@ -12864,7 +12864,7 @@ the height of the current window and the value of variable
 ;; 2. Add text property `dired-filename' to only the file name.
 ;; 3. Show image-file preview on mouseover, if `tooltip-mode'
 ;;    and if `diredp-image-preview-in-tooltip'.
-;; 4. Put `follow-link' property on whole line, with value of `diredp-mouse-1-click-follows-link'.
+;; 4. Put `follow-link' property on whole line, with value of `diredp-mouse-1-follows-link-flag'.
 ;;
 (defun dired-insert-set-properties (beg end)
   "Add various text properties to the lines in the region from BEG to END.
@@ -12879,7 +12879,7 @@ Handle `dired-hide-details-mode' invisibility spec (Emacs 24.4+)."
             (cond ((dired-move-to-filename)
                    (add-text-properties (line-beginning-position) (line-end-position)
                                         `(mouse-face highlight help-echo diredp-mouseover-help
-                                                     follow-link ,diredp-mouse-1-click-follows-link))
+                                                     follow-link ,diredp-mouse-1-follows-link-flag))
                    (put-text-property
                     (point) (save-excursion (dired-move-to-end-of-filename) (point))
                     'dired-filename t)
